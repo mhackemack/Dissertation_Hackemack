@@ -1,0 +1,37 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  New template code for TAMU Theses and Dissertations starting Fall 2012.  
+%  For more info about this template or the 
+%  TAMU LaTeX User's Group, see http://www.howdy.me/.
+%
+%  Author: Wendy Lynn Turner 
+%	 Version 1.0 
+%  Last updated 8/5/2012
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%                           SECTION III
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{\uppercase{Massively Parallel Transport Sweeping on Unstructured Grids}}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - Polygonal/Polyhedral Grids
+\section{Use of Polygonal and Polyhedral Grids}
+\label{sec::Sweeps_Poly_Grids}
+
+\begin{enumerate}
+	\item Other physics communities are now employing polyhedral grids, which can increase the complexity of mesh mapping between different physics packages;
+	\item Polygonal and Polyhedral grids can provide a better domain partition, yielding reduced cell and face counts (should reduce cpu run times);
+	\item ({\em e.g.} boundary layers);
+	\item Independently-generated simplicial grids ({\em i.e.} created in parallel) can be stitched together with polygons and polyhedra without communicating the whole mesh across processors;
+	\item Hanging nodes from non-conforming meshes are not necessary (arise naturally in adaptive mesh refinement).
+\end{enumerate}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - Conclusions
+\section{Conclusions}
+\label{sec::Sweeps_Conclusions}
+
+We have presented

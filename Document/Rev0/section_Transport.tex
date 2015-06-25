@@ -1,0 +1,77 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%  New template code for TAMU Theses and Dissertations starting Fall 2012.  
+%  For more info about this template or the 
+%  TAMU LaTeX User's Group, see http://www.howdy.me/.
+%
+%  Author: Wendy Lynn Turner 
+%	 Version 1.0 
+%  Last updated 8/5/2012
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%                           SECTION II
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\chapter{\uppercase {The Multigroup $S_N$ Equations}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - Neutron Transport Equation
+\section{The Neutron Transport Equation}
+\label{sec::Sn_neut}
+
+The neutron angular flux, $\Psi (\vec{r}, E, \vec{\Omega})$, at spatial position $\vec{r}$, with energy $E$ moving in direction $\vec{\Omega}$, is defined within an open, convex spatial domain $\mathcal{D}$, with boundary, $\partial \mathcal{D}$ by the general neutron transport equation:
+
+
+\begin{equation}
+\label{eq::transport_eq_full_source}
+\begin{aligned}
+	\vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{r}, E, \vec{\Omega})+ \sigma_t (\vec{r}, E) \Psi (\vec{r}, E, \vec{\Omega}) = \frac{\chi (\vec{r}, E)}{4 \pi} \int dE' \nu \sigma_f (\vec{r}, E') \int d\Omega' \Psi (\vec{r}, E', \vec{\Omega}') \\ 
+	+ \int dE' \int d\Omega' \sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega) \Psi (\vec{r}, E', \vec{\Omega}') + Q_{ext} (\vec{r}, E, \vec{\Omega})
+\end{aligned}
+\end{equation}
+
+\noindent with the following, general boundary condition:
+
+\begin{equation}
+\label{eq::transport_bc_full}
+\begin{aligned}
+	\Psi (\vec{r}, E, \vec{\Omega}) = \Psi^{inc} (\vec{r}, E, \vec{\Omega}) + \int dE' \int d\Omega' \gamma (\vec{r}, E' \rightarrow E, \vec{\Omega}' \rightarrow \vec{\Omega}) \Psi (\vec{r}, E', \vec{\Omega}') \\
+	\text{for } \vec{r} \in \partial \mathcal{D}^{-} \left\{   \partial \mathcal{D}, \vec{\Omega}' \cdot \vec{n} < 0  \right\}
+\end{aligned} .
+\end{equation}
+
+\noindent In Eqs. (\ref{eq::transport_eq_full_source}) and (\ref{eq::transport_bc_full}), the physical properties of the system are defined as the following: $\sigma_t (\vec{r}, E)$ is the total neutron cross section, $\chi (\vec{r}, E)$ is the neutron fission spectrum, $\sigma_f (\vec{r}, E')$ is the fission cross section, $\nu (\vec{r}, E')$ is the average number of neutroncs emitted per fission, $\sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega)$ is the scattering cross section, and $Q_{ext} (\vec{r}, E, \vec{\Omega})$ is a distributed external source.
+
+
+\begin{equation}
+\label{eq::transport_eq_full_keff}
+\begin{aligned}
+	\vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{r}, E, \vec{\Omega})+ \sigma_t (\vec{r}, E) \Psi (\vec{r}, E, \vec{\Omega}) = \frac{\chi (\vec{r}, E)}{4 \pi} \int dE' \nu \sigma_f (\vec{r}, E') \int d\Omega' \Psi (\vec{r}, E', \vec{\Omega}') \\ 
+	+ \int dE' \int d\Omega' \sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega) \Psi (\vec{r}, E', \vec{\Omega}') 
+\end{aligned}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - Thermal Radiative Transfer Equations 
+\section{The Thermal Radiative Transfer Equation}
+\label{sec::Sn_TRT}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - Energy Discretization
+\section{Energy Discretization}
+\label{sec::Sn_MG}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - Angle Discretization
+\section{Angular Discretization}
+\label{sec::Sn_Angle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - Angle Discretization
+\section{Angular Discretization}
+\label{sec::Sn_Full}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - Conclusions
+\section{Conclusions}
+\label{sec::Sn_Conclusions}
