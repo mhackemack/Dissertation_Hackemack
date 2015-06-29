@@ -11,7 +11,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%                           SECTION II
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{\uppercase {The Multigroup $S_N$ Equations}}
+\chapter{\uppercase {The DFEM Formulation of the Multigroup $S_N$ Equations}}
 
 
 
@@ -20,7 +20,9 @@
 \frac{\partial u}{\partial t} = \left( \frac{\partial u}{\partial t}  \right)_{force} + \left( \frac{\partial u}{\partial t}  \right)_{advec} + \left( \frac{\partial u}{\partial t}  \right)_{coll}
 \end{equation}
 
-\noindent where $u(\vec{r},\vec{p},t)$ is the transport distribution function parameterized in terms of position, $\vec{r}=(x,y,z)$, momentum, $\vec{p}=(p_x,p_y,p_z)$, and time, $t$. The time rate of the change of the distribution function, $\frac{\partial u}{\partial t}$, is equal to the sum of the change rates due to external forces, $\left( \frac{\partial u}{\partial t}  \right)_{force} $, advection of the particles, $\left( \frac{\partial u}{\partial t}  \right)_{advec}$, and particle-to-particle and particle-to-matter collisions, $\left( \frac{\partial u}{\partial t}  \right)_{coll}$.
+\noindent where $u(\vec{r},\vec{p},t)$ is the transport distribution function parameterized in terms of position, $\vec{r}=(x,y,z)$, momentum, $\vec{p}=(p_x,p_y,p_z)$, and time, $t$. In simplified terms, Eq. (\ref{eq::gen_boltzmann}) can be interpreted that the time rate of the change of the distribution function, $\frac{\partial u}{\partial t}$, is equal to the sum of the change rates due to external forces, $\left( \frac{\partial u}{\partial t}  \right)_{force} $, advection of the particles, $\left( \frac{\partial u}{\partial t}  \right)_{advec}$, and particle-to-particle and particle-to-matter collisions, $\left( \frac{\partial u}{\partial t}  \right)_{coll}$ \cite{mcgraw_physics}. 
+
+For neutral particle transport, the following assumptions \cite{duderstadt1979transport} about the behavior of the radiation particles can be utilized:
 
 \begin{enumerate}
 	\item Particles may be considered as points;
@@ -29,6 +31,8 @@
 	\item Collisions between particles and material target atoms are instantaneous;
 	\item Particles do not experience any external force fields ({\em e.g.} gravity).
 \end{enumerate}
+
+These assumptions lead to the first order form of the Boltzmann Transport Equation, which we simply call the transport equation for brevity. The remainder of the chapter is layed out as follows. Section \ref{sec::Sn_neut} provides the general form of the neutron neutron equation with some minor variants. Section \ref{sec::Sn_MG} describes how we discretize the transport equation in energy with the multigroup methodology. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Neutron Transport Equation
@@ -39,38 +43,33 @@ The neutron angular flux, $\Psi (\vec{r}, E, \vec{\Omega})$, at spatial position
 
 
 \begin{equation}
-\label{eq::transport_eq_full_source}
+\label{eq::Sn_transport_eq_full_source}
 \begin{aligned}
 	\vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{r}, E, \vec{\Omega})+ \sigma_t (\vec{r}, E) \Psi (\vec{r}, E, \vec{\Omega}) = \frac{\chi (\vec{r}, E)}{4 \pi} \int dE' \nu \sigma_f (\vec{r}, E') \int d\Omega' \Psi (\vec{r}, E', \vec{\Omega}') \\ 
-	+ \int dE' \int d\Omega' \sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega) \Psi (\vec{r}, E', \vec{\Omega}') + Q_{ext} (\vec{r}, E, \vec{\Omega})
+	+ \int dE' \int d\Omega' \sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega) \Psi (\vec{r}, E', \vec{\Omega}') + S_{ext} (\vec{r}, E, \vec{\Omega})
 \end{aligned}
 \end{equation}
 
 \noindent with the following, general boundary condition:
 
 \begin{equation}
-\label{eq::transport_bc_full}
+\label{eq::Sn_transport_bc_full}
 \begin{aligned}
 	\Psi (\vec{r}, E, \vec{\Omega}) = \Psi^{inc} (\vec{r}, E, \vec{\Omega}) + \int dE' \int d\Omega' \gamma (\vec{r}, E' \rightarrow E, \vec{\Omega}' \rightarrow \vec{\Omega}) \Psi (\vec{r}, E', \vec{\Omega}') \\
 	\text{for } \vec{r} \in \partial \mathcal{D}^{-} \left\{   \partial \mathcal{D}, \vec{\Omega}' \cdot \vec{n} < 0  \right\}
 \end{aligned} .
 \end{equation}
 
-\noindent In Eqs. (\ref{eq::transport_eq_full_source}) and (\ref{eq::transport_bc_full}), the physical properties of the system are defined as the following: $\sigma_t (\vec{r}, E)$ is the total neutron cross section, $\chi (\vec{r}, E)$ is the neutron fission spectrum, $\sigma_f (\vec{r}, E')$ is the fission cross section, $\nu (\vec{r}, E')$ is the average number of neutroncs emitted per fission, $\sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega)$ is the scattering cross section, and $Q_{ext} (\vec{r}, E, \vec{\Omega})$ is a distributed external source.
+\noindent In Eqs. (\ref{eq::Sn_transport_eq_full_source}) and (\ref{eq::Sn_transport_bc_full}), the physical properties of the system are defined as the following: $\sigma_t (\vec{r}, E)$ is the total neutron cross section, $\chi (\vec{r}, E)$ is the neutron fission spectrum, $\sigma_f (\vec{r}, E')$ is the fission cross section, $\nu (\vec{r}, E')$ is the average number of neutroncs emitted per fission, $\sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega)$ is the scattering cross section, and $S_{ext} (\vec{r}, E, \vec{\Omega})$ is a distributed external source.
 
 
 \begin{equation}
-\label{eq::transport_eq_full_keff}
+\label{eq::Sn_transport_eq_full_keff}
 \begin{aligned}
 	\vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{r}, E, \vec{\Omega})+ \sigma_t (\vec{r}, E) \Psi (\vec{r}, E, \vec{\Omega}) = \frac{\chi (\vec{r}, E)}{4 \pi} \int dE' \nu \sigma_f (\vec{r}, E') \int d\Omega' \Psi (\vec{r}, E', \vec{\Omega}') \\ 
 	+ \int dE' \int d\Omega' \sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega) \Psi (\vec{r}, E', \vec{\Omega}') 
 \end{aligned}
 \end{equation}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   Section - Thermal Radiative Transfer Equations 
-\section{The Thermal Radiative Transfer Equation}
-\label{sec::Sn_TRT}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Energy Discretization
@@ -86,6 +85,69 @@ The neutron angular flux, $\Psi (\vec{r}, E, \vec{\Omega})$, at spatial position
 %%%   Section - Spatial Discretization
 \section{Spatial Discretization}
 \label{sec::Sn_Spatial}
+
+Using the energy and angular discretizations presented in Sections \ref{sec::Sn_MG} and \ref{sec::Sn_Angle}, respectively, we write the standard multigroup $S_N$ transport equation for one angular direction, $m$, and one energy group, $g$:
+
+\begin{equation}
+\label{eq::Sn_mg_sn_trans_eq}
+u
+\end{equation}
+
+\noindent with the following general, discretized boundary condition:
+
+\begin{equation}
+\label{eq::Sn_mg_sn_trans_eq_bc}
+\Psi_{m,g} (\vec{r}) = \Psi^{inc}_{m,g} (\vec{r}) + \sum_{g'=1}^{G} \sum_{\vec{\Omega}_{m'} \cdot \vec{n} > 0} \gamma_{g' \rightarrow g}^{m' \rightarrow m} (\vec{r})  \Psi_{m',g'} (\vec{r}) 
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Mass
+\subsection{Elementary Mass Matrices}
+\label{sec::Sn_Spatial_Mass}
+
+In the spatially discretized equations presented in Section \ref{sec::Sn_Spatial}, there are several reaction terms that appear with the form: $\Big< \sigma \psi_m, b_m  \Big>_K$ for a given angular direction, $m$, and for a spatial cell, $K$. In FEM analysis these reaction terms are ubiquitously referred to as the mass matrix terms \cite{zeinkiewicz2005finite}. For cell $K$, we define the elementary mass matrix, ${\bf M}$ as
+
+\begin{equation}
+\label{eq::Sn_mass_matrix_analytical}
+{\bf M}_K =    \int_K {\bf b}_K \, {\bf b}_K^T \, d {\vec{r}} ,
+\end{equation}
+
+\noindent where ${\bf b}_K$ corresponds to the set of $N_K$ basis functions that have non-zero measure in cell $K$. Depending on the FEM basis functions utilized, the integrals in Eq. (\ref{eq::Sn_mass_matrix_analytical}) can be directly integrated analytically. However, if in general, the basis functions cannot be analytically integrated on an arbitrary set of cell shapes, then a numerical integration scheme becomes necessary. 
+
+\begin{equation}
+\label{eq::Sn_mass_matrix_numerical}
+{\bf M}_K =    \sum_{} {\bf b}_K \, {\bf b}_K^T \, d {\vec{r}} ,
+\end{equation}
+
+
+\begin{equation}
+\label{eq::Sn_mass_matrix_array}
+{\bf M}_K =   \left[
+\begin{array} {ccccc}
+	\int_K b_1 \, b_1  & \ldots & \int_K b_1 \, b_j  & \ldots & \int_K b_1 \, b_{N_K} \\
+	\vdots  &  & \vdots  &  & \vdots \\
+	\int_K b_i \, b_1  & \ldots & \int_K b_i \, b_j  & \ldots & \int_K b_i \, b_{N_K} \\
+	\vdots  &  & \vdots  &  & \vdots \\
+	\int_K b_{N_K} \, b_1  & \ldots & \int_K b_{N_K} \, b_j  & \ldots & \int_K b_{N_K} \, b_{N_K} \\
+\end{array}
+\right]
+\end{equation}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Function
+\subsection{Elementary Right-Hand-Side Matrices}
+\label{sec::Sn_Spatial_Mass}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Steaming
+\subsection{Elementary Streaming Matrices}
+\label{sec::Sn_Spatial_Streaming}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Surface
+\subsection{Elementary Surface Matrices}
+\label{sec::Sn_Spatial_Surface}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

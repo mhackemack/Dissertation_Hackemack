@@ -15,262 +15,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-% PWLD Sources and LD
+% Nuclear Books
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% ANS proceedings where Adams first proposed PWLD
-@inproceedings{ref::PWLD_stone_adams,
-  title={A piecewise linear finite element basis with application to particle transport},
-  author={Stone, Hiromi G and Adams, Marvin L},
-  booktitle={Proc. ANS Topical Meeting Nuclear Mathematical and Computational Sciences Meeting},
-  year={2003}
-}
-% PWLD on unstructured
-@inproceedings{ref::PWLD_stone_adams_unstructured,
-  title={New Spatial Discretization Methods for Transport on Unstructured Grids},
-  author={Stone, Hiromi G and Adams, Marvin L},
-  booktitle={Proc. ANS Topical Meeting Mathematics and Computation, 
-Supercomputing, Reactor Physics and Biological Applications},
-  year={2005}
-}
-% Bailey dissertation
-@phdthesis{bailey2008phd,
-  title={The piecewise linear discontinuous finite element method applied to the RZ and XYZ transport equations},
-  author={Bailey, Teresa S},
-  year={2008},
-  school={Texas A\&M University}
-}
-% Bailey Cylindrical PWLD
-@inproceedings{bailey2008piecewise,
-  title={A Piecewise Linear Discontinuous Finite Element Spatial Discretization of the Transport Equation in 2D Cylindrical Geometry},
-  author={Bailey, Teresa S and Adams, Marvin L and Chang, Jae H and Warsa, James S},
-  booktitle={Proc. International Conference on Mathematics and Computational Methods \& Reactor Physics},
-  pages={3--7},
-  year={2008}
-}
-% 2011 - I don't know what
-@article{bailey2011piecewise,
-  title={A Piecewise Linear Discontinuous Finite Element Spatial Discretization of the Sn Transport Equation for Polyhedral Grids in 3D Cartesian Geometry},
-  author={Bailey, TS and Hawkins, WD and Adams, ML},
-  year={2011}
-}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% POLYFEM Sources
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Original Wachspress - 1975
-@article{wachspress1975rational,
-  title={A Rational Finite Element Basis},
-  author={Wachspress, Eugene L},
-  journal={Mathematics in science and engineering},
-  year={1975}
-}
-% wachspress gradient bounds - 2014
-@article{floater2014gradient,
-  title={Gradient bounds for Wachspress coordinates on polytopes},
-  author={Floater, Michael and Gillette, Andrew and Sukumar, N},
-  journal={SIAM Journal on Numerical Analysis},
-  volume={52},
-  number={1},
-  pages={515--532},
-  year={2014},
-  publisher={SIAM}
-}
-% wachpress and mvc - 2014
-@incollection{floater2014wachspress,
-  title={Wachspress and mean value coordinates},
-  author={Floater, Michael S},
-  booktitle={Approximation Theory XIV: San Antonio 2013},
-  pages={81--102},
-  year={2014},
-  publisher={Springer}
-}
-% original MVC - 2003
-@article{floater2003mean,
-  title={Mean value coordinates},
-  author={Floater, Michael S},
-  journal={Computer aided geometric design},
-  volume={20},
-  number={1},
-  pages={19--27},
-  year={2003},
-  publisher={Elsevier}
-}
-% MVC error estimates - 2013
-@article{rand2013interpolation,
-  title={Interpolation error estimates for mean value coordinates over convex polygons},
-  author={Rand, Alexander and Gillette, Andrew and Bajaj, Chandrajit},
-  journal={Advances in computational mathematics},
-  volume={39},
-  number={2},
-  pages={327--347},
-  year={2013},
-  publisher={Springer}
-}
-% MVC in 3D - 2005
-@article{floater2005mean,
-  title={Mean value coordinates in 3D},
-  author={Floater, Michael S and K{\'o}s, G{\'e}za and Reimers, Martin},
-  journal={Computer Aided Geometric Design},
-  volume={22},
-  number={7},
-  pages={623--631},
-  year={2005},
-  publisher={Elsevier}
-}
-% MVC for planal polygons - 2006
-@article{hormann2006mean,
-  title={Mean value coordinates for arbitrary planar polygons},
-  author={Hormann, Kai and Floater, Michael S},
-  journal={ACM Transactions on Graphics (TOG)},
-  volume={25},
-  number={4},
-  pages={1424--1441},
-  year={2006},
-  publisher={ACM}
-}
-% Cubic MVC - 2013
-@article{li2013cubic,
-  title={Cubic mean value coordinates.},
-  author={Li, Xian-Ying and Ju, Tao and Hu, Shi-Min},
-  journal={ACM Trans. Graph.},
-  volume={32},
-  number={4},
-  pages={126},
-  year={2013}
-}
-% max ent polytopes - 2008
-@inproceedings{hormann2008maximum,
-  title={Maximum entropy coordinates for arbitrary polytopes},
-  author={Hormann, Kai and Sukumar, Natarajan},
-  booktitle={Computer Graphics Forum},
-  volume={27},
-  number={5},
-  pages={1513--1520},
-  year={2008},
-  organization={Wiley Online Library}
-}
-% max ent polygons - 2004
-@article{sukumar2004construction,
-  title={Construction of polygonal interpolants: a maximum entropy approach},
-  author={Sukumar, N},
-  journal={International Journal for Numerical Methods in Engineering},
-  volume={61},
-  number={12},
-  pages={2159--2181},
-  year={2004},
-  publisher={Wiley Online Library}
-}
-% max ent approx - 2005
-@article{sukumar2005maximum,
-  title={Maximum entropy approximation},
-  author={Sukumar, N},
-  journal={Bayesian Inference and Maximum Entropy Methods in Science and Engineering},
-  volume={803},
-  pages={337--344},
-  year={2005}
-}
-% max ent boundary derivatives - 2013
-@article{greco2013derivatives,
-  title={Derivatives of maximum-entropy basis functions on the boundary: Theory and computations},
-  author={Greco, F and Sukumar, N},
-  journal={International Journal for Numerical Methods in Engineering},
-  volume={94},
-  number={12},
-  pages={1123--1149},
-  year={2013},
-  publisher={Wiley Online Library}
-}
-% max ent serendipity - 2013
-@article{sukumar2013quadratic,
-  title={Quadratic maximum-entropy serendipity shape functions for arbitrary planar polygons},
-  author={Sukumar, N},
-  journal={Computer Methods in Applied Mechanics and Engineering},
-  volume={263},
-  pages={27--41},
-  year={2013},
-  publisher={Elsevier}
-}
-% max ent higher order - 2010
-@article{gonzalez2010higher,
-  title={A higher order method based on local maximum entropy approximation},
-  author={Gonz{\'a}lez, David and Cueto, El{\'\i}as and Doblar{\'e}, Manuel},
-  journal={International journal for numerical methods in engineering},
-  volume={83},
-  number={6},
-  pages={741--764},
-  year={2010},
-  publisher={Wiley Online Library}
-}
-% max ent second order - 2013
-@article{rosolen2013second,
-  title={Second-order convex maximum entropy approximants with applications to high-order PDE},
-  author={Rosolen, A and Mill{\'a}n, D and Arroyo, M},
-  journal={International Journal for Numerical Methods in Engineering},
-  volume={94},
-  number={2},
-  pages={150--182},
-  year={2013},
-  publisher={Wiley Online Library}
-}
-% barycentric serendipity - 2014
-@article{rand2014quadratic,
-  title={Quadratic serendipity finite elements on polygons using generalized barycentric coordinates},
-  author={Rand, Alexander and Gillette, Andrew and Bajaj, Chandrajit},
-  journal={Mathematics of computation},
-  volume={83},
-  number={290},
-  pages={2691--2716},
-  year={2014}
-}
-% Triangle Quadrature
-@article{dunavant1985high,
-  title={High degree efficient symmetrical Gaussian quadrature rules for the triangle},
-  author={Dunavant, DA},
-  journal={International journal for numerical methods in engineering},
-  volume={21},
-  number={6},
-  pages={1129--1148},
-  year={1985},
-  publisher={Wiley Online Library}
-}
-% Pseudo-derivatives for meshless meshes
-@article{krongauz1997consistent,
-  title={Consistent pseudo-derivatives in meshless methods},
-  author={Krongauz, Y and Belytschko, T},
-  journal={Computer methods in applied mechanics and engineering},
-  volume={146},
-  number={3},
-  pages={371--386},
-  year={1997},
-  publisher={Elsevier}
-}
-% nodal integration for FEM
-@article{puso2008meshfree,
-  title={Meshfree and finite element nodal integration methods},
-  author={Puso, MA and Chen, JS and Zywicz, E and Elmer, W},
-  journal={International Journal for Numerical Methods in Engineering},
-  volume={74},
-  number={3},
-  pages={416--446},
-  year={2008},
-  publisher={Wiley Online Library}
-}
-% Second order accurate integration for meshfree
-@article{duan2012second,
-  title={Second-order accurate derivatives and integration schemes for meshfree methods},
-  author={Duan, Qinglin and Li, Xikui and Zhang, Hongwu and Belytschko, Ted},
-  journal={International Journal for Numerical Methods in Engineering},
-  volume={92},
-  number={4},
-  pages={399--424},
-  year={2012},
-  publisher={Wiley Online Library}
+@book{reynolds_bluebells,
+  title={Bluebells and Nuclear Engery},
+  author={A. Reynolds},
+  volume={1},
+  publisher={Cogito Books},
+  location={Madison, WI},
+  year={1996}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -280,6 +35,14 @@ Supercomputing, Reactor Physics and Biological Applications},
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Green Book for NUEN 302
+@book{mayo1998,
+  title={Introduction to Nuclear Concepts for Engineers},
+  author={R.M. Mayo},
+  publisher={American Nuclear Society},
+  year={1998},
+  isbn={0-89448-454-0}
+}
 
 @article{duderstadt1979transport,
   title={Transport theory},
@@ -308,14 +71,16 @@ Supercomputing, Reactor Physics and Biological Applications},
   title={Nuclear reactor theory},
   author={Bell, George I and Glasstone, Samuel},
   year={1979},
-  publisher={RE Krieger Publishing Company}
+  publisher={RE Krieger Publishing Company},
+  isbn={978-0-442-20684-0}
 }
 
 @book{lewis1984computational,
   title={Computational methods of neutron transport},
   author={Lewis, Elmer Eugene and Miller, Warren F},
   year={1984},
-  publisher={John Wiley and Sons, Inc., New York, NY}
+  publisher={John Wiley and Sons, Inc., New York, NY},
+  isbn={0-89448-452-4}
 }
 % D&H
 @book{duderstadt1976nuclear,
@@ -331,6 +96,14 @@ Supercomputing, Reactor Physics and Biological Applications},
   publisher={Gordon and Breach Science Publishers, Inc.},
   location={New York, NY},
   year={1968}
+}
+% Statics
+@book{ott1989,
+  title={Introductory Nuclear Reactor Statics},
+  author={K.O. Ott and W.A. Bezella},
+  publisher={American Nuclear Society},
+  year={1989},
+  isbn={0-89448-033-2}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -551,6 +324,12 @@ pages={212-236}
   number={2},
   year={2015},
   publisher={American Nuclear Society}
+}
+% Kanschat Parallel source
+@article{kanschat1996parallel,
+  title={Parallel and adaptive Galerkin methods for radiative transfer problems},
+  author={Kanschat, Guido},
+  year={1996}
 }
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1157,6 +936,17 @@ YEAR={2010}
   year={2002},
   publisher={American Nuclear Society}
 }
+% Krylov DSA
+@article{warsa2004krylov,
+  title={Krylov iterative methods and the degraded effectiveness of diffusion synthetic acceleration for multidimensional S n calculations in problems with material discontinuities},
+  author={Warsa, James S and Wareing, Todd A and Morel, Jim E},
+  journal={Nuclear science and engineering},
+  volume={147},
+  number={3},
+  pages={218--248},
+  year={2004},
+  publisher={American Nuclear Society}
+}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -1221,6 +1011,268 @@ organization={Springer}
   booktitle={Transactions of the American Nuclear Society},
   year={2014}
 }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% PWLD Sources and LD
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% ANS proceedings where Adams first proposed PWLD
+@inproceedings{ref::PWLD_stone_adams,
+  title={A piecewise linear finite element basis with application to particle transport},
+  author={Stone, Hiromi G and Adams, Marvin L},
+  booktitle={Proc. ANS Topical Meeting Nuclear Mathematical and Computational Sciences Meeting},
+  year={2003}
+}
+% PWLD on unstructured
+@inproceedings{ref::PWLD_stone_adams_unstructured,
+  title={New Spatial Discretization Methods for Transport on Unstructured Grids},
+  author={Stone, Hiromi G and Adams, Marvin L},
+  booktitle={Proc. ANS Topical Meeting Mathematics and Computation, 
+Supercomputing, Reactor Physics and Biological Applications},
+  year={2005}
+}
+% Bailey dissertation
+@phdthesis{bailey2008phd,
+  title={The piecewise linear discontinuous finite element method applied to the RZ and XYZ transport equations},
+  author={Bailey, Teresa S},
+  year={2008},
+  school={Texas A\&M University}
+}
+% Bailey Cylindrical PWLD
+@inproceedings{bailey2008piecewise,
+  title={A Piecewise Linear Discontinuous Finite Element Spatial Discretization of the Transport Equation in 2D Cylindrical Geometry},
+  author={Bailey, Teresa S and Adams, Marvin L and Chang, Jae H and Warsa, James S},
+  booktitle={Proc. International Conference on Mathematics and Computational Methods \& Reactor Physics},
+  pages={3--7},
+  year={2008}
+}
+% 2011 - I don't know what
+@article{bailey2011piecewise,
+  title={A Piecewise Linear Discontinuous Finite Element Spatial Discretization of the Sn Transport Equation for Polyhedral Grids in 3D Cartesian Geometry},
+  author={Bailey, TS and Hawkins, WD and Adams, ML},
+  year={2011}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% POLYFEM Sources
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Original Wachspress - 1975
+@article{wachspress1975rational,
+  title={A Rational Finite Element Basis},
+  author={Wachspress, Eugene L},
+  journal={Mathematics in science and engineering},
+  year={1975}
+}
+% wachspress gradient bounds - 2014
+@article{floater2014gradient,
+  title={Gradient bounds for Wachspress coordinates on polytopes},
+  author={Floater, Michael and Gillette, Andrew and Sukumar, N},
+  journal={SIAM Journal on Numerical Analysis},
+  volume={52},
+  number={1},
+  pages={515--532},
+  year={2014},
+  publisher={SIAM}
+}
+% wachpress and mvc - 2014
+@incollection{floater2014wachspress,
+  title={Wachspress and mean value coordinates},
+  author={Floater, Michael S},
+  booktitle={Approximation Theory XIV: San Antonio 2013},
+  pages={81--102},
+  year={2014},
+  publisher={Springer}
+}
+% original MVC - 2003
+@article{floater2003mean,
+  title={Mean value coordinates},
+  author={Floater, Michael S},
+  journal={Computer aided geometric design},
+  volume={20},
+  number={1},
+  pages={19--27},
+  year={2003},
+  publisher={Elsevier}
+}
+% MVC error estimates - 2013
+@article{rand2013interpolation,
+  title={Interpolation error estimates for mean value coordinates over convex polygons},
+  author={Rand, Alexander and Gillette, Andrew and Bajaj, Chandrajit},
+  journal={Advances in computational mathematics},
+  volume={39},
+  number={2},
+  pages={327--347},
+  year={2013},
+  publisher={Springer}
+}
+% MVC in 3D - 2005
+@article{floater2005mean,
+  title={Mean value coordinates in 3D},
+  author={Floater, Michael S and K{\'o}s, G{\'e}za and Reimers, Martin},
+  journal={Computer Aided Geometric Design},
+  volume={22},
+  number={7},
+  pages={623--631},
+  year={2005},
+  publisher={Elsevier}
+}
+% MVC for planal polygons - 2006
+@article{hormann2006mean,
+  title={Mean value coordinates for arbitrary planar polygons},
+  author={Hormann, Kai and Floater, Michael S},
+  journal={ACM Transactions on Graphics (TOG)},
+  volume={25},
+  number={4},
+  pages={1424--1441},
+  year={2006},
+  publisher={ACM}
+}
+% Cubic MVC - 2013
+@article{li2013cubic,
+  title={Cubic mean value coordinates.},
+  author={Li, Xian-Ying and Ju, Tao and Hu, Shi-Min},
+  journal={ACM Trans. Graph.},
+  volume={32},
+  number={4},
+  pages={126},
+  year={2013}
+}
+% max ent polytopes - 2008
+@inproceedings{hormann2008maximum,
+  title={Maximum entropy coordinates for arbitrary polytopes},
+  author={Hormann, Kai and Sukumar, Natarajan},
+  booktitle={Computer Graphics Forum},
+  volume={27},
+  number={5},
+  pages={1513--1520},
+  year={2008},
+  organization={Wiley Online Library}
+}
+% max ent polygons - 2004
+@article{sukumar2004construction,
+  title={Construction of polygonal interpolants: a maximum entropy approach},
+  author={Sukumar, N},
+  journal={International Journal for Numerical Methods in Engineering},
+  volume={61},
+  number={12},
+  pages={2159--2181},
+  year={2004},
+  publisher={Wiley Online Library}
+}
+% max ent approx - 2005
+@article{sukumar2005maximum,
+  title={Maximum entropy approximation},
+  author={Sukumar, N},
+  journal={Bayesian Inference and Maximum Entropy Methods in Science and Engineering},
+  volume={803},
+  pages={337--344},
+  year={2005}
+}
+% max ent boundary derivatives - 2013
+@article{greco2013derivatives,
+  title={Derivatives of maximum-entropy basis functions on the boundary: Theory and computations},
+  author={Greco, F and Sukumar, N},
+  journal={International Journal for Numerical Methods in Engineering},
+  volume={94},
+  number={12},
+  pages={1123--1149},
+  year={2013},
+  publisher={Wiley Online Library}
+}
+% max ent serendipity - 2013
+@article{sukumar2013quadratic,
+  title={Quadratic maximum-entropy serendipity shape functions for arbitrary planar polygons},
+  author={Sukumar, N},
+  journal={Computer Methods in Applied Mechanics and Engineering},
+  volume={263},
+  pages={27--41},
+  year={2013},
+  publisher={Elsevier}
+}
+% max ent higher order - 2010
+@article{gonzalez2010higher,
+  title={A higher order method based on local maximum entropy approximation},
+  author={Gonz{\'a}lez, David and Cueto, El{\'\i}as and Doblar{\'e}, Manuel},
+  journal={International journal for numerical methods in engineering},
+  volume={83},
+  number={6},
+  pages={741--764},
+  year={2010},
+  publisher={Wiley Online Library}
+}
+% max ent second order - 2013
+@article{rosolen2013second,
+  title={Second-order convex maximum entropy approximants with applications to high-order PDE},
+  author={Rosolen, A and Mill{\'a}n, D and Arroyo, M},
+  journal={International Journal for Numerical Methods in Engineering},
+  volume={94},
+  number={2},
+  pages={150--182},
+  year={2013},
+  publisher={Wiley Online Library}
+}
+% barycentric serendipity - 2014
+@article{rand2014quadratic,
+  title={Quadratic serendipity finite elements on polygons using generalized barycentric coordinates},
+  author={Rand, Alexander and Gillette, Andrew and Bajaj, Chandrajit},
+  journal={Mathematics of computation},
+  volume={83},
+  number={290},
+  pages={2691--2716},
+  year={2014}
+}
+% Triangle Quadrature
+@article{dunavant1985high,
+  title={High degree efficient symmetrical Gaussian quadrature rules for the triangle},
+  author={Dunavant, DA},
+  journal={International journal for numerical methods in engineering},
+  volume={21},
+  number={6},
+  pages={1129--1148},
+  year={1985},
+  publisher={Wiley Online Library}
+}
+% Pseudo-derivatives for meshless meshes
+@article{krongauz1997consistent,
+  title={Consistent pseudo-derivatives in meshless methods},
+  author={Krongauz, Y and Belytschko, T},
+  journal={Computer methods in applied mechanics and engineering},
+  volume={146},
+  number={3},
+  pages={371--386},
+  year={1997},
+  publisher={Elsevier}
+}
+% nodal integration for FEM
+@article{puso2008meshfree,
+  title={Meshfree and finite element nodal integration methods},
+  author={Puso, MA and Chen, JS and Zywicz, E and Elmer, W},
+  journal={International Journal for Numerical Methods in Engineering},
+  volume={74},
+  number={3},
+  pages={416--446},
+  year={2008},
+  publisher={Wiley Online Library}
+}
+% Second order accurate integration for meshfree
+@article{duan2012second,
+  title={Second-order accurate derivatives and integration schemes for meshfree methods},
+  author={Duan, Qinglin and Li, Xikui and Zhang, Hongwu and Belytschko, Ted},
+  journal={International Journal for Numerical Methods in Engineering},
+  volume={92},
+  number={4},
+  pages={399--424},
+  year={2012},
+  publisher={Wiley Online Library}
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -1278,10 +1330,67 @@ year={1996},
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
+% Math Sources
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Main GMRES Paper
+@article{saad1986gmres,
+  title={GMRES: A generalized minimal residual algorithm for solving nonsymmetric linear systems},
+  author={Saad, Youcef and Schultz, Martin H},
+  journal={SIAM Journal on scientific and statistical computing},
+  volume={7},
+  number={3},
+  pages={856--869},
+  year={1986},
+  publisher={SIAM}
+}
+% GMRES on large machines
+@article{fraysse2005algorithm,
+  title={A set of GMRES routines for real and complex arithmetics on high performance computers},
+  author={Frayss{\'e}, Val{\'e}rie and Giraud, Luc and Gratton, Serge and Langou, Julien},
+  journal={ACM Transactions on Mathematical Software (TOMS)},
+  volume={31},
+  number={2},
+  pages={228--238},
+  year={2005},
+  publisher={ACM}
+}
+% Eisenstat PCG source
+@article{eisenstat1981efficient,
+  title={Efficient implementation of a class of preconditioned conjugate gradient methods},
+  author={Eisenstat, Stanley C},
+  journal={SIAM Journal on Scientific and Statistical Computing},
+  volume={2},
+  number={1},
+  pages={1--4},
+  year={1981},
+  publisher={SIAM}
+}
+% FEM Book
+@book{zeinkiewicz2005finite,
+  title={The finite element method: its basis and fundamentals},
+  author={Zeinkiewicz, OC and Taylor, RL and Zhu, JZ},
+  year={2005},
+  publisher={SElsevier Butterworth-Heinemann},
+  location={Burlington, MA}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
 % MISC Sources
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Physics Encyclopedia for General Boltzmann Eq.
+@book{mcgraw_physics,
+	title={McGraw Hill Encyclopaedia of Physics},
+	author={C.B. Parker},
+	year={1994},
+	edition={2},
+	isbn={ 0-07-051400-3}
+}
 % Exascale computing white paper
 @article{bergman2008exascale,
   title={Exascale computing study: Technology challenges in achieving exascale systems},
