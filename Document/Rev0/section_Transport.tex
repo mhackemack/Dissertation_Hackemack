@@ -13,6 +13,23 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \chapter{\uppercase {The Multigroup $S_N$ Equations}}
 
+
+
+\begin{equation}
+\label{eq::gen_boltzmann}
+\frac{\partial u}{\partial t} = \left( \frac{\partial u}{\partial t}  \right)_{force} + \left( \frac{\partial u}{\partial t}  \right)_{advec} + \left( \frac{\partial u}{\partial t}  \right)_{coll}
+\end{equation}
+
+\noindent where $u(\vec{r},\vec{p},t)$ is the transport distribution function parameterized in terms of position, $\vec{r}=(x,y,z)$, momentum, $\vec{p}=(p_x,p_y,p_z)$, and time, $t$. The time rate of the change of the distribution function, $\frac{\partial u}{\partial t}$, is equal to the sum of the change rates due to external forces, $\left( \frac{\partial u}{\partial t}  \right)_{force} $, advection of the particles, $\left( \frac{\partial u}{\partial t}  \right)_{advec}$, and particle-to-particle and particle-to-matter collisions, $\left( \frac{\partial u}{\partial t}  \right)_{coll}$.
+
+\begin{enumerate}
+	\item Particles may be considered as points;
+	\item Particles do not interact with other particles;
+	\item Particles interact with material target atoms in a binary manner;
+	\item Collisions between particles and material target atoms are instantaneous;
+	\item Particles do not experience any external force fields ({\em e.g.} gravity).
+\end{enumerate}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Neutron Transport Equation
 \section{The Neutron Transport Equation}
@@ -66,9 +83,9 @@ The neutron angular flux, $\Psi (\vec{r}, E, \vec{\Omega})$, at spatial position
 \label{sec::Sn_Angle}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   Section - Angle Discretization
-\section{Angular Discretization}
-\label{sec::Sn_Full}
+%%%   Section - Spatial Discretization
+\section{Spatial Discretization}
+\label{sec::Sn_Spatial}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
