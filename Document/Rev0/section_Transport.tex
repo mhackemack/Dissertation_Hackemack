@@ -129,7 +129,7 @@ From this distribution of energy values, we then say that a particular energy gr
 
 \begin{figure}[bht]
 \centering
-\includegraphics[width=1.00\textwidth]{figures/sec_Sn/MG_Energy_Bands.pdf}
+\includegraphics[width=1.00\textwidth]{figures/sec_Sn/MG_Energy_Bands.eps}
 \caption{Interval structure of the multigroup methodology.}
 \label{fig::MG_energy_bands}
 \end{figure}
@@ -148,14 +148,14 @@ For the remainder of this energy discretization procedure, we will utilize the s
 	\begin{subfigure}[b]{0.58\textwidth}
 		\centering
 		\label{subfig::unit_square}
-		\includegraphics[width=\textwidth]{figures/sec_Sn/scattering_matrix_NO_upscattering.pdf}
+		\includegraphics[width=\textwidth]{figures/sec_Sn/scattering_matrix_NO_upscattering.eps}
 		\vspace{4mm}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.58\textwidth}
 		\centering
 		\label{subfig::unit_cube}
-		\includegraphics[width=\textwidth]{figures/sec_Sn/scattering_matrix_w_upscattering.pdf}
+		\includegraphics[width=\textwidth]{figures/sec_Sn/scattering_matrix_w_upscattering.eps}
 	\end{subfigure}
 \caption{Scattering matrices (top) without and (bottom) with upscattering. The gray corresponds to within-group scattering; the blue corresponds to down-scattering in energy; and the red corresponds to up-scattering in energy.}
 \label{fig::BF_scattering_matrix}
@@ -189,6 +189,13 @@ Using the energy and angular discretizations presented in Sections \ref{sec::Sn_
 \end{equation}
 
 \noindent We 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/sec_Sn/two_cells.eps}
+\caption{Two cells of the spatial discretization with the connecting face normal $\vec{n}_1$ oriented from cell $K_1$ to cell $K_2$.}
+\label{fig::MG_two_ref_cells}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Mass
@@ -264,7 +271,7 @@ In this case, this local cell-wise streaming matrix has dimensionality $(N_K \te
 \subsection{Elementary Surface Matrices}
 \label{sec::Sn_Spatial_Surface}
 
-Finally, the last terms to consider of the discretized transport equation are those found on the faces of the cell boundary: $ {\Omega}_m \cdot  \left(  \vec{n} \psi_m, b_m  \right)_{\partial K}$. These terms are analagous the cell mass matrix but are computed on the cell boundary with dimensionality $(d-1)$.
+Finally, the last terms to consider of the discretized transport equation are those found on the faces of the cell boundary: $ {\Omega}_m \cdot  \left(  \vec{n} \psi_m, b_m  \right)_{\partial K}$. These terms are analagous to the cell mass matrix but are computed on the cell boundary with dimensionality $(d-1)$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Conclusions
