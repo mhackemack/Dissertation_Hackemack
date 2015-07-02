@@ -125,7 +125,7 @@ From this distribution of energy values, we then say that a particular energy gr
 \Delta E_g \in [E_g, E_{g-1}].
 \end{equation}
 
-\noindent Figure \ref{fig::MG_energy_bands} provides a visual representation between the $G+1$ discrete energy values and the $G$ energy groups. While the order that we have prescribed may seem illogical (high-to-low), it has been historically applied this way because radiation transport problems are iteratively solved from high energy to low energy. If the group structure is well chosen, then the transport solution could be more efficiently and easily obtained with this high-to-low energy group structure.
+\noindent Figure \ref{fig::MG_energy_bands} provides a visual representation between the $G+1$ discrete energy values and the $G$ energy groups. While the order that we have prescribed may seem illogical (high-to-low), it has been historically applied this way because radiation transport problems are iteratively solved from high energy to low energy. If the group structure is well chosen, then the transport solution can be more efficiently and easily obtained with this high-to-low energy group structure.
 
 \begin{figure}[bht]
 \centering
@@ -134,17 +134,14 @@ From this distribution of energy values, we then say that a particular energy gr
 \label{fig::MG_energy_bands}
 \end{figure}
 
-
+For the remainder of this energy discretization procedure, we will utilize the steady-state form of the transport equation in Eq. (\ref{eq::Sn_transport_eq_op_SS}). The time-dependent and eigenvalue forms are analagous and would be derived identically. Taking the energy interval for group $g$ as defined in Eq. (\ref{eq::MG_energy_interval}), the energy-integrated angular flux of group $g$ is
 
 \begin{equation}
-\label{eq::Sn_transport_operators_MG}
-\begin{aligned}
-	{\bf L}_g \Psi &= \vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{r}, E, \vec{\Omega},t)+ \sigma_t (\vec{r}, E,t) \Psi (\vec{r}, E, \vec{\Omega},t), \\
-	{\bf F}_g \Psi &= \frac{\chi (\vec{r}, E,t)}{4 \pi} \int dE' \nu \sigma_f (\vec{r}, E',t) \int d\Omega' \Psi (\vec{r}, E', \vec{\Omega}',t), \\
-	{\bf S}_g \Psi &= \int dE' \int d\Omega' \sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega) \Psi (\vec{r}, E', \vec{\Omega}'),  \\
-	{\bf Q}_g       & = Q_{ext} (\vec{r}, E, \vec{\Omega},t)
-\end{aligned}
+\label{eq::MG_ang_flux_g}
+\Psi_g (\vec{r}, \vec{\Omega}) = \int_{E_g}^{E_{g-1}} \, \Psi (\vec{r}, E, \vec{\Omega}) \, dE .
 \end{equation}
+
+\noindent 
 
 \begin{figure}[!hbt]
 \centering
@@ -188,28 +185,31 @@ Using the energy and angular discretizations presented in Sections \ref{sec::Sn_
 
 \begin{equation}
 \label{eq::Sn_mg_sn_trans_eq_bc}
-\Psi_{m,g} (\vec{r}) = \Psi^{inc}_{m,g} (\vec{r}) + \sum_{g'=1}^{G} \sum_{\vec{\Omega}_{m'} \cdot \vec{n} > 0} \gamma_{g' \rightarrow g}^{m' \rightarrow m} (\vec{r})  \Psi_{m',g'} (\vec{r}) 
+\Psi_{m,g} (\vec{r}) = \Psi^{inc}_{m,g} (\vec{r}) + \sum_{g'=1}^{G} \sum_{\vec{\Omega}_{m'} \cdot \vec{n} > 0} \gamma_{g' \rightarrow g}^{m' \rightarrow m} (\vec{r})  \Psi_{m',g'} (\vec{r})  .
 \end{equation}
+
+\noindent We 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Mass
 \subsection{Elementary Mass Matrices}
 \label{sec::Sn_Spatial_Mass}
 
-In the spatially discretized equations presented in Section \ref{sec::Sn_Spatial}, there are several reaction terms that appear with the form: $\Big< \sigma \psi_m, b_m  \Big>_K$ for a given angular direction, $m$, and for a spatial cell, $K$. In FEM analysis these reaction terms are ubiquitously referred to as the mass matrix terms \cite{zeinkiewicz2005finite}. For cell $K$, we define the elementary mass matrix, ${\bf M}$ as
+In the spatially discretized equations presented in Section \ref{sec::Sn_Spatial}, there are several reaction terms that appear with the form: $\Big< \sigma  b_m , \psi_m  \Big>_K$ for a given angular direction, $m$, and for a spatial cell, $K$. In FEM analysis these reaction terms are ubiquitously referred to as the mass matrix terms \cite{zeinkiewicz2005finite}. For cell $K$, we define the elementary mass matrix, ${\bf M}$ as
 
 \begin{equation}
 \label{eq::Sn_mass_matrix_analytical}
 {\bf M}_K =    \int_K {\bf b}_K \, {\bf b}_K^T \, d {\vec{r}} ,
 \end{equation}
 
-\noindent where ${\bf b}_K$ corresponds to the set of $N_K$ basis functions that have non-zero measure in cell $K$. Depending on the FEM basis functions utilized, the integrals in Eq. (\ref{eq::Sn_mass_matrix_analytical}) can be directly integrated analytically. However, if in general, the basis functions cannot be analytically integrated on an arbitrary set of cell shapes, then a numerical integration scheme becomes necessary. 
+\noindent where ${\bf b}_K$ corresponds to the set of $N_K$ basis functions that have non-zero measure in cell $K$. Depending on the FEM basis functions utilized, the integrals in Eq. (\ref{eq::Sn_mass_matrix_analytical}) can be directly integrated analytically. However, if in general, the basis functions cannot be analytically integrated on an arbitrary set of cell shapes, then a numerical integration scheme becomes necessary. If we define a quadrature set, $\left\{  \vec{x}_q , w_q^{K}  \right\}_{q=1}^{N_q}$, for cell $K$, consisting of $N_q$ points $\vec{x}_q$ and weights $w_q^K$, then we can numerically calculate the mass matrix by the following
 
 \begin{equation}
 \label{eq::Sn_mass_matrix_numerical}
-{\bf M}_K =    \sum_{} {\bf b}_K \, {\bf b}_K^T \, d {\vec{r}} ,
+{\bf M}_K =    \sum_{q = 1}^{N_q} w_{q}^K {\bf b}_K (\vec{x}_q) \, {\bf b}_K^T (\vec{x}_q)  .
 \end{equation}
 
+\noindent In this case, it is necessary that the sum of the weights of this quadrature set exactly equal the geometric metric of cell $K$. This means that $\sum_{q = 1}^{N_q} w_{q}^K$ is equal to the cell width in 1 dimension, the cell area in 2 dimensions, and the cell volume in 3 dimensions.
 
 \begin{equation}
 \label{eq::Sn_mass_matrix_array}
@@ -230,33 +230,21 @@ In the spatially discretized equations presented in Section \ref{sec::Sn_Spatial
 \subsection{Elementary Streaming Matrices}
 \label{sec::Sn_Spatial_Streaming}
 
-Next, we will consider the streaming term that has the form: ${\Omega}_m \cdot \Big< \vec{\nabla} \psi_m, b_m  \Big>_K$ for a given angular direction, $m$, and for a spatial cell, $K$. $\vec{\nabla} $ is the gradient operator in physical space and has the form in 1 dimension of 
-
-\begin{equation}
-\label{eq::grad_op_1D}
-	\vec{\nabla} = \left[ \frac{d}{dx} \right], 
-\end{equation}
-
-\noindent in 2 dimensions of
-
-\begin{equation}
-\label{eq::grad_op_2D}
-	\vec{\nabla} = \left[ \frac{\partial}{\partial x} , \frac{\partial}{\partial y} \right], 
-\end{equation}
-
-\noindent and in 3 dimensions of 
-
-\begin{equation}
-\label{eq::grad_op_3D}
-	\vec{\nabla} = \left[ \frac{\partial}{\partial x} , \frac{\partial}{\partial y} , \frac{\partial}{\partial z} \right].
-\end{equation}
-
-\noindent Since 
+Next, we will consider the streaming term that has the form: $ \Big< {\Omega}_m \cdot \vec{\nabla}  b_m , \psi_m  \Big>_K$ for a given angular direction, $m$, and for a spatial cell, $K$. $\vec{\nabla} $ is the gradient operator in physical space. It has the form of $\vec{\nabla} = \left[ \frac{d}{dx} \right]$ in 1 dimension, the form of $\vec{\nabla} = \left[ \frac{\partial}{\partial x} , \frac{\partial}{\partial y} \right]$ in 2 dimensions, and the form of $\vec{\nabla} = \left[ \frac{\partial}{\partial x} , \frac{\partial}{\partial y} , \frac{\partial}{\partial z} \right]$ in 3 dimensions. Since for every cell, the streaming term is applied for all $M$ angles in the angular discretization, we define the analytical elementary streaming matrix:
 
 \begin{equation}
 \label{eq::Sn_streaming_matrix_analytical}
-\vec{{\bf G}}_K =    \int_K \vec{\nabla} {\bf b}_K \, {\bf b}_K^T \, d {\vec{r}} ,
+\vec{{\bf G}}_K =    \int_K \vec{\nabla} {\bf b}_K \, {\bf b}_K^T \, d {\vec{r}} .
 \end{equation}
+
+\noindent Also, just like the elementary mass matrix, we can use the same spatial quadrature set, $\left\{  \vec{x}_q , w_q^{K}  \right\}_{q=1}^{N_q}$, for cell $K$ to numerically calculate the streaming matrix:
+
+\begin{equation}
+\label{eq::Sn_streaming_matrix_numerical}
+\vec{{\bf G}}_K =    \sum_{q = 1}^{N_q} w_{q}^K \vec{\nabla} {\bf b}_K (\vec{x}_q) \, {\bf b}_K^T (\vec{x}_q) .
+\end{equation}
+
+In this case, this local cell-wise streaming matrix has dimensionality $(N_K \text{x} N_K \text{x} d)$
 
 \begin{equation}
 \label{eq::Sn_streaming_matrix_array}
@@ -276,6 +264,7 @@ Next, we will consider the streaming term that has the form: ${\Omega}_m \cdot \
 \subsection{Elementary Surface Matrices}
 \label{sec::Sn_Spatial_Surface}
 
+Finally, the last terms to consider of the discretized transport equation are those found on the faces of the cell boundary: $ {\Omega}_m \cdot  \left(  \vec{n} \psi_m, b_m  \right)_{\partial K}$. These terms are analagous the cell mass matrix but are computed on the cell boundary with dimensionality $(d-1)$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Conclusions
