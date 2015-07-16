@@ -11,7 +11,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%                           SECTION II
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\chapter{\uppercase {The DFEM Formulation of the Multigroup $S_N$ Equations}}
+\chapter{\uppercase {The DGFEM Formulation of the Multigroup $S_N$ Equations}}
 \label{sec::Sn}
 
 The movement of bulk materials and particles through some medium can be described with the statistical behavior of a non-equilibrium system. Boltzmann first devised these probabilistic field equations to characterize fluid flow via driving temperature gradients \cite{encyc_physics}. His work was later extended to model general fluid flow, heat conduction, hamiltonian mechanics, quantum theory, general relativity, and radiation transport, among others. The Boltzmann Equation can be written in the general form:
@@ -33,7 +33,7 @@ For neutral particle transport, the following assumptions \cite{duderstadt1979tr
 	\item Particles do not experience any external force fields ({\em e.g.} gravity).
 \end{enumerate}
 
-These assumptions lead to the first order form of the Boltzmann Transport Equation, which we simply call the transport equation for brevity. The remainder of the chapter is layed out as follows. Section \ref{sec::Sn_neut} provides the general form of the neutron transport equation with some variants. Section \ref{sec::Sn_MG} describes how we discretize the transport equation in energy with the multigroup methodology and Section \ref{sec::Sn_Angle} presents the angular discretization via collocation. Section \ref{sec::Sn_Spatial} will conclude our discretization procedures in the spatial domain. We then present concluding remarks for the chapter in Section \ref{sec::Sn_Conclusions}.
+These assumptions lead to the first order form of the Boltzmann Transport Equation, which we simply call the transport equation for brevity. The remainder of the chapter is layed out as follows. Section \ref{sec::Sn_neut} provides the general form of the neutron transport equation with some variants. Section \ref{sec::Sn_MG} describes how we discretize the transport equation in energy with the multigroup methodology and Section \ref{sec::Sn_Angle} presents the angular discretization via collocation. Section \ref{sec::Sn_Spatial} will conclude our discretization procedures in the spatial domain. Section \ref{sec::Sn_Solution} will present . We then present concluding remarks for the chapter in Section \ref{sec::Sn_Conclusions}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Neutron Transport Equation
@@ -78,7 +78,7 @@ We can simplify Eq. (\ref{eq::Sn_transport_eq_full}) to:
 \begin{aligned}
 	{\bf L} \Psi &= \vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{r}, E, \vec{\Omega},t)+ \sigma_t (\vec{r}, E,t) \Psi (\vec{r}, E, \vec{\Omega},t), \\
 	{\bf F} \Psi &= \frac{\chi (\vec{r}, E,t)}{4 \pi} \int dE' \nu \sigma_f (\vec{r}, E',t) \int d\Omega' \Psi (\vec{r}, E', \vec{\Omega}',t), \\
-	{\bf S} \Psi &= \int dE' \int d\Omega' \sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega) \Psi (\vec{r}, E', \vec{\Omega}'),  \\
+	{\bf S} \Psi &= \int dE' \int d\Omega' \sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega, t) \Psi (\vec{r}, E', \vec{\Omega}', t),  \\
 	{\bf Q}       & = Q_{ext} (\vec{r}, E, \vec{\Omega},t) ,
 \end{aligned}
 \end{equation}
@@ -121,45 +121,67 @@ We begin our discretization procedures by focusing on the angular flux's energy 
 From this distribution of energy values, we then say that a particular energy group, $g$, corresponds to the following energy interval:
 
 \begin{equation}
-\label{eq::MG_energy_interval}
+\label{eq::Sn_MG_energy_interval}
 \Delta E_g \in [E_g, E_{g-1}].
 \end{equation}
 
-\noindent Figure \ref{fig::MG_energy_bands} provides a visual representation between the $G+1$ discrete energy values and the $G$ energy groups. While the order that we have prescribed may seem illogical (high-to-low), it has been historically applied this way because radiation transport problems are iteratively solved from high energy to low energy. If the group structure is well chosen, then the transport solution can be more efficiently and easily obtained with this high-to-low energy group structure.
+\noindent Figure \ref{fig::Sn_MG_energy_bands} provides a visual representation between the $G+1$ discrete energy values and the $G$ energy groups. While the order that we have prescribed may seem illogical (high-to-low), it has been historically applied this way because radiation transport problems are iteratively solved from high energy to low energy. If the group structure is well chosen, then the transport solution can be more efficiently and easily obtained with this high-to-low energy group structure.
 
 \begin{figure}[bht]
 \centering
 \includegraphics[width=1.00\textwidth]{figures/sec_Sn/MG_Energy_Bands.eps}
 \caption{Interval structure of the multigroup methodology.}
-\label{fig::MG_energy_bands}
+\label{fig::Sn_MG_energy_bands}
 \end{figure}
 
-For the remainder of this energy discretization procedure, we will utilize the steady-state form of the transport equation in Eq. (\ref{eq::Sn_transport_eq_op_SS}). The time-dependent and eigenvalue forms are analagous and would be derived identically. Taking the energy interval for group $g$ as defined in Eq. (\ref{eq::MG_energy_interval}), the energy-integrated angular flux of group $g$ is
+For the remainder of this energy discretization procedure, we will utilize the steady-state form of the transport equation in Eq. (\ref{eq::Sn_transport_eq_op_SS}). The time-dependent and eigenvalue forms are analagous and would be derived identically. Taking the energy interval for group $g$ as defined in Eq. (\ref{eq::Sn_MG_energy_interval}), the energy-integrated angular flux of group $g$ is
 
 \begin{equation}
-\label{eq::MG_ang_flux_g}
+\label{eq::Sn_MG_ang_flux_g}
 \Psi_g (\vec{r}, \vec{\Omega}) = \int_{E_g}^{E_{g-1}} \, \Psi (\vec{r}, E, \vec{\Omega}) \, dE .
 \end{equation}
 
-\noindent 
+\noindent We can then use the energy-integrated angular flux to form the following coupled, $(g=1,...,G)$, discrete equations (we have dropped the spatial parameter and some of the angular parameters for further clarity):
 
-\begin{figure}[!hbt]
-\centering
-	\begin{subfigure}[b]{0.58\textwidth}
-		\centering
-		\label{subfig::unit_square}
-		\includegraphics[width=\textwidth]{figures/sec_Sn/scattering_matrix_NO_upscattering.eps}
-		\vspace{4mm}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.58\textwidth}
-		\centering
-		\label{subfig::unit_cube}
-		\includegraphics[width=\textwidth]{figures/sec_Sn/scattering_matrix_w_upscattering.eps}
-	\end{subfigure}
-\caption{Scattering matrices (top) without and (bottom) with upscattering. The gray corresponds to within-group scattering; the blue corresponds to down-scattering in energy; and the red corresponds to up-scattering in energy.}
-\label{fig::BF_scattering_matrix}
-\end{figure}
+\begin{equation}
+\label{eq::Sn_MG_trans_eq}
+\left(  \vec{\Omega} \cdot \vec{\nabla} + \sigma_{t,g}  \right) \Psi_g =  \sum_{g'=1}^{G} \left[ \frac{\chi_g}{4 \pi} \nu \sigma_{f,g'} \int_{4 \pi} \Psi_{g'} (\vec{\Omega}') \, d\Omega' + \int_{4 \pi} \sigma_{s}^{g' \rightarrow g} (\vec{\Omega}' , \vec{\Omega} ) \Psi_{g'} (\vec{\Omega}')  \, d\Omega'  \right] + Q_g
+\end{equation}
+
+\noindent where
+
+\begin{equation}
+\label{eq::Sn_MG_exact_condensed_terms}
+\begin{aligned}
+\sigma_{t,g} (\vec{r},\vec{\Omega}) & \equiv \frac{\int_{E_{g}}^{E_{g-1}} \sigma_{t} (\vec{r},\vec{\Omega},E) \Psi (\vec{r},\vec{\Omega}, E) \, dE}{\int_{E_{g}}^{E_{g-1}} \int_{4 \pi} \Psi (\vec{r},\vec{\Omega}, E) \, dE}\\
+\nu\sigma_{f,g} (\vec{r}) & \equiv \frac{\int_{E_{g}}^{E_{g-1}} \nu\sigma_{f} (\vec{r},E)  \int_{4 \pi} \Psi (\vec{r},\vec{\Omega}, E) \, dE d\Omega}{\int_{E_{g}}^{E_{g-1}} \int_{4 \pi} \Psi (\vec{r},\vec{\Omega}, E) \, dE d\Omega} \\
+\chi_g & \equiv \int_{E_{g}}^{E_{g-1}} \chi  (\vec{r},E) \, dE \\
+\sigma_{s}^{g' \rightarrow g} (\vec{r},\vec{\Omega}' , \vec{\Omega} ) & \equiv \frac{\int_{E_{g'}}^{E_{g'-1}} \left[ \int_{E_{g}}^{E_{g-1}} \sigma_s (\vec{r},E' \rightarrow E,\vec{\Omega}' , \vec{\Omega} ) \, dE \right] \Psi (\vec{r},\vec{\Omega}', E') \, dE' }{\int_{E_{g}}^{E_{g-1}}  \Psi (\vec{r},\vec{\Omega}, E) \, dE} \\
+Q_g (\vec{r}, \vec{\Omega}) & \equiv \int_{E_{g}}^{E_{g-1}} Q (\vec{r}, \vec{\Omega}, E) \, dE
+\end{aligned}
+\end{equation}
+
+The above equations are mathematically exact to those presented in Eqs. (\ref{eq::Sn_transport_eq_full} - \ref{eq::Sn_transport_eq_op_SS}) and we have made no approximations at this time. However, this requires full knowledge of the energy distribution of the angular flux solution at all positions in our problem domain since we weight the multigroup cross sections with this solution. This is obviously impossible since the energy distibution is part of the solution space we are trying to solve for. Instead, we now define the process to make the multigroup discretization an effective approximation method.
+
+We first define an approximate angular flux distribution for a region $s$:
+
+\begin{equation}
+\label{eq::Sn_MG_flux_approx}
+\Psi (\vec{r},\vec{\Omega}, E) =  \hat{\Psi} (\vec{r},\vec{\Omega}) f_{s} (E) ,
+\end{equation}
+
+\noindent which is a factorization of the angular flux solution into a region-dependent energy function, $f_s (E)$, and a spatially/angularly dependent function, $\hat{\Psi} (\vec{r},\vec{\Omega})$. With this approximation, we can redefine the energy-collapsed cross sections of Eq. (\ref{eq::Sn_MG_exact_condensed_terms}):
+
+\begin{equation}
+\label{eq::MG_approx_condensed_terms}
+\begin{aligned}
+\sigma_{t,g} (\vec{r},\vec{\Omega}) & \equiv \frac{\int_{E_{g}}^{E_{g-1}} \sigma_{t} (\vec{r},\vec{\Omega},E) f_{s} (E) \, dE}{\int_{E_{g}}^{E_{g-1}} f_{s} (E) \, dE} ,\\
+\nu\sigma_{f,g} (\vec{r}) & \equiv \frac{\int_{E_{g}}^{E_{g-1}} \nu\sigma_{f} (\vec{r},E)  f_{s} (E) \, dE }{\int_{E_{g}}^{E_{g-1}} f_{s} (E) \, dE}, \\
+\sigma_{s}^{g' \rightarrow g} (\vec{r},\vec{\Omega}' , \vec{\Omega} ) & \equiv \frac{\int_{E_{g'}}^{E_{g'-1}} \left[ \int_{E_{g}}^{E_{g-1}} \sigma_s (\vec{r},E' \rightarrow E,\vec{\Omega}' , \vec{\Omega} ) \, dE \right] f_{s} (E')\, dE' }{\int_{E_{g}}^{E_{g-1}}  f_{s} (E) \, dE} .
+\end{aligned}
+\end{equation}
+
+\noindent It is noted that we do not need to redefine the fission spectrum or the distributed external sources since they are not weighted with the angular flux solution. With this energy factorization, we would expect, in general, that the approximation error will tend to zero as the number of discrete energy groups increases (thereby making the energy bins thinner). This is especially true if the group structure is chosen with many more bins in energy regions with large variations in the energy solution. For certain problems, the region-dependent energy function is well understood ({\em i.e.} almost exactly known). This means, that for these problems, we can achieve reasonable solution accuracy with only a few groups where the energy bins of the multigroup discretization are well chosen. A good example of these kinds of problems are thermal-spectrum nuclear reactors which have historically achieved reasonable solutions with as few as 4-10 energy groups.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Angle Discretization
@@ -176,26 +198,123 @@ Using the energy and angular discretizations presented in Sections \ref{sec::Sn_
 \begin{equation}
 \label{eq::Sn_mg_sn_trans_eq}
 \begin{aligned}
-	 \left( \vec{\Omega}_m \cdot \vec{\nabla}  + \sigma_{t,g} (\vec{r}) \right)  \Psi_{m,g} (\vec{r}) = \sum_{g'=1}^{G} \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi} \sigma_{s,p}^{g' \rightarrow g}  (\vec{r}) \sum_{n=-p}^{p}  \Phi_{p,n,g'}  (\vec{r})  Y_{p,n} (  \vec{\Omega}_m )  \\
-	+ \frac{\chi_g}{4 \pi} \sum_{g'=1}^{G} \nu \sigma_{f,g'} \Phi_{g'}  (\vec{r})  + Q_{m,g}  (\vec{r}) 
-\end{aligned}
+	 \left( \vec{\Omega}_m \cdot \vec{\nabla}  + \sigma_{t,g}  \right)  \Psi_{m,g}= \sum_{g'=1}^{G} \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi} \sigma_{s,p}^{g' \rightarrow g}   \sum_{n=-p}^{p}  \Phi_{p,n,g'}  Y_{p,n} (  \vec{\Omega}_m )  \\
+	+ \frac{\chi_g}{4 \pi} \sum_{g'=1}^{G} \nu \sigma_{f,g'} \Phi_{g'}   + Q_{m,g}
+\end{aligned} , 
 \end{equation}
 
-\noindent with the following general, discretized boundary condition:
+\noindent where we have dropped the spatial parameter for clariy and is beholden to the following general, discretized boundary condition:
 
 \begin{equation}
 \label{eq::Sn_mg_sn_trans_eq_bc}
 \Psi_{m,g} (\vec{r}) = \Psi^{inc}_{m,g} (\vec{r}) + \sum_{g'=1}^{G} \sum_{\vec{\Omega}_{m'} \cdot \vec{n} > 0} \gamma_{g' \rightarrow g}^{m' \rightarrow m} (\vec{r})  \Psi_{m',g'} (\vec{r})  .
 \end{equation}
 
-\noindent We 
+\noindent These $(M \text{x} G)$ number of discrete, tightly-coupled equations are currently defined as continuous in space.
+
+For this dissertation work, we will consider only one type of boundary conditions: Dirichlet-type boundaries (also called {\em first-type boundary condition} in some physics and mathematical communities). In particular we will only utilize incoming-incident and reflecting boundary conditions which correspond to $\vec{r} \in \partial \mathcal{D}^d$ and $\vec{r} \in \partial \mathcal{D}^r$, respectively. The full domain boundary is then the union: $\partial \mathcal{D} = \partial \mathcal{D}^d \cup \partial \mathcal{D}^r$. This leads to the boundary condition being succinctly written for one angular direction, $m$, and one energy group, $g$ as
+
+\begin{equation}
+\label{eq::Sn_simple_BC}
+\Psi_{m,g} (\vec{r}) = \begin{cases}
+	\Psi^{inc}_{m,g} (\vec{r}) , & \vec{r} \in \partial \mathcal{D}^d \\
+	\Psi_{m',g} (\vec{r}) , & \vec{r} \in \partial \mathcal{D}^r
+\end{cases}
+\end{equation}
+
+\noindent where the reflecting angle is $\vec{\Omega}_{m'} = \vec{\Omega}_{m} - 2 \left(  \vec{\Omega}_{m} \cdot \vec{n} \right) \vec{n}$ and $\vec{n}$ is oriented outward from the domain. To properly utilize the reflecting boundary condition that we have proposed, the angular quadrature set defined in Section \ref{sec::Sn_Angle} needs the following properties.
+
+\begin{enumerate}
+ 	\item The reflected directions, $\vec{\Omega}_{m'}$, are also in the quadrature set for all $\vec{r} \in \partial \mathcal{D}^r$.
+	\item The weights of the incident, $w_m$, and reflected, $w_{m'}$, angles must be equal.
+\end{enumerate} 
+
+\noindent For problems where the reflecting boundaries align with the $x,y,z$ axes, this will not be an issue with standard quadrature sets ({\em e.g.} level-symmetric or Gauss-Legendre-Chebyshev). However, if the reflecting boundaries do not align in this manner, then additional care must be employed in calculating appropriate angular quadrature sets.
+
+For the spatial discretization of the problem domain, we simplify Eq. (\ref{eq::Sn_mg_sn_trans_eq}) into a single energy group and drop the fission term (it can be lumped into the external source term and will act similarly to the total interaction term)
+
+\begin{equation}
+\label{eq::Sn_trans_eq_simple_no_energy_groups}
+\vec{\Omega}_m \cdot \vec{\nabla} \Psi_{m}  + \sigma_{t}   \Psi_{m}=  \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi}    \sum_{n=-p}^{p}  Y_{p,n} (  \vec{\Omega}_m ) \left[ \sigma_{s,p}  \Phi_{p,n,}  + Q_{p,n} \right]
+\end{equation}
+
+\noindent to form $M$ ($m=1,...,M$) angularly discrete equations. We then lay down an unstructured mesh $\mathcal{T}_h \in \mathbb{R}^{d}$, over the spatial domain, where $d$ is the dimensionality of the problem ($d=1,2,3$). This mesh consists of non-overlapping spatial elements to form a complete union over the entire spatial domain: $\mathcal{D} = \bigcup_{K \in \mathcal{T}_h} K$. To form the DGFEM set of equations \cite{ern2013theory}, we consider a spatial cell $K \in \mathbb{R}^d$ which has $N_V^K$ vertices and $N_f^K$ faces. Each face of cell $K$ resides in dimension $\mathbb{R}^{d-1}$ and is formed by a connection of a subset of vertices. For a 1D problem, each face is a single point. For a 2D problem, each face is a line segment connecting two distinct points. For a 3D problem, each face is a $\mathbb{R}^2$ closed polygon (not necessarily coplanar) which may or not be convex. An example of this interconnection between elements is given for a $\mathbb{R}^2$ problem in Figure \ref{fig::Sn_two_ref_cells} between our cell of interest, $K$, and another cell, $K'$, separated by the face $f$. We have chosen the normal direction of the face to have orientation from cell $K$ to cell $K'$ while we form the DGFEM equations for cell $K$. This means that if we were instead analyzing cell $K'$, then the face $f$ normal, $\vec{n}' $, would be opposite ({\em i.e.} $\vec{n}' = -\vec{n}$).
 
 \begin{figure}
 \centering
-\includegraphics[width=0.8\textwidth]{figures/sec_Sn/two_cells.eps}
-\caption{Two cells of the spatial discretization with the connecting face normal $\vec{n}_1$ oriented from cell $K_1$ to cell $K_2$.}
-\label{fig::MG_two_ref_cells}
+\includegraphics[width=0.7\textwidth]{figures/sec_Sn/two_cells_Rev1.eps}
+\caption{Two cells of the spatial discretization with the connecting face, $f$, with normal direction, $\vec{n}$, oriented from cell $K$ to cell $K'$.}
+\label{fig::Sn_two_ref_cells}
 \end{figure}
+
+Next, we left-multiply Eq. (\ref{eq::Sn_trans_eq_simple_no_energy_groups}) by an appropriate test function $b_m$, integrate over cell $K$, and apply Gauss' Divergence Theorem to the streaming term to obtain the Galerkin weighted-residual for cell $K$ for an angular direction $\vec{\Omega}_m$:
+
+\begin{equation}
+\label{eq::Sn_DGFEM_trans_eq_cellK}
+\begin{aligned}
+- \left( \vec{\Omega}_m \cdot  \vec{\nabla} b_m, \Psi_{m} \right)_{K} + \sum_{f=1}^{N_f^K} \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\Psi}_m  \Big>_{f}  + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K} \\
+= \sum_{p=0}^{N_P} \sum_{n=-p}^{p} \frac{2p + 1}{4 \pi}  Y_{p,n} (  \vec{\Omega}_m ) \left[ \Big( \sigma_{s,p} \, b_m,  \Phi_{p,n,} \Big)_{K}  + \left(  b_m ,   Q_{p,n} \right)_{K} \right]
+\end{aligned} .
+\end{equation}
+
+\noindent The cell boundary fluxes, $\tilde{\Psi}_m$, will depend on the cell boundary type and will be defined shortly. The cell boundary $\partial \mathcal{D}_K = \bigcup_{ f \in N_f^K} f$ is the closed set of the $N_f^K$ faces of the geometric cell. The inner products:
+
+\begin{equation}
+\label{eq::Sn_spatial_inner_products_cell}
+ \Big( f, g \Big)_K \equiv \int_K f \, g \, d r
+\end{equation} 
+
+\noindent and
+
+\begin{equation}
+\label{eq::Sn_spatial_inner_products_face}
+ \Big( f, g \Big)_f \equiv \int_f f \, g \, d s
+\end{equation}
+
+\noindent correspond to integrations over the cell and faces, respectively, where $dr \in \mathbb{R}^d$ is within the cell and $ds \in \mathbb{R}^{d-1}$ is along the cell boundary. We note that we will use this notation of the inner product for the remainder of the dissertation unless otherwise stated. We then separate the summation of the cell $K$ boundary integration terms into two different types: outflow boundaries ($\partial K^+ = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m > 0 \}$) and inflow boundaries ($\partial K^- = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m < 0 \}$). The inflow boundaries can further be separated into inflow from another cell: $\partial K^- \backslash \partial \mathcal{D} $; inflow from incident flux on the domain boundary: $\partial K^- \cap \partial \mathcal{D}^d $; and reflecting domain boundaries: $\partial K^- \cap \partial \mathcal{D}^r $. At this point, we note that the derivation can comprise an additional step by using Gauss' Divergence Theorem again on the streaming term. This is sometimes performed for radiation transport work but we will not do so here. Therefore, with the cell boundary terminology as proposed, Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK}) can be written into the following form:
+
+\begin{equation}
+\label{eq::Sn_DGFEM_trans_eq_cellK_diff_faces}
+\begin{aligned}
+- \left( \vec{\Omega}_m \cdot  \vec{\nabla} b_m, \Psi_{m} \right)_{K}   + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K}  \\
++  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\Psi}_m  \Big>_{\partial K^+}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\Psi}_m  \Big>_{\partial K^- \backslash \partial \mathcal{D}} \\
+  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\Psi}_m  \Big>_{\partial K^- \cap \partial \mathcal{D}^d}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\Psi}_m  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
+= \sum_{p=0}^{N_P} \sum_{n=-p}^{p} \frac{2p + 1}{4 \pi}  Y_{p,n} (  \vec{\Omega}_m ) \left[ \Big( \sigma_{s,p} \, b_m,  \Phi_{p,n,} \Big)_{K}  + \left(  b_m ,   Q_{p,n} \right)_{K} \right]
+\end{aligned} .
+\end{equation}
+
+We can now deal with the boundary fluxes, $\tilde{\Psi}_m$, by enforcing the ubiquitously-used {\em upwind scheme}. In simple nomenclature, the upwind scheme corresponds to using the angular flux values within the cell for outflow boundaries and angular flux values outside the cell for inflow boundaries. Mathematically, the upwind scheme can succinctly be written as the following for all boundary types,
+
+\begin{equation}
+\label{eq::Sn_upwind_cases}
+\tilde{\Psi}_m (\vec{r}) = \begin{cases}
+\Psi_m^{-} , & \partial K^+ \\
+\Psi_m^{+}, & \partial K^- \backslash \partial \mathcal{D} \\
+\Psi_m^{inc}, & \partial K^- \cap \partial \mathcal{D}^d \\
+\Psi_{m'}^{-}, & \partial K^- \cap \partial \mathcal{D}^r
+\end{cases} ,
+\end{equation}
+
+\noindent when the following trace is applied to the angular fluxes :
+
+\begin{equation}
+\label{eq::Sn_ang_flux_trace}
+\Psi_m^{\pm} (\vec{r}) \equiv \lim_{s \rightarrow 0^{\pm}} \Psi_m \Big( \vec{r} + s (\vec{\Omega}_m \cdot \vec{n}) \vec{\Omega}_m \Big) .
+\end{equation}
+
+\noindent This trace has the notation, with $\vec{n}$ pointing outwards from cell $K$, of $\Psi_m^-$ corresponding to fluxes within the cell and $\Psi_m^+$ corresponding to fluxes out of the cell. Now, using the upwind scheme as previously defined, we can write our complete set DGFEM equations for cell $K$ as
+
+\begin{equation}
+\label{eq::Sn_DGFEM_trans_eq_cellK_complete}
+\begin{aligned}
+-  \Big( \vec{\Omega}_m \cdot  & \vec{\nabla} b_m, \Psi_{m} \Big)_{K}   + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K} +  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{-}  \Big>_{\partial K^+}  \\
+  + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{+}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}^{-}_{m'}  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
+= & \sum_{p=0}^{N_P} \sum_{n=-p}^{p} \frac{2p + 1}{4 \pi}  Y_{p,n} (  \vec{\Omega}_m ) \left[ \Big( \sigma_{s,p} \, b_m,  \Phi_{p,n,} \Big)_{K}  + \left(  b_m ,   Q_{p,n} \right)_{K} \right] \\
++ & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}^d}
+\end{aligned} .
+\end{equation} 
+
+\noindent By completely defining our mathematical formulation for an arbitrary spatial cell, it is easy to see that the full set of equations to define our discretized solution space for a single angle and energy group comprises of a simple double integration loop. The full set of equations can be formed by looping over all spatial cells, $\mathcal{D} = \bigcup_{K \in \mathcal{T}_h} K$, while further looping over all faces within each cell, $\partial \mathcal{D}_K = \bigcup_{ f \in N_f^K} f$. Section \ref{sec::Sn_Solution} will further detail how all the DGFEM equations are formed along with efficient solution methods. We conclude this section by defining the elementary matrix terms for a given cell as follows.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Mass
@@ -218,6 +337,8 @@ In the spatially discretized equations presented in Section \ref{sec::Sn_Spatial
 
 \noindent In this case, it is necessary that the sum of the weights of this quadrature set exactly equal the geometric metric of cell $K$. This means that $\sum_{q = 1}^{N_q} w_{q}^K$ is equal to the cell width in 1 dimension, the cell area in 2 dimensions, and the cell volume in 3 dimensions.
 
+Since ${\bf b}_K$ consists of a column vector for the basis functions and ${\bf b}_K^{T}$ consists of a row vector, then their multiplication will obviously yield a full $(N_K \, \text{x} \, N_K)$ matrix. This matrix is written for completeness of this discussion on the mass matrix:
+
 \begin{equation}
 \label{eq::Sn_mass_matrix_array}
 {\bf M}_K =   \left[
@@ -228,7 +349,7 @@ In the spatially discretized equations presented in Section \ref{sec::Sn_Spatial
 	\vdots  &  & \vdots  &  & \vdots \\
 	\int_K b_{N_K} \, b_1  & \ldots & \int_K b_{N_K} \, b_j  & \ldots & \int_K b_{N_K} \, b_{N_K} \\
 \end{array}
-\right]
+\right].
 \end{equation}
 
 
@@ -272,6 +393,41 @@ In this case, this local cell-wise streaming matrix has dimensionality $(N_K \te
 \label{sec::Sn_Spatial_Surface}
 
 Finally, the last terms to consider of the discretized transport equation are those found on the faces of the cell boundary: $ {\Omega}_m \cdot  \left(  \vec{n} \psi_m, b_m  \right)_{\partial K}$. These terms are analagous to the cell mass matrix but are computed on the cell boundary with dimensionality $(d-1)$.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - Solution Procedures
+\section{Solution Procedures}
+\label{sec::Sn_Solution}
+
+To this point, we have properly described the procedures to discretize the transport problem in energy, angle, and space. We now spend the remainder of this chapter discussing various methodologies to efficiently solve the tightly-coupled system of equations composing our transport problem. Section \ref{sec::Sn_Solution_Iterative} will discuss the different iterative procedures that can be employed to efficiently converge the angular and energy portions of the solution space and Section \ref{sec::Sn_Solution_Spatial} will then discuss how we can efficiently solve the spatial portion of the solution for any given iteration.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Iterative Procedures
+\subsection{Angle and Energy Iteration Procedures}
+\label{sec::Sn_Solution_Iterative}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Transport Sweeping
+\subsection{Spatial Solution Procedures - Transport Sweeping}
+\label{sec::Sn_Solution_Spatial}
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.58\textwidth}
+		\centering
+		\label{subfig::unit_square}
+		\includegraphics[width=\textwidth]{figures/sec_Sn/scattering_matrix_NO_upscattering.eps}
+		\vspace{4mm}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.58\textwidth}
+		\centering
+		\label{subfig::unit_cube}
+		\includegraphics[width=\textwidth]{figures/sec_Sn/scattering_matrix_w_upscattering.eps}
+	\end{subfigure}
+\caption{Scattering matrices (top) without and (bottom) with upscattering. The gray corresponds to within-group scattering; the blue corresponds to down-scattering in energy; and the red corresponds to up-scattering in energy.}
+\label{fig::Sn_BF_scattering_matrix}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Conclusions
