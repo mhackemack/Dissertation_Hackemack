@@ -238,12 +238,12 @@ For the spatial discretization of the problem domain, we simplify Eq. (\ref{eq::
 \vec{\Omega}_m \cdot \vec{\nabla} \Psi_{m}  + \sigma_{t}   \Psi_{m}=  \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi}    \sum_{n=-p}^{p}  Y_{p,n} (  \vec{\Omega}_m ) \left[ \sigma_{s,p}  \Phi_{p,n,}  + Q_{p,n} \right]
 \end{equation}
 
-\noindent to form $M$ ($m=1,...,M$) angularly discrete equations. We then lay down an unstructured mesh $\mathcal{T}_h \in \mathbb{R}^{d}$, over the spatial domain, where $d$ is the dimensionality of the problem ($d=1,2,3$). This mesh consists of non-overlapping spatial elements to form a complete union over the entire spatial domain: $\mathcal{D} = \bigcup_{K \in \mathcal{T}_h} K$. To form the DGFEM set of equations \cite{ern2013theory}, we consider a spatial cell $K \in \mathbb{R}^d$ which has $N_V^K$ vertices and $N_f^K$ faces. Each face of cell $K$ resides in dimension $\mathbb{R}^{d-1}$ and is formed by a connection of a subset of vertices. For a 1D problem, each face is a single point. For a 2D problem, each face is a line segment connecting two distinct points. For a 3D problem, each face is a $\mathbb{R}^2$ closed polygon (not necessarily coplanar) which may or not be convex. An example of this interconnection between elements is given for a $\mathbb{R}^2$ problem in Figure \ref{fig::Sn_two_ref_cells} between our cell of interest, $K$, and another cell, $K'$, separated by the face $f$. We have chosen the normal direction of the face to have orientation from cell $K$ to cell $K'$ while we form the DGFEM equations for cell $K$. This means that if we were instead analyzing cell $K'$, then the face $f$ normal, $\vec{n}' $, would be opposite ({\em i.e.} $\vec{n}' = -\vec{n}$).
+\noindent to form $M$ ($m=1,...,M$) angularly discrete equations. We then lay down an unstructured mesh $\mathcal{T}_h \in \mathbb{R}^{d}$, over the spatial domain, where $d$ is the dimensionality of the problem ($d=1,2,3$). This mesh consists of non-overlapping spatial elements to form a complete union over the entire spatial domain: $\mathcal{D} = \bigcup_{K \in \mathcal{T}_h} K$. To form the DGFEM set of equations \cite{ern2013theory,wareing2001discontinuous}, we consider a spatial cell $K \in \mathbb{R}^d$ which has $N_V^K$ vertices and $N_f^K$ faces. Each face of cell $K$ resides in dimension $\mathbb{R}^{d-1}$ and is formed by a connection of a subset of vertices. For a 1D problem, each face is a single point. For a 2D problem, each face is a line segment connecting two distinct points. For a 3D problem, each face is a $\mathbb{R}^2$ closed polygon (not necessarily coplanar) which may or not be convex. An example of this interconnection between elements is given for a $\mathbb{R}^2$ problem in Figure \ref{fig::Sn_two_ref_cells} between our cell of interest, $K$, and another cell, $K'$, separated by the face $f$. We have chosen the normal direction of the face to have orientation from cell $K$ to cell $K'$ while we form the DGFEM equations for cell $K$. This means that if we were instead analyzing cell $K'$, then the face $f$ normal, $\vec{n}' $, would be opposite ({\em i.e.} $\vec{n}' = -\vec{n}$).
 
 \begin{figure}
 \centering
 \includegraphics[width=0.7\textwidth]{figures/sec_Sn/two_cells_Rev1.eps}
-\caption{Two cells of the spatial discretization with the connecting face, $f$, with normal direction, $\vec{n}$, oriented from cell $K$ to cell $K'$.}
+\caption[Two cells of the spatial discretization]{Two cells of the spatial discretization with the connecting face, $f$, with normal direction, $\vec{n}$, oriented from cell $K$ to cell $K'$.}
 \label{fig::Sn_two_ref_cells}
 \end{figure}
 
@@ -268,7 +268,7 @@ Next, we left-multiply Eq. (\ref{eq::Sn_trans_eq_simple_no_energy_groups}) by an
 
 \begin{equation}
 \label{eq::Sn_spatial_inner_products_face}
- \Big( f, g \Big)_f \equiv \int_f f \, g \, d s
+ \Big< f, g \Big>_f \equiv \int_f f \, g \, d s
 \end{equation}
 
 \noindent correspond to integrations over the cell and faces, respectively, where $dr \in \mathbb{R}^d$ is within the cell and $ds \in \mathbb{R}^{d-1}$ is along the cell boundary. We note that we will use this notation of the inner product for the remainder of the dissertation unless otherwise stated. We then separate the summation of the cell $K$ boundary integration terms into two different types: outflow boundaries ($\partial K^+ = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m > 0 \}$) and inflow boundaries ($\partial K^- = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m < 0 \}$). The inflow boundaries can further be separated into inflow from another cell: $\partial K^- \backslash \partial \mathcal{D} $; inflow from incident flux on the domain boundary: $\partial K^- \cap \partial \mathcal{D}^d $; and reflecting domain boundaries: $\partial K^- \cap \partial \mathcal{D}^r $. At this point, we note that the derivation can comprise an additional step by using Gauss' Divergence Theorem again on the streaming term. This is sometimes performed for radiation transport work but we will not do so here. Therefore, with the cell boundary terminology as proposed, Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK}) can be written into the following form:
@@ -314,21 +314,21 @@ We can now deal with the boundary fluxes, $\tilde{\Psi}_m$, by enforcing the ubi
 \end{aligned} .
 \end{equation} 
 
-\noindent By completely defining our mathematical formulation for an arbitrary spatial cell, it is easy to see that the full set of equations to define our discretized solution space for a single angle and energy group comprises of a simple double integration loop. The full set of equations can be formed by looping over all spatial cells, $\mathcal{D} = \bigcup_{K \in \mathcal{T}_h} K$, while further looping over all faces within each cell, $\partial \mathcal{D}_K = \bigcup_{ f \in N_f^K} f$. Section \ref{sec::Sn_Solution} will further detail how all the DGFEM equations are formed along with efficient solution methods. We conclude this section by defining the elementary matrix terms for a given cell as follows.
+\noindent We note that fluxes without the trace superscript are all within the cell. By completely defining our mathematical formulation for an arbitrary spatial cell, it is easy to see that the full set of equations to define our discretized solution space for a single angle and energy group comprises of a simple double integration loop. The full set of equations can be formed by looping over all spatial cells, $\mathcal{D} = \bigcup_{K \in \mathcal{T}_h} K$, while further looping over all faces within each cell, $\partial \mathcal{D}_K = \bigcup_{ f \in N_f^K} f$. Section \ref{sec::Sn_Solution} will further detail how all the DGFEM equations are formed along with efficient solution methods. We conclude this section by defining the elementary matrix terms for a given cell as follows.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Mass
 \subsection{Elementary Mass Matrices}
 \label{sec::Sn_Spatial_Mass}
 
-In the spatially discretized equations presented in Section \ref{sec::Sn_Spatial}, there are several reaction terms that appear with the form: $\Big< \sigma  b_m , \psi_m  \Big>_K$ for a given angular direction, $m$, and for a spatial cell, $K$. In FEM analysis these reaction terms are ubiquitously referred to as the mass matrix terms \cite{zeinkiewicz2005finite}. For cell $K$, we define the elementary mass matrix, ${\bf M}$ as
+In the spatially discretized equations presented in Section \ref{sec::Sn_Spatial}, there are several reaction terms that appear with the form: $\Big( \sigma  b_m , \Psi_m  \Big)_K$ for a given angular direction, $m$, and for a spatial cell, $K$. In FEM analysis these reaction terms are ubiquitously referred to as the mass matrix terms \cite{zeinkiewicz2005finite}. For cell $K$, we define the elementary mass matrix, ${\bf M}$ as
 
 \begin{equation}
 \label{eq::Sn_mass_matrix_analytical}
 {\bf M}_K =    \int_K {\bf b}_K \, {\bf b}_K^T \, d {\vec{r}} ,
 \end{equation}
 
-\noindent where ${\bf b}_K$ corresponds to the set of $N_K$ basis functions that have non-zero measure in cell $K$. Depending on the FEM basis functions utilized, the integrals in Eq. (\ref{eq::Sn_mass_matrix_analytical}) can be directly integrated analytically. However, if in general, the basis functions cannot be analytically integrated on an arbitrary set of cell shapes, then a numerical integration scheme becomes necessary. If we define a quadrature set, $\left\{  \vec{x}_q , w_q^{K}  \right\}_{q=1}^{N_q}$, for cell $K$, consisting of $N_q$ points $\vec{x}_q$ and weights $w_q^K$, then we can numerically calculate the mass matrix by the following
+\noindent where ${\bf b}_K$ corresponds to the set of $N_K$ basis functions that have non-zero measure in cell $K$. Depending on the FEM basis functions utilized, the integrals in Eq. (\ref{eq::Sn_mass_matrix_analytical}) can be directly integrated analytically. However, if in general, the basis functions cannot be analytically integrated on an arbitrary set of cell shapes, then a numerical integration scheme becomes necessary. If we define a quadrature set, $\left\{  \vec{x}_q , w_q^{K}  \right\}_{q=1}^{N_q}$, for cell $K$, consisting of $N_q$ points, $\vec{x}_q$, and weights, $w_q^K$, then we can numerically calculate the mass matrix by the following
 
 \begin{equation}
 \label{eq::Sn_mass_matrix_numerical}
@@ -358,21 +358,23 @@ Since ${\bf b}_K$ consists of a column vector for the basis functions and ${\bf 
 \subsection{Elementary Streaming Matrices}
 \label{sec::Sn_Spatial_Streaming}
 
-Next, we will consider the streaming term that has the form: $ \Big< {\Omega}_m \cdot \vec{\nabla}  b_m , \psi_m  \Big>_K$ for a given angular direction, $m$, and for a spatial cell, $K$. $\vec{\nabla} $ is the gradient operator in physical space. It has the form of $\vec{\nabla} = \left[ \frac{d}{dx} \right]$ in 1 dimension, the form of $\vec{\nabla} = \left[ \frac{\partial}{\partial x} , \frac{\partial}{\partial y} \right]$ in 2 dimensions, and the form of $\vec{\nabla} = \left[ \frac{\partial}{\partial x} , \frac{\partial}{\partial y} , \frac{\partial}{\partial z} \right]$ in 3 dimensions. Since for every cell, the streaming term is applied for all $M$ angles in the angular discretization, we define the analytical elementary streaming matrix:
+Next, we will consider the streaming term that has the form: $ \Big( \vec{\Omega}_m \cdot \vec{\nabla}  b_m , \Psi_m  \Big)_K$ for a given angular direction, $m$, and for a spatial cell, $K$. $\vec{\nabla} $ is the gradient operator in physical space. It has the form of $\vec{\nabla} = \left[ \frac{d}{dx} \right]$ in 1 dimension, the form of $\vec{\nabla} = \left[ \frac{\partial}{\partial x} , \frac{\partial}{\partial y} \right]$ in 2 dimensions, and the form of $\vec{\nabla} = \left[ \frac{\partial}{\partial x} , \frac{\partial}{\partial y} , \frac{\partial}{\partial z} \right]$ in 3 dimensions. Since for every cell, the streaming term is applied for all $M$ angles in the angular discretization, we define the analytical elementary streaming matrix:
 
 \begin{equation}
 \label{eq::Sn_streaming_matrix_analytical}
-\vec{{\bf G}}_K =    \int_K \vec{\nabla} {\bf b}_K \, {\bf b}_K^T \, d {\vec{r}} .
+\vec{{\bf G}}_K =    \int_K \vec{\nabla} {\bf b}_K \, {\bf b}_K^T \, d {\vec{r}} ,
 \end{equation}
 
-\noindent Also, just like the elementary mass matrix, we can use the same spatial quadrature set, $\left\{  \vec{x}_q , w_q^{K}  \right\}_{q=1}^{N_q}$, for cell $K$ to numerically calculate the streaming matrix:
+\noindent which has dimensionality $(N_K \text{x} N_K \text{x} d)$. We choose to store the elementary streaming matrix in this form and not store $M$ separate $(N_K \text{x} N_K)$ local matrices corresponding to the application of the dot product ($ \vec{\Omega}_m  \cdot \int_K  \vec{\nabla} {\bf b}_K \, {\bf b}_K^T \, d {\vec{r}}$). Instead we simply evaluate the dot product with the appropriate angular direction whenever necessary. This has great benefit when trying to run large transport problems when memory becomes a premium and processor operations are not our limiting bottleneck. 
+
+Just like the elementary mass matrix, we can use the same spatial quadrature set, $\left\{  \vec{x}_q , w_q^{K}  \right\}_{q=1}^{N_q}$, for cell $K$ to numerically calculate the streaming matrix:
 
 \begin{equation}
 \label{eq::Sn_streaming_matrix_numerical}
 \vec{{\bf G}}_K =    \sum_{q = 1}^{N_q} w_{q}^K \vec{\nabla} {\bf b}_K (\vec{x}_q) \, {\bf b}_K^T (\vec{x}_q) .
 \end{equation}
 
-In this case, this local cell-wise streaming matrix has dimensionality $(N_K \text{x} N_K \text{x} d)$
+\noindent In this case, this local cell-wise streaming matrix has the full matrix form:
 
 \begin{equation}
 \label{eq::Sn_streaming_matrix_array}
@@ -384,7 +386,7 @@ In this case, this local cell-wise streaming matrix has dimensionality $(N_K \te
 	\vdots  &  & \vdots  &  & \vdots \\
 	\int_K \vec{\nabla} b_{N_K} \, b_1  & \ldots & \int_K \vec{\nabla} b_{N_K} \, b_j  & \ldots & \int_K \vec{\nabla} b_{N_K} \, b_{N_K} \\
 \end{array}
-\right]
+\right] .
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -392,7 +394,7 @@ In this case, this local cell-wise streaming matrix has dimensionality $(N_K \te
 \subsection{Elementary Surface Matrices}
 \label{sec::Sn_Spatial_Surface}
 
-Finally, the last terms to consider of the discretized transport equation are those found on the faces of the cell boundary: $ {\Omega}_m \cdot  \left(  \vec{n} \psi_m, b_m  \right)_{\partial K}$. These terms are analagous to the cell mass matrix but are computed on the cell boundary with dimensionality $(d-1)$.
+Finally, the last terms to consider of the discretized transport equation are those found on the faces of the cell boundary: $  \vec{\Omega}_m \cdot  \Big<  \vec{n} b_m, \Psi_m  \Big>_{\partial K}$. These terms are analagous to the cell mass matrix but are computed on the cell boundary with dimensionality $(d-1)$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Solution Procedures
@@ -425,7 +427,7 @@ To this point, we have properly described the procedures to discretize the trans
 		\label{subfig::unit_cube}
 		\includegraphics[width=\textwidth]{figures/sec_Sn/scattering_matrix_w_upscattering.eps}
 	\end{subfigure}
-\caption{Scattering matrices (top) without and (bottom) with upscattering. The gray corresponds to within-group scattering; the blue corresponds to down-scattering in energy; and the red corresponds to up-scattering in energy.}
+\caption[Scattering matrices with and without upscattering]{Scattering matrices (top) without and (bottom) with upscattering. The gray corresponds to within-group scattering; the blue corresponds to down-scattering in energy; and the red corresponds to up-scattering in energy.}
 \label{fig::Sn_BF_scattering_matrix}
 \end{figure}
 
