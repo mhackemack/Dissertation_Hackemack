@@ -194,6 +194,35 @@ We first define an approximate angular flux distribution for a region $s$:
 \subsection{Level-Symmetric Quadrature Set}
 \label{sec::Sn_Angle_LS}
 
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS2.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS4.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS8.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS16.eps}
+		\caption{}
+	\end{subfigure}
+\caption{Level-Symmetric quadrature set of order (a) 2, (b) 4, (c) 8, and (d) 16.}
+\label{fig::Sn_LS_Quad_Sets}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - GLC
 \subsection{Gauss-Legendre-Chebyshev Quadrature Set}
@@ -406,7 +435,7 @@ Just like the elementary mass matrix, we can use the same spatial quadrature set
 \subsection{Elementary Surface Matrices}
 \label{sec::Sn_Spatial_Surface}
 
-Finally, the last terms to consider of the discretized transport equation are those found on the faces of the cell boundary: $  \vec{\Omega}_m \cdot  \Big<  \vec{n} b_m, \Psi_m  \Big>_{\partial K}$. These terms are analagous to the cell mass matrix but are computed on the cell boundary with dimensionality $(d-1)$.
+Finally, the last terms to consider of the discretized transport equation are those found on the faces of the cell boundary: $  \vec{\Omega}_m \cdot  \Big<  \vec{n} \, b_m, \Psi_m  \Big>_{\partial K}$. These terms are analagous to the cell mass matrix but are computed on the cell boundary with dimensionality $(d-1)$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Solution Procedures
@@ -429,14 +458,12 @@ To this point, we have properly described the procedures to discretize the trans
 \centering
 	\begin{subfigure}[b]{0.58\textwidth}
 		\centering
-		\label{subfig::unit_square}
 		\includegraphics[width=\textwidth]{figures/sec_Sn/scattering_matrix_NO_upscattering.eps}
 		\vspace{4mm}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.58\textwidth}
 		\centering
-		\label{subfig::unit_cube}
 		\includegraphics[width=\textwidth]{figures/sec_Sn/scattering_matrix_w_upscattering.eps}
 	\end{subfigure}
 \caption[Scattering matrices with and without upscattering]{Scattering matrices (top) without and (bottom) with upscattering. The gray corresponds to within-group scattering; the blue corresponds to down-scattering in energy; and the red corresponds to up-scattering in energy.}
