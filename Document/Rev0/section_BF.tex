@@ -20,6 +20,14 @@
 \label{sec::BF_2D}
 
 
+
+\begin{figure}[hbt]
+\centering
+\includegraphics[width=0.65\textwidth]{figures/sec_BF/ref_polygon.png}
+\caption{Arbitrary polygon with geometric properties used for 2D basis function generation.}
+\label{fig::BF_2D_ref_polygon}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Linear Basis Functions
 \subsection{Linearly-Complete 2D Basis Functions}
@@ -94,23 +102,9 @@ and
 	b_j (x,y) = t_j (x,y) + \alpha_j^K t_c (x,y)
 \end{equation}
 
-\noindent $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function which is unity at the cell center and linearly decreases to zero to each cell vertex. $\alpha_{K,j}$ is the weight parameter for vertex $j$ in cell $K$.
+\noindent $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function which is unity at the cell center and linearly decreases to zero to each cell vertex. $\alpha_{j}^{K}$ is the weight parameter for vertex $j$ in cell $K$. 
 
-The 3D PWL basis functions share a similar form to the 2D PWL basis functions.
 
-\begin{equation}
-\label{eq::PWL_3D}
-	b_j (x,y,z)  = t_j  (x,y,z) + \sum_{f=1}^{F_j} \beta_j^f  t_f (x,y,z) + \alpha_j^K t_c  (x,y,z)
-\end{equation}
-
-\noindent $t_j$ is the standard 3D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center, the face center for each face that includes vertex $j$, and each vertex that shares an edge with vertex $j$. $t_c$ is the 3D cell ``tent" function which is unity at the cell center and linearly decreases to zero to each cell vertex and face center. $t_f$ is the face "tent" function which is unity at the face center and linearly decreases to zero at each vertex on that face and the cell center. $\beta_{f,j}$ is the weight parameter for face $f$ touching cell vertex $j$, and $F_j$ is the number of faces touching vertex $j$. Like the previous work defining the PWLD method \cite{bailey2008phd}, we also choose to assume the cell and face weighting parameters are
-
-\begin{equation}
-\alpha_{K,j} = \frac{1}{N_K} \qquad \text{and} \qquad \beta_{f,j} = \frac{1}{N_f},
-\label{eq::PWL_weight_vals}
-\end{equation}
-
-\noindent respectively, where $N_K$ is the number of vertices in cell $K$ and $N_f$ is the number of vertices on face $f$, which leads to constant values of $\alpha$ and $\beta$ for each cell and face, respectively. This assumption of the cell weight function holds for both 2D and 3D.
 
 %%%%%%%%%%%%%%%
 % Begin::2D PWL basis function plots
@@ -218,10 +212,13 @@ The 3D PWL basis functions share a similar form to the 2D PWL basis functions.
 	\end{subfigure}
 \caption{Plots of the PWL basis functions for a regular pentagon: (a) and (c) as well as a degenerate pentagon: (b) and (d).}
 \end{figure}
-
-
 % End::2D PWL basis function plots
 %%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSubSection - 2D linear summary
+\subsubsection{Summary of Linear Basis Functions on Polygons}
+\label{sec::BF_2D_Linear_Summary}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Quadratic Basis Functions
@@ -231,7 +228,7 @@ The 3D PWL basis functions share a similar form to the 2D PWL basis functions.
 \begin{gather}
 	 \sum_{i=1}^{N_K} b_i (\vec{x})  =  1 \\
 	\sum_{i=1}^{N_K} b_i(\vec{x}) \vec{x}_i  =  \vec{x} \\
-	\sum_{i=1}^{N_K} \sum_{j=1}^{N_K} \mu _{i,j} b_i(\vec{x}) \left(   \frac{\vec{x}_i \otimes \vec{x}_j +\vec{x}_j \otimes \vec{x}_i }{2}  \right)  = \vec{x} \otimes \vec{x}
+	\sum_{i=1}^{N_K} \sum_{j=1}^{N_K} \mu _{i,j}  \left(   \frac{\vec{x}_i \otimes \vec{x}_j +\vec{x}_j \otimes \vec{x}_i }{2}  \right)  = \vec{x} \otimes \vec{x}
 \label{eq::quadratic_interp_requirements}
 \end{gather}
 
@@ -250,7 +247,7 @@ The 3D PWL basis functions share a similar form to the 2D PWL basis functions.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - 3D Lin/TriL
 \subsection{3D Linear and TriLinear Basis Functions}
-\label{sec::BF_Linear_BiLTriL}
+\label{sec::BF_3D_TriL}
 
 \begin{figure}
 \centering
@@ -296,6 +293,27 @@ The 3D PWL basis functions share a similar form to the 2D PWL basis functions.
 	b_8(r,s,t) & = (1-r)st \\
 \end{aligned}
 \end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - PWL
+\subsection{3D Piecewise Linear (PWL) Basis Functions}
+\label{sec::BF_3D_PWL}
+
+The 3D PWL basis functions share a similar form to the 2D PWL basis functions.
+
+\begin{equation}
+\label{eq::PWL_3D}
+	b_j (x,y,z)  = t_j  (x,y,z) + \sum_{f=1}^{F_j} \beta_f^j  t_f (x,y,z) + \alpha_j^K t_c  (x,y,z)
+\end{equation}
+
+\noindent $t_j$ is the standard 3D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center, the face center for each face that includes vertex $j$, and each vertex that shares an edge with vertex $j$. $t_c$ is the 3D cell ``tent" function which is unity at the cell center and linearly decreases to zero to each cell vertex and face center. $t_f$ is the face "tent" function which is unity at the face center and linearly decreases to zero at each vertex on that face and the cell center. $\beta_{f,j}$ is the weight parameter for face $f$ touching cell vertex $j$, and $F_j$ is the number of faces touching vertex $j$. Like the previous work defining the PWLD method \cite{bailey2008phd}, we also choose to assume the cell and face weighting parameters are
+
+\begin{equation}
+\alpha_{K,j} = \frac{1}{N_K} \qquad \text{and} \qquad \beta_{f,j} = \frac{1}{N_f},
+\label{eq::PWL_weight_vals}
+\end{equation}
+
+\noindent respectively, where $N_K$ is the number of vertices in cell $K$ and $N_f$ is the number of vertices on face $f$, which leads to constant values of $\alpha$ and $\beta$ for each cell and face, respectively. This assumption of the cell weight function holds for both 2D and 3D.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Results
