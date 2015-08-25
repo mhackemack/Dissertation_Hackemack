@@ -33,13 +33,53 @@
 \subsection{Linearly-Complete 2D Basis Functions}
 \label{sec::BF_2D_Linear}
 
+In this dissertation, all 1st-order, two-dimensional basis functions for a cell will obey the properties for barycentric coordinates. They will form a {\em partition of unity},
+
 \begin{equation}
-\begin{aligned}
-	\sum_{i=1}^{N_K} b_i (\vec{x}) & =  1 \\
-	\sum_{i=1}^{N_K} b_i(\vec{x}) \vec{x}_i & =  \vec{x}
-\end{aligned}
-\label{eq::BF_linear_interp_requirements}
+\sum_{i=1}^{N_K} b_i (\vec{x})  =  1,
+\label{eq::BF_linear_interp_partition}
 \end{equation}
+
+\noindent an {\em affine combination} of the vertices,
+
+\begin{equation}
+\sum_{i=1}^{N_K} b_i(\vec{x}) \vec{x}_i  =  \vec{x},
+\label{eq::BF_linear_interp_affine}
+\end{equation}
+
+\noindent and satisfy the {\em Lagrange property},
+
+\begin{equation}
+b_i (\vec{x}_j) = \delta_{ij}.
+\label{eq::BF_linear_interp_lagrange}
+\end{equation}
+
+\noindent $N_K$ is again the number of spatial degrees with measure in element $K$. Using the {\em partition of unity} of Eq. (\ref{eq::BF_linear_interp_partition}), we can rewrite Eqs. (\ref{eq::BF_linear_interp_partition}-\ref{eq::BF_linear_interp_affine}) into a separate, compact, vectorized form for completeness
+
+\begin{equation}
+\sum_{i=1}^{N_K}  b_i (\vec{x}) \vec{c}_{i,1}(\vec{x}) = \vec{q}_1 ,
+\label{eq::BF_linear_interp_req_vector}
+\end{equation}
+
+\noindent where $\vec{c}_{i,1}(\vec{x})$ and $\vec{q}_1$ are the lineary-complete constraint and equivalence terms, respectively. These terms are simply:
+
+\begin{equation}
+\vec{c}_{i,1}(\vec{x}) = \left[
+\begin{array}{c}
+1 \\
+x_i - x \\
+y_i - y
+\end{array} \right]
+  \qquad \text{and} \qquad \vec{q}_1 = \left[
+\begin{array}{c}
+1 \\
+0 \\
+0
+\end{array} \right],
+\label{eq::BF_linear_constraint_terms}
+\end{equation}
+
+\noindent respectively.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - Linear
@@ -243,6 +283,8 @@ and
 %%%   Section - 3D
 \section{Three-Dimensional Basis Functions on Polyhedra}
 \label{sec::BF_3D}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - 3D Lin/TriL
