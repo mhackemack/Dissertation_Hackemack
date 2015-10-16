@@ -33,7 +33,7 @@ For neutral particle transport, the following assumptions \cite{duderstadt1979tr
 	\item Particles do not experience any external force fields ({\em e.g.} gravity).
 \end{enumerate}
 
-These assumptions lead to the first order form of the Boltzmann Transport Equation, which we simply call the transport equation for brevity. The remainder of the chapter is layed out as follows. Section \ref{sec::Sn_neut} provides the general form of the neutron transport equation with some variants. Section \ref{sec::Sn_MG} describes how we discretize the transport equation in energy with the multigroup methodology and Section \ref{sec::Sn_Angle} presents the angular discretization via collocation. Section \ref{sec::Sn_Spatial} will conclude our discretization procedures in the spatial domain. Section \ref{sec::Sn_Solution} will present . We then present concluding remarks for the chapter in Section \ref{sec::Sn_Conclusions}.
+These assumptions lead to the first order form of the Boltzmann Transport Equation, which we simply call the transport equation for brevity. The remainder of the chapter is layed out as follows. Section \ref{sec::Sn_neut} provides the general form of the neutron transport equation with some variants. Section \ref{sec::Sn_MG} describes how we discretize the transport equation in energy with the multigroup methodology and Section \ref{sec::Sn_Angle} presents the angular discretization via collocation. Section \ref{sec::Sn_Spatial} will conclude our discretization procedures in the spatial domain. Section \ref{sec::Sn_Solution} will present the iterative procedures used to converge our solution space. We then present concluding remarks for the chapter in Section \ref{sec::Sn_Conclusions}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Neutron Transport Equation
@@ -99,7 +99,7 @@ There is a special subset of transport problems that is routinely analyzed to de
 	\nu (\vec{r}, E) \rightarrow \frac{\tilde{\nu} (\vec{r}, E)}{k},
 \end{equation}
 
-\noindent where we have introduced the eigenvalue, $k$. By also dropping external source term, the steady-state neutron transport equation in Eq. (\ref{eq::Sn_transport_eq_op_SS}) can be rewritten into
+\noindent where we have introduced the eigenvalue, $k$. By also dropping the external source term, the steady-state neutron transport equation in Eq. (\ref{eq::Sn_transport_eq_op_SS}) can be rewritten into
 
 \begin{equation}
 \label{eq::Sn_transport_eq_op_keff}
@@ -188,11 +188,67 @@ We first define an approximate angular flux distribution for a region $s$:
 \section{Angular Discretization}
 \label{sec::Sn_Angle}
 
+Now that we have provided the discretization of the energy variable, we next focus on the discretization of the transport problem in angle. We will do this in two stages: 1) expand the angular flux in the scattering source and the distributed external source in spherical harmonics and 2) collocate the angular flux at the interpolation points of the trial space. We will perform these discretization procedures by taking the stready-state equation presented in Eq. (\ref{eq::Sn_transport_eq_op_SS}), dropping the fission term and spatial parameterization, and using only 1 energy group:
+
+\begin{equation}
+\label{eq::Sn_Angle_simple_trans_eq}
+\vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{\Omega}) + \sigma_t \Psi (\vec{\Omega}) = \int_{4 \pi} \sigma_s ( \vec{\Omega}' , \vec{\Omega}) \Psi (\vec{\Omega}') d\Omega' + Q (\vec{\Omega})
+\end{equation}
+
+\begin{table}[hbt]
+\centering
+\caption{2D angle mapping from the first quadrant into the other 3 quadrants.}
+\begin{tabular}{|c|cc|}
+	\hline
+	Quadrant & $\mu$ & $\eta$ \\
+	\hline
+	1 & $\mu_1=\mu_1$ & $\eta_1=\eta_1$ \\
+	\hline
+	2 & $\mu_2=-\mu_1$ & $\eta_2=\eta_1$ \\
+	\hline
+	3 & $\mu_3=-\mu_1$ & $\eta_3=-\eta_1$ \\
+	\hline
+	4 & $\mu_4=\mu_1$ & $\eta_4=-\eta_1$ \\
+	\hline
+\end{tabular}
+\label{tab::Sn_2D_octant_mapping}
+\end{table}
+
+\begin{table}[hbt]
+\centering
+\caption{3D angle mapping from the first octant into the other 7 octants.}
+\begin{tabular}{|c|ccc|}
+	\hline
+	Quadrant & $\mu$ & $\eta$ & $\xi $ \\
+	\hline
+	1 & $\mu_1=\mu_1$ & $\eta_1=\eta_1$ & $\xi_1=\xi_1$ \\
+	\hline
+	2 & $\mu_2=-\mu_1$ & $\eta_2=\eta_1$ & $\xi_2=\xi_1$ \\
+	\hline
+	3 & $\mu_3=-\mu_1$ & $\eta_3=-\eta_1$ & $\xi_3=\xi_1$ \\
+	\hline
+	4 & $\mu_4=\mu_1$ & $\eta_4=-\eta_1$ & $\xi_4=\xi_1$ \\
+	\hline
+	5 & $\mu_5=\mu_1$ & $\eta_5=\eta_1$ & $\xi_5=-\xi_1$ \\
+	\hline
+	6 & $\mu_6=-\mu_1$ & $\eta_6=\eta_1$ & $\xi_6=-\xi_1$ \\
+	\hline
+	7 & $\mu_7=-\mu_1$ & $\eta_7=-\eta_1$ & $\xi_7=-\xi_1$ \\
+	\hline
+	8 & $\mu_8=\mu_1$ & $\eta_8=-\eta_1$ & $\xi_8=-\xi_1$ \\
+	\hline
+\end{tabular}
+\label{tab::Sn_3D_octant_mapping}
+\end{table}
+
+We conclude our discussion of angular discretizations by presenting two common angular quadrature sets that will be employed in this dissertation work. Section \ref{sec::Sn_Angle_LS} presents the Level Symmetric (LS) quadrature set and Section \ref{sec::Sn_Angle_PGLC} presents the Product Gauss-Legendre-Chebyshev (PGLC) quadrature set.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Level-Symmetric
 \subsection{Level-Symmetric Quadrature Set}
 \label{sec::Sn_Angle_LS}
+
+The first quadrature set we present is the common Level Symmetric set.
 
 \begin{figure}
 \centering
@@ -224,42 +280,8 @@ We first define an approximate angular flux distribution for a region $s$:
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - TriGLC
-\subsection{Triangular Gauss-Legendre-Chebyshev Quadrature Set}
-\label{sec::Sn_Angle_TriGLC}
-
-\begin{figure}
-\centering
-	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/GLC2.eps}
-		\caption{}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/GLC4.eps}
-		\caption{}
-	\end{subfigure}
-	\vfill
-	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/GLC8.eps}
-		\caption{}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/GLC16.eps}
-		\caption{}
-	\end{subfigure}
-\caption[Triangular Gauss-Legendre-Chebyshev angular quadrature set]{Triangular Gauss-Legendre-Chebyshev angular quadrature that mimics the level-symmetric set of order (a) 2, (b) 4, (c) 8, and (d) 16.}
-\label{fig::Sn_Angle_TriGLC_Angle_Quads}
-\end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - PGLC
-\subsection{Triangular Gauss-Legendre-Chebyshev Quadrature Set}
+\subsection{Product Gauss-Legendre-Chebyshev Quadrature Set}
 \label{sec::Sn_Angle_PGLC}
 
 \begin{figure}
@@ -405,7 +427,7 @@ We can now deal with the boundary fluxes, $\tilde{\Psi}_m$, by enforcing the ubi
 \Psi_m^{\pm} (\vec{r}) \equiv \lim_{s \rightarrow 0^{\pm}} \Psi_m \Big( \vec{r} + s (\vec{\Omega}_m \cdot \vec{n}) \vec{\Omega}_m \Big) .
 \end{equation}
 
-\noindent This trace has the notation, with $\vec{n}$ pointing outwards from cell $K$, of $\Psi_m^-$ corresponding to fluxes within the cell and $\Psi_m^+$ corresponding to fluxes out of the cell. Now, using the upwind scheme as previously defined, we can write our complete set DGFEM equations for cell $K$ as
+\noindent This trace has the notation, with $\vec{n}$ pointing outwards from cell $K$, of $\Psi_m^-$ corresponding to fluxes within the cell and $\Psi_m^+$ corresponding to fluxes out of the cell. Now, using the upwind scheme as previously defined, we can write our complete set of DGFEM equations for cell $K$ as
 
 \begin{equation}
 \label{eq::Sn_DGFEM_trans_eq_cellK_complete}
@@ -438,7 +460,7 @@ In the spatially discretized equations presented in Section \ref{sec::Sn_Spatial
 {\bf M}_K =    \sum_{q = 1}^{N_q} w_{q}^K {\bf b}_K (\vec{x}_q) \, {\bf b}_K^T (\vec{x}_q)  .
 \end{equation}
 
-\noindent In this case, it is necessary that the sum of the weights of this quadrature set exactly equal the geometric metric of cell $K$. This means that $\sum_{q = 1}^{N_q} w_{q}^K$ is equal to the cell width in 1 dimension, the cell area in 2 dimensions, and the cell volume in 3 dimensions.
+\noindent In this case, it is necessary that the sum of the weights of this quadrature set exactly equal the geometric measure of cell $K$. This means that $\sum_{q = 1}^{N_q} w_{q}^K$ is equal to the cell width in 1 dimension, the cell area in 2 dimensions, and the cell volume in 3 dimensions.
 
 Since ${\bf b}_K$ consists of a column vector for the basis functions and ${\bf b}_K^{T}$ consists of a row vector, then their multiplication will obviously yield a full $(N_K \, \text{x} \, N_K)$ matrix. This matrix is written for completeness of this discussion on the mass matrix:
 
@@ -452,9 +474,15 @@ Since ${\bf b}_K$ consists of a column vector for the basis functions and ${\bf 
 	\vdots  &  & \vdots  &  & \vdots \\
 	\int_K b_{N_K} \, b_1  & \ldots & \int_K b_{N_K} \, b_j  & \ldots & \int_K b_{N_K} \, b_{N_K} \\
 \end{array}
-\right].
+\right] ,
 \end{equation}
 
+\noindent where an individual matrix entry is of the form:
+
+\begin{equation}
+\label{eq::Sn_mass_matrix_entry}
+M_{i,j}^K =  \int_K b_i \, b_j .
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Streaming
@@ -489,7 +517,14 @@ Just like the elementary mass matrix, we can use the same spatial quadrature set
 	\vdots  &  & \vdots  &  & \vdots \\
 	\int_K \vec{\nabla} b_{N_K} \, b_1  & \ldots & \int_K \vec{\nabla} b_{N_K} \, b_j  & \ldots & \int_K \vec{\nabla} b_{N_K} \, b_{N_K} \\
 \end{array}
-\right] .
+\right] ,
+\end{equation}
+
+\noindent where an individual matrix entry is of the form:
+
+\begin{equation}
+\label{eq::Sn_streaming_matrix_entry}
+\vec{G}_{i,j}^K =  \int_K \vec{\nabla}b_i \, b_j .
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
