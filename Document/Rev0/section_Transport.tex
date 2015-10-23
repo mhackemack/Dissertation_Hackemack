@@ -192,7 +192,18 @@ Now that we have provided the discretization of the energy variable, we next foc
 
 \begin{equation}
 \label{eq::Sn_Angle_simple_trans_eq}
-\vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{\Omega}) + \sigma_t \Psi (\vec{\Omega}) = \int_{4 \pi} \sigma_s ( \vec{\Omega}' , \vec{\Omega}) \Psi (\vec{\Omega}') d\Omega' + Q (\vec{\Omega})
+\vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{\Omega}) + \sigma_t \Psi (\vec{\Omega}) = \int_{4 \pi} \sigma_s ( \vec{\Omega}' , \vec{\Omega}) \Psi (\vec{\Omega}') d\Omega' + Q  (\vec{\Omega}) .
+\end{equation}
+
+We first expand the angular flux, scattering cross section and external source in spherical harmonics:
+
+\begin{equation}
+\label{eq::Sn_Angle_moments}
+\begin{aligned}
+	\Phi_{p,n} \equiv \int_{4 \pi} \, \Psi(\vec{\Omega}) \, Y_{p,n} (\vec{\Omega}) \\
+	\sigma_s    \\
+	Q_{p,n} \equiv 
+\end{aligned}
 \end{equation}
 
 \begin{table}[hbt]
@@ -284,33 +295,54 @@ The first quadrature set we present is the common Level Symmetric set.
 \subsection{Product Gauss-Legendre-Chebyshev Quadrature Set}
 \label{sec::Sn_Angle_PGLC}
 
+The second angular quadrature set we will present is a Product Gauss-Legendre-Chebyshev (PGLC) set. It is formed by the product-wise multiplication of a Gauss-Chebyshev quadrature in the azimuthal direction and a Gauss-Legendre quadrature in the polar direction. It has the following key differences from the Level Symmetric set:
+
+\begin{itemize}
+	\item Does not have $90^o$ rotational invariance within the primary octant; still maintains octant-to-octant symmetry however;
+	\item Has more control over the placement of the anglular directions within the primary octant;
+	\item Quadrature weights are aligned with the polar level;
+	\item Has strictly positive weights for all polar and azimuthal combinations.
+\end{itemize}
+
 \begin{figure}
 \centering
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/GLC2.eps}
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC2_2.png}
 		\caption{}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/GLC4.eps}
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC2_4.png}
 		\caption{}
 	\end{subfigure}
 	\vfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/GLC8.eps}
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC4_2.png}
 		\caption{}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/GLC16.eps}
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC4_4.png}
 		\caption{}
 	\end{subfigure}
-\caption[Product Gauss-Legendre-Chebyshev angular quadrature set]{Product Gauss-Legendre-Chebyshev angular quadrature set of order (a) 2, (b) 4, (c) 8, and (d) 16.}
-\label{fig::Sn_Angle_PGLC_Angle_Quads}
+	\vfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC6_6.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC8_8.png}
+		\caption{}
+	\end{subfigure}
+\caption[Product Gauss-Legendre-Chebyshev angular quadrature set]{Product Gauss-Legendre-Chebyshev angular quadrature set with orders: (a) PGLC$_2^2$, (b) PGLC$_2^4$, (c) PGLC$_4^2$, (d) PGLC$_4^4$, (e) PGLC$_6^6$, and (f) PGLC$_8^8$.}
+\label{fig_Sn_Angle_PGLC_Quads}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
