@@ -192,7 +192,7 @@ Now that we have provided the discretization of the energy variable, we next foc
 
 \begin{equation}
 \label{eq::Sn_Angle_simple_trans_eq}
-\vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{\Omega}) + \sigma_t \Psi (\vec{\Omega}) = \int_{4 \pi} \sigma_s ( \vec{\Omega}' , \vec{\Omega}) \Psi (\vec{\Omega}') d\Omega' + Q  (\vec{\Omega}) .
+\vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{\Omega}) + \sigma_t \Psi (\vec{\Omega}) = \int_{4 \pi}  d\Omega' \, \sigma_s ( \vec{\Omega}' \cdot \vec{\Omega}) \Psi (\vec{\Omega}') + Q  (\vec{\Omega}) .
 \end{equation}
 
 We first expand the angular flux, scattering cross section and external source in spherical harmonics:
@@ -200,9 +200,20 @@ We first expand the angular flux, scattering cross section and external source i
 \begin{equation}
 \label{eq::Sn_Angle_moments}
 \begin{aligned}
-	\Phi_{p,n} \equiv \int_{4 \pi} \, \Psi(\vec{\Omega}) \, Y_{p,n} (\vec{\Omega}) \\
-	\sigma_s    \\
-	Q_{p,n} \equiv 
+	\Phi_{p,n} &\equiv \int_{4 \pi} d\Omega \, \Psi(\vec{\Omega}) \, Y_{p,n} (\vec{\Omega}) \\
+	\sigma_{s,p} &\equiv  \int_{-1}^{1} \, d \mu \, \sigma_s ( \mu) P_p (\mu)  \\
+	Q_{p,n} &\equiv 
+\end{aligned}
+\end{equation}
+
+\noindent where we have used the following relationships:
+
+\begin{equation}
+\label{eq::Sn_Angle_other_terms}
+\begin{aligned}
+	\mu &\equiv \vec{\Omega}' \cdot \vec{\Omega} \\
+	\sigma_s ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} \sigma_s ( \mu ) \\
+	P_p ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} P_p (\mu)
 \end{aligned}
 \end{equation}
 
@@ -303,6 +314,8 @@ The second angular quadrature set we will present is a Product Gauss-Legendre-Ch
 	\item Quadrature weights are aligned with the polar level;
 	\item Has strictly positive weights for all polar and azimuthal combinations.
 \end{itemize}
+
+From the listed differences, we can already discern some clear advantages and disadvantages from a fully-symmetric quadrature set like LS. If a high number of angles are required for a problem, then negative weights do not arise. Also, if the transport solution is smoothly varying in either the polar or azimuthal directions, 
 
 \begin{figure}
 \centering

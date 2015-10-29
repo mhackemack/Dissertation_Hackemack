@@ -362,11 +362,43 @@ The 3D PWL basis functions share a similar form to the 2D PWL basis functions.
 \section{Numerical Results}
 \label{sec::BF_Results}
 
+Now that we have presented several linear polygonal finite element basis sets along with the methodology to convert them to quadratic serendipity-like basis, we present several numerical problems to demonstrate our methodology. First, we demonstrate that the presented basis sets preserve the thick diffusion limit in Section \ref{sec::BF_Results_TDL}. Next, we present some convergence properties of the basis sets using the method of manufactured solutions (MMS) in Section \ref{sec::BF_Results_MMS}. We then present a searchlight problem and observe how the basis sets react with adaptive mesh refinement (AMR) to mitigate numerical dispersion through a vacuum in Section \ref{sec::BF_Results_SL}.
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Thick Diffusive Limit
 \subsection{Transport Solutions in the Thick Diffusive Limit}
 \label{sec::BF_Results_TDL}
+
+We present our first numerical example by demonstrating that the various polygonal finite element basis sets satisfy the thick diffusion limit. 
+
+
+\begin{equation}
+\label{eq::BF_Results_TDL_scaling}
+\begin{aligned}
+	\sigma_t &\rightarrow \frac{\sigma_t}{\epsilon} \\
+	\sigma_a &\rightarrow \epsilon \sigma_t\\
+	\frac{Q_0}{4 \pi} &\rightarrow \epsilon \frac{Q_0}{4 \pi}
+\end{aligned}
+\end{equation}
+
+\begin{equation}
+\label{eq::BF_Results_TDL_scaled_trans_eq}
+\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{\sigma_t}{\epsilon} \Psi = \sigma_t \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} + \epsilon \frac{Q_0}{4 \pi}
+\end{equation}
+
+\begin{equation}
+\label{eq::BF_Results_TDL_scaled_diff_eq}
+\epsilon \vec{\nabla} \cdot \frac{1}{3 \sigma_t}  \vec{\nabla} \Phi + \epsilon \sigma_t \Phi =  \epsilon Q_0
+\end{equation}
+
+\begin{equation}
+\label{eq::BF_Results_TDL_normalized_eqs}
+\begin{aligned}
+\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{1}{\epsilon} \Psi &=  \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} +  \frac{\epsilon}{4 \pi} \\
+\frac{\epsilon}{3} {\nabla}^2 \Phi &+ \epsilon  \Phi =  \epsilon 
+\end{aligned}
+\end{equation}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -374,13 +406,25 @@ The 3D PWL basis functions share a similar form to the 2D PWL basis functions.
 \subsection{Analytical Transport Solutions by the Method of Manufactured Solutions}
 \label{sec::BF_Results_MMS}
 
+The next numerical example we investigate involves the method of manufactured solutions (MMS). 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Searchlight Problem
+\subsection{Searchlight Problem}
+\label{sec::BF_Results_SL}
+
+The next example models a beam or searchlight. Similar problems were investigated in Dedner and Vollm{\"o}ller \cite{dedner2002adaptive} and Wang and Ragusa \cite{wang2011standard}. In this problem, an incident beam of neutrons is shined onto a small portion of a boundary, propagates through a vacuum, and then exits through a small portion of a different boundary. As the beam propagates through the vacuum, the spatial discretization causes radiation outflow through all downwind cell faces. This leads to numerical dispersion and will cause to beam to artificially broaden.
+
+In this problem, we investigate an $\mathbb{R}^2$ domain of size $[0,1]^2$. The radiation enters the left boundary between $0.2 \leq y \leq 0.4$ with an un-normalized angular direction of $[1,0.4]$. For this chosen direction, the radiation beam would analytically leave the right boundary between $0.6 \leq y \leq 0.8$. This means that any radiation leaving the right boundary for all other $y$ values is due to the numerical dispersion of the beam.
+
+We investigated this problem using several of the 2D polygonal basis functions as outlined in Section \ref{sec::BF_2D} as well as 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Conclusions
 \section{Conclusions}
 \label{sec::BF_Conclusions}
 
-
+In this chapter, we have presented 
 
 
 
