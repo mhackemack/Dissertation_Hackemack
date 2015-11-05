@@ -14,10 +14,12 @@
 \chapter{\uppercase {FEM Basis Functions for Unstructured Polytopes}}
 \label{sec::BF}
 
+discuss benefits/desires here and some history...
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   Section - 2D
-\section{Two-Dimensional Basis Functions on Polygons}
-\label{sec::BF_2D}
+%%%   Section - 2D Linear
+\section{Linear Basis Functions on 2D Polygons}
+\label{sec::BF_2DLinear}
 
 
 
@@ -27,11 +29,6 @@
 \caption{Arbitrary polygon with geometric properties used for 2D basis function generation.}
 \label{fig::BF_2D_ref_polygon}
 \end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - Linear Basis Functions
-\subsection{Linearly-Complete 2D Basis Functions}
-\label{sec::BF_2D_Linear}
 
 In this dissertation, all 1st-order, two-dimensional basis functions for a cell will obey the properties for barycentric coordinates. They will form a {\em partition of unity},
 
@@ -82,11 +79,11 @@ y_i - y
 \noindent respectively.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSubSection - Linear
-\subsubsection{Linear and BiLinear Basis Functions}
-\label{sec::BF_2D_Linear_LDandBLD}
+%%%   SubSection - Linear
+\subsection{Linear and BiLinear Basis Functions}
+\label{sec::BF_2DLinear_LDandBLD}
 
-Before presenting basis function sets applicable to polytope finite elements, we first provide two basis functions that are exact 
+Before presenting basis function sets applicable to polytope finite elements, we first provide the two historical basis functions that are exact on triangles and convex quadrilaterals: the $\mathbb{P}_{1}$ and $\mathbb{Q}_{1}$ spaces, respectively.
 
 \begin{equation}
 \label{eq::2D_lin_basis_functions}
@@ -114,28 +111,24 @@ and
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Wachspress
-\subsubsection{Wachspress Rational Basis Functions}
-\label{sec::BF_2D_Linear_Wachspress}
+\subsection{Wachspress Rational Basis Functions}
+\label{sec::BF_2DLinear_Wachspress}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Mean Value
-\subsubsection{Mean Value Basis Functions}
-\label{sec::BF_2D_Linear_MV}
+\subsection{Mean Value Basis Functions}
+\label{sec::BF_2DLinear_MV}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - Metric
-\subsubsection{Metric Basis Functions}
-\label{sec::BF_2D_Linear_Metric}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Maximum Entropy
-\subsubsection{Maximum Entropy Basis Functions}
-\label{sec::BF_2D_Linear_ME}
+\subsection{Maximum Entropy Basis Functions}
+\label{sec::BF_2DLinear_ME}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - PWL
-\subsubsection{Piecewise Linear (PWL) Basis Functions}
-\label{sec::BF_2D_Linear_PWL}
+\subsection{Piecewise Linear (PWL) Basis Functions}
+\label{sec::BF_2DLinear_PWL}
 
 \begin{equation}
 \label{eq::PWL_2D}
@@ -257,13 +250,13 @@ and
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - 2D linear summary
-\subsubsection{Summary of Linear Basis Functions on Polygons}
-\label{sec::BF_2D_Linear_Summary}
+\subsection{Summary of 2D Linear Basis Functions on Polygons}
+\label{sec::BF_2DLinear_Summary}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Quadratic Basis Functions
-\subsection{Quadratically-Complete 2D Basis Functions}
-\label{sec::BF_2D_Quadratic}
+\section{Quadratic Serendipity Basis Functions on 2D Polygons}
+\label{sec::BF_2DQuadratic}
 
 \begin{gather}
 	 \sum_{i=1}^{N_K} b_i (\vec{x})  =  1 \\
@@ -275,21 +268,16 @@ and
 \noindent where $\mu_{i,j}$ is a weight function corresponding to particular basis function pairings.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - BiL/TriL
-\subsubsection{Serendipity Bilinear and Trilinear Basis Functions}
-\label{sec::BF_Quadratic_BiLTriL}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - 3D
-\section{Three-Dimensional Basis Functions on Polyhedra}
-\label{sec::BF_3D}
+\section{Linear Basis Functions on 3D Polyhedra}
+\label{sec::BF_3DLinear}
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - 3D Lin/TriL
 \subsection{3D Linear and TriLinear Basis Functions}
-\label{sec::BF_3D_TriL}
+\label{sec::BF_3DLinear_TriL}
 
 \begin{figure}
 \centering
@@ -339,7 +327,7 @@ and
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - PWL
 \subsection{3D Piecewise Linear (PWL) Basis Functions}
-\label{sec::BF_3D_PWL}
+\label{sec::BF_3DLinear_PWL}
 
 The 3D PWL basis functions share a similar form to the 2D PWL basis functions.
 
@@ -362,51 +350,358 @@ The 3D PWL basis functions share a similar form to the 2D PWL basis functions.
 \section{Numerical Results}
 \label{sec::BF_Results}
 
-Now that we have presented several linear polygonal finite element basis sets along with the methodology to convert them to quadratic serendipity-like basis, we present several numerical problems to demonstrate our methodology. First, we demonstrate that the presented basis sets preserve the thick diffusion limit in Section \ref{sec::BF_Results_TDL}. Next, we present some convergence properties of the basis sets using the method of manufactured solutions (MMS) in Section \ref{sec::BF_Results_MMS}. We then present a searchlight problem and observe how the basis sets react with adaptive mesh refinement (AMR) to mitigate numerical dispersion through a vacuum in Section \ref{sec::BF_Results_SL}.
-
+Now that we have presented several linear polygonal finite element basis sets along with the methodology to convert them to quadratic serendipity-like basis, we present several numerical problems to demonstrate our methodology. First, we demonstrate that the presented basis sets can capture an exactly-linear transport solution in Section \ref{sec::BF_Results_Linear}. Next, we present some convergence properties of the basis sets using the method of manufactured solutions (MMS) in Section \ref{sec::BF_Results_MMS}. We then present a searchlight problem and observe how the basis sets react with adaptive mesh refinement (AMR) to mitigate numerical dispersion through a vacuum in Section \ref{sec::BF_Results_SL}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - Thick Diffusive Limit
-\subsection{Transport Solutions in the Thick Diffusive Limit}
-\label{sec::BF_Results_TDL}
+%%%   SubSection - Linear Solutions = METHOD OF EXACT SOLUTIONS
+\subsection{Two-Dimensional Exactly-Linear Transport Solutions}
+\label{sec::BF_Results_Linear}
 
-We present our first numerical example by demonstrating that the various polygonal finite element basis sets satisfy the thick diffusion limit. 
-
+We present our first numerical example by demonstrating that the linear and quadratic polygonal finite element basis functions capture an exactly-linear solution space. We will show this by the method of exact solutions (MES). Since the coordinate interpolation of the basis functions for the linear basis functions requires exact linear interpolation (Eq. (\ref{eq::BF_linear_interp_affine})), then an exactly-linear solution space can be captured, even on highly distorted polygonal meshes. This also applies to the quadratic serendipity space since it is formed by the product-wise pairings of the linear basis functions. We build our exact solution by investigating the 2D, 1 energy group transport problem with no scattering and an angle-dependent distributed source,
 
 \begin{equation}
-\label{eq::BF_Results_TDL_scaling}
+\label{eq::BF_Results_Linear_angflux}
+\mu \frac{\partial \Psi}{\partial x} + \eta \frac{\partial \Psi}{\partial y} + \sigma_t \Psi = Q(x,y, \mu, \eta), 
+\end{equation}
+
+\noindent where the streaming term was separated into the corresponding two-dimensional terms. We chose to drop the scattering term for this example so that the error arising from iteratively converging our solution would have no impact.
+
+We then define an angular flux solution that is linear in both space and angle along with the corresponding 0th moment scalar flux solution:
+
+\begin{equation}
+\label{eq::BF_Results_Linear_fluxsols}
 \begin{aligned}
-	\sigma_t &\rightarrow \frac{\sigma_t}{\epsilon} \\
-	\sigma_a &\rightarrow \epsilon \sigma_t\\
-	\frac{Q_0}{4 \pi} &\rightarrow \epsilon \frac{Q_0}{4 \pi}
+\Psi (x,y,\mu,\eta) &= ax + by + c \mu + d\eta + e\\
+\Phi (x,y) &= 2 \pi \left( ax + by  + e \right)
+\end{aligned} .
+\end{equation}
+
+\noindent One can immediately notice that our 0th moment solution is not dependent on angle. We arrive at this solution by enforcing our 2D angular quadrature set to have the following properties:
+
+\begin{equation}
+\label{eq::BF_Results_Linear_quadrules}
+\sum_{q} w_q = 2 \pi \qquad \text{and} \qquad \sum_{q} w_q  \left[
+	\begin{array}{c}
+		\mu_q \\
+		\eta_q
+	\end{array} \right] = \left[
+	\begin{array}{c}
+		0 \\
+		0
+	\end{array} \right] .
+\end{equation}
+
+Our boundary conditions for all inflow boundaries are then uniquely determined by the angular flux solution of Eq. (\ref{eq::BF_Results_Linear_fluxsols}). Inserting the angular flux solution of Eq. (\ref{eq::BF_Results_Linear_fluxsols}) into Eq. (\ref{eq::BF_Results_Linear_angflux}), we obtain the distributed source that will produce our exactly-linear solution space:
+
+\begin{equation}
+\label{eq::BF_Results_Linear_src}
+Q(x,y,\mu,\eta) = a \mu + b \eta + \sigma_t \left(  c \mu + d \eta \right) + \sigma_t \left( ax +by + e   \right).
+\end{equation}
+
+\noindent It is noted that the angular dependence of the source can be removed (which can ease the code development burden) if one sets
+
+\begin{equation}
+\label{eq::BF_Results_Linear_removeterms}
+\begin{aligned}
+	a &= - c \, \sigma_t, \\
+	b &= - d \, \sigma_t.
 \end{aligned}
 \end{equation}
 
-\begin{equation}
-\label{eq::BF_Results_TDL_scaled_trans_eq}
-\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{\sigma_t}{\epsilon} \Psi = \sigma_t \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} + \epsilon \frac{Q_0}{4 \pi}
-\end{equation}
+For this example, we test the various 2D polygonal finite element basis functions on six different mesh types. These mesh types include triangular, quadrilateral, and polygonal meshes:
 
-\begin{equation}
-\label{eq::BF_Results_TDL_scaled_diff_eq}
-\epsilon \vec{\nabla} \cdot \frac{1}{3 \sigma_t}  \vec{\nabla} \Phi + \epsilon \sigma_t \Phi =  \epsilon Q_0
-\end{equation}
+\begin{enumerate}
+	\item Orthogonal cartesian mesh formed by the intersection of 11 equally-spaced vertices in both the $x$ and $y$ dimensions. This forms a 10x10 array of quadrilateral mesh cells.
+	\item Ordered-triangular mesh formed by the bisection of the previous orthogonal cartesian mesh (forming 200 triangles all of the same size/shape).
+	\item Quadrilateral shestakov grid formed by the randomization of vertices based on a skewness parameter \cite{shestakov1988solution,shestakov1990test}. With a certain range of this skewness parameter, highly distorted meshes can be generated.
+	\item Sinusoidal polygonal grid that is generated by the transformation of a uniform orthogonal grid based on a sinusoid functional. The transformed vertices are then converted into a polygonal grid by computing a bounded Voronoi diagram.
+	\item Kershaw's quadrilateral z-mesh \cite{kershaw1981differencing}. This mesh is formed by taking an orthogonal quadrilateral grid and displacing certain interior vertices only in the $y$ dimension.
+	\item A polygonal variant of the quadrilateral z-mesh. The polygonal grid is formed in a similar manner to the sinusoidal polygonal mesh with a Voronoi diagram.
+\end{enumerate}
 
-\begin{equation}
-\label{eq::BF_Results_TDL_normalized_eqs}
-\begin{aligned}
-\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{1}{\epsilon} \Psi &=  \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} +  \frac{\epsilon}{4 \pi} \\
-\frac{\epsilon}{3} {\nabla}^2 \Phi &+ \epsilon  \Phi =  \epsilon 
-\end{aligned}
-\end{equation}
+\noindent We also wish that both the angular flux solution as well as the 0th moment solution are strictly positive everywhere. Therefore, we set the function parameters in Eq. (\ref{eq::BF_Results_Linear_fluxsols}) to $\sigma_t = a = c = d = e = 1.0$ and $b = 1.5$. We gave the solution the $40 \%$ tilt in space ($a \neq b$) so that it would not align with the triangular mesh. Using an S8 LS quadrature set, we ran all combinations of the polygonal basis functions and the mesh types. The linear solutions for the Wachspress, PWL, mean value, linear maximum entropy, and quadratic serendipity maximum entropy basis functions are presented in Figures \ref{fig::BF_Results_Linear_wach_sol}, \ref{fig::BF_Results_Linear_pwld_sol}, \ref{fig::BF_Results_Linear_mv_sol}, \ref{fig::BF_Results_Linear_me1_sol}, and \ref{fig::BF_Results_Linear_me2_sol}, respectively. We can see that for all the polygonal basis functions, an exact linear solution is captured as shown by the unbroken nature of the contour lines. This even holds on the highly distorted quadrilateral shestakov mesh.
 
+%%%%%%%%%%%%%%%%%
+% Begin Linear Solution figures
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::cart_wach_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/cart_WACHSPRESS_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::tri_wach_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/tri_WACHSPRESS_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::shes_quad_wach_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/shes_quad_WACHSPRESS_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::smooth_poly_wach_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/smooth_poly_WACHSPRESS_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_quad_wach_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/z_quad_WACHSPRESS_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_poly_wach_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_WACHSPRESS_k1.eps}
+		\caption{}
+	\end{subfigure}
+\caption{Contour plots of the exactly-linear solution with the Wachspress basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\label{fig::BF_Results_Linear_wach_sol}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::cart_pwld_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/cart_PWLD_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::tri_pwld_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/tri_PWLD_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::shes_quad_pwld_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/shes_quad_PWLD_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::smooth_poly_pwld_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/smooth_poly_PWLD_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_quad_pwld_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/z_quad_PWLD_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_poly_pwld_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_PWLD_k1.eps}
+		\caption{}
+	\end{subfigure}
+\caption{Contour plots of the exactly-linear solution with the PWL basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\label{fig::BF_Results_Linear_pwld_sol}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::cart_mv_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/cart_MV_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::tri_mv_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/tri_MV_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::shes_quad_mv_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/shes_quad_MV_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::smooth_poly_mv_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/smooth_poly_MV_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_quad_mv_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/z_quad_MV_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_poly_mv_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_MV_k1.eps}
+		\caption{}
+	\end{subfigure}
+\caption{Contour plots of the exactly-linear solution with the mean value basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\label{fig::BF_Results_Linear_mv_sol}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::cart_me_k1_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/cart_MAXENT_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::tri_me_k1_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/tri_MAXENT_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::shes_quad_me_k1_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/shes_quad_MAXENT_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::smooth_poly_me_k1_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/smooth_poly_MAXENT_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_quad_me_k1_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/z_quad_MAXENT_k1.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_poly_me_k1_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_MAXENT_k1.eps}
+		\caption{}
+	\end{subfigure}
+\caption{Contour plots of the exactly-linear solution with the linear maximum entropy basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\label{fig::BF_Results_Linear_me1_sol}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::cart_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/cart_MAXENT_k2.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::tri_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/tri_MAXENT_k2.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::shes_quad_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/shes_quad_MAXENT_k2.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::smooth_poly_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/smooth_poly_MAXENT_k2.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_quad_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/z_quad_MAXENT_k2.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_poly_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_MAXENT_k2.eps}
+		\caption{}
+	\end{subfigure}
+\caption{Contour plots of the exactly-linear solution with the quadratic serendipity maximum entropy basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\label{fig::BF_Results_Linear_me2_sol}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - MMS
-\subsection{Analytical Transport Solutions by the Method of Manufactured Solutions}
+\subsection{Convergence Rate Analysis by the Method of Manufactured Solutions}
 \label{sec::BF_Results_MMS}
 
-The next numerical example we investigate involves the method of manufactured solutions (MMS). 
+The next numerical example we investigate involves calculating the convergence rate of the solution error via the method of manufactured solutions (MMS). Like MES, MMS enforces a given solution by use of a derived functional form for the driving source of the problem ($Q_{ext}$). However, unlike MES, we enforce a spatial solution that cannot be captured by the interpolation of the finite element space. Using a specification of the Bramble-Hilbert \cite{bramble1970estimation} lemma, the difference between the exact solution, $\Phi_e$, and the discretized solution, $\Phi_h$, residing in the Sobolev space, $W_{\mathcal{D}}^h \in \mathcal{T}_h$, for a given polynomial interpolation order, $k$, is
+
+\begin{equation}
+\label{eq::BF_Results_MMS_errnorm}
+|| \Phi_{e} - \Phi_h || _{2}  \leq C \frac{h^{q+1/2}}{(k+1)^q} ,
+\end{equation}
+
+\noindent where $q=\min(k+1/2,r )$, $h$ is the maximum diameter of all mesh cells, $C$ is some constant independent of the mesh, $r$ is a measure of the regularity of the transport solution, and $|| \cdot ||_2$ is the $L_2$ norm \cite{houston2000stabilized}. For transport solutions with sufficient discontinuities, $r$ can approach 0. However, if the chosen solution is at least $C^k$ continuous and a topologically regular mesh is used, then the convergence rate becomes strictly $(k+1)$. For structured meshes, $h$ is straightforward to define. Unfortunately, this becomes a problem in general for polytope meshes. Instead, the grid resolution can be related to the number of spatial degrees of freedom ($N_{dof}$),
+
+\begin{equation}
+\label{eq::BF_Results_MMS_dofres}
+N_{dof} \propto h^{-d} ,
+\end{equation}
+
+\noindent where $d$ is the dimensionality of the problem. Using this relationship for the grid resolution, along with the error norm of Eq. (\ref{eq::BF_Results_MMS_errnorm}), we can define a general relationship between the error norm and the number of spatial degrees of freedom:
+
+\begin{equation}
+\label{eq::BF_Results_MMS_errdofres}
+|| \Phi_{e} - \Phi_h || _{2}  \propto N_{dof}^{- \frac{k+1}{d}} .
+\end{equation}
+
+\noindent The result of Eq. (\ref{eq::BF_Results_MMS_errdofres}) states that we expect convergence rates of $N_{dof}^{-1}$ and $N_{dof}^{-2/3}$ for linear basis functions in 2D and 3D, respectively. Conversely, quadratic basis functions will yield convergence rates of $N_{dof}^{-3/2}$ and $N_{dof}^{-1}$ in 2D and 3D, respectively.
+
+For this example, we choose
+
+\begin{equation}
+\label{eq::BF_Results_MMS_fluxsols}
+\begin{aligned}
+\Psi (x,y) &= C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}) \\ 
+\Phi (x,y) &= 2 \pi C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma})
+\end{aligned} .
+\end{equation}
+
+\noindent where the constants in the equations are:
+
+\begin{equation}
+\label{eq::BF_Results_MMS_consts}
+C_M = \frac{200}{L_x^2 L_y^2} \qquad \gamma = \frac{L_x L_y}{100} .
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Searchlight Problem
@@ -415,9 +710,56 @@ The next numerical example we investigate involves the method of manufactured so
 
 The next example models a beam or searchlight. Similar problems were investigated in Dedner and Vollm{\"o}ller \cite{dedner2002adaptive} and Wang and Ragusa \cite{wang2011standard}. In this problem, an incident beam of neutrons is shined onto a small portion of a boundary, propagates through a vacuum, and then exits through a small portion of a different boundary. As the beam propagates through the vacuum, the spatial discretization causes radiation outflow through all downwind cell faces. This leads to numerical dispersion and will cause to beam to artificially broaden.
 
-In this problem, we investigate an $\mathbb{R}^2$ domain of size $[0,1]^2$. The radiation enters the left boundary between $0.2 \leq y \leq 0.4$ with an un-normalized angular direction of $[1,0.4]$. For this chosen direction, the radiation beam would analytically leave the right boundary between $0.6 \leq y \leq 0.8$. This means that any radiation leaving the right boundary for all other $y$ values is due to the numerical dispersion of the beam.
+In this problem, we investigate an $\mathbb{R}^2$ domain of size $[0,1]^2$ cm. The radiation enters the left boundary between $0.2 \leq y \leq 0.4$ with an un-normalized angular direction of $[1,0.4]$. For this chosen direction, the radiation beam would analytically leave the right boundary between $0.6 \leq y \leq 0.8$. This means that any radiation leaving the right boundary for all other $y$ values is due to the numerical dispersion of the beam.
 
-We investigated this problem using several of the 2D polygonal basis functions as outlined in Section \ref{sec::BF_2D} as well as 
+We investigated this problem using several of the 2D polygonal basis functions as outlined in Sections \ref{sec::BF_2DLinear} and \ref{sec::BF_2DQuadratic} as well as 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/sec_BF/searchlight_starting_mesh.eps}
+\caption{Initial mesh configuration for the searchlight problem before any refinement cycles.}
+\label{fig::BF_Results_SL_starting_mesh}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SL_uniform_ef_wach}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SL_WACHSPRESS_uniform.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SL_uniform_ef_pwld}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SL_PWLD_uniform.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SL_uniform_ef_mv}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SL_MV_uniform.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SL_uniform_ef_me1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SL_ME_k1_uniform.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SL_uniform_ef_me2}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SL_ME_k2_uniform.eps}
+		\caption{}
+	\end{subfigure}
+\caption{Exiting angular flux on the right boundary with uniform refinement using the (a) Wachspress basis functions, (b) PWL basis functions, (c) mean value basis functions, (d) linear maximum entropy coordinates and (e) quadratic serendipity maximum entropy coordinates.}
+\label{fig::BF_Results_SL_uniform_exit_flux}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Conclusions

@@ -315,7 +315,9 @@ The second angular quadrature set we will present is a Product Gauss-Legendre-Ch
 	\item Has strictly positive weights for all polar and azimuthal combinations.
 \end{itemize}
 
-From the listed differences, we can already discern some clear advantages and disadvantages from a fully-symmetric quadrature set like LS. If a high number of angles are required for a problem, then negative weights do not arise. Also, if the transport solution is smoothly varying in either the polar or azimuthal directions, 
+From the listed differences, we can already discern some clear advantages and disadvantages from a fully-symmetric quadrature set like LS. If a high number of angles are required for a problem, then negative weights do not arise. This is beneficial for transport problems with significant discontinuities. Also, the quadrature directions can be preferentially distributed in the primary octant if required for a particular problem. For example, if the transport solution is smoothly varying in the polar direction and not in the azimuthal direction, then we can specify a larger number of quadrature points in the azimuthal direction, with much fewer points in the polar direction. However, this also highlights the fact that the quadrature weights are aligned with the polar level, which can lead to less accurate moment integrations for certain transport problems. 
+
+For this dissertation, we will use the following notation to define the product nature of the PGLC quadrature points: $S_{a}^{p}$. Here, $a$ and $p$ correspond to the number of azimuthal and polar directions in the primary octant, respectively. We demonstrate this definition in Figure \ref{fig::Sn_Angle_PGLC_Quads} with several combinations of azimuthal and polar directions. Again, the size of the direction marker corresponds to the relative weight of quadrature point. One can clearly see that the weights vary on the polar levels and all azimuthal weights on a given polar level are constant.
 
 \begin{figure}
 \centering
@@ -354,8 +356,8 @@ From the listed differences, we can already discern some clear advantages and di
 		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC8_8.png}
 		\caption{}
 	\end{subfigure}
-\caption[Product Gauss-Legendre-Chebyshev angular quadrature set]{Product Gauss-Legendre-Chebyshev angular quadrature set with orders: (a) PGLC$_2^2$, (b) PGLC$_2^4$, (c) PGLC$_4^2$, (d) PGLC$_4^4$, (e) PGLC$_6^6$, and (f) PGLC$_8^8$.}
-\label{fig_Sn_Angle_PGLC_Quads}
+\caption[Product Gauss-Legendre-Chebyshev angular quadrature set]{Product Gauss-Legendre-Chebyshev angular quadrature set with orders: (a) S$_2^2$, (b) S$_2^4$, (c) S$_4^2$, (d) S$_4^4$, (e) S$_6^6$, and (f) S$_8^8$.}
+\label{fig::Sn_Angle_PGLC_Quads}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

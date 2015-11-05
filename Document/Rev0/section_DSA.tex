@@ -297,6 +297,41 @@ We now present the results showing the efficacy of a discontinuous diffusion for
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Thick Diffusive Limit
+\subsection{Transport Solutions in the Thick Diffusive Limit}
+\label{sec::DSA_Results_TDL}
+
+We present our first numerical example by demonstrating that the various polygonal finite element basis sets satisfy the thick diffusion limit. 
+
+
+\begin{equation}
+\label{eq::BF_Results_TDL_scaling}
+\begin{aligned}
+	\sigma_t &\rightarrow \frac{\sigma_t}{\epsilon} \\
+	\sigma_a &\rightarrow \epsilon \sigma_t\\
+	\frac{Q_0}{4 \pi} &\rightarrow \epsilon \frac{Q_0}{4 \pi}
+\end{aligned}
+\end{equation}
+
+\begin{equation}
+\label{eq::BF_Results_TDL_scaled_trans_eq}
+\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{\sigma_t}{\epsilon} \Psi = \sigma_t \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} + \epsilon \frac{Q_0}{4 \pi}
+\end{equation}
+
+\begin{equation}
+\label{eq::BF_Results_TDL_scaled_diff_eq}
+\epsilon \vec{\nabla} \cdot \frac{1}{3 \sigma_t}  \vec{\nabla} \Phi + \epsilon \sigma_t \Phi =  \epsilon Q_0
+\end{equation}
+
+\begin{equation}
+\label{eq::BF_Results_TDL_normalized_eqs}
+\begin{aligned}
+\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{1}{\epsilon} \Psi &=  \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} +  \frac{\epsilon}{4 \pi} \\
+\frac{\epsilon}{3} {\nabla}^2 \Phi &+ \epsilon  \Phi =  \epsilon 
+\end{aligned}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - SIP Results
 \subsection{SIP used as a Diffusion Solver}
 \label{sec::DSA_Results_SIP}
@@ -477,6 +512,7 @@ We first test SIP by enforcing a sytem that yields a purely-linear solution. Lin
 \caption{blah}
 \label{fig::SIP_mms_gauss_error_plot}
 \end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
