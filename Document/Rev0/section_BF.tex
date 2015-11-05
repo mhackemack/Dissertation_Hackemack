@@ -686,7 +686,14 @@ N_{dof} \propto h^{-d} ,
 
 \noindent The result of Eq. (\ref{eq::BF_Results_MMS_errdofres}) states that we expect convergence rates of $N_{dof}^{-1}$ and $N_{dof}^{-2/3}$ for linear basis functions in 2D and 3D, respectively. Conversely, quadratic basis functions will yield convergence rates of $N_{dof}^{-3/2}$ and $N_{dof}^{-1}$ in 2D and 3D, respectively.
 
-For this example, we choose
+For this example, we choose the following solution and problem parameters and characteristics:
+
+\begin{enumerate}
+	\item Constant total cross section so that parameterized material properties are not necessary;
+	\item No scattering to avoid solution discontinuities from the $S_N$ discretization;
+	\item Analytical solutions that are $C^{\infty}$ continuous in space for both the angular flux and 0th order flux moment - this leads to valid solution spaces no matter what polynomial order is selected for the basis functions;
+	\item The angular flux solution is zero on the boundary for all incident directions - this is identical to vacuum boundaries which can ease code development;
+\end{enumerate}
 
 \begin{equation}
 \label{eq::BF_Results_MMS_fluxsols}
