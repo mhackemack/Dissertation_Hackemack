@@ -586,17 +586,12 @@ Finally, the last terms to consider of the discretized transport equation are th
 \section{Solution Procedures}
 \label{sec::Sn_Solution}
 
-To this point, we have properly described the procedures to discretize the transport problem in energy, angle, and space. We now spend the remainder of this chapter discussing various methodologies to efficiently solve the tightly-coupled system of equations composing our transport problem. Section \ref{sec::Sn_Solution_Iterative} will discuss the different iterative procedures that can be employed to efficiently converge the angular and energy portions of the solution space and Section \ref{sec::Sn_Solution_Spatial} will then discuss how we can efficiently solve the spatial portion of the solution for any given iteration.
+To this point, we have properly described the procedures to discretize the transport problem in energy, angle, and space. We now spend the remainder of this chapter discussing various methodologies to efficiently solve the tightly-coupled system of equations composing our transport problem. Section \ref{sec::Sn_Solution_Iterative} will discuss the different iterative procedures that can be employed to efficiently converge the angular and energy portions of the solution space and Section \ref{sec::Sn_Solution_Sweeping} will then discuss how we can efficiently solve the spatial portion of the solution for any given iteration.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Iterative Procedures
 \subsection{Angle and Energy Iteration Procedures}
 \label{sec::Sn_Solution_Iterative}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - Transport Sweeping
-\subsection{Spatial Solution Procedures - Transport Sweeping}
-\label{sec::Sn_Solution_Spatial}
 
 \begin{figure}
 \centering
@@ -611,8 +606,19 @@ To this point, we have properly described the procedures to discretize the trans
 		\includegraphics[width=\textwidth]{figures/sec_Sn/scattering_matrix_w_upscattering.eps}
 	\end{subfigure}
 \caption[Scattering matrices with and without upscattering]{Scattering matrices (top) without and (bottom) with upscattering. The gray corresponds to within-group scattering; the blue corresponds to down-scattering in energy; and the red corresponds to up-scattering in energy.}
-\label{fig::Sn_BF_scattering_matrix}
+\label{fig::Sn_Solution_Iterative_scattmatrix}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Transport Sweeping
+\subsection{Spatial Solution Procedures - Transport Sweeping}
+\label{sec::Sn_Solution_Sweeping}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - AMR
+\subsection{Traditional Adaptive Mesh Refinement Procedures}
+\label{sec::Sn_Solution_AMR}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Conclusions

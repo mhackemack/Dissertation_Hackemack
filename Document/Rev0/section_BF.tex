@@ -80,10 +80,10 @@ y_i - y
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Linear
-\subsection{Linear and BiLinear Basis Functions}
+\subsection{Traditional Linear Basis Functions - $\mathbb{P}_{1}$ and $\mathbb{Q}_{1}$ Spaces}
 \label{sec::BF_2DLinear_LDandBLD}
 
-Before presenting basis function sets applicable to polytope finite elements, we first provide the two historical basis functions that are exact on triangles and convex quadrilaterals: the $\mathbb{P}_{1}$ and $\mathbb{Q}_{1}$ spaces, respectively.
+Before presenting basis function sets applicable to polytope finite elements, we first provide two common basis functions that are exact on triangles and convex quadrilaterals: the $\mathbb{P}_{1}$ and $\mathbb{Q}_{1}$ spaces, respectively.
 
 \begin{equation}
 \label{eq::2D_lin_basis_functions}
@@ -114,16 +114,7 @@ and
 \subsection{Wachspress Rational Basis Functions}
 \label{sec::BF_2DLinear_Wachspress}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - Mean Value
-\subsection{Mean Value Basis Functions}
-\label{sec::BF_2DLinear_MV}
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - Maximum Entropy
-\subsection{Maximum Entropy Basis Functions}
-\label{sec::BF_2DLinear_ME}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - PWL
@@ -249,23 +240,43 @@ and
 %%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSubSection - 2D linear summary
+%%%   SubSection - Mean Value
+\subsection{Mean Value Basis Functions}
+\label{sec::BF_2DLinear_MV}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Maximum Entropy
+\subsection{Maximum Entropy Basis Functions}
+\label{sec::BF_2DLinear_ME}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - 2D linear summary
 \subsection{Summary of 2D Linear Basis Functions on Polygons}
 \label{sec::BF_2DLinear_Summary}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Quadratic Basis Functions
 \section{Quadratic Serendipity Basis Functions on 2D Polygons}
 \label{sec::BF_2DQuadratic}
 
-\begin{gather}
-	 \sum_{i=1}^{N_K} b_i (\vec{x})  =  1 \\
-	\sum_{i=1}^{N_K} b_i(\vec{x}) \vec{x}_i  =  \vec{x} \\
-	\sum_{i=1}^{N_K} \sum_{j=1}^{N_K} \mu _{i,j}  \left(   \frac{\vec{x}_i \otimes \vec{x}_j +\vec{x}_j \otimes \vec{x}_i }{2}  \right)  = \vec{x} \otimes \vec{x}
-\label{eq::quadratic_interp_requirements}
-\end{gather}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - P2 and S2
+\subsection{Traditional Quadratic Basis Functions - $\mathbb{P}_{2}$ and $\mathbb{S}_{2}$ Spaces}
+\label{sec::BF_2DQuadratic_P2S2}
 
-\noindent where $\mu_{i,j}$ is a weight function corresponding to particular basis function pairings.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Quadratice ME
+\subsection{Quadratic Maximum Entropy Coordinates on 2D Polygons}
+\label{sec::BF_2DQuadratic_ME}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - 3D
@@ -366,7 +377,7 @@ We present our first numerical example by demonstrating that the linear and quad
 
 \noindent where the streaming term was separated into the corresponding two-dimensional terms. We chose to drop the scattering term for this example so that the error arising from iteratively converging our solution would have no impact.
 
-We then define an angular flux solution that is linear in both space and angle along with the corresponding 0th moment scalar flux solution:
+We then define an angular flux solution that is linear in both space and angle along with the corresponding 0th moment scalar flux ($\Phi_{0,0} \rightarrow \Phi$) solution:
 
 \begin{equation}
 \label{eq::BF_Results_Linear_fluxsols}
@@ -691,24 +702,41 @@ For this example, we choose the following solution and problem parameters and ch
 \begin{enumerate}
 	\item Constant total cross section so that parameterized material properties are not necessary;
 	\item No scattering to avoid solution discontinuities from the $S_N$ discretization;
-	\item Analytical solutions that are $C^{\infty}$ continuous in space for both the angular flux and 0th order flux moment - this leads to valid solution spaces no matter what polynomial order is selected for the basis functions;
-	\item The angular flux solution is zero on the boundary for all incident directions - this is identical to vacuum boundaries which can ease code development;
+	\item No solution dependence in angle to avoid introducing angular discretization error;
+	\item Analytical solutions that are $C^{\infty}$ continuous in space for both the angular flux and 0th order flux moment - this leads to integrable solution spaces that satisfy the Bramble-Hilbert lemma no matter what polynomial order is selected for the basis functions;
+	\item The angular flux solution is zero on the boundary for all incident directions - this is identical to vacuum boundaries which can ease code development.
 \end{enumerate}
 
+\noindent To satisfy these characteristics, we choose to analyze two different solution spaces. The first is a smoothly varying sinusoid solution with no extreme local maxima. The second solution is a product of a quadratic function and a gaussian which yields a significant local maximum. 
+
+The sinusoid flux solutions, \{$\Psi^s$, $\Phi^s$\}, have the following parameterized form,
+
 \begin{equation}
-\label{eq::BF_Results_MMS_fluxsols}
+\label{eq::BF_Results_MMS_sinefluxsols}
 \begin{aligned}
-\Psi (x,y) &= C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}) \\ 
-\Phi (x,y) &= 2 \pi C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma})
-\end{aligned} .
+\Psi^s (x,y) = &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}), \\ 
+\Phi^s (x,y) = 2 \pi &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}),
+\end{aligned} 
+\end{equation}
+
+\noindent where $\nu$ is a frequency parameter. We restrict this paremeter to positive integers ($\nu = 1,2,3,...$) to maintain characteristic 5 of the solution and problem space. The gaussian solution space, \{$\Psi^g$, $\Phi^g$\}, that has its local maximum centered at ($x_0,y_0$) has the parameterized form,
+
+\begin{equation}
+\label{eq::BF_Results_MMS_gaussfluxsols}
+\begin{aligned}
+\Psi^g (x,y) = &C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}), \\ 
+\Phi^g (x,y) = 2 \pi &C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}),
+\end{aligned} 
 \end{equation}
 
 \noindent where the constants in the equations are:
 
 \begin{equation}
-\label{eq::BF_Results_MMS_consts}
-C_M = \frac{200}{L_x^2 L_y^2} \qquad \gamma = \frac{L_x L_y}{100} .
+\label{eq::BF_Results_MMS_gaussconsts}
+C_M = \frac{100}{L_x^2 L_y^2} \qquad \gamma = \frac{L_x L_y}{100} .
 \end{equation}
+
+For this example, we choose the dimensionality of our problem to be $[0,1]^2$ which makes $L_x=L_y=1$ for both the sinusoid and gaussian solutions. For the sinusoid solution, we select the frequency parameter, $\nu$, to be 3 and for the gaussian solution we set the local maximum: $x_0=y_0 = 0.75$. With these parameters, the sinusoid solution will have local minima and maxima of $-2 \pi$ and $2 \pi$, respectively, and the gaussian solution will have a global maximum of $\frac{225}{32} \pi \approx 22.1$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Searchlight Problem
