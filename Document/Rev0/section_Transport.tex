@@ -195,14 +195,13 @@ Now that we have provided the discretization of the energy variable, we next foc
 \vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{\Omega}) + \sigma_t \Psi (\vec{\Omega}) = \int_{4 \pi}  d\Omega' \, \sigma_s ( \vec{\Omega}' \cdot \vec{\Omega}) \Psi (\vec{\Omega}') + Q  (\vec{\Omega}) .
 \end{equation}
 
-We first expand the angular flux, scattering cross section and external source in spherical harmonics:
+We first expand the angular flux and the scattering cross section in spherical harmonics,
 
 \begin{equation}
 \label{eq::Sn_Angle_moments}
 \begin{aligned}
-	\Phi_{p,n} &\equiv \int_{4 \pi} d\Omega \, \Psi(\vec{\Omega}) \, Y_{p,n} (\vec{\Omega}) \\
-	\sigma_{s,p} &\equiv  \int_{-1}^{1} \, d \mu \, \sigma_s ( \mu) P_p (\mu)  \\
-	Q_{p,n} &\equiv 
+	\Phi_{p,n} &\equiv \int_{4 \pi} d\Omega \, \Psi(\vec{\Omega}) \, Y_{p,n} (\vec{\Omega}), \\
+	\sigma_{s,p} &\equiv  \int_{-1}^{1} \, d \mu \, \sigma_s ( \mu) P_p (\mu)  ,
 \end{aligned}
 \end{equation}
 
@@ -211,9 +210,9 @@ We first expand the angular flux, scattering cross section and external source i
 \begin{equation}
 \label{eq::Sn_Angle_other_terms}
 \begin{aligned}
-	\mu &\equiv \vec{\Omega}' \cdot \vec{\Omega} \\
-	\sigma_s ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} \sigma_s ( \mu ) \\
-	P_p ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} P_p (\mu)
+	\mu &\equiv \vec{\Omega}' \cdot \vec{\Omega}, \\
+	\sigma_s ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} \sigma_s ( \mu ) ,\\
+	P_p ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} P_p (\mu).
 \end{aligned}
 \end{equation}
 
