@@ -1,0 +1,1700 @@
+\pdfminorversion=4
+\documentclass[compress,10pt]{beamer}
+%For no animations, add handout to [] options
+%For no figures or top banner, add draft to [] options
+%apsectratio=169 (16:9) or 54 (5:4) or 43 (4:3) or 32 (3:2)
+
+%Load the myriad packages
+\usepackage{color}
+\usepackage{amssymb,amsmath}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{tikz}
+%\usepackage[numbers, super]{natbib}
+\usepackage{grffile} %spaces in file names
+\usepackage{parskip}
+%\usepackage[T1]{fontenc} %for sc and bf
+%\usepackage{times}
+\usepackage{wasysym}
+\usepackage{bigstrut}
+%\usepackage{enumitem}
+%\setlist{nolistsep} % or \setlist{noitemsep} to leave space around whole list
+% Load some optional sub-parts of PGF
+%\usetikzlibrary{decorations.pathmorphing}
+%\usetikzlibrary{positioning}
+%\usetikzlibrary{calc}
+%\usetikzlibrary{shapes.geometric}
+%\usepackage{pgfplots}
+%\usepackage{rotating}
+%\usepackage[no-math]{fontspec}
+%\usepackage{xltxtra}
+%\usepackage{xunicode}
+%\defaultfontfeatures{Mapping=tex-text}
+%%\setsansfont[Mapping=tex-text]{Optima}
+%\setsansfont[Mapping=tex-text]{Helvetica Neue}
+% Optional for code samples
+%
+%singular
+\newcommand{\fref}[1]{Fig.~\ref{fig:#1}}
+\newcommand{\Fref}[1]{Figure~\ref{fig:#1}}
+\newcommand{\eref}[1]{Eq.~(\ref{eq:#1})}
+\newcommand{\Eref}[1]{Equation~(\ref{eq:#1})}
+\newcommand{\tref}[1]{Table~\ref{tab:#1}}
+%plural
+\newcommand{\frefs}[2]{Figs.~\ref{fig:#1} and \ref{fig:#2}}
+\newcommand{\Frefs}[2]{Figures~\ref{fig:#1} and \ref{fig:#2}}
+\newcommand{\erefs}[2]{Eqs.~(\ref{eq:#1}) and (\ref{eq:#2})}
+\newcommand{\Erefs}[2]{Equations~(\ref{eq:#1}) and (\ref{eq:#2})}
+\newcommand{\trefs}[2]{Tables~\ref{tab:#1} and \ref{tab:#2}}
+%range
+\newcommand{\frefss}[2]{Figs.~\ref{fig:#1} - \ref{fig:#2}}
+\newcommand{\Frefss}[2]{Figures~\ref{fig:#1} - \ref{fig:#2}}
+\newcommand{\erefss}[2]{Eqs.~(\ref{eq:#1}) - (\ref{eq:#2})}
+\newcommand{\Erefss}[2]{Equations~(\ref{eq:#1}) - (\ref{eq:#2})}
+\newcommand{\trefss}[2]{Tables~\ref{tab:#1} - \ref{tab:#2}}
+%misc.
+\newcommand{\nn}[1]{\ensuremath{^{#1}}} %[1] is # of commands
+\newcommand{\keff}{\ensuremath{{k_\mathrm{eff}}}}
+\newcommand{\kinf}{\ensuremath{{k_\infty}}}
+\newcommand{\alphaT}{\ensuremath{{\alpha_{_T}}}}
+\newcommand{\SN}{\ensuremath{{\text{S}_\text{N}}}}
+\newcommand{\order}[1]{\ensuremath{\mathcal{O}\left(#1\right)}}
+%Note: tarticle has ``several'' changes from article
+%in this vein.
+% some simplifying commands
+\newcommand{\eg}{{\it e.g.}}
+\newcommand{\ie}{{\it i.e.}}
+\newcommand{\etal}{{\it et al.}}
+\newcommand{\acite}[1]{{\bf(Add Citation: #1)}}
+\newcommand{\E}{\mathcal{E}}
+% derivative - d
+\newcommand{\ud}{\,\mathrm{d}}
+% bold unit vector n-hat
+\newcommand{\nhat}{\hat{\bf n}}
+\newcommand{\tensor}[1]{\mathcal{#1}}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\newcommand{\om}{\boldsymbol{\Omega}}
+%
+
+%Don't number backup slides
+\newcommand{\backupbegin}{
+    \newcounter{finalframe}
+    \setcounter{finalframe}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+    \setcounter{framenumber}{\value{finalframe}}
+}
+
+%Colors!
+\definecolor{maroon}{rgb}{0.5,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+
+%Get rid of navigation icons
+\setbeamertemplate{navigation symbols}{}
+\useoutertheme{infolines}
+
+\setbeamercovered{transparent}
+\usepackage{lipsum}
+
+%Aggie-themed
+\pgfdeclareimage[height=0.1in]{TAMUlogo}{images/tamu_engineering.png}
+\pgfdeclareimage[height=0.15in]{DOElogo}{images/DOE_logo.png}
+\logo{\raisebox{-8pt}{\pgfuseimage{TAMUlogo} \hspace{1pt} \pgfuseimage{DOElogo}}}
+\titlegraphic{\includegraphics[height=0.15\textheight]{images/seal.png}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Optional packages, used to show off certain tricks
+
+\newlength \figwidth
+\setlength \figwidth {0.5\textwidth}
+
+\setlength{\leftmargin}{-2cm}
+\setlength{\rightmargin}{-2cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mode<presentation>
+{
+    \usepackage[english]{babel}
+    \usetheme{Frankfurt}
+
+    %Make it Aggie Maroon
+    \usecolortheme[RGB={80,0,0}]{structure}
+
+    % This will typeset only the frames (or slides) that have the given label ("current" in this case).
+    %  \includeonlyframes{current}
+}
+
+\title[Polytope DGFEM Transport]{Higher-Order DGFEM Transport Calculations on Polytope Meshes for Massively-Parallel Architectures}
+
+\author[Hackemack]{{\Large Michael W. Hackemack} \vspace{0.35cm} \\ Chair: {\small Jean C. Ragusa} \\ Committee Members: {\small Marvin L. Adams, Jim E. Morel, Nancy M. Amato } \\ External Advisor: {\small Troy Becker}}
+
+%TAMU
+\institute[Texas A\&M University]{\scriptsize Department of Nuclear Engineering\\
+Texas A\&M University \\
+College Station, TX, USA 77843\\[1ex]
+\href{mailto:mike\_hack@tamu.edu}{mike\_hack@tamu.edu}}
+
+\date[November 24, 2015]
+
+% You can override the default acknowledgment, and address if you want
+%\acknowledgement{*Submitted in partial fulfillment of the requirements of NUEN 610 \\
+%(Nuclear Reactor Design)}
+%\address{Nuclear Engineering Department \\
+%            Texas A\&M University \\
+%            College Station, TX 77843-3133}}
+
+% If you don't want the menu section outline above the title, do this:
+%\setbeamertemplate{headline}{}
+
+\renewcommand{\ss}{ss}
+\vfuzz=2pt
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  All this typeout stuff simply gets printed to the screen as the document
+% is compiled.  It helps get stuff working
+\typeout{***********************************************************************************}
+\typeout{titlepage}
+
+\begin{frame}[label=title,plain]
+    \titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{TOC}
+
+\begin{frame}[shrink,label=toc,plain]%[plain]
+    \frametitle{Outline}
+    \vspace{1.1mm}
+    \tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\section{Overview}
+% You need an empty subsection, or you don't get the little menu things.
+\subsection{The problem and our motivation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{Problem and Motivation}
+
+%\setbeamerfont{frametitle}{size=\large}
+\begin{frame}[t]
+\frametitle{We need a better treatment of the energy variable when simulating nuclear systems}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\subsection{The ubiquitous multigroup method and its limitations}
+\subsection{Multigroup and multiband methods and their limitations}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{Problem and Motivation}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+   \frametitle{The continuous-energy transport equation is averaged over energy to produce the multigroup transport equation}
+
+\begin{block}{The continuous-energy transport equation}
+\vspace{-4mm}
+\begin{align*}
+\om \cdot \nabla \psi(\vec{r}, E, \om) + \Sigma_t(\vec{r}, E) \,\psi(\vec{r}, E, \om) = Q(\vec{r}, E, \om)
+\end{align*}
+\end{block}
+
+{ \small
+where \\
+$\om$ is the direction of travel of the particle (solid angle in steradians or ster), \\
+$E$ is the energy of the particle (measured in MeV), \\
+$\vec{r}$ is the spatial location of the particle (measured in cm), \\
+$\psi$ is the angular flux (particles/cm$^2$-s-ster-MeV), \\
+$Q$ is the source term (particles/cm$^3$-s-ster-MeV), and \\
+$\Sigma_t(\vec{r}, E)$ is the continuous-energy macroscopic total cross section (1/cm)\\
+}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{Problem and Motivation}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+   \frametitle{The continuous-energy transport equation is averaged over energy to produce the multigroup transport equation}
+
+\begin{block}{The continuous-energy transport equation}
+\vspace{-4mm}
+\begin{align*}
+\om \cdot \nabla \psi(\vec{r}, E, \om) + \Sigma_t(\vec{r}, E) \,\psi(\vec{r}, E, \om) = Q(\vec{r}, E, \om)
+\end{align*}
+\end{block}
+
+\onslide<2->{
+\begin{block}{Averaging over a group}
+\vspace{-4mm}
+\begin{align*}
+\int_{\Delta E_g} \ud{E}\, \Big[ \om \cdot \nabla \psi(\vec{r}, E, \om) + \Sigma_t(\vec{r}, E) \,\psi(\vec{r}, E, \om) \Big] = \int_{\Delta E_g} \ud{E}\, Q(\vec{r}, E, \om)
+\end{align*}
+\end{block}}
+
+\onslide<3->{
+\begin{block}{\textbf{Non}-standard group definitions}
+\vspace{-4mm}
+
+\begin{columns}
+
+\column{0.5\textwidth}
+\centering
+\begin{align*}
+   \psi_g(\vec{r}, \om) \equiv \int_{\Delta E_g} \ud{E}\, \psi(\vec{r}, E, \om)
+\end{align*}
+
+\column{0.5\textwidth}
+\centering
+\begin{align*}
+   {\color{red} \Sigma_{t,g}(\vec{r},\om)} = \frac{\int_{\Delta E_g} \ud{E}\, \Sigma_t(\vec{r}, E)\, {\color{red} \psi(\vec{r}, E, \om)} }{\int_{\Delta E_g} \ud{E}\, {\color{red} \psi(\vec{r}, E, \om)} }
+\end{align*}
+
+\end{columns}
+\end{block}
+}
+
+\onslide<4->{
+\begin{block}{\textbf{Non}-standard MG equation (exact)}
+\vspace{-4mm}
+\begin{align*}
+\om \cdot \psi_g(\vec{r}, \om) + {\color{red} \Sigma_{t,g}(\vec{r},\om)} \, \psi_g(\vec{r}, \om) = Q_g(\vec{r}, \om)
+\end{align*}
+\end{block}
+}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{Problem and Motivation}
+
+\setbeamerfont{frametitle}{size=\normalsize}
+\begin{frame}
+   \frametitle{The continuous-energy transport equation is averaged over energy to produce the multigroup transport equation}
+
+\onslide<1->{
+\begin{block}{\textbf{Non}-standard group definitions}
+\vspace{-4mm}
+
+\begin{columns}
+
+\column{0.5\textwidth}
+\centering
+\begin{align*}
+   \psi_g(\vec{r}, \om) \equiv \int_{\Delta E_g} \ud{E}\, \psi(\vec{r}, E, \om)
+\end{align*}
+
+\column{0.5\textwidth}
+\centering
+\begin{align*}
+   {\color{red} \Sigma_{t,g}(\vec{r},\om)} = \frac{\int_{\Delta E_g} \ud{E}\, \Sigma_t(\vec{r}, E)\, {\color{red} \psi(\vec{r}, E, \om)} }{\int_{\Delta E_g} \ud{E}\, {\color{red} \psi(\vec{r}, E, \om)} }
+\end{align*}
+
+\end{columns}
+\end{block}
+
+\begin{block}{\textbf{Non}-standard MG equation (exact)}
+\vspace{-4mm}
+\begin{align*}
+\om \cdot \psi_g(\vec{r}, \om) + {\color{red} \Sigma_{t,g}(\vec{r},\om)} \, \psi_g(\vec{r}, \om) = Q_g(\vec{r}, \om)
+\end{align*}
+\end{block}
+}
+
+\onslide<2->{
+\begin{block}{\textbf{Standard} group definitions}
+\vspace{-4mm}
+
+\begin{columns}
+
+\column{0.5\textwidth}
+\centering
+\begin{align*}
+   \psi_g(\vec{r}, \om) \equiv \int_{\Delta E_g} \ud{E}\, \psi(\vec{r}, E, \om)
+\end{align*}
+
+\column{0.5\textwidth}
+\centering
+\begin{align*}
+   {\color{darkgreen} \Sigma_{t,g,i}} = \frac{\int_{\Delta E_g} \ud{E}\, \overline{\Sigma}_{t,i}(E)\, {\color{darkgreen} f_i(E)} }{\int_{\Delta E_g} \ud{E}\, {\color{darkgreen} f_i(E)} }, \;\; \forall \vec{r} \in V_i
+\end{align*}
+
+\end{columns}
+\end{block}
+}
+
+\onslide<3->{
+\begin{block}{\textbf{Standard} MG equation (approximate)}
+\vspace{-4mm}
+\begin{align*}
+\om \cdot \psi_g(\vec{r}, \om) + {\color{darkgreen} \Sigma_{t,g,i}} \, \psi_g(\vec{r}, \om) = Q_g(\vec{r}, \om), \quad \forall \vec{r} \in V_i
+\end{align*}
+\end{block}
+}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{Problem and Motivation}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+   \frametitle{The standard MG formulation does not allow for spectrum variation with $\vec{r}$ and $\om$ within a spectral region}
+
+\vspace{1mm}
+
+\begin{columns}
+
+   \column{0.33\textwidth}
+
+   \setlength \figwidth {1.0\columnwidth}
+
+   \centering
+   \only<1->{
+   %{}\includegraphics[width=\figwidth]{../../Research/PhD/figures/PDT_pin_cells/smallVisit0001.png} \\
+   }
+   \only<1->{
+   %{}\includegraphics[width=\figwidth]{../../Thesis/Mine/results/images/p2/problem2.png} \\
+   }
+
+   \column{0.40\textwidth}
+
+   \setlength \figwidth {0.95\columnwidth}
+
+   \only<1->{
+   \centering
+%{}\includegraphics[width=\figwidth]{../../Research/OpenMC/for_adams/figures/p_full_scale_hetero.pdf} \\
+   }
+
+   \column{0.22\textwidth}
+
+   \setlength \figwidth {0.95\columnwidth}
+
+   \only<1->{
+   \centering
+%{}\includegraphics[width=\figwidth]{../../Research/OpenMC/for_adams/figures/p_zoom_scale_hetero.pdf} \\
+   }
+
+\end{columns}
+
+\only<1>{
+\centering
+The actual spectrum can vary significantly within a typical spectral region.\\
+}
+
+\only<2->{
+\begin{block}{The best MG can do is have $f_i(E)$ approximate $\psi(\vec{r}, E, \om)$ in some average sense}
+
+\begin{columns}[t]
+
+\column{0.6\textwidth}
+\centering
+{\footnotesize
+\begin{align*}
+   {\color{darkgreen} \Sigma_{t,g,i}} = \frac{\int_{\Delta E_g} \ud{E}\, \overline{\Sigma}_{t,i}(E)\, {\color{darkgreen} f_i(E)} }{\int_{\Delta E_g} \ud{E}\, {\color{darkgreen} f_i(E)} } = \frac{\int_{\Delta E_g} \ud{E}\, \overline{\Sigma}_{t,i}(E)\, \overline{\phi}_i(E)} {\int_{\Delta E_g} \ud{E}\, \overline{\phi}_i(E) }
+\end{align*}
+}
+
+\column{0.4\textwidth}
+\centering
+\begin{align*}
+   \footnotesize
+   \overline{\phi}_i(E) = \frac{1}{V_i} \int\limits_{V_i} \ud{^3\vec{r}} \int\limits_{4 \pi} \ud{\Omega} \,\psi(\vec{r}, E, \om)
+\end{align*}
+
+\end{columns}
+\end{block}
+}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{History: MB}
+
+\setbeamerfont{frametitle}{size=\normalsize}
+\begin{frame}
+    \frametitle{Our method builds on the successes of previous multiband (MB) methods, though our method is \textbf{not} a MB method}
+
+   \begin{block}{Previous work:}
+   \begin{itemize}
+       \item Opacity density function (ODF), probability tables (PT), and some implementations of subgroup (SG) and MB base unknowns on bands tied to the local cross sections
+       \item MB methods often deal approximately with correlation of cross sections among nuclides because bands may be different for each nuclide
+       \item We propose to use global (discontiguous) energy elements that are obtained by an optimization process that takes into account several characteristic or bounding infinite-medium spectra
+       %\item With this method, we can rigorously show we are choosing our energy unknowns to minimize the projection error from all materials' infinite-medium solutions to our finite element trial space in some norm
+       \item We will show we are choosing our energy unknowns to minimize the within-element spectral variance
+       \item Unlike MB but like MG, our energy intervals apply to the entire problem: all nuclides, all spatial locations, all angular directions use the same energy mesh
+   \end{itemize}
+   \end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\section{Method}
+% You need an empty subsection, or you don't get the little menu things.
+\subsection{}
+%\subsection{Finite elements in energy}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{finite element in energy}
+
+\setbeamerfont{frametitle}{size=\normalsize}
+\begin{frame}
+    \frametitle{We call our method the finite-element-with-discontiguous-support multigroup (FEDS-MG) method}
+
+   \begin{block}{We discretize the problem using a finite element method in energy}
+   \begin{itemize}
+       \item<1-> We split the energy domain into a mesh made up of energy elements, $\mathbb{E}_k$:\\
+       {\color{maroon} $[E_\text{min}, E_\text{max}] = \mathbb{E}_1 \cup \mathbb{E}_2 \cup \ldots \cup \mathbb{E}_\Gamma$, \quad $\mathbb{E}_k \cap \mathbb{E}_n = 0$ if $k \neq n$}
+       \item<2-> We represent the flux in a basis function expansion (our \emph{only} approximation):\\
+       {\color{maroon} $\psi(\vec{r}, E, \om) \simeq \varphi(\vec{r}, E, \om) \equiv \sum_k \Psi_k(\vec{r}, \om) b_k(E)$}
+       \item<3-> Each unknown, $\Psi_k(\vec{r}, \om)$, corresponds to a single energy element, $\mathbb{E}_k$; the corresponding basis function, $b_k(E)$, has support only on that element:\\
+       {\color{maroon} $b_k(E) = 0$ if $E \notin \mathbb{E}_k$}
+       \item<4-> MG uses energy elements/basis functions that have contiguous support:\\
+       {\color{maroon} $\mathbb{E}_k = \{ E \;|\; E \in [E_{k-1/2}, E_{k+1/2}] \}$}
+       \item<5-> FEDS-MG uses energy elements that have discontiguous support:\\
+       {\color{maroon} $\mathbb{E}_k = \big\{ E \;|\; E \in [E_{k,1}, E_{k,2}] \cup [E_{k,3}, E_{k,4}] \cup [E_{k,5}, E_{k,6}] \cup \ldots \big\}$}
+       \onslide<6->{
+       \begin{itemize}
+           \item Multiple contiguous subelements are combined into one discontiguous element
+           \item $\Psi_k (\vec{r}, \om)$ is still physically the integral of the flux over the energies in $\mathbb{E}_k$
+           \item Half of FEDS-MG is defining the discontiguous energy elements
+       \end{itemize}
+       }
+   \end{itemize}
+   \end{block}
+
+\begin{columns}
+
+   \column{0.5\textwidth}
+
+   \setlength \figwidth {1.0\columnwidth}
+
+   \centering
+   \only<4->{
+   %{}\includegraphics[width=\figwidth]{../../Research/PhD/figures/ex_disc_energy_domains/p_mg_1.pdf}\\
+   }
+
+   \column{0.5\textwidth}
+
+   \setlength \figwidth {1.0\columnwidth}
+
+   \centering
+   \only<5->{
+   %{}\includegraphics[width=\figwidth]{../../Research/PhD/figures/ex_disc_energy_domains/p_mb_1.pdf}\\
+   }
+
+   \end{columns}
+
+   % Say: unknowns in one spatial region are the same as unknowns in the other regions:
+   % They are integrals over the energy element
+
+   % Say: The approximation is that all particles within a spectral region have the same
+   % spectrum (spectral shape) for all r and Omega
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{finite element in energy}
+
+\setbeamerfont{frametitle}{size=\normalsize}
+\begin{frame}
+   \frametitle{FEDS-MG is a finite element discretization of the energy variable where elements have discontiguous support}
+
+\setlength \figwidth {0.5\columnwidth}
+
+\centering
+\vspace{-1mm}
+%{}\includegraphics[width=\figwidth]{../../Research/PhD/figures/ex_disc_energy_domains/p_cont.pdf}\\
+\vspace{7mm}
+
+\begin{columns}[t]
+
+   \column{0.5\textwidth}
+
+   \setlength \figwidth {1.0\columnwidth}
+
+   \centering
+  % {}\includegraphics[width=\figwidth]{../../Research/PhD/figures/ex_disc_energy_domains/p_mg.pdf}\\
+
+   \vspace{3mm}
+   %{}\includegraphics[width=\figwidth]{../../Research/PhD/figures/ex_disc_energy_domains/p_mg_0.pdf}\\
+   %{}\includegraphics[width=\figwidth]{../../Research/PhD/figures/ex_disc_energy_domains/p_mg_1.pdf}\\
+   %{}\includegraphics[width=\figwidth]{../../Research/PhD/figures/ex_disc_energy_domains/p_mg_2.pdf}\\
+
+   \vspace{2mm}
+   {\footnotesize
+   Groups are contiguous
+   }
+
+   \column{0.5\textwidth}
+
+   \setlength \figwidth {1.0\columnwidth}
+
+   \centering
+  % {}\includegraphics[width=\figwidth]{../../Research/PhD/figures/ex_disc_energy_domains/p_mb.pdf}\\
+
+   \vspace{3mm}
+   %{}\includegraphics[width=\figwidth]{../../Research/PhD/figures/ex_disc_energy_domains/p_mb_0.pdf}\\
+   %{}\includegraphics[width=\figwidth]{../../Research/PhD/figures/ex_disc_energy_domains/p_mb_1.pdf}\\
+  %{}\includegraphics[width=\figwidth]{../../Research/PhD/figures/ex_disc_energy_domains/p_mb_2.pdf}\\
+
+   \vspace{2mm}
+   {\footnotesize
+       Elements are discontiguous \\
+   }
+   { \scriptsize
+       (if they were contiguous, \\
+       \vspace{-1.8mm}
+       we would have standard MG)
+   }
+
+   \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{Calculating the energy mesh}
+
+\setbeamerfont{frametitle}{size=\normalsize}
+\begin{frame}
+   \frametitle{Our method consists of two parts}
+
+   \begin{block}{Part I: Determine the energy mesh}
+   \begin{itemize}
+       \item<1-> The energy mesh is a discontiguous partitioning of the energy domain
+       \item<2-> It is determined by solving a minimization problem
+       \item<3-> Each element of the mesh has minimal within-element spectral variance
+   \end{itemize}
+   \end{block}
+
+   \onslide<4->{
+   \begin{block}{Part II: Condense cross sections and solve a transport equation}
+   \begin{itemize}
+       \item<5-> We define a finite element space that lives on this energy mesh, where basis functions have support on one and only one energy element
+       \item<6-> Using only the approximation that the angular flux can be represented by this finite element in energy, we can rigorously define an energy-discretized transport equation
+       \item<7-> This equation uses basis-function-weighted cross sections, where the averaging is done over energy elements, which are discontiguous
+       \item<8-> This equation with its cross sections is solvable with existing MG transport codes
+       \item<9-> (Provided these codes can efficiently handle the added effective block-upscattering to the scattering matrix produced by the method)
+   \end{itemize}
+   \end{block}
+   }
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Part I: Calculation of the energy mesh}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{The minimization problem}
+
+\setbeamerfont{frametitle}{size=\normalsize}
+\begin{frame}
+   \frametitle{We solve a minimization problem to determine the energy mesh}
+
+   \begin{block}{}
+   \begin{enumerate}
+       \item<1-> Before performing the minimization
+       \begin{enumerate}
+           \item<2-> Determine a hyperfine group structure that resolves all desired resonances, \\ $\{E_{g\pm1/2}\}$, $g=1,\ldots,G$
+           \item<3-> Choose several characteristic or bounding material compositions and \\denote by index $p$
+           \item<4-> Solve an infinite-medium, fixed-source, slowing-down equation to determine spectra on this hyperfine group structure for each material: $\phi_{g,p}$
+           \item<5-> Choose a final number of energy elements, $E$, with $e=1,\ldots,E$
+       \end{enumerate}
+       \item<6-> Pick the $\mathbb{S}_e$, the set of subelements / hyperfine groups that belong to element $e$, such that each group, $g$, belongs to one and only one element, $e$
+       \item<7-> Average the spectra in energy over each element for each material: \\
+           $\bar{\phi}_{e,p} = \text{mean}_{g \in \mathbb{S}_e} (\phi_{g,p})$
+       \item<8-> Compute the within-element variances: \\
+           $\sum_{g \in \mathbb{S}_e} \Delta E_g | \phi_{g,p} - \bar{\phi}_{e,p}|$
+       \item<9-> Sum these variances over all elements and spectra: \\
+           $F = \sum\limits_{p} \sum\limits_{e} \sum\limits_{g \in \mathbb{S}_e} \Delta E_g | \phi_{g,p} - \bar{\phi}_{e,p} | $
+       \item<10-> Choose element definitions, $\mathbb{S}_e$, that minimize $F$
+   \end{enumerate}
+   \end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{Properties of the minimization problem}
+
+\setbeamerfont{frametitle}{size=\normalsize}
+\begin{frame}
+   \frametitle{Our minimization problem has several useful properties}
+
+   \begin{block}{We choose $\mathbb{S}_e$ to minimize $F = \sum\limits_{p} \sum\limits_{e} \sum\limits_{g \in \mathbb{S}_e} \Delta E_g | \phi_{g,p} - \bar{\phi}_{e,p} | $}
+   \begin{itemize}
+       \item<1-> $F$ is a variance / projection error that indicates how well the energy elements capture the fine-scale behavior of the spectra
+       \item<2-> Choosing energy elements that minimize $F$ results in an energy mesh that maximally captures the resonance-scale behavior of the spectra with a fixed final number of elements, $E$
+       \item<3-> Because the spectra, $\phi_{g,p}$, do not use any geometric information and may use approximate material compositions applicable to several types of problems, the resultant energy mesh may be applicable to several types of problems (\eg, to all BOL LEU PWRs)
+       \item<4-> We can generalize the minimization problem to use more general averages, norms, and weights (cf. PhD Proposal)
+       \item<5-> There exists a class of algorithms called clustering algorithms that can solve these minimization problems efficiently
+       \item<6-> Clustering algorithms often solve the minimization problem iteratively and do not explicitly search the entire combinatoric space of $\mathbb{S}_e$
+   \end{itemize}
+   \end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Part II: Derivation of the FEDS-MG method}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{The PG-FEMG method}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+   \frametitle{Our multiband-like method is a generalized multigroup method implemented using Petrov-Galerkin finite elements in energy}
+   \framesubtitle{We consistently apply definitions}
+
+   \begin{block}{Our Finite-Element-with-Discontiguous-Support Multigroup (FEDS-MG) solution}
+   \vspace{-3.7mm}
+   \onslide<1->{
+   \begin{align*}
+   \psi_\text{exact}(\vec{r}, E, \om) &\simeq \psi_\text{FEDS-MG}(\vec{r}, E, \om) \equiv \sum\limits_{k} b_{k}(\vec{r}, E) \psi_{k}(\vec{r}, \om),
+   \end{align*} \\
+   }
+
+%   \vspace{-5mm}
+%   \onslide<3->{
+%   \begin{align*}
+%    \psi_\text{PG-FEMG}(\vec{r}, E, \om) &= b_{g, b}(\vec{r}, E) \,\psi_{g,b} (\vec{r}, \om), \qquad E \in \Delta E_{g,b},
+%   \end{align*} \\
+%   }
+   \end{block}
+
+\begin{columns}
+
+\column{0.4\textwidth}
+
+\onslide<2->{
+\begin{block}{Our weight functions}
+ %
+ \begin{align*}
+w_{k}(E) &=
+%
+\left\{
+\begin{array}{l l}
+1 & \; \text{if } E \in \mathbb{E}_{k}, \\
+0 & \; \text{otherwise}, \\
+\end{array}
+\right.
+\end{align*}
+%
+with $\{\mathbb{E}_{k}\}$ a global, \textbf{discontinuous} partitioning of the energy domain
+\end{block}}
+
+ \column{0.55\textwidth}
+
+\onslide<3->{
+\begin{block}{Our basis functions}
+ Product of normalized local weighting spectrum and global weight function:
+ %
+ \begin{align*}
+ b_{k}(\vec{r} \in V_i, E) &=
+%
+\left\{
+\begin{array}{l l}
+C_{i,k}\, f_i(E) & E \in \mathbb{E}_{k}, \\
+0 & \text{otherwise}, \\
+\end{array}
+\right.
+\end{align*}
+%
+with $C_{i,k} = \frac{1}{\int_{\mathbb{E}_k} \ud{E} \;f_i(E)}.$
+
+\end{block}}
+
+\end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{PG-FEMG}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+   \frametitle{We derive a weak form of the equation}
+
+\only<1-2>{
+\begin{block}{The transport equation}
+\begin{align*}
+\om \cdot \nabla \psi(\vec{r}, E, \om) + \Sigma_t(\vec{r}, E) \psi(\vec{r}, E, \om) &= \frac{1}{4 \pi} \int_0^\infty \ud{E'} \Sigma_{s}(\vec{r}, E' \rightarrow E) \phi (\vec{r}, E') \;+ \nonumber \\
+ &\qquad \frac{\chi(\vec{r}, E) }{4 \pi \, \keff} \int_0^\infty \ud{E'} \nu \Sigma_{f}(\vec{r}, E') \phi (\vec{r}, E')
+\end{align*}
+\end{block}}
+
+\onslide<2->{
+\begin{block}{\small We test the transport equation against the weight functions and expand the fluxes into their basis function representations}
+ \vspace{-2mm}
+{\scriptsize
+\begin{align*}
+ \int_0^\infty \ud{E} \,w_{n}(E) \Bigg\{ \om \cdot \nabla &\left[\sum\limits_{k} b_{k}(\vec{r}, E) \psi_{k}(\vec{r}, \om) \right] + \Sigma_t(\vec{r}, E) \sum\limits_{k} b_{k}(\vec{r}, E) \psi_{k}(\vec{r}, \om) = \nonumber \\
+ &\quad \frac{1}{4 \pi} \int_0^\infty \ud{E'} \Sigma_{s}(\vec{r}, E' \rightarrow E) \sum\limits_{k'} b_{k'}(\vec{r}, E') \phi_{k'}(\vec{r}) \;+ \nonumber \\
+ &\qquad \frac{\chi(\vec{r}, E) }{4 \pi \, \keff} \int_0^\infty \ud{E'} \nu \Sigma_{f}(\vec{r}, E') \sum\limits_{k'} b_{k'}(\vec{r}, E') \phi_{k'}(\vec{r}) \Bigg\}
+ \end{align*}
+ }
+ \vspace{-2mm}
+ \end{block}
+ }
+
+ \only<3->{
+ \begin{block}{After algebraic manipulation and application of definitions we get}
+ {\footnotesize
+ \begin{align*}
+  \om \cdot \nabla \psi_{k} (\vec{r}, \om) + \Sigma_{t,k,i} \psi_{k} (\vec{r}, \om) &= \frac{1}{4 \pi} \sum\limits_{k'} \Sigma_{s, k' \rightarrow k,i} \phi_{k'} (\vec{r}) \,+ \nonumber \\
+&\hspace{10mm} \frac{\chi_{k,i} }{4 \pi \, \keff} \sum\limits_{k'} \nu \Sigma_{f, k', i} \phi_{k'} (\vec{r})
+\end{align*}
+}
+\end{block}
+}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{PG-FEMG}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+   \frametitle{The FE definitions give us expressions for the cross sections}
+
+   \vspace{-0.5mm}
+
+\begin{block}{\footnotesize Cross sections are now averaged over discontinuous energy domains instead of continuous ones}
+   \vspace{-3.7mm}
+   \begin{align*}
+\Sigma_{t,k,i} &\equiv \int_{0}^{\infty} \ud{E}\, b_{k}(\vec{r}, E) \, \overline{\Sigma}_{t,i}(E), \\
+\chi_{k,i} &\equiv \int_{0}^{\infty} \ud{E}\, w_{k}(E)\, \overline{\chi}_i(E), \\
+\nu \Sigma_{f,k',i} &\equiv \int_{0}^{\infty} \ud{E'}\, b_{k'}(\vec{r}, E') \,\nu\overline{\Sigma}_{f,i}(E'), \\
+\Sigma_{s, k' \rightarrow k,i} &\equiv \int_{0}^{\infty} \ud{E'}\, b_{k'}(\vec{r}, E') \int\limits_{0}^{\infty} \ud{E}\, w_k(E)\, \overline{\Sigma}_{s,i}(E' \rightarrow E),
+\end{align*}
+%
+\vspace{-1mm}
+\begin{columns}
+\column{0.8\textwidth}
+with $\{\mathbb{E}_{k}\}$ a global, discontinuous partitioning of the energy domain, and $b_{k}(\vec{r}, E)$ piecewise constant in space (for a given $E$), normalized st $\int\limits_{\Delta E_{k}} \ud{E} \;b_{k}(\vec{r}, E)\equiv 1 \quad \forall \vec{r}$.
+\end{columns}
+
+
+\end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\section{Proposed Work and Current Status}
+% You need an empty subsection, or you don't get the little menu things.
+\subsection{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{Proposed work}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{I will test the proposed method on a variety of problems}
+
+    \centering
+    \begin{block}{These problems will increase in complexity and be applicable to reactor physics simulations}
+        \begin{enumerate}
+            \item<1-> A series of one-dimensional cylindricized pin cells to test energy convergence on small reactor-themed problems
+            \item<2-> An energy-generalized version of the C5G7 benchmark called the C5G$^\infty$ benchmark to test energy convergence on a realistic reactor problem
+            \item<3-> A 2D model of the NSC TRIGA core with depletion to test viability of using a single generalized energy mesh for time-dependent problems
+        \end{enumerate}
+    \end{block}
+
+    \begin{columns}
+        \column{0.33\textwidth}
+        \centering
+        \only<1->{
+            %{}\includegraphics[width=0.9\columnwidth]{../../Thesis/Mine/results/images/p5/problem5.png} \\
+        }
+
+        \column{0.33\textwidth}
+        \centering
+        \only<2->{
+            %{}\includegraphics[width=0.9\columnwidth]{../../Research/PhD/figures/PDT_C5G7/lowRes/c5g64_flux_log_g31.png} \\
+        }
+
+        \column{0.33\textwidth}
+        \centering
+        \only<3->{
+          % {}\includegraphics[width=0.9\columnwidth]{../../Research/PhD/figures/PDT_NSC/7group/triga_g6.png} \\
+        }
+    \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{One-dimensional problems}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{1D current work}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{I have investigated one-dimensional, cylindricized pin-cell problems}
+
+    \centering
+    \begin{columns}[c]
+
+        \column{0.6\textwidth}
+        \centering
+
+	\vspace{-1mm}
+
+        \begin{block}{The test cases used}
+            \begin{itemize}
+            	\footnotesize
+                \item A cylindricized version of a multi-material problem (below)
+                \item One of two subsets of the full RRR: \\3 to 55.6 eV (right, above) and \\55.6 to 1060 eV (right, below)
+                \item Different weighting spectra and basis functions (bottom)
+            \end{itemize}
+        \end{block}
+
+        %{}\includegraphics[width=0.9\columnwidth]{../../Thesis/Mine/results/images/p5/problem5.png} \\
+
+
+        \column{0.4\textwidth}
+        \centering
+
+       % {}\includegraphics[width=0.9\columnwidth]{../../Research/PhD/figures/resstudy/MC/low/obs/p_obs_p2_2.pdf} \\
+	%{}\includegraphics[width=0.9\columnwidth]{../../Research/PhD/figures/resstudy/MC/med/obs/p_obs_p2_2.pdf} \\
+
+    \end{columns}
+
+    { \tiny
+        \begin{tabular}{cll}
+        \hline
+        Case & Spectra Used & Basis Functions Used \\ \hline
+        \hline
+        1 & Infinite-medium & $1/E$ \\ \hline
+        2 & Infinite-medium & Infinite-medium with escape XS \\ \hline
+        3 & Reference-solution partial currents & Reference-solution material-averaged fluxes \\ \hline
+        \end{tabular}
+    }
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{1D current work}
+
+\setbeamerfont{frametitle}{size=\normalsize}
+\begin{frame}
+    \frametitle{A class of convergent cases empirically show the viability of the proposed method}
+
+    \centering
+
+    \vspace{-4mm}
+    {\small Top: Low-energies (3 eV -- 55.6 eV); Bottom: Medium-energies (55.6 eV -- 1060 eV) } \\
+    {\footnotesize Weighting spectra --- Case 1: $1/E$; Case 2: $\infty$-medium $+$ $\sigma_0$; Case 3: Reference} \\
+
+
+    \begin{columns}[t]
+
+        \column{0.33\textwidth}
+        \centering
+
+        {\footnotesize Fission production rate in\\ outer U-235}
+
+        \column{0.33\textwidth}
+        \centering
+
+        {\footnotesize Absorption rate in\\ inner U-238}
+
+        \column{0.33\textwidth}
+        \centering
+
+        {\footnotesize $k$-Eigenvalue}
+
+    \end{columns}
+
+    \begin{columns}[t]
+
+        \column{0.33\textwidth}
+        \centering
+
+        %{}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/resstudy/MC/low/p_err_cnuf6_p5.pdf}
+
+        \column{0.33\textwidth}
+        \centering
+
+        %{}\includegraphics[width=\columnwidth]{../../Research/PhD/figures/resstudy/MC/low/p_err_cabs2_p5.pdf}
+
+        \column{0.33\textwidth}
+        \centering
+
+        %{}\includegraphics[width=\columnwidth]{../../Research/PhD/figures/resstudy/MC/low/p_err_keig_p5.pdf}
+
+    \end{columns}
+
+     \begin{columns}[t]
+
+        \column{0.33\textwidth}
+        \centering
+
+        %{}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/resstudy/MC/med/p_err_cnuf6_p5.pdf}
+
+        \column{0.33\textwidth}
+        \centering
+
+        %{}\includegraphics[width=\columnwidth]{../../Research/PhD/figures/resstudy/MC/med/p_err_cabs2_p5.pdf}
+
+        \column{0.33\textwidth}
+        \centering
+
+        %{}\includegraphics[width=\columnwidth]{../../Research/PhD/figures/resstudy/MC/med/p_err_keig_p5.pdf}
+
+    \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{1D current work}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{The minimization problem yields an energy mesh with minimized within-element spectral variance}
+
+    \centering
+
+    \vspace{-4mm}
+    {\small $\infty$-medium spectra --- Top: In the inner MOX; Bottom: In the outer UO$_2$ } \\
+
+    \begin{columns}[t]
+
+        \column{0.33\textwidth}
+        \centering
+
+        {\footnotesize Low Energies\\ 10 energy elements}
+
+        \column{0.33\textwidth}
+        \centering
+
+        {\footnotesize Low Energies\\ 50 energy elements}
+
+        \column{0.33\textwidth}
+        \centering
+
+        {\footnotesize Medium Energies\\ 10 energy elements}
+
+    \end{columns}
+
+    \begin{columns}[t]
+
+        \column{0.33\textwidth}
+        \centering
+
+        %{}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/resstudy/MC/low/obs/p_obs_p2_10.pdf}
+
+        \column{0.33\textwidth}
+        \centering
+
+       % {}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/resstudy/MC/low/obs/p_obs_p2_50.pdf}
+
+        \column{0.33\textwidth}
+        \centering
+
+      % {}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/resstudy/MC/med/obs/p_obs_p2_10.pdf}
+
+    \end{columns}
+
+     \begin{columns}[t]
+
+        \column{0.33\textwidth}
+        \centering
+
+        %{}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/resstudy/MC/low/obs/p_obs_p3_10.pdf}
+
+        \column{0.33\textwidth}
+        \centering
+
+        %{}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/resstudy/MC/low/obs/p_obs_p3_50.pdf}
+
+        \column{0.33\textwidth}
+        \centering
+
+        %{}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/resstudy/MC/med/obs/p_obs_p3_10.pdf}
+
+    \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The C5G$^\infty$ problem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{C5Ginfty current work}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{I have developed a C5G$^\infty$ problem}
+
+    \centering
+    \begin{block}{}
+        \begin{enumerate}
+            \item<1-> I took the 2D C5G7 benchmark and kept the material / geometry definitions, but recomputed my own cross sections from scratch via ENDF cross sections and material compositions
+            \item<2-> I resolved $2/3$ of the full RRR (from 3.0 eV to 1.06 keV). The SCALE 44-group boundaries were used outside this region
+            \item<3-> I solved infinite-medium, fixed-source, slowing-down problems to compute spectra in the highest-enriched MOX and UOX pins that were later used in the minimization problem to determine the energy element definitions
+            \item<4-> I used NJOY's default flux with $IWT=5$ for the within-subelement spectra
+            \item<5-> I used infinite-medium, fixed-source, slowing-down problems with analytic escape cross sections from fuel-pin chord lengths as the weighting spectrum used to collapse energy subelements to elements
+            \item<6-> I chose a space/angle resolution and ran a reference solution using a 1024-group structure that maximally resolved the above spectra
+            \item<7-> I tested with the same space/angle resolutions and FEDS-MG XS with varying numbers of energy elements
+            \item<8-> I compared the following QOI: $k$-eigenvalue, min/max pin powers, and assembly-averaged pin powers
+        \end{enumerate}
+    \end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{C5Ginfty current work}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{I have computed pin-power rates for the C5G$^\infty$}
+
+    \vspace{-3mm}
+
+    \centering
+    \begin{columns}[t]
+
+        \column{0.353\textwidth}
+        \centering
+
+        {\small C5 layout\\ (NEA/NSC/DOC(2001)4)}
+
+        \column{0.647\textwidth}
+        \centering
+
+        {\small Pin-powers\\ (39 energy elements)}
+
+    \end{columns}
+
+    \begin{columns}[t]
+
+        \column{0.353\textwidth}  %0.39
+        \centering
+
+        \vspace{4.4mm}
+         %{}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/PDT_C5G7/c5g7_layout.png} \\
+
+        \column{0.647\textwidth}  %0.61
+        \centering
+
+        %{}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/PDT_C5G7/p_c5g39_ppowers.png} \\
+
+    \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{C5Ginfty current work}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{I have run the C5G$^\infty$ problem, varying the number of energy elements in the resolved resonance region (RRR)}
+
+    \vspace{-3mm}
+
+    \centering
+
+    {\small QOI} \\
+    { \scriptsize
+    \begin{tabular}{rrrrrrr}
+        \hline
+        Elements & Max Pin & Min Pin & Inner UO$_2$ & MOX & Outer UO$_2$ & \keff \\ \hline
+        \hline
+        2 & 2.40189 & 0.20088 & 479.428 & 217.117 & 142.339 & 1.159180 \\ \hline
+        4 & 2.41016 & 0.19826 & 480.770 & 216.683 & 141.864 & 1.177549 \\ \hline
+        6 & 2.41215 & 0.19835 & 481.074 & 216.523 & 141.880 & 1.176155 \\ \hline
+        13 & 2.42502 & 0.19892 & 482.926 & 215.588 & 141.898 & 1.174187 \\ \hline
+        27 & 2.41386 & 0.19887 & 481.260 & 216.413 & 141.915 & 1.173490 \\ \hline
+        43 & 2.41969 & 0.19927 & 482.055 & 215.999 & 141.946 & 1.171000 \\ \hline
+        59 & 2.42113 & 0.19923 & 482.250 & 215.915 & 141.920 & 1.171352 \\ \hline
+        91 & 2.42234 & 0.19923 & 482.409 & 215.842 & 141.906 & 1.171582 \\ \hline
+        Reference & 2.42321 & 0.19900 & 482.538 & 215.802 & 141.859 & 1.171695 \\ \hline
+    \end{tabular}
+    }
+
+    \vspace{2mm}
+
+    {\small Error in QOI} \\
+    { \scriptsize
+    \begin{tabular}{rrrrrrr}
+        \hline
+        Elements & Max Pin & Min Pin & Inner UO$_2$ & MOX  & Outer UO$_2$ & \keff \\
+                 & (\%)    & (\%)    & (\%)         & (\%) & (\%)         & (pcm) \\ \hline \hline
+        2 & 0.8798 & 0.9447 & 0.6445 & 0.6094 & 0.3384 & 1068 \\ \hline
+        4 & 0.5385 & 0.3719 & 0.3664 & 0.4082 & 0.0035 & 500 \\ \hline
+        6 & 0.4564 & 0.3266 & 0.3034 & 0.3341 & 0.0148 & 381 \\ \hline
+        13 & 0.0747 & 0.0402 & 0.0804 & 0.0992 & 0.0275 & 213 \\ \hline
+        27 & 0.3859 & 0.0653 & 0.2648 & 0.2831 & 0.0395 & 153 \\ \hline
+        43 & 0.1453 & 0.1357 & 0.1001 & 0.0913 & 0.0613 & 59 \\ \hline
+        59 & 0.0858 & 0.1156 & 0.0597 & 0.0524 & 0.0430 & 29 \\ \hline
+        91 & 0.0359 & 0.1156 & 0.0267 & 0.0185 & 0.0331 & 10 \\ \hline
+    \end{tabular}
+    }
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{C5Ginfty current work}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{I have visualized the C5G$^\infty$ scalar flux in various energy elements}
+
+    \centering
+    \begin{columns}[c]
+
+        \column{0.33\textwidth}
+        \centering
+
+        {\small Fast element}
+         %{}\includegraphics[width=0.85\columnwidth]{../../Research/PhD/figures/PDT_C5G7/lowRes/c5g64_flux_log_g0.png} \\
+
+        {\small URR element}
+         %{}\includegraphics[width=0.85\columnwidth]{../../Research/PhD/figures/PDT_C5G7/lowRes/c5g64_flux_log_g11.png} \\
+
+        \column{0.33\textwidth}
+
+        \centering
+        {\small RRR background element}
+         %{}\includegraphics[width=0.85\columnwidth]{../../Research/PhD/figures/PDT_C5G7/lowRes/c5g64_flux_log_g30.png} \\
+
+	{\small RRR resonance element}
+         %{}\includegraphics[width=0.85\columnwidth]{../../Research/PhD/figures/PDT_C5G7/lowRes/c5g64_flux_log_g35.png} \\
+
+        \column{0.33\textwidth}
+        \centering
+
+         {\small Epithermal element}
+          %{}\includegraphics[width=0.85\columnwidth]{../../Research/PhD/figures/PDT_C5G7/lowRes/c5g64_flux_log_g51.png} \\
+
+         {\small Thermal element}
+          %{}\includegraphics[width=0.85\columnwidth]{../../Research/PhD/figures/PDT_C5G7/lowRes/c5g64_flux_log_g62.png} \\
+
+    \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{The NSC depletion problem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{NSC current work}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{I have developed an NSC model with help from J. Vermaak, C. McGraw, and D. Bruss}
+
+    \centering
+    \begin{columns}[c]
+
+        \column{0.5\textwidth}
+
+        \centering
+        {\small 2D slice of Jan's 3D MCNP model (zoom)}
+
+        \column{0.5\textwidth}
+
+        \centering
+        {\small My 2D PDT model (full)}
+
+    \end{columns}
+
+    \begin{columns}[t]
+
+        \column{0.5\textwidth}
+        \centering
+
+        \vspace{7mm}
+        %{}\includegraphics[width=0.8\columnwidth]{../../Research/PhD/figures/PDT_NSC/7group/triga_mcnp_model.jpg} \\
+
+        \column{0.5\textwidth}
+        \centering
+
+        %{}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/PDT_NSC/7group/triga_mesh0.png} \\
+
+    \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{NSC current work}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{I have done preliminary calculations of the NSC core with 7-group cross sections}
+
+    \centering
+    \begin{columns}[c]
+
+        \column{0.5\textwidth}
+
+        \centering
+        {\small NSC mesh (zoom)}
+
+        \column{0.5\textwidth}
+
+        \centering
+        {\small Fast flux (zoom)}
+
+    \end{columns}
+
+    \begin{columns}[c]
+
+        \column{0.5\textwidth}
+
+        \centering
+        %{}\includegraphics[width=0.9\columnwidth]{../../Research/PhD/figures/PDT_NSC/7group/triga_mesh_zoom.png} \\
+
+        \column{0.5\textwidth}
+
+        \centering
+        %{}\includegraphics[width=0.9\columnwidth]{../../Research/PhD/figures/PDT_NSC/7group/triga_g1.png} \\
+
+    \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{NSC current work}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{I have done preliminary calculations of the NSC core with 7-group cross sections (cont.)}
+
+    \centering
+    \begin{columns}[c]
+
+        \column{0.5\textwidth}
+
+        \centering
+        {\small NSC materials (zoom)}
+
+        \column{0.5\textwidth}
+
+        \centering
+        {\small Thermal flux (zoom)}
+
+    \end{columns}
+
+    \begin{columns}[c]
+
+        \column{0.5\textwidth}
+
+        \centering
+        %{}\includegraphics[width=0.9\columnwidth]{../../Research/PhD/figures/PDT_NSC/7group/triga_materials_zoom.png} \\
+
+        \column{0.5\textwidth}
+
+        \centering
+        %{}\includegraphics[width=0.9\columnwidth]{../../Research/PhD/figures/PDT_NSC/7group/triga_log_zoom_g5.png} \\
+
+    \end{columns}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{NSC current work}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{I am making maximal use of Evaluated Nuclear Data Files (ENDF/B) whenever possible}
+    %\framesubtitle{\textit{Sed in primis \textbf{ad fontes} ipsos properandum!}\footnote{``Above all, one must hasten \textbf{to the sources} themselves,'' Erasmus of Rotterdam}}
+
+    \begin{block}{\textit{Sed in primis \textbf{ad fontes} ipsos properandum!}\footnotemark}
+        \begin{itemize}
+        \item Cross section files (MF 1--7)
+        \item Energy per fission (MF 1)
+        \item Decay modes, half-lives, and branching ratios (MF 8)
+        \item Fission product yields (MF 8)
+        \item Isomeric branching ratios for reactions (MF 8--10)
+        \end{itemize}
+    \end{block}
+    \footnotetext{``Above all, one must hasten \textbf{to the sources} themselves,'' Erasmus of Rotterdam}
+
+    \centering
+    \begin{columns}[b]
+
+        \column{0.33\textwidth}
+
+        \centering
+
+        {\footnotesize Fission of $^{235}$U  } \\
+
+        \column{0.33\textwidth}
+
+        \centering
+
+        {\footnotesize Thermal fission of $^{235}$U  } \\
+
+        \column{0.33\textwidth}
+
+        \centering
+
+        {\footnotesize $^{243}\text{Am} (n,2n)$ to \\$^{242}\text{Am}$ or $^{242m1}\text{Am}$  } \\
+
+    \end{columns}
+
+    \centering
+    \begin{columns}[c]
+
+        \column{0.33\textwidth}
+
+        \centering
+
+        %{}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/fission_products/pdf/p_fp_sum_A235.pdf} \\
+
+        \column{0.33\textwidth}
+
+        \centering
+
+        %{}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/fission_products/pdf/p_fp_1-92-235.pdf}
+
+        \column{0.33\textwidth}
+
+        \centering
+
+        %{}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/metastables/interesting/p_95_243_0_16.pdf} \\
+
+    \end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{NSC current work}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{I have developed tools for quantifying nuclide production and loss through fission, reaction, and decay}
+    \framesubtitle{I use a directed graph, where nuclides are nodes and production/loss mechanisms are edges}
+
+    \vspace{-2mm}
+
+    \centering
+    \begin{columns}[t]
+
+        \column{0.3\textwidth}
+
+        \centering
+        {\small Low-Z nuclide chains}
+
+        \column{0.7\textwidth}
+
+        \centering
+        %{\small High-Z nuclide chains}
+        {\small Mid-Z nuclide chains}
+        %{\small Mid-to-High-Z nuclide chains}
+
+    \end{columns}
+
+    \begin{columns}[c]
+
+        \column{0.3\textwidth}
+
+        \centering
+        %{}\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/depletion/keep/p_full_lowZ.pdf} \\
+
+        \column{0.7\textwidth}
+
+        \centering
+        %\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/depletion/keep/p_final_actinides_low.pdf} \\
+        %{}\includegraphics[height=0.78\textheight]{../../Research/PhD/figures/depletion/keep/p_final_midZ.pdf} \\
+        %\includegraphics[width=1.0\columnwidth]{../../Research/PhD/figures/depletion/keep/p_full_highishZ.pdf} \\
+
+    \end{columns}
+
+\end{frame}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Work Yet to Be Done}
+% You need an empty subsection, or you don't get the little menu things.
+\subsection{The C5G$^\infty$ problem}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{C5Gfinty future work}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{I will run the C5G$^\infty$ problem at higher space/angle resolutions}
+
+    \centering
+
+    \vspace{-6mm}
+
+    \onslide<1->{
+    \begin{columns}[t]
+
+        \column{0.5\textwidth}
+
+        \centering
+        {\footnotesize Current spatial resolution} \\
+
+        \column{0.5\textwidth}
+
+        \centering
+        {\footnotesize Current angular resolution} \\
+
+    \end{columns}
+
+    %%%%%%%%%%%%
+    \vspace{0.5mm}
+
+    \begin{columns}[t]
+
+        \column{0.5\textwidth}
+
+        \centering
+        {\small {\color{maroon} $(2,1,1)$}: \\ 2 rings in the fuel meat, 1 ring in the fuel boundary, 1 ring in the moderator} \\
+        %{}\includegraphics[width=0.4\columnwidth]{../../Research/PhD/figures/PDT_C5G7/mesh4.png}
+
+        \column{0.5\textwidth}
+
+        \centering
+        {\small {\color{maroon} $(2,5)$}: \\ Product Gauss-Legendre-Chebyshev with \\ $S_4$ in polar and 5 equally-spaced azimuthal angles per quadrant}
+
+    \end{columns}
+    }
+
+    %%%%%%%%%%%%
+    \vspace{6mm}
+
+    \onslide<2->{
+    \begin{columns}[t]
+
+        \column{0.5\textwidth}
+
+        \centering
+        {\footnotesize Desired spatial resolution} \\
+        \vspace{-1mm}
+        {\tiny (extrapolating from McGraw's PHYSOR paper)} \\
+
+        \column{0.5\textwidth}
+
+        \centering
+        {\footnotesize Desired angular resolution} \\
+        \vspace{-1mm}
+        {\tiny (extrapolating from McGraw's PHYSOR paper)} \\
+
+    \end{columns}
+
+    %%%%%%%%%%%%
+    \vspace{0.5mm}
+
+    \begin{columns}[t]
+
+        \column{0.5\textwidth}
+
+        \centering
+        {\small {\color{darkgreen} $(3,2,2)$}: \\ Increase by a factor of {\color{blue} 3.1}}
+
+
+        \column{0.5\textwidth}
+
+        \centering
+        {\small {\color{darkgreen} $(8,64)$}: \\ Increase by a factor of {\color{blue} 51.2}}
+
+    \end{columns}
+    }
+
+    %%%%%%%%%%%%
+    \vspace{4.5mm}
+
+    \only<3->{
+        We must increase our space/angle DOF by a factor of around {\color{blue} 156.8}
+    }
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{NSC future work}
+
+\setbeamerfont{frametitle}{size=\normalsize}
+\begin{frame}
+    \frametitle{There are still unanswered questions regarding running depletion problems}
+
+    \begin{block}{Open questions}
+        \begin{enumerate}
+            \item Which QOI to use? Possibilities include:
+            \begin{itemize}
+                \footnotesize
+                \item[] $k$-eigenvalue, pin powers, per-pin nuclide densities, or per-pin/per-nuclide fission/absorption/production/loss rates
+            \end{itemize}
+            \item How to approximate the final material compositions when computing infinite-medium spectra for the minimization problem? Ideas include:
+            \begin{enumerate}
+                \footnotesize
+                \item Use material densities from the pin with the lowest U-235 concentrations from Jan's calculations and zero for nuclides not considered (which will contribute negligibly to absorption by his own metric)
+                \item Do a single fuel pin calculation with all desired nuclides (would need a power peaking factor to know how much power to use; all locations burn approximately the same, just at different rates)
+                \item Do predictor-corrector scheme, with predictor performing the entire burnup calculation with beginning-of-life spectra only when determining the energy mesh (using no depleted spectra)
+            \end{enumerate}
+            \item How to handle nuclides lacking metastable-specific production data?
+            \begin{itemize}
+                \footnotesize
+                \item Absorption reactions: $(n,2n)$, $(n,\gamma)$
+                \item Inelastic scattering reactions: What do MT 2 / MT 51 mean for a metastable state?  If MT 50 is not allowed, where is this information put?
+            \end{itemize}
+           \item How to handle data sparsity for fission product yields?
+           \begin{itemize}
+               \footnotesize
+               \item[] Interpolation by $A$ may introduce errors when nuclides have different thermal/fast fission cross section ratios (fission product yields depend on incident neutron energy)
+           \end{itemize}
+        \end{enumerate}
+    \end{block}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\section{Conclusions}
+% You need an empty subsection, or you don't get the little menu things.
+%\subsection{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{We have reached the end}
+
+\begin{frame}[plain]
+   \frametitle{I look forward to your feedback regarding my PhD Proposal}
+
+\vspace{25mm}
+
+\begin{columns}[b]
+
+\column{0.7\textwidth}
+
+
+
+\centering
+
+{\Large Questions?}
+
+\vspace{9mm}
+\footnotesize
+A special acknowledgment to the Department of Energy Rickover Fellowship Program in Nuclear Engineering, which provides strong support to its fellows and their professional development.
+
+\end{columns}
+
+\vspace{10mm}
+
+\begin{columns}[b]
+
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.35\figwidth]{images/DOE_logo.png}\\
+
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.70\figwidth]{images/tamu_engineering.png}\\
+
+\end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\backupbegin
+\appendix
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Backup Slides}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{``Extra Credit''}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{Extra Credit Work}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{A stretch goal is to compare my method to Monte Carlo}
+    \framesubtitle{I claim the following is the best way to show our method has practical importance, because continuous-energy Monte Carlo codes do exact particle tracking / kinematics and use very accurate cross sections. Such codes may attain higher fidelity in all respects than DRAGON.}
+
+    \onslide<1->{
+    \begin{block}{Start with a 0-D problem to isolate energy discretization effects}
+        \begin{enumerate}
+            \item Come up with a reactor-themed problem
+            \item Solve the same problem in PDT and MCNP or OpenMC
+            \item Choose QOI, such as $k$-eigenvalue, radial power profile, absorption/fission rates per nuclide, etc.
+            \item Quantify how errors in PDT's QOI change as energy resolution is increased
+         \end{enumerate}
+     \end{block}
+     }
+    \onslide<2->{
+    \begin{block}{Build up problem complexity slowly: cylindricized pin cell with white boundary conditions, infinite lattice of pin cells, heterogeneous lattice of pin cells, etc.}
+        \begin{enumerate}
+            \item Quantify how errors in PDT's QOI change as spatial / angular / scattering moment resolution is increased
+            \item Quantify how errors in PDT's QOI change as energy resolution is increased
+            \item \ldots
+            \item Profit
+         \end{enumerate}
+    \end{block}
+    }
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{Reference solution}
+
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}
+    \frametitle{We wish to compute a reference solution that resolves all desired resonances}
+
+    \centering
+    \begin{block}{}
+        \begin{itemize}
+            \item<1-> Desirable properties are that the reference solution have sufficient: \\ {\footnotesize cross section fidelity (ENDF library, NJOY pointwise reconstruction tolerance, thermal / $S(\alpha,\beta)$ treatment, unresolved resonance range treatment), spatial resolution, angular resolution, temporal resolution, scattering moment expansion order, and energy (group) resolution outside the energy range of interest}
+            \item<2-> I claim it is both sufficient and necessary to choose a \textit{reasonable} resolution in the above and a \textit{high} energy resolution within the energy range of interest for the reference solution
+            \item<3-> The only difference between the reference and method solutions will be the energy resolution within the energy range of interest, which is a subset of the entire resolved resonance range (RRR)
+            \item<4-> This is the only fair way to make comparisons %because it controls for all of the other variables
+            \item<5-> The reference solution is well-posed: given a space/angle resolution and material densities, cells' optical thicknesses are bounded as energy is resolved
+            \item<6-> If the method solutions converge to the reference solution as energy resolution is increased, I claim that this shows our method is convergent in energy in the sense that we accurately treat the RRR, the source of all our troubles
+        \end{itemize}
+    \end{block}
+
+\end{frame}
+
+\backupend
+
+\end{document}
+
