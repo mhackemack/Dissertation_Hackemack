@@ -216,6 +216,29 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \begin{frame}[t]\frametitle{Spatial Discretization}
 
 \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{The DGFEM $S_N$ Transport Equation}
+\begin{frame}[t]\frametitle{Iterative Procedure}
+\begin{block}{Classic Source Iteration} {\small
+\begin{equation*}
+\begin{aligned}
+ \Psi^{(\ell+1)} &= {\bf L}^{-1} \left( {\bf M} {\bf \Sigma} \Phi^{(\ell)}  +  {\bf Q} \right) \\
+\Phi^{(\ell+1)} &= {\bf D} {\bf L}^{-1} \left( {\bf M} {\bf \Sigma} \Phi^{(\ell)}  +  {\bf Q} \right) \\
+ \Phi &= {\bf D} \Psi
+\end{aligned}
+\end{equation*}
+}\end{block}
+\begin{block}{Operator Terms} {\small
+${\bf L}$ - streaming + collision operator \\
+${\bf M}$ - moment-to-discrete operator \\
+${\bf D}$ - discrete-to-moment operator \\
+${\bf \Sigma}$ - scattering operator 
+}\end{block}
+\begin{block}{Transport Sweep} {\small
+The operation ${\bf L}^{-1}$ can be performed in myriad ways. For this work, we will use the matrix-free, full-domain transport sweep.
+} \end{block}
+\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 \subsection{Polytope Grid Motivation}
@@ -258,10 +281,11 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \typeout{Linear Basis Functions on 2D Polygons}
 %---------------------------
 \setbeamerfont{frametitle}{size=\normalsize}
-\begin{frame}[t]\frametitle{Arbitrary Polygon and Definitions}
+\begin{frame}[t]\frametitle{Linear Basis Functions on 2D Polygons}
 \centering
 \includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
-\begin{block}{2D Linear Basis Function Properties - Barycentric Coordinates}
+\vspace{0.75cm}
+\begin{block}{Basis Function Properties - Barycentric Coordinates}
 	\begin{enumerate}
 	\item $\lambda_i \geq 0$
 	\item $\sum_i \lambda_i = 1$
@@ -281,10 +305,20 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \lambda_i^W (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, \vec{x}_{j-1}, \vec{x}_{j}) \, A(\vec{x}, \vec{x}_{j}, \vec{x}_{j+1})}
 \end{equation*}
 \end{block}
+\begin{block}{}
+\begin{equation*}
+A(\vec{x}_1, \vec{x}_{2}, \vec{x}_{3}) = \frac{1}{2} \left|
+\begin{array}{ccc}
+1 & 1 & 1 \\
+x_1 & x_2 & x_3 \\
+y_1 & y_2 & y_3
+\end{array} \right|
+\end{equation*}
+\end{block}
 \end{frame}
 %---------------------------
 \setbeamerfont{frametitle}{size=\normalsize}
-\begin{frame}[t]\frametitle{Piecewise Linear Functions}
+\begin{frame}[t]\frametitle{Piecewise Linear (PWL) Functions}
 
 \end{frame}
 %---------------------------
@@ -307,14 +341,38 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \vspace{0.3cm}
 \begin{block}{}
 \begin{equation*}
-\lambda_i^{ME} (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = m_j(\vec{x}) \exp(- \omega \cdot (\vec{x}_j - \vec{x}))
+\lambda_i^{ME} (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = m_j(\vec{x}) \exp(- \omega^* \cdot (\vec{x}_j - \vec{x}))
+\end{equation*}
+\end{block}
+\begin{block}{}
+\begin{equation*}
+\omega^* = \text{argmin} \, F(\omega, \vec{x})  \qquad F(\omega, \vec{x}) = \ln \left(  \sum_j w_j (\vec{x})  \right)
 \end{equation*}
 \end{block}
 \end{frame}
 %---------------------------
 \setbeamerfont{frametitle}{size=\normalsize}
 \begin{frame}[t]\frametitle{Summary of the 2D Linear Basis Functions}
-
+\centering
+\vspace{1cm}
+\begin{table}
+\footnotesize
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Basis Function & Dimension & Polytope Types & Analytical/Numerical & Direct/Iterative \\
+\hline \hline
+Wachspress	&2D/3D&	Convex*&	Numerical	&Direct\\ \hline
+PWL&	1D/2D/3D&	Convex/Concave&	Analytical	&Direct\\ \hline
+Mean Value&	2D**&	Convex/Concave&	Numerical	&Direct\\ \hline
+Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative***\\ \hline
+\end{tabular}
+\end{table}
+\vspace{0.5cm}
+\begin{block}{}
+* - weak convexity for Wachspress coordinates does not cause blow up\\
+** - mean value 3D analogue only applicable to tetrahedron \\
+*** - maximum entropy minimization solved via Newton's Method 
+\end{block}
 \end{frame}
 %---------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -323,10 +381,67 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \typeout{***********************************************************************************}
 %---------------------------
 \begin{frame}[t]\frametitle{Quadratic Serendipity Basis Functions on 2D Polygons}
-
+\begin{block}{}
+\begin{enumerate}
+	\item <1-> Form the linear barycentrric functions - \{$\lambda_i$\}
+	\item <2-> Construct the pairwise products -  \{$\mu_{ab}$\}
+	\item <3-> Eliminate the interior nodes to form a serendipity basis - \{$\xi_{ij}$\}
+\end{enumerate}
+\end{block}
+\vspace{1cm}
+\begin{columns}[c]
+\column{0.28\textwidth}
+\centering
+\only<1-3>{
+{}\includegraphics[width=0.9\columnwidth]{images/rand_linear.png} \\
+\{$\lambda_i$\} \\
+Linear
+}
+\column{0.08\textwidth}
+\only<2-3>{
+$\longrightarrow$
+}
+\column{0.28\textwidth}
+\centering
+\only<2-3>{
+{}\includegraphics[width=0.9\columnwidth]{images/rand_quadratic.png} \\
+\{$\mu_{ab}$\} \\
+Quadratic
+}
+\column{0.08\textwidth}
+\only<3>{
+$\longrightarrow$
+}
+\column{0.28\textwidth}
+\centering
+\only<3>{
+{}\includegraphics[width=0.9\columnwidth]{images/rand_serendipity.png} \\
+\{$\xi_{ij}$\} \\
+Serendipity
+}
+\end{columns}
 \end{frame}
 %---------------------------
-\begin{frame}[t]\frametitle{}
+\begin{frame}[t]\frametitle{Pairwise products of the barycentric basis functions}
+\begin{block}{Necessary Precision Properties}
+\begin{equation*}
+\sum_{aa \in V} \mu_{aa} + \sum_{ab \in E \cup D} 2 \mu_{ab} = 1
+\end{equation*}
+\begin{equation*}
+\sum_{aa \in V} \vec{x}_{aa} \mu_{aa} + \sum_{ab \in E \cup D} 2 \vec{x}_{ab} \mu_{ab} = \vec{x}
+\end{equation*}
+\begin{equation*}
+\sum_{aa \in V} \vec{x}_{a} \vec{x}_{a}^T \mu_{aa} + \sum_{ab \in E \cup D} \left(  \vec{x}_{a} \vec{x}_{b}^T + \vec{x}_{b} \vec{x}_{a}^T  \right) \mu_{ab} = \vec{x} \vec{x}^{T}
+\end{equation*}
+\end{block}
+\begin{block}{Further Notation}
+\begin{equation*}
+\vec{x}_{ab} = \frac{\vec{x}_{a} + \vec{x}_{b}}{2}, \qquad \mu_{ab} = \lambda_a \lambda_b
+\end{equation*}
+\end{block}
+\end{frame}
+%---------------------------
+\begin{frame}[t]\frametitle{Eliminate interior nodes to form serendipity basis}
 
 \end{frame}
 %---------------------------
@@ -363,19 +478,28 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \typeout{***********************************************************************************}
 \typeout{DSA}
 %---------------------------
-\begin{frame}[t]\frametitle{The Diffusion Equation and Boundary Conditions}
-	\begin{block}{The Diffusion Equation} {\small 
+\setbeamerfont{frametitle}{size=\small}
+\begin{frame}[t]\frametitle{The diffusion equation is used as our low-order operator}
+	\begin{block}{The Diffusion Equation}\vspace{-0.25cm} {\small 
      		\begin{align*}
  	 		{ \small -{\bf \nabla} \cdot D {\bf \nabla} \Phi ({\bf r}) + \sigma \Phi ({\bf r}) = q ({\bf r}), \qquad  {\bf r} \in \mathcal{D} }
-        	\end{align*} }
+        	\end{align*} }\vspace{-0.25cm}
         	\end{block}
-        	\begin{block}{Boundary Conditions} {\small 
+        	\begin{block}{General Boundary Conditions} \vspace{-0.4cm} {\small 
 		\begin{align*}
  	 		{ \small \Phi ({\bf r})  = \Phi_0 ({\bf r}) , \qquad {\bf r} \in \partial \mathcal{D}^d } \\
  	 		{ \small -D \partial_n \Phi ({\bf r})  = J_0 ({\bf r}) , \qquad {\bf r} \in \partial \mathcal{D}^n } \\
  	 		{ \small \frac{1}{4} \Phi ({\bf r})  + \frac{1}{2}D \partial_n \Phi ({\bf r})  = J^{inc} ({\bf r}) ,  \qquad {\bf r} \in \partial \mathcal{D}^r}
-        		\end{align*} }
+        		\end{align*} } \vspace{-0.25cm}
     \end{block}
+	\begin{block}{Desirable diffusion form properties} {\small 
+	\begin{itemize}
+		\item Can handle concave and degenerate polytope cells
+		\item Symmetric Positive-Definite (SPD) 
+		\item Availability of suitable preconditioners
+		\item Agnostic of directionality of interior faces
+	\end{itemize} }
+	\end{block}
 \end{frame}
 %---------------------------
 \begin{frame}[t]\frametitle{Symmetric Interior Penalty (SIP) Form}
@@ -445,28 +569,90 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 \end{frame}
 \subsection{}
 %---------------------------
-\begin{frame}[t]\frametitle{}
-% ---> linear transport solutions
+\setbeamerfont{frametitle}{size=\small}
+\begin{frame}[t]\frametitle{2D Exactly-Linear Transport Solutions - mean value coordinates}
+\begin{block}{}
+\begin{equation*}
+\begin{aligned}
+\mu \frac{\partial  \psi}{\partial x} + \eta \frac{\partial  \psi}{\partial y} + \sigma_t \psi &= Q(x,y,\mu,\eta) \\
+\psi (x,y,\mu,\eta) = a x + b y + c \mu + d \eta + e& , \qquad  \phi (x,y) = 2 \pi \left(   a x + b y  + e  \right)
+\end{aligned}
+\end{equation*}
+\end{block}
+\centering
+\includegraphics[width=0.25\textwidth]{images/cart_MV_k1.eps} 
+\includegraphics[width=0.25\textwidth]{images/tri_MV_k1.eps} 
+\includegraphics[width=0.25\textwidth]{images/shes_poly_MV_k1.eps} 
+\vspace{0.2cm}
+\includegraphics[width=0.25\textwidth]{images/smooth_poly_MV_k1.eps} 
+\includegraphics[width=0.25\textwidth]{images/z_quad_MV_k1.eps}
+\includegraphics[width=0.25\textwidth]{images/z_poly_MV_k1.eps}
 \end{frame}
 %---------------------------
-\begin{frame}[t]\frametitle{}
-% ---> MMS transport
+\setbeamerfont{frametitle}{size=\small}
+\begin{frame}[t]\frametitle{Convergence rates using MMS for the 2D polygonal basis functions}
+\only<1-3>{
+\begin{block}{}
+\begin{equation*}
+\begin{aligned}
+\psi (x,y) = \sin(\nu \frac{\pi x}{L_x}) \sin(\nu \frac{\pi y}{L_y}) \\
+ \phi (x,y) = 2 \pi \sin(\nu \frac{\pi x}{L_x}) \sin(\nu \frac{\pi y}{L_y})
+\end{aligned}
+\end{equation*}
+\end{block}
+}
+\vspace{0.4cm}
+\begin{columns}
+\column{0.40\textwidth}
+\centering
+\only<1>{
+{}\includegraphics[width=0.8\columnwidth]{images/cart_mesh.jpg}
+}
+\only<2>{
+{}\includegraphics[width=0.8\columnwidth]{images/tri_mesh.jpg}
+}
+\only<3>{
+{}\includegraphics[width=0.8\columnwidth]{images/PolyMesh_mesh.eps}
+}
+\column{0.60\textwidth}
+\centering
+\only<1>{
+{}\includegraphics[width=0.9\columnwidth]{images/cart_err.eps}
+}
+\only<2>{
+{}\includegraphics[width=0.9\columnwidth]{images/tri_err.eps}
+}
+\only<3>{
+{}\includegraphics[width=0.9\columnwidth]{images/poly_err.eps}
+}
+\end{columns}
 \end{frame}
 %---------------------------
-\begin{frame}[t]\frametitle{}
-% --->Searchlight problem introduction
+\begin{frame}[t]\frametitle{Convergence rates using MMS and AMR for the 2D polygonal basis functions}
+\begin{block}{}
+\begin{equation*}
+\begin{aligned}
+\psi (x,y) = & x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}), \\ 
+\phi (x,y) = 2 \pi & x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma})
+\end{aligned}
+\end{equation*}
+\end{block}
+\centering
+{}\includegraphics[width=0.55\columnwidth]{images/Transport_Gauss_2D_AMR_Error_Plot.eps}
 \end{frame}
 %---------------------------
-\begin{frame}[t]\frametitle{}
-% --->SL relative outlet error plots
-\end{frame}
-%---------------------------
-\begin{frame}[t]\frametitle{}
-% --->SL outgoing flux
-\end{frame}
-%---------------------------
-\begin{frame}[t]\frametitle{}
-% --->SL AMR plots with solutions
+\setbeamerfont{frametitle}{size=\footnotesize}
+\begin{frame}[t]\frametitle{Linear ME cycle 15 (left) and quadratic ME cycle 08 (right)}
+\begin{columns}
+\column{0.50\textwidth}
+\centering
+{}\includegraphics[width=0.70\columnwidth]{images/ME1_cart_Irr=1_tol=0.2_cyc15_mesh.eps} \\
+{}\includegraphics[width=0.70\columnwidth]{images/ME1_cart_Irr=1_tol=0.2_cyc15_sol.eps}
+\column{0.50\textwidth}
+\centering
+{}\includegraphics[width=0.70\columnwidth]{images/ME2_cart_Irr=1_tol=0.1_cyc08_mesh.eps} \\
+{}\includegraphics[width=0.70\columnwidth]{images/ME2_cart_Irr=1_tol=0.1_cyc08_sol.eps}
+\end{columns}
 \end{frame}
 %---------------------------
 \subsection{}
