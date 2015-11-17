@@ -258,9 +258,9 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \typeout{Linear Basis Functions on 2D Polygons}
 %---------------------------
 \setbeamerfont{frametitle}{size=\normalsize}
-\begin{frame}\frametitle{Arbitrary Polygon and Definitions}
+\begin{frame}[t]\frametitle{Arbitrary Polygon and Definitions}
 \centering
-\includegraphics[width=0.50\textwidth]{images/ref_polygon.png}
+\includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
 \begin{block}{2D Linear Basis Function Properties - Barycentric Coordinates}
 	\begin{enumerate}
 	\item $\lambda_i \geq 0$
@@ -271,19 +271,49 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \end{block}
 \end{frame}
 %---------------------------
+\setbeamerfont{frametitle}{size=\normalsize}
 \begin{frame}[t]\frametitle{Wachspress Rational Functions}
-
+\centering
+\includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
+\vspace{0.3cm}
+\begin{block}{}
+\begin{equation*}
+\lambda_i^W (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, \vec{x}_{j-1}, \vec{x}_{j}) \, A(\vec{x}, \vec{x}_{j}, \vec{x}_{j+1})}
+\end{equation*}
+\end{block}
 \end{frame}
 %---------------------------
+\setbeamerfont{frametitle}{size=\normalsize}
 \begin{frame}[t]\frametitle{Piecewise Linear Functions}
 
 \end{frame}
 %---------------------------
+\setbeamerfont{frametitle}{size=\normalsize}
 \begin{frame}[t]\frametitle{Mean Value Coordinates}
-
+\centering
+\includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
+\vspace{0.3cm}
+\begin{block}{}
+\begin{equation*}
+\lambda_i^{MV} (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{x}_j - \vec{x}|}
+\end{equation*}
+\end{block}
 \end{frame}
 %---------------------------
+\setbeamerfont{frametitle}{size=\normalsize}
 \begin{frame}[t]\frametitle{Maximum Entropy Coordinates}
+\centering
+\includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
+\vspace{0.3cm}
+\begin{block}{}
+\begin{equation*}
+\lambda_i^{ME} (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = m_j(\vec{x}) \exp(- \omega \cdot (\vec{x}_j - \vec{x}))
+\end{equation*}
+\end{block}
+\end{frame}
+%---------------------------
+\setbeamerfont{frametitle}{size=\normalsize}
+\begin{frame}[t]\frametitle{Summary of the 2D Linear Basis Functions}
 
 \end{frame}
 %---------------------------
