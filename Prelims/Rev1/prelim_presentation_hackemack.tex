@@ -208,7 +208,37 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \typeout{***********************************************************************************}
 \typeout{The DGFEM $S_N$ Transport Equation}
 \begin{frame}[t]\frametitle{Energy and Angular Discretization}
-
+\begin{block}{The multigroup $S_N$ equations}{\small
+\begin{equation*}
+\left( \vec{\Omega}_m \cdot \vec{\nabla}  + \sigma_{t,g}  \right)  \psi_{m,g}= \sum_{g'=1}^{G} \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi} \sigma_{s,p}^{g' \rightarrow g}   \sum_{n=-p}^{p}  \phi_{p,n,g'}  Y_{p,n} (  \vec{\Omega}_m ) +  Q_{m,g}
+\end{equation*}}
+\end{block}
+\centering
+\begin{columns}
+\column{0.475\textwidth}
+\begin{block}{Multigroup Method}{\small
+\begin{equation*}
+\psi_g =\int_{E_g}^{E_{g-1}} \, \psi ( E) \, dE
+\end{equation*}
+}\end{block}
+\column{0.475\textwidth}
+\begin{block}{$S_N$ Discretization}{\small
+\begin{equation*}
+\begin{aligned}
+\phi_{p,n} &\equiv \int_{4 \pi} d\Omega \, \psi(\vec{\Omega}) \, Y_{p,n} (\vec{\Omega}), \\
+\sigma_{s,p} &\equiv  \int_{-1}^{1} \, d \mu \, \sigma_s ( \mu_0) P_p (\mu_0) 
+\end{aligned}
+\end{equation*}
+\vspace{0.3cm}
+\begin{equation*}
+\begin{aligned}
+\mu_0 &\equiv \vec{\Omega}' \cdot \vec{\Omega} \\
+\sigma_s ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} \sigma_s ( \mu ) \\
+P_p ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} P_p (\mu)
+\end{aligned}
+\end{equation*}
+}\end{block}
+\end{columns}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \typeout{***********************************************************************************}
@@ -275,6 +305,23 @@ The operation ${\bf L}^{-1}$ can be performed in myriad ways. For this work, we 
 %
 \section[POLYFEM]{Polytope Finite Element Basis Functions}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{}
+%---------------------------
+\setbeamerfont{frametitle}{size=\normalsize}
+\begin{frame}[t]\frametitle{Polytope Finite Elements}
+\centering
+\begin{block}{2D arbitrary convex/concave polygons}
+\centering
+\includegraphics[width=0.70\textwidth]{images/arbitrary_polygons.png}
+\end{block}
+\vspace{0.5cm}
+\begin{block}{3D convex polyhedra}
+\centering
+\includegraphics[width=0.70\textwidth]{images/arbitrary_polyhedra.png}
+\end{block}
+\end{frame}
+%---------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Linear Basis Functions on 2D Polygons}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \typeout{***********************************************************************************}
@@ -319,7 +366,19 @@ y_1 & y_2 & y_3
 %---------------------------
 \setbeamerfont{frametitle}{size=\normalsize}
 \begin{frame}[t]\frametitle{Piecewise Linear (PWL) Functions}
-
+\centering
+\includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
+\vspace{0.3cm}
+\begin{block}{}
+\begin{equation*}
+\lambda_i^{PWL} (\vec{x}) =  t_i (\vec{x}) + \alpha_i t_c (\vec{x})
+\end{equation*}
+\end{block}
+\begin{block}{}
+$t_i $ - standard 2D linear function; 1 at vertex $i$ that linearly decreases to 0 to the cell center and the adjoining vertices \\
+$t_c$ - 2D tent function; 1 at cell center and linearly decreases to 0 to each cell vertex \\
+$\alpha_i = \frac{1}{N_V}$ - weight parameter for vertex $i$
+\end{block}
 \end{frame}
 %---------------------------
 \setbeamerfont{frametitle}{size=\normalsize}
@@ -434,15 +493,110 @@ Serendipity
 \sum_{aa \in V} \vec{x}_{a} \vec{x}_{a}^T \mu_{aa} + \sum_{ab \in E \cup D} \left(  \vec{x}_{a} \vec{x}_{b}^T + \vec{x}_{b} \vec{x}_{a}^T  \right) \mu_{ab} = \vec{x} \vec{x}^{T}
 \end{equation*}
 \end{block}
-\begin{block}{Further Notation}
+\begin{block}{Further Notation/Notes}
 \begin{equation*}
 \vec{x}_{ab} = \frac{\vec{x}_{a} + \vec{x}_{b}}{2}, \qquad \mu_{ab} = \lambda_a \lambda_b
+\end{equation*}
+\vspace{0.4cm}
+\begin{equation*}
+\mu^{K}_{ab}(\vec{r}) = 0, \qquad \left\{ ab \in D , \, \vec{r} \in \partial K  \right\}
 \end{equation*}
 \end{block}
 \end{frame}
 %---------------------------
 \begin{frame}[t]\frametitle{Eliminate interior nodes to form serendipity basis}
-
+\begin{block}{Reduction Problem - $\left[ \xi \right] := \mathbb{A}  \left[ \mu \right]$}{\small
+\begin{equation*}
+\mathbb{A} = 
+\left[
+\begin{array}{ccccc}
+c_{11}^{11} & \ldots & c_{ab}^{11} & \ldots & c_{(n-2)n}^{11} \\
+\ldots&\ddots&\vdots&\ddots&\vdots \\
+c_{11}^{ij} & \ldots & c_{ab}^{ij} & \ldots & c_{(n-2)n}^{ij} \\
+\ldots&\ddots&\vdots&\ddots&\vdots \\
+c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)} 
+\end{array}
+\right]
+\end{equation*}
+}\end{block}
+\begin{block}{Serendipity Precision Properties}{\small
+\begin{equation*}
+\sum_{ii \in V} \xi_{ii} + \sum_{i(i+1) \in E} 2 \xi_{i(i+1)} = 1
+\end{equation*}
+\begin{equation*}
+\sum_{ii \in V} \vec{x}_{ii} \xi_{ii} + \sum_{i(i+1) \in E} 2 \vec{x}_{i(i+1)} \xi_{i(i+1)} = \vec{x}
+\end{equation*}
+\begin{equation*}
+\sum_{ii \in V} \vec{x}_{i} \vec{x}_{i}^T \xi_{ii} + \sum_{i(i+1) \in E} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) \xi_{i(i+1)} = \vec{x} \vec{x}^{T}
+\end{equation*}
+}\end{block}
+\end{frame}
+%---------------------------
+\begin{frame}[t]{Special case - bilinear coordinates on the unit square}
+\vspace{-0.2cm}
+\begin{block}{Bilinear coordinates and quadratic extension}{\footnotesize
+\vspace{-0.15cm}
+\begin{columns}
+\column{0.3\textwidth}
+\begin{equation*}
+\begin{aligned}
+\lambda_1 &= (1-x)(1-y)  \\
+\lambda_2 &= x(1-y) \\
+\lambda_3 &= xy  \\
+\lambda_4 &= (1-x)y
+\end{aligned}
+\end{equation*}
+\column{0.1\textwidth}
+\column{0.6\textwidth}
+\begin{equation*}
+\begin{aligned}
+\mu_{11} &= (1-x)^2 (1-y)^2&   &\mu_{12} = (1-x)x(1-y)^2 \\
+\mu_{22} &= x^2 (1-y)^2&  &\mu_{23} = x^2y(1-y) \\
+\mu_{33} &= x^2 y^2&  &\mu_{34} = (1-x)xy^2 \\
+\mu_{44} &= (1-x)^2 y^2&  &\mu_{41} = (1-x)^2y(1-y) \\
+\mu_{13} &= (1-x)x (1-y)y& &\mu_{24} = (1-x)x (1-y)y
+\end{aligned}
+\end{equation*}
+\end{columns}
+}\end{block}
+\vspace{-0.3cm}
+\begin{columns}
+\column{0.58\textwidth}
+\centering
+\begin{block}{Reduction matrix}{\scriptsize
+\begin{equation*}
+\mathbb{A} = 
+\left[
+\begin{array}{cccccccccc}
+1&0&0&0&0&0&0&0&-1&0 \\
+0&1&0&0&0&0&0&0&0&-1\\
+0&0&1&0&0&0&0&0&-1&0 \\
+0&0&0&1&0&0&0&0&0&-1 \\
+0&0&0&0&1&0&0&0&1/2&1/2 \\
+0&0&0&0&0&1&0&0&1/2&1/2 \\
+0&0&0&0&0&0&1&0&1/2&1/2 \\
+0&0&0&0&0&0&0&1&1/2&1/2 
+\end{array}
+\right]
+\end{equation*}
+}\end{block}
+\column{0.38\textwidth}
+\centering
+\begin{block}{Serendipity coordinates}{\scriptsize
+\begin{equation*}
+\begin{aligned}
+\xi_{11} &= (1-x) (1-y)(1-x-y) \\
+\xi_{22} &= x(1-y)(x-y)\\
+\xi_{33} &= x y(-1+x+y) \\
+\xi_{44} &= (1-x) y(y-x) \\
+\xi_{12} &= (1-x)x(1-y) \\
+\xi_{23} &= xy(1-y) \\
+\xi_{34} &= (1-x)xy \\
+\xi_{41} &= (1-x)y(1-y) 
+\end{aligned}
+\end{equation*}
+}\end{block}
+\end{columns}
 \end{frame}
 %---------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -450,12 +604,31 @@ Serendipity
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \typeout{***********************************************************************************}
 \typeout{Polytope Finite Element Basis Functions}
-
+%---------------------------
 \setbeamerfont{frametitle}{size=\large}
-\begin{frame}{Linear Basis Functions on 3D Polyhedra}
-
+\begin{frame}[t]{Linear Basis Functions on 3D Polyhedra}
+\begin{block}{Linear basis functions and convex polyhedra only for 3D}{\small
+\begin{itemize}
+\item The 2D quadratic serendipity formulation is more arduous in 3D
+\item Intercell coupling is not straightforward for concave polyhedra
+\item Focus on 3D PWL functions - MAXENT only other function for arbitrary polyhedra
+\item Focus on 3D parallelepipeds and extruded convex polygons (convex prisms)
+\end{itemize}}
+\end{block}
+\begin{block}{3D PWL basis functions}{\small
+\begin{equation*}
+b_i (\vec{x})  = t_i  (\vec{x})  + \sum_{f=1}^{F_i} \beta_f^i  t_f (\vec{x}) + \alpha_i t_c  (\vec{x}) 
+\end{equation*}
+}\end{block}
+\begin{block}{}{\footnotesize
+$t_i$ - standard 3D linear function; 1 at vertex $i$, linearly decreases to 0 to the cell center, each adjoining face center, and each adjoining vertex\\
+$t_c$ - 3D tent function; 1 at cell center, linearly decreases to 0  \\
+$t_f$ - face tent function; 1 at face center, linearly decreases to 0 at each face vertex and cell center\\
+$\alpha_i = \frac{1}{N_V}$ - weight parameter for vertex $i$\\
+$\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
+}\end{block}
 \end{frame}
-
+%---------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
@@ -465,11 +638,11 @@ Serendipity
 \typeout{***********************************************************************************}
 \typeout{DSA}
 %---------------------------
-\begin{frame}[t]\frametitle{}
+\begin{frame}[t]\frametitle{Theory goes here...}
 
 \end{frame}
 %---------------------------
-\begin{frame}[t]\frametitle{}
+\begin{frame}[t]\frametitle{Theory goes here...}
 
 \end{frame}
 %---------------------------
@@ -564,8 +737,26 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 %
 \section{Proposed Work and Current Status}
 \subsection{}
-\begin{frame}[t]\frametitle{}
-% ---> Define proposed work
+\begin{frame}[t]\frametitle{Proposed Work}
+\begin{block}{POLYFEM}
+\begin{enumerate}
+	\item Analyze the different 2D linear polygonal basis functions for use in DGFEM transport calculations
+	\item Perform the same analysis with the quadratic serendipity basis functions
+\end{enumerate}
+\end{block}
+\begin{block}{MIP DSA}
+\begin{enumerate}
+	\item Analyze the 2D linear/quadratic basis functions with DSA preconditioning through Fourier/numerical analysis
+	\item Extend the analysis of MIP DSA to arbitrary convex 3D polyhedra
+	\item Implement MIP DSA in PDT using HYPRE
+	\begin{enumerate}
+		\item Analyze the scalability of the method to high process counts
+		\item Perform parametric studies on aggregation/partitioning factors to generate a performance model of MIP DSA with HYPRE
+		\item Implement and perform analysis of two-grid acceleration at scale
+		\item Run real-world numerical experiments - IM1
+	\end{enumerate}
+\end{enumerate}
+\end{block}
 \end{frame}
 \subsection{}
 %---------------------------
@@ -696,12 +887,21 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 \includegraphics[width=0.9\textwidth]{images/sip_gauss_full_paint.png} 
 \end{frame}
 %---------------------------
-\begin{frame}[t]\frametitle{}
-% ---> 2D square fourier analysis
-\end{frame}
-%---------------------------
-\begin{frame}[t]\frametitle{}
-% ---> 2D aspect ratio fourier analysis
+\begin{frame}[t]\frametitle{Fourier analysis - 3D PWL basis functions}
+\begin{columns}
+\column{0.48\textwidth}
+\begin{block}{$c=1$}
+\centering
+{}\includegraphics[width=0.8\textwidth]{images/SI_MIP_hex_C=1_LS2,4,8_F&NSR_PDT.png} \\
+{}\includegraphics[width=0.8\textwidth]{images/SI_MIP_hex_LS8_C=1_AR.eps}
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{$c=4$}
+\centering
+{}\includegraphics[width=0.8\textwidth]{images/SI_MIP_hex_C=4_LS2,4,8_F&NSR_PDT.png} \\
+{}\includegraphics[width=0.8\textwidth]{images/SI_MIP_hex_LS8_C=4_AR.eps}
+\end{block}
+\end{columns}
 \end{frame}
 %---------------------------
 \begin{frame}[t]\frametitle{MIP DSA Timing Data with PDT on Vulcan using HYPRE}
@@ -712,30 +912,79 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 	\begin{itemize}
 	\item Modified Zerr problem - used optimal sweep aggregation parameters
 	\begin{itemize}
-	\item homogeneous cube - c=0.9999
+	\item homogeneous cube - about 500 mfp and c=0.9999
 	\item $S8$ level-symmetric quadrature
 	\end{itemize}
 	\item pointwise convergence tolerance of 1e-8
-	\item precondition with MIP DSA using HYPRE PCG and AMG
+	\item SI precondition with MIP DSA using HYPRE PCG and AMG
 	\end{itemize}
 \end{block}
 \end{figure}
 \end{frame}
 %---------------------------
-\begin{frame}[t]\frametitle{}
-% ---> Vulcan HYPRE parametric study results
+\begin{frame}[t]\frametitle{Two-grid acceleration implementation in PDT}
+\begin{block}{}
+\begin{itemize}
+	\item Successfully implemented and deugged
+	\begin{itemize}
+		\item Includes non-orthogonal  mesh configurations
+		\item Includes multi-material configurations
+	\end{itemize}
+	\item Have tested the two-grid methodology on a homogeneous graphite block as well as a block with an air duct
+	\item Iteration counts for a very large configuration (very optically thick) are similar to simple infinite medium calculations
+\end{itemize}
+\end{block}
+\centering
+\vspace{1cm}
+\begin{table}
+\footnotesize
+\begin{tabular}{|c|c|c|}
+\hline
+Materials & Unaccelerated Iterations & Accelerated Iterations  \\
+\hline \hline
+Graphite Only & 2027 & 21 \\ \hline
+Graphite + Air Duct & 2138 & 23 \\ \hline
+\end{tabular}
+\end{table}
 \end{frame}
 %---------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{Ongoing Work}
 
 \section{Ongoing Work}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%\section{Conclusions}
-% You need an empty subsection, or you don't get the little menu things.
-%\subsection{}
-
+\subsection{}
+%---------------------------
+\begin{frame}[t]\frametitle{POLYFEM Ongoing Work}
+\begin{block}{}{\large
+\begin{itemize}
+	\item Finish quadratic serendipity extension for polygonal finite elements to Wachspress, PWL, and mean value.
+	\item Determine the effects of numerical integration strategies on highly-distorted polygonal elements
+	\item Perform analysis on benchmark cases using AMR
+	\begin{itemize}
+		\item Searchlight problem (partially completed)
+		\item IAEA-EIR-2 problem
+	\end{itemize}
+\end{itemize}
+}\end{block}
+\end{frame}
+%---------------------------
+\begin{frame}[t]\frametitle{MIP DSA Ongoing Work}
+\begin{block}{}{\large
+\begin{itemize}
+	\item Finish the MIP DSA Fourier analysis for all the 2D polygonal basis functions (including the quadratic serendipity extension).
+	\item Analyze the effects of AMR with polygonal basis functions on the MIP DSA PCG iteration counts (with and without bootstrapping)
+	\item Remaining PDT work:
+	\begin{itemize}
+		\item Complete parametric studies (a lot of the raw results have been compiled) of MIP DSA with HYPRE and generate a working performance model
+		\item Perform additional two-grid acceleration studies on simple geometries
+		\item Run IM1 problem with two-grid acceleration 
+		\item Commit all acceleration additions to master for use in the CERT project
+	\end{itemize}
+\end{itemize}
+}\end{block}
+\end{frame}
+%---------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \typeout{***********************************************************************************}
 \typeout{We have reached the end}
@@ -793,29 +1042,6 @@ A special acknowledgment to the Department of Energy Rickover Fellowship Program
 
 \setbeamerfont{frametitle}{size=\large}
 \begin{frame}
-    \frametitle{A stretch goal is to compare my method to Monte Carlo}
-    \framesubtitle{I claim the following is the best way to show our method has practical importance, because continuous-energy Monte Carlo codes do exact particle tracking / kinematics and use very accurate cross sections. Such codes may attain higher fidelity in all respects than DRAGON.}
-
-    \onslide<1->{
-    \begin{block}{Start with a 0-D problem to isolate energy discretization effects}
-        \begin{enumerate}
-            \item Come up with a reactor-themed problem
-            \item Solve the same problem in PDT and MCNP or OpenMC
-            \item Choose QOI, such as $k$-eigenvalue, radial power profile, absorption/fission rates per nuclide, etc.
-            \item Quantify how errors in PDT's QOI change as energy resolution is increased
-         \end{enumerate}
-     \end{block}
-     }
-    \onslide<2->{
-    \begin{block}{Build up problem complexity slowly: cylindricized pin cell with white boundary conditions, infinite lattice of pin cells, heterogeneous lattice of pin cells, etc.}
-        \begin{enumerate}
-            \item Quantify how errors in PDT's QOI change as spatial / angular / scattering moment resolution is increased
-            \item Quantify how errors in PDT's QOI change as energy resolution is increased
-            \item \ldots
-            \item Profit
-         \end{enumerate}
-    \end{block}
-    }
 
 \end{frame}
 
