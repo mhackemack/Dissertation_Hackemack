@@ -254,9 +254,9 @@ P_p ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} P_p (\mu)
 \begin{block}{Classic Source Iteration} {\small
 \begin{equation*}
 \begin{aligned}
- \Psi^{(\ell+1)} &= {\bf L}^{-1} \left( {\bf M} {\bf \Sigma} \Phi^{(\ell)}  +  {\bf Q} \right) \\
-\Phi^{(\ell+1)} &= {\bf D} {\bf L}^{-1} \left( {\bf M} {\bf \Sigma} \Phi^{(\ell)}  +  {\bf Q} \right) \\
- \Phi &= {\bf D} \Psi
+ \psi^{(\ell+1)} &= {\bf L}^{-1} \left( {\bf M} {\bf \Sigma} \phi^{(\ell)}  +  {\bf Q} \right) \\
+\phi^{(\ell+1)} &= {\bf D} {\bf L}^{-1} \left( {\bf M} {\bf \Sigma} \phi^{(\ell)}  +  {\bf Q} \right) \\
+ \phi &= {\bf D} \psi
 \end{aligned}
 \end{equation*}
 }\end{block}
@@ -267,16 +267,46 @@ ${\bf D}$ - discrete-to-moment operator \\
 ${\bf \Sigma}$ - scattering operator 
 }\end{block}
 \begin{block}{Transport Sweep} {\small
-The operation ${\bf L}^{-1}$ can be performed in myriad ways. For this work, we will use the matrix-free, full-domain transport sweep.
+The operation ${\bf L}^{-1}$ can be performed in different ways. For this work, we will use the matrix-free, full-domain transport sweep.
 } \end{block}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{The DGFEM $S_N$ Transport Equation}
+\setbeamerfont{frametitle}{size=\small}
+\begin{frame}[t]\frametitle{Optically thick problems can cause slow convergence rates}
+\begin{block}{Source Iteration Approximate Spectral Radius}
+\begin{equation*}
+\rho^{(k+1)} \approx \frac{||  \phi^{(k+1)} -  \phi^{(k)} ||}{||  \phi^{(k)} -  \phi^{(k-1)}  ||} 
+\end{equation*}
+\end{block}
+\begin{block}{Optically Thick Cases - leakage/absorption does not dominate}
+\begin{itemize}
+	\item 1-group sense: $\frac{\sigma_s}{\sigma_t} \approx 1$ and $\left( \sigma_t \cdot \text{diam} (\mathcal{D}) \right) \gg 1$ \vspace{1mm}
+	\item MG sense: 
+	\begin{itemize}
+		\item Thermal upscattering into higher energy groups is significant
+		\item Single group iteration, $g$, with $\frac{\sigma_s^{g \rightarrow g}}{\sigma_{t,g}} \approx  1$ and $\left( \sigma_{t,g} \cdot \text{diam} (\mathcal{D}) \right) \gg 1$
+	\end{itemize} \vspace{1mm}
+	\item TRT problem: 
+	\begin{itemize}
+		\item heat capacities tend to zero
+		\item time steps tend to infinity
+	\end{itemize}
+\end{itemize}
+\end{block}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
-\subsection{Polytope Grid Motivation}
+\subsection{Motivation for this Work}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \typeout{***********************************************************************************}
-\typeout{Polytope Grid Motivation}
+\typeout{Motivation}
+%---------------------------
+\begin{frame}[t]\frametitle{Higher-Order FEM Motivation}
+
+\end{frame}
+%---------------------------
 \begin{frame}[t]\frametitle{Polytope Grid Motivation}
          \begin{block}{}{\footnotesize
 			\begin{itemize}
@@ -301,6 +331,7 @@ The operation ${\bf L}^{-1}$ can be performed in myriad ways. For this work, we 
 {}\includegraphics[width=0.50\columnwidth]{images/IM1_30_rot.eps}
 }
 \end{frame}
+%---------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
 %
@@ -376,9 +407,10 @@ y_1 & y_2 & y_3
 \end{equation*}
 \end{block}
 \begin{block}{}
-$t_i $ - standard 2D linear function; 1 at vertex $i$ that linearly decreases to 0 to the cell center and the adjoining vertices \\
-$t_c$ - 2D tent function; 1 at cell center and linearly decreases to 0 to each cell vertex \\
-$\alpha_i = \frac{1}{N_V}$ - weight parameter for vertex $i$
+$t_i $ - standard 2D linear function for a triangle $(i,i+1,K_c)$; 1 at vertex $i$ that linearly decreases to 0 to the cell center and the adjoining vertices \\ \vspace{1mm}
+$t_c$ - 2D tent function; 1 at cell center and linearly decreases to 0 to each cell vertex \\ \vspace{1mm}
+$\alpha_i = \frac{1}{N_V}$ - weight parameter for vertex $i$ \\ \vspace{1mm}
+$N_V$ - number of cell vertices
 \end{block}
 \end{frame}
 %---------------------------
@@ -391,6 +423,24 @@ $\alpha_i = \frac{1}{N_V}$ - weight parameter for vertex $i$
 \begin{equation*}
 \lambda_i^{MV} (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{x}_j - \vec{x}|}
 \end{equation*}
+\end{block}
+\begin{block}{Limit as $\vec{x} \rightarrow \vec{x}_j$}
+\vspace{-0.25cm}
+\begin{columns}
+\column{0.5\textwidth}
+\centering
+\begin{equation*}
+\lim_{\vec{x} \rightarrow \vec{x}_j} \tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2) = 0
+\end{equation*}
+\column{0.1\textwidth}
+\centering
+$\longrightarrow$
+\column{0.4\textwidth}
+\centering
+\begin{equation*}
+\lim_{\vec{x} \rightarrow \vec{x}_j}  w_j (\vec{x}) = 1
+\end{equation*}
+\end{columns}
 \end{block}
 \end{frame}
 %---------------------------
@@ -443,7 +493,7 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative***\\ \hline
 \begin{frame}[t]\frametitle{Quadratic Serendipity Basis Functions on 2D Polygons}
 \begin{block}{}
 \begin{enumerate}
-	\item <1-> Form the linear barycentrric functions - \{$\lambda_i$\}
+	\item <1-> Form the linear barycentric functions - \{$\lambda_i$\}
 	\item <2-> Construct the pairwise products -  \{$\mu_{ab}$\}
 	\item <3-> Eliminate the interior nodes to form a serendipity basis - \{$\xi_{ij}$\}
 \end{enumerate}
@@ -484,6 +534,8 @@ Serendipity
 %---------------------------
 \begin{frame}[t]\frametitle{Pairwise products of the barycentric basis functions}
 \begin{block}{Necessary Precision Properties}
+\begin{columns}
+\column{0.62\textwidth}
 \begin{equation*}
 \sum_{aa \in V} \mu_{aa} + \sum_{ab \in E \cup D} 2 \mu_{ab} = 1
 \end{equation*}
@@ -493,6 +545,14 @@ Serendipity
 \begin{equation*}
 \sum_{aa \in V} \vec{x}_{a} \vec{x}_{a}^T \mu_{aa} + \sum_{ab \in E \cup D} \left(  \vec{x}_{a} \vec{x}_{b}^T + \vec{x}_{b} \vec{x}_{a}^T  \right) \mu_{ab} = \vec{x} \vec{x}^{T}
 \end{equation*}
+\column{0.03\textwidth}
+\column{0.35\textwidth}
+{\small
+$V$ - vertex nodes \\
+$E$ - face midpoint nodes \\
+$D$ - interior diagonal nodes
+}
+\end{columns}
 \end{block}
 \begin{block}{Further Notation/Notes}
 \begin{equation*}
@@ -622,10 +682,10 @@ b_i (\vec{x})  = t_i  (\vec{x})  + \sum_{f=1}^{F_i} \beta_f^i  t_f (\vec{x}) + \
 \end{equation*}
 }\end{block}
 \begin{block}{}{\footnotesize
-$t_i$ - standard 3D linear function; 1 at vertex $i$, linearly decreases to 0 to the cell center, each adjoining face center, and each adjoining vertex\\
-$t_c$ - 3D tent function; 1 at cell center, linearly decreases to 0  \\
-$t_f$ - face tent function; 1 at face center, linearly decreases to 0 at each face vertex and cell center\\
-$\alpha_i = \frac{1}{N_V}$ - weight parameter for vertex $i$\\
+$t_i$ - standard 3D linear function for a tet $(i,i+1,f_c,K_c)$; 1 at vertex $i$, linearly decreases to 0 to the cell center, each adjoining face center, and each adjoining vertex\\ \vspace{0.5mm}
+$t_c$ - 3D tent function; 1 at cell center, linearly decreases to 0 at all vertices and face centers \\ \vspace{0.5mm}
+$t_f$ - face tent function; 1 at face center, linearly decreases to 0 at each face vertex and cell center\\ \vspace{0.5mm}
+$\alpha_i = \frac{1}{N_V}$ - weight parameter for vertex $i$\\ \vspace{0.5mm}
 $\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
 }\end{block}
 \end{frame}
@@ -754,6 +814,7 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 		\item Analyze the scalability of the method to high process counts
 		\item Perform parametric studies on aggregation/partitioning factors to generate a performance model of MIP DSA with HYPRE
 		\item Implement and perform analysis of two-grid acceleration at scale
+		\item Run reactor-type problem ({\em e.g.,} C5G7)
 		\item Run real-world numerical experiments - IM1
 	\end{enumerate}
 \end{enumerate}
@@ -951,9 +1012,9 @@ Graphite + Air Duct & 2138 & 23 \\ \hline
 %---------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \typeout{***********************************************************************************}
-\typeout{Ongoing Work}
+\typeout{Work Summary}
 
-\section{Ongoing Work}
+\section{Work Summary}
 \subsection{}
 %---------------------------
 \begin{frame}[t]\frametitle{POLYFEM Ongoing Work}
