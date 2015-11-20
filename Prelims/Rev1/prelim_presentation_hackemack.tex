@@ -223,7 +223,7 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \psi_g =\int_{\Delta E_g} \, \psi ( E) \, dE , \qquad \Delta E_g \in \left[  E_g , E_{g-1} \right]
 \end{equation*} 
 \begin{equation*}
-\sigma_{t,g} = \frac{\int_{\Delta E_g} \sigma_t (E) \, \psi (E) }{\int_{\Delta E_g} \psi (E) }
+\sigma_{t,g} = \frac{\int_{\Delta E_g} \sigma_t (E) \, \psi (E) \, dE }{\int_{\Delta E_g} \psi (E) \, dE }
 \end{equation*} 
 }\end{block}
 \column{0.4\textwidth}
@@ -301,8 +301,7 @@ P_k ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} P_k (\mu_0)
 \begin{equation*}
 \begin{aligned}
  \psi^{(\ell+1)} &= {\bf L}^{-1} \left( {\bf M} {\bf \Sigma} \phi^{(\ell)}  +  {\bf Q} \right) \\
-\phi^{(\ell+1)} &= {\bf D} {\bf L}^{-1} \left( {\bf M} {\bf \Sigma} \phi^{(\ell)}  +  {\bf Q} \right) \\
- \phi &= {\bf D} \psi
+\phi^{(\ell+1)} &= {\bf D}  \psi^{(\ell+1)}
 \end{aligned}
 \end{equation*}
 }\end{block}
@@ -329,16 +328,12 @@ The operation ${\bf L}^{-1}$ can be performed in different ways. For this work, 
 \end{block}
 \begin{block}{Optically Thick Cases - leakage/absorption does not dominate}{\small
 \begin{itemize}
-	\item 1-group sense: $\sigma_s / \sigma_t \approx 1$ and $\left( \sigma_t \cdot \text{diam} (\mathcal{D}) \right) \gg 1$ 
-	\item MG sense: 
-	\begin{itemize}
-		\item Thermal upscattering into higher energy groups is significant
-		\item Single group iteration, $g$, with $\sigma_s^{g \rightarrow g} / {\sigma_{t,g}} \approx  1$ and $\left( \sigma_{t,g} \cdot \text{diam} (\mathcal{D}) \right) \gg 1$
-	\end{itemize}
+	\item $\sigma_s^{g \rightarrow g} / {\sigma_{t,g}} \approx  1$ and $\left( \sigma_{t,g} \cdot \text{diam} (\mathcal{D}) \right) \gg 1$
+	\item Thermal upscattering into higher energy groups is significant
 \end{itemize}}
 \end{block}
 }
-\only<2>{
+\onslide<2->{
 \begin{block}{Answer - Precondition the transport sweep}{\small
 \begin{itemize}
 	\item Diffusion Synthetic Acceleration (DSA)
@@ -525,7 +520,7 @@ y_1 & y_2 & y_3
 \end{equation*}
 \end{block}
 \begin{block}{}
-$t_i $ - standard 2D linear function for a triangle $(i,i+1,K_c)$; 1 at vertex $i$ that linearly decreases to 0 to the cell center and the adjoining vertices \\ \vspace{1mm}
+$t_i $ - standard 2D linear function for a triangle $(i,i+1,C)$; 1 at vertex $i$ that linearly decreases to 0 to the cell center and the adjoining vertices \\ \vspace{1mm}
 $t_c$ - 2D tent function; 1 at cell center and linearly decreases to 0 to each cell vertex \\ \vspace{1mm}
 $\alpha_i = \frac{1}{N_V}$ - weight parameter for vertex $i$ \\ \vspace{1mm}
 $N_V$ - number of cell vertices
@@ -579,6 +574,27 @@ $\longrightarrow$
 \end{block}
 \end{frame}
 %---------------------------
+% COMMENTED OUT FOR RIGHT NOW
+\iffalse
+\begin{frame}[t]\frametitle{Finite element architecture}
+\begin{block}{Mass Matrix - element $K$}
+\begin{equation*}
+{\bf M}^K = \int_{K} d\vec{r} \, \lambda (\vec{x}) \, \lambda^T (\vec{x})  =  \sum\displaylimits_{q=1}^{N_q^K} w_q^K \, \lambda (\vec{x}_q^K) \, \lambda^T (\vec{x}_q^K) 
+\end{equation*}
+\end{block}
+\begin{block}{Advection Matrix - element $K$}
+\begin{equation*}
+{\bf G}^K = \int_{K} d\vec{r} \, \vec{\nabla} \lambda (\vec{x}) \, \lambda^T (\vec{x}) = \sum\displaylimits_{q=1}^{N_q^K}  w_q^K \, \vec{\nabla} \lambda (\vec{x}_q^K) \, \lambda^T (\vec{x}_q^K) 
+\end{equation*}
+\end{block}
+\begin{block}{Surface Matrix - face $f$ for element $K$}
+\begin{equation*}
+{\bf N}_f^K = \int_{f} ds \, \lambda (\vec{x}) \, \lambda^T (\vec{x})  = \sum\displaylimits_{q=1}^{N_f}  w_q^f \, \lambda (\vec{x}_q^f) \, \lambda^T (\vec{x}_q^f) 
+\end{equation*}
+\end{block}
+\end{frame}
+\fi
+%---------------------------
 \setbeamerfont{frametitle}{size=\normalsize}
 \begin{frame}[t]\frametitle{Summary of the 2D Linear Basis Functions}
 \centering
@@ -587,7 +603,7 @@ $\longrightarrow$
 \footnotesize
 \begin{tabular}{|c|c|c|c|c|}
 \hline
-Basis Function & Dimension & Polytope Types & Analytical/Numerical & Direct/Iterative \\
+Basis Function & Dimension & Polytope Types & Integration & Direct/Iterative \\
 \hline \hline
 Wachspress	&2D/3D&	Convex*&	Numerical	&Direct\\ \hline
 PWL&	1D/2D/3D&	Convex/Concave&	Analytical	&Direct\\ \hline
@@ -598,7 +614,7 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative***\\ \hline
 \vspace{0.5cm}
 \begin{block}{}
 * - weak convexity for Wachspress coordinates does not cause blow up\\
-** - mean value 3D analogue only applicable to tetrahedron \\
+** - mean value 3D analogue only applicable triangular-faceted polyhedra \\
 *** - maximum entropy minimization solved via Newton's Method 
 \end{block}
 \end{frame}
@@ -797,7 +813,7 @@ $\xi_{i(i+1)}$ - basis function at face midpoint between vertices ($i, i+1$)
 \begin{itemize}
 \item The 2D quadratic serendipity formulation is more arduous in 3D
 \item Intercell coupling is not straightforward for concave polyhedra
-\item Focus on 3D PWL functions - MAXENT only other function for arbitrary polyhedra
+\item Focus on 3D PWL functions
 \item Focus on 3D parallelepipeds and extruded convex polygons (convex prisms)
 \end{itemize}}
 \end{block}
@@ -850,9 +866,9 @@ If we could exactly solve for the error, then the solution could be obtained imm
 \begin{equation*}
 \phi^{(\ell+1)} = \phi^{(\ell+1/2)} + \delta \phi^{(\ell+1/2)}
 \end{equation*}
-However, this is just as difficult as the full transport problem. Instead, we estimate:
+However, this is just as difficult as the full transport problem. Instead, we estimate the error using low-order operators:
 \begin{equation*}
-{\bf L} \delta \psi^{(\ell+1/2)} - {\bf B}' \delta \phi^{(\ell+1/2)} = {\bf R}^{(\ell+1/2)}
+\tilde{{\bf L}} \delta \psi^{(\ell+1/2)} - \tilde{{\bf B}}' \delta \phi^{(\ell+1/2)} = \tilde{{\bf R}}^{(\ell+1/2)}
 \end{equation*}
 }\end{block}
 \end{frame}
@@ -1148,7 +1164,7 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 \begin{frame}[t]\frametitle{Two-grid acceleration implementation in PDT}
 \begin{block}{}
 \begin{itemize}
-	\item Successfully implemented and deugged
+	\item Successfully implemented and debugged
 	\begin{itemize}
 		\item Includes non-orthogonal  mesh configurations
 		\item Includes multi-material configurations
@@ -1249,21 +1265,35 @@ A special acknowledgment to the Department of Energy Rickover Fellowship Program
 \appendix
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\section{Backup Slides}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{``Extra Credit''}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \typeout{***********************************************************************************}
-\typeout{Extra Credit Work}
-
+\typeout{Backup Slides}
+\section{Backup Slides}
+\subsection{Stretch Goals}
+%---------------------------
 \setbeamerfont{frametitle}{size=\large}
-\begin{frame}
+\begin{frame}[t]\frametitle{Stretch Goals}
 
 \end{frame}
+%---------------------------
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Limits of the 2D linear polygonal FEM basis functions}
+%---------------------------
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}[t]\frametitle{Limits of the Wachspress coordinates}
 
+\end{frame}
+%---------------------------
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}[t]\frametitle{Limits of the mean value coordinates}
+
+\end{frame}
+%---------------------------
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}[t]\frametitle{Limits of the maximum entropy coordinates}
+
+\end{frame}
+%---------------------------
 \backupend
 
 \end{document}
