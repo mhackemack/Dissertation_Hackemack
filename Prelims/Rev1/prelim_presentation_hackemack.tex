@@ -304,7 +304,17 @@ The operation ${\bf L}^{-1}$ can be performed in different ways. For this work, 
 \typeout{Motivation}
 %---------------------------
 \begin{frame}[t]\frametitle{Higher-Order FEM Motivation}
-
+\begin{block}{FEM convergence rate - no solution irregularity}
+\begin{equation*}
+|| u - u_h ||_{L_2} = C \, h^{p+1}, \qquad || u - u_h ||_{L_2} = C \, N_{dof}^{-\frac{p+1}{d}}
+\end{equation*} \\
+\vspace{0.5cm}
+$C$ - error constant dependent on mesh, and basis function polynomial order \\
+$h$ - maximum diameter for an element \\
+$p$ - polynomial order of the finite element basis \\
+$N_{dof}$ - total degrees of freedom: $N_{dof} \propto h^{-d}$ \\
+$d$ - dimensionality of the problem ({\em i.e.,} 1,2,3)
+\end{block}
 \end{frame}
 %---------------------------
 \begin{frame}[t]\frametitle{Polytope Grid Motivation}
