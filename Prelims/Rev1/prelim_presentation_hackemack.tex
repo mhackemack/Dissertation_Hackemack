@@ -18,6 +18,7 @@
 \usepackage{wasysym}
 \usepackage{bigstrut}
 \usepackage{epstopdf}
+%\usepackage[dvipsnames]{xcolor}
 %\usepackage{enumitem}
 %\setlist{nolistsep} % or \setlist{noitemsep} to leave space around whole list
 % Load some optional sub-parts of PGF
@@ -89,6 +90,7 @@
 %Colors!
 \definecolor{maroon}{rgb}{0.5,0,0}
 \definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{amber}{rgb}{1.0, 0.49, 0.0}
 
 %Get rid of navigation icons
 \setbeamertemplate{navigation symbols}{}
@@ -182,17 +184,17 @@ College Station, TX, USA 77843\\[1ex]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \typeout{***********************************************************************************}
 \typeout{The DGFEM $S_N$ Transport Equation}
-\begin{frame}[t]\frametitle{The Continuous-Energy Transport Equation}
+\begin{frame}[t]\frametitle{The Continuous-Energy Transport Equation} \vspace{-2.5mm}
 \begin{block}{Transport Equation}{\footnotesize
 \begin{equation*}
-\left[ { \bf \Omega} \cdot {\bf \nabla}  + \sigma_t ({\bf r}, E) \right] \psi ({\bf r}, E, {\bf \Omega}) = \int_{4 \pi} \int_{0}^{\infty}  \, \sigma_s ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega}) \psi ({\bf r}, E', {\bf \Omega}') d E'  d \Omega'+ Q ({\bf r}, E, {\bf \Omega})
+\left[ { \bf \Omega} \cdot {\bf \nabla}  + \sigma_t ({\bf r}, E) \right] \psi ({\bf r}, E, {\bf \Omega}) = \int\displaylimits_{4 \pi} \int\displaylimits_{0}^{\infty}  \, \sigma_s ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega}) \psi ({\bf r}, E', {\bf \Omega}') d E'  d \Omega'+ Q ({\bf r}, E, {\bf \Omega})
 \end{equation*}
-}\end{block}
+}\end{block} \vspace{-1.0mm}
 \begin{block}{Boundary Conditions}{\footnotesize
 \begin{equation*}
-\psi ({\bf r}, E, {\bf \Omega}) = \psi^{inc} ({\bf r}, E, {\bf \Omega}) +  \int_{4 \pi} \int_{0}^{\infty} \beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega}) \psi ({\bf r}, E', {\bf \Omega}') d E'  d \Omega'
+\psi ({\bf r}, E, {\bf \Omega}) = \psi^{inc} ({\bf r}, E, {\bf \Omega}) +  \int\displaylimits_{\vec{\Omega}' \cdot \vec{n} < 0} \int\displaylimits_{0}^{\infty} \beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega}) \psi ({\bf r}, E', {\bf \Omega}') d E'  d \Omega'
 \end{equation*}
-}\end{block}
+}\end{block} \vspace{-1.0mm}
 \begin{block}{Term Definitions} {\footnotesize
 ${\bf r}$ -  neutron position \\
 $E$ -  neutron energy \\
@@ -210,32 +212,35 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \begin{frame}[t]\frametitle{Energy and Angular Discretization}
 \begin{block}{The multigroup $S_N$ equations}{\small
 \begin{equation*}
-\left( \vec{\Omega}_m \cdot \vec{\nabla}  + \sigma_{t,g}  \right)  \psi_{m,g}= \sum_{g'=1}^{G} \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi} \sigma_{s,p}^{g' \rightarrow g}   \sum_{n=-p}^{p}  \phi_{p,n,g'}  Y_{p,n} (  \vec{\Omega}_m ) +  Q_{m,g}
+\left( \vec{\Omega}_m \cdot \vec{\nabla}  + \sigma_{t,g}  \right)  \psi_{m,g}= \sum_{g'=1}^{G} \sum_{k=0}^{N_k} \frac{2p + 1}{4 \pi} \sigma_{s,k}^{g' \rightarrow g}   \sum_{n=-k}^{k}  \phi_{k,n,g'}  Y_{k,n} (  \vec{\Omega}_m ) +  Q_{m,g}
 \end{equation*}}
 \end{block}
 \centering
 \begin{columns}
-\column{0.475\textwidth}
+\column{0.55\textwidth}
 \begin{block}{Multigroup Method}{\small
 \begin{equation*}
-\psi_g =\int_{E_g}^{E_{g-1}} \, \psi ( E) \, dE
-\end{equation*} \\
-cross sections goes here...
+\psi_g =\int_{\Delta E_g} \, \psi ( E) \, dE , \qquad \Delta E_g \in \left[  E_g , E_{g-1} \right]
+\end{equation*} 
+\begin{equation*}
+\sigma_{t,g} = \frac{\int_{\Delta E_g} \sigma_t (E) \, \psi (E) }{\int_{\Delta E_g} \psi (E) }
+\end{equation*} 
 }\end{block}
-\column{0.475\textwidth}
-\begin{block}{$S_N$ Discretization}{\small
+\column{0.4\textwidth}
+\begin{block}{Spherical Harmonics}{\small
+\vspace{-0.15cm}
 \begin{equation*}
 \begin{aligned}
-\phi_{p,n} &\equiv \int_{4 \pi} d\Omega \, \psi(\vec{\Omega}) \, Y_{p,n} (\vec{\Omega}), \\
-\sigma_{s,p} &\equiv  \int_{-1}^{1} \, d \mu \, \sigma_s ( \mu_0) P_p (\mu_0) 
+\phi_{k,n} &\equiv \int_{4 \pi} d\Omega \, \psi(\vec{\Omega}) \, Y_{k,n} (\vec{\Omega}), \\
+\sigma_{s,k} &\equiv  \int_{-1}^{1} \, d \mu \, \sigma_s ( \mu_0) P_k (\mu_0) 
 \end{aligned}
 \end{equation*}
-\vspace{0.3cm}
+\vspace{0.2cm}
 \begin{equation*}
 \begin{aligned}
 \mu_0 &\equiv \vec{\Omega}' \cdot \vec{\Omega} \\
-\sigma_s ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} \sigma_s ( \mu ) \\
-P_p ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} P_p (\mu)
+\sigma_s ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} \sigma_s ( \mu_0 ) \\
+P_k ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} P_k (\mu_0)
 \end{aligned}
 \end{equation*}
 }\end{block}
@@ -244,8 +249,49 @@ P_p ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} P_p (\mu)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \typeout{***********************************************************************************}
 \typeout{The DGFEM $S_N$ Transport Equation}
-\begin{frame}[t]\frametitle{Spatial Discretization}
-
+\setbeamerfont{frametitle}{size=\small}
+\begin{frame}[t]\frametitle{Spatial Discretization - 1 group/direction and general source}
+\vspace{-2mm}
+\begin{block}{Multiply element $K$ by basis functions and apply Gauss theorem}{\small
+\begin{equation*}
+- \left( \vec{\Omega}_m \cdot  \vec{\nabla} b_m, \psi_{m} \right)_{K} + \sum_{f=1}^{N_f^K} \Big< ( \vec{\Omega}_m \cdot \vec{n}_f ) \, b_m, \tilde{\psi}_m  \Big>_{f}  + \Big(  \sigma_{t} b_m ,   \psi_{m} \Big)_{K} = \left(  b_m ,   Q_m \right)_{K}
+\end{equation*}
+}\end{block}
+\vspace{-2mm}
+\onslide<2->{
+\begin{block}{The upwind scheme}{\small
+\vspace{-2mm}
+\begin{columns}
+\column{0.48\textwidth}
+\centering
+\begin{equation*}
+\tilde{\psi}_m (\vec{r})  = 
+\begin{cases}
+\psi_m^{-} , & \partial K^+ \\
+\psi_m^{+}, & \partial K^- \backslash \partial \mathcal{D} \\
+\psi_m^{inc}, & \partial K^- \cap \partial \mathcal{D}^d \\
+\psi_{m'}^{-}, & \partial K^- \cap \partial \mathcal{D}^r
+\end{cases}
+\end{equation*}
+\column{0.48\textwidth}
+\centering
+\begin{equation*}
+\psi_m^{\pm} (\vec{r}) \equiv \lim_{s \rightarrow 0^{\pm}} \psi_m \Big( \vec{r} + s (\vec{\Omega}_m \cdot \vec{n}) \vec{n} \Big)
+\end{equation*}
+\end{columns}
+}\end{block}
+}
+\onslide<3->{
+\begin{block}{Full set of equations for element $K$}{\small
+\begin{equation*}
+\begin{aligned}
+-  \Big( \vec{\Omega}_m \cdot  & \vec{\nabla} b_m, \psi_{m} \Big)_{K}   + \Big(  \sigma_{t} b_m ,   \psi_{m} \Big)_{K} +  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\psi}_m^{-}  \Big>_{\partial K^+}  \\
+  + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\psi}_m^{+}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\psi}^{-}_{m'}  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
+= & \left(  b_m ,   Q_m \right)_{K} + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\psi}_m^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}^d}
+\end{aligned} 
+\end{equation*}
+}\end{block}
+}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \typeout{***********************************************************************************}
@@ -275,26 +321,33 @@ The operation ${\bf L}^{-1}$ can be performed in different ways. For this work, 
 \typeout{The DGFEM $S_N$ Transport Equation}
 \setbeamerfont{frametitle}{size=\small}
 \begin{frame}[t]\frametitle{Optically thick problems can cause slow convergence rates}
+\only<1-2>{
 \begin{block}{Source Iteration Approximate Spectral Radius}
 \begin{equation*}
 \rho^{(k+1)} \approx \frac{||  \phi^{(k+1)} -  \phi^{(k)} ||}{||  \phi^{(k)} -  \phi^{(k-1)}  ||} 
 \end{equation*}
 \end{block}
-\begin{block}{Optically Thick Cases - leakage/absorption does not dominate}
+\begin{block}{Optically Thick Cases - leakage/absorption does not dominate}{\small
 \begin{itemize}
-	\item 1-group sense: $\frac{\sigma_s}{\sigma_t} \approx 1$ and $\left( \sigma_t \cdot \text{diam} (\mathcal{D}) \right) \gg 1$ \vspace{1mm}
+	\item 1-group sense: $\sigma_s / \sigma_t \approx 1$ and $\left( \sigma_t \cdot \text{diam} (\mathcal{D}) \right) \gg 1$ 
 	\item MG sense: 
 	\begin{itemize}
 		\item Thermal upscattering into higher energy groups is significant
-		\item Single group iteration, $g$, with $\frac{\sigma_s^{g \rightarrow g}}{\sigma_{t,g}} \approx  1$ and $\left( \sigma_{t,g} \cdot \text{diam} (\mathcal{D}) \right) \gg 1$
-	\end{itemize} \vspace{1mm}
-	\item TRT problem: 
-	\begin{itemize}
-		\item heat capacities tend to zero
-		\item time steps tend to infinity
+		\item Single group iteration, $g$, with $\sigma_s^{g \rightarrow g} / {\sigma_{t,g}} \approx  1$ and $\left( \sigma_{t,g} \cdot \text{diam} (\mathcal{D}) \right) \gg 1$
 	\end{itemize}
-\end{itemize}
+\end{itemize}}
 \end{block}
+}
+\only<2>{
+\begin{block}{Answer - Precondition the transport sweep}{\small
+\begin{itemize}
+	\item Diffusion Synthetic Acceleration (DSA)
+	\item Transport Synthetic Acceleration (TSA)
+	\item Boundary Projection Acceleration (BPA)
+	\item etc.
+\end{itemize}
+}\end{block}
+}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %
@@ -304,17 +357,22 @@ The operation ${\bf L}^{-1}$ can be performed in different ways. For this work, 
 \typeout{Motivation}
 %---------------------------
 \begin{frame}[t]\frametitle{Higher-Order FEM Motivation}
-\begin{block}{FEM convergence rate - no solution irregularity}
+\vspace{-0.15cm}
+\begin{block}{FEM convergence rate - no solution irregularity}{\footnotesize
 \begin{equation*}
 || u - u_h ||_{L_2} = C \, h^{p+1}, \qquad || u - u_h ||_{L_2} = C \, N_{dof}^{-\frac{p+1}{d}}
 \end{equation*} \\
-\vspace{0.5cm}
-$C$ - error constant dependent on mesh, and basis function polynomial order \\
+\vspace{0.1cm}
+$C$ - error constant dependent on mesh, basis function, and polynomial order \\
 $h$ - maximum diameter for an element \\
 $p$ - polynomial order of the finite element basis \\
 $N_{dof}$ - total degrees of freedom: $N_{dof} \propto h^{-d}$ \\
 $d$ - dimensionality of the problem ({\em i.e.,} 1,2,3)
+}
 \end{block}
+\vspace{-0.05cm}
+{}\includegraphics[width=0.485\columnwidth]{images/hconv_larger.eps} \hfill 
+{}\includegraphics[width=0.485\columnwidth]{images/Nconv_larger.eps}
 \end{frame}
 %---------------------------
 \begin{frame}[t]\frametitle{Polytope Grid Motivation}
@@ -326,19 +384,23 @@ $d$ - dimensionality of the problem ({\em i.e.,} 1,2,3)
 				\item <4-> Independently-generated simplicial grids ({\em i.e.} created in parallel) can be stitched together with polytopes without communicating the whole mesh across processors
 			\end{itemize}}
          \end{block}
-\vspace{0.5cm}
 \centering
 \only<1>{
+\vspace{0.5cm}
 {}\includegraphics[width=0.45\columnwidth]{images/Polymesh_sized.jpg}
 }
 \only<2>{
-{}\includegraphics[width=0.4\columnwidth]{images/transition_elements.png}
+\vspace{0.4cm}
+{}\includegraphics[width=0.4\columnwidth]{images/transition_elements_rev1.png}
 }
 \only<3>{
+\vspace{0.5cm}
 {}\includegraphics[width=0.55\columnwidth]{images/locally_refined_nodes.png}
 }
 \only<4>{
-{}\includegraphics[width=0.50\columnwidth]{images/IM1_30_rot.eps}
+\centering
+{}\includegraphics[width=0.52\columnwidth]{images/IM1_30_rot.eps} \hspace{1.0cm}
+{}\includegraphics[width=0.345\columnwidth]{images/IM1_zoom.eps}
 }
 \end{frame}
 %---------------------------
@@ -363,6 +425,37 @@ $d$ - dimensionality of the problem ({\em i.e.,} 1,2,3)
 \end{block}
 \end{frame}
 %---------------------------
+\setbeamerfont{frametitle}{size=\normalsize}
+\begin{frame}[t]\frametitle{A common class of linear finite elements - the $\mathbb{P}_1$ space}
+\begin{columns}
+\column{0.48\textwidth} \vspace{-6mm}
+\begin{block}{2D $\mathbb{P}_1$ space - reference element} 
+\centering
+{}\includegraphics[width=0.55\columnwidth]{images/ref_triangle.png} \vspace{3mm}
+\begin{equation*}
+\begin{aligned}
+\lambda_1 (r,s) &= 1-r-s  \\ 
+\lambda_2 (r,s) &= r \\ 
+\lambda_3 (r,s) &= s 
+\end{aligned}
+\end{equation*}
+\end{block}
+\column{0.48\textwidth}
+\begin{block}{3D $\mathbb{P}_1$ space - reference element}
+\centering
+{}\includegraphics[width=0.60\columnwidth]{images/ref_tet.png} \vspace{3mm}
+\begin{equation*}
+\begin{aligned}
+\lambda_1 (r,s,t) &= 1-r-s - t \\ 
+\lambda_2 (r,s,t) &= r \\ 
+\lambda_3 (r,s,t) &= s \\
+\lambda_4 (r,s,t) &= t \\
+\end{aligned}
+\end{equation*}
+\end{block}
+\end{columns}
+\end{frame}
+%---------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Linear Basis Functions on 2D Polygons}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -374,14 +467,29 @@ $d$ - dimensionality of the problem ({\em i.e.,} 1,2,3)
 \centering
 \includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
 \vspace{0.75cm}
+\only<1>{
 \begin{block}{Basis Function Properties - Barycentric Coordinates}
+$\lambda_i$ - linear basis function located at vertex $i$ \vspace{0.25cm}
 	\begin{enumerate}
-	\item $\lambda_i \geq 0$
-	\item $\sum_i \lambda_i = 1$
-	\item $\sum_i \vec{x}_i \lambda_i (\vec{x}) = \vec{x}$
-	\item $\lambda_i (\vec{x}_j) = \delta_{ij}$
+	\item $\lambda_i \geq 0$ \vspace{1mm}
+	\item $\sum_i \lambda_i = 1$ \vspace{1mm}
+	\item $\sum_i \vec{x}_i \lambda_i (\vec{x}) = \vec{x}$ \vspace{1mm}
+	\item $\lambda_i (\vec{x}_j) = \delta_{ij}$ 
 	\end{enumerate}
 \end{block}
+}
+\only<2>{
+\begin{block}{Linear basis functions that we consider}
+	\begin{enumerate}
+	\item Wachspress rational coordinates*
+	\item Piecewise linear (PWL) coordinates*
+	\item Mean value coordinates
+	\item Maximum entropy coordinates
+	\end{enumerate}
+\vspace{2mm}
+*have been previously analyzed for transport problems
+\end{block}
+}
 \end{frame}
 %---------------------------
 \setbeamerfont{frametitle}{size=\normalsize}
@@ -591,6 +699,8 @@ c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)}
 \end{equation*}
 }\end{block}
 \begin{block}{Serendipity Precision Properties}{\small
+\begin{columns}
+\column{0.50\textwidth}
 \begin{equation*}
 \sum_{ii \in V} \xi_{ii} + \sum_{i(i+1) \in E} 2 \xi_{i(i+1)} = 1
 \end{equation*}
@@ -600,6 +710,11 @@ c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)}
 \begin{equation*}
 \sum_{ii \in V} \vec{x}_{i} \vec{x}_{i}^T \xi_{ii} + \sum_{i(i+1) \in E} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) \xi_{i(i+1)} = \vec{x} \vec{x}^{T}
 \end{equation*}
+\column{0.03\textwidth}
+\column{0.35\textwidth}
+$\xi_{ii}$ - basis function at vertex $i$\\ \vspace{1mm}
+$\xi_{i(i+1)}$ - basis function at face midpoint between vertices ($i, i+1$)
+\end{columns}
 }\end{block}
 \end{frame}
 %---------------------------
@@ -709,12 +824,46 @@ $\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
 \typeout{***********************************************************************************}
 \typeout{DSA}
 %---------------------------
-\begin{frame}[t]\frametitle{Theory goes here...}
-
+\begin{frame}[t]\frametitle{Diffusion Synthetic Acceleration}
+\begin{block}{Transport iteration and error}{\small
+\begin{columns}
+\column{0.48\textwidth}
+\begin{equation*}
+\begin{aligned}
+&{\bf L} \psi = {\bf B} \phi + {\bf C} \phi + {\bf Q} \\
+&{\bf L} \psi^{(\ell+1/2)} = {\bf B} \phi^{(\ell+1/2)} + {\bf C} \phi^{(\ell)} + {\bf Q} \\
+&\noindent\rule{5.5cm}{0.4pt} \\
+&{\bf L} \delta \psi^{(\ell+1/2)} - {\bf B}' \delta \phi^{(\ell+1/2)} = {\bf R}^{(\ell+1/2)}
+\end{aligned}
+\end{equation*}
+\column{0.48\textwidth}
+\begin{equation*}
+\begin{aligned}
+\delta \psi^{(\ell+1/2)} &\equiv \psi - \psi^{(\ell+1/2)} \\
+\delta \phi^{(\ell+1/2)} &\equiv {\bf D} \delta \psi^{(\ell+1/2)}
+\end{aligned}
+\end{equation*}
+\end{columns}}
+\end{block}
+\begin{block}{Error approximation and update}{\small
+If we could exactly solve for the error, then the solution could be obtained immediately:
+\begin{equation*}
+\phi^{(\ell+1)} = \phi^{(\ell+1/2)} + \delta \phi^{(\ell+1/2)}
+\end{equation*}
+However, this is just as difficult as the full transport problem. Instead, we estimate:
+\begin{equation*}
+{\bf L} \delta \psi^{(\ell+1/2)} - {\bf B}' \delta \phi^{(\ell+1/2)} = {\bf R}^{(\ell+1/2)}
+\end{equation*}
+}\end{block}
 \end{frame}
 %---------------------------
-\begin{frame}[t]\frametitle{Theory goes here...}
+\begin{frame}[t]\frametitle{Two-Grid Acceleration}
+\begin{block}{}{\small
 
+}\end{block}
+\centering
+\includegraphics[width=0.4\textwidth]{images/P0_Fourier_69G.eps} \hspace{2mm}
+\includegraphics[width=0.4\textwidth]{images/P1_Fourier_69G.eps}
 \end{frame}
 %---------------------------
 \subsection{MIP Diffusion Form}
@@ -790,10 +939,10 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 \begin{frame}[t]\frametitle{Modified Interior Penalty (MIP) Form}
 	\begin{block}{Diffusion Form}{\footnotesize
 		\begin{gather*}
-			 \Big<  D \vec{\nabla}  \Phi , \vec{\nabla} b  \Big>_{\mathcal{D}} + \Big<  \sigma   \Phi ,  b  \Big>_{\mathcal{D}}    \\
-			+  \Big\{ \kappa_e^{MIP} [\![   \Phi ]\!] , [\![  b ]\!]\Big\}_{E_h^i} - \Big\{  [\![   \Phi ]\!] , \{\!\{  D \partial_n b \}\!\}\Big\}_{E_h^i} -\Big\{ \{\!\{  D \partial_n  \Phi \}\!\} , [\![ b ]\!]\Big\}_{E_h^i} \\
-			+ \Big\{ \kappa_e^{MIP}   \Phi ,   b \Big\}_{\partial \mathcal{D}^{vac}} -  \frac{1}{2} \Big\{   \Phi  ,  D \partial_n b \Big\}_{\partial \mathcal{D}^{vac}} -  \frac{1}{2} \Big\{   D 				\partial_n  \Phi ,   b \Big\}_{\partial \mathcal{D}^{vac}}  \\
- = \Big<  q, b  \Big>_{\mathcal{D}}  
+			 \Big<  D \vec{\nabla} \delta \Phi , \vec{\nabla} b  \Big>_{\mathcal{D}} + \Big<  \sigma \delta  \Phi ,  b  \Big>_{\mathcal{D}}    \\
+			+  \Big\{ \kappa_e^{MIP} [\![ \delta  \Phi ]\!] , [\![  b ]\!]\Big\}_{E_h^i} - \Big\{  [\![  \delta \Phi ]\!] , \{\!\{  D \partial_n b \}\!\}\Big\}_{E_h^i} -\Big\{ \{\!\{  D \partial_n \delta \Phi \}\!\} , [\![ b ]\!]\Big\}_{E_h^i} \\
+			+ \Big\{ \kappa_e^{MIP} \delta  \Phi ,   b \Big\}_{\partial \mathcal{D}^{vac}} -  \frac{1}{2} \Big\{  \delta \Phi  ,  D \partial_n b \Big\}_{\partial \mathcal{D}^{vac}} -  \frac{1}{2} \Big\{   D 				\partial_n \delta \Phi ,   b \Big\}_{\partial \mathcal{D}^{vac}}  \\
+ = \Big<  R , b  \Big>_{\mathcal{D}}  +  \Big\{  \delta J_{inc}, b  \Big\}_{\partial \mathcal{D}^{ref}}
         	\end{gather*} }
 \end{block}
 	\begin{block}{MIP Penalty Term}{\footnotesize
@@ -808,26 +957,28 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 %
 \section{Proposed Work and Current Status}
 \subsection{}
-\begin{frame}[t]\frametitle{Proposed Work}
-\begin{block}{POLYFEM}
+\begin{frame}[t]\frametitle{Proposed Work}\vspace{-0.2cm}
+\begin{block}{POLYFEM}{\footnotesize
 \begin{enumerate}
-	\item Analyze the different 2D linear polygonal basis functions for use in DGFEM transport calculations
+	\item Analyze the 2D linear polygonal basis functions for use in DGFEM transport calculations
 	\item Perform the same analysis with the quadratic serendipity basis functions
-\end{enumerate}
+	\item Determine the effects of numerical integration on highly-distorted polygonal elements
+	\item Perform analysis on benchmark cases using polygonal meshes (including AMR)
+\end{enumerate}}
 \end{block}
-\begin{block}{MIP DSA}
+\begin{block}{MIP DSA}{\footnotesize
 \begin{enumerate}
-	\item Analyze the 2D linear/quadratic basis functions with DSA preconditioning through Fourier/numerical analysis
+	\item Analyze the 2D polygonal basis functions with DSA preconditioning through Fourier/numerical analysis
+	\item Analyze the effects of AMR with polygonal basis functions on the MIP DSA PCG iteration counts (with and without bootstrapping)
 	\item Extend the analysis of MIP DSA to arbitrary convex 3D polyhedra
 	\item Implement MIP DSA in PDT using HYPRE
-	\begin{enumerate}
+	\begin{enumerate}{\footnotesize
 		\item Analyze the scalability of the method to high process counts
-		\item Perform parametric studies on aggregation/partitioning factors to generate a performance model of MIP DSA with HYPRE
-		\item Implement and perform analysis of two-grid acceleration at scale
-		\item Run reactor-type problem ({\em e.g.,} C5G7)
-		\item Run real-world numerical experiments - IM1
-	\end{enumerate}
-\end{enumerate}
+		\item Implement and perform analysis of two-grid acceleration
+		\item Perform parametric studies on aggregation/partitioning factors - generate a performance model of MIP DSA with HYPRE
+		\item Run realistic numerical experiments - IM1 and reactor geometries
+	}\end{enumerate}
+\end{enumerate}}
 \end{block}
 \end{frame}
 \subsection{}
@@ -1027,34 +1178,30 @@ Graphite + Air Duct & 2138 & 23 \\ \hline
 \section{Work Summary}
 \subsection{}
 %---------------------------
-\begin{frame}[t]\frametitle{POLYFEM Ongoing Work}
-\begin{block}{}{\large
-\begin{itemize}
-	\item Finish quadratic serendipity extension for polygonal finite elements to Wachspress, PWL, and mean value.
-	\item Determine the effects of numerical integration strategies on highly-distorted polygonal elements
-	\item Perform analysis on benchmark cases using AMR
-	\begin{itemize}
-		\item Searchlight problem (partially completed)
-		\item IAEA-EIR-2 problem
-	\end{itemize}
-\end{itemize}
-}\end{block}
-\end{frame}
-%---------------------------
-\begin{frame}[t]\frametitle{MIP DSA Ongoing Work}
-\begin{block}{}{\large
-\begin{itemize}
-	\item Finish the MIP DSA Fourier analysis for all the 2D polygonal basis functions (including the quadratic serendipity extension).
-	\item Analyze the effects of AMR with polygonal basis functions on the MIP DSA PCG iteration counts (with and without bootstrapping)
-	\item Remaining PDT work:
-	\begin{itemize}
-		\item Complete parametric studies (a lot of the raw results have been compiled) of MIP DSA with HYPRE and generate a working performance model
-		\item Perform additional two-grid acceleration studies on simple geometries
-		\item Run IM1 problem with two-grid acceleration 
-		\item Commit all acceleration additions to master for use in the CERT project
-	\end{itemize}
-\end{itemize}
-}\end{block}
+
+\begin{frame}[t]\frametitle{Work Summary and Status - completed (blue), in-progress (orange), and not-started (red)}\vspace{-0.2cm}
+\begin{block}{POLYFEM}{\footnotesize
+\begin{enumerate}
+	\item {\color{blue} Analyze the 2D linear polygonal basis functions for use in DGFEM transport calculations}
+	\item {\color{blue} Perform the same analysis with the quadratic serendipity basis functions}
+	\item {\color{amber} Determine the effects of numerical integration on highly-distorted polygonal elements}
+	\item {\color{amber} Perform analysis on benchmark cases using polygonal meshes (including AMR)}
+\end{enumerate}}
+\end{block}
+\begin{block}{MIP DSA}{\footnotesize
+\begin{enumerate}
+	\item {\color{blue} Analyze the 2D polygonal basis functions with DSA preconditioning through Fourier/numerical analysis}
+	\item {\color{blue} Extend the analysis of MIP DSA to arbitrary convex 3D polyhedra}
+	\item {\color{amber} Analyze the effects of AMR with polygonal basis functions on the MIP DSA PCG iteration counts (with and without bootstrapping)}
+	\item {\color{blue} Implement MIP DSA in PDT using HYPRE}
+	\begin{enumerate}{\footnotesize
+		\item {\color{blue} Analyze the scalability of the method to high process counts}
+		\item {\color{blue} Implement and perform analysis of two-grid acceleration}
+		\item {\color{blue} Perform parametric studies on aggregation/partitioning factors} - {\color{amber} generate a performance model of MIP DSA with HYPRE}
+		\item {\color{red} Run realistic numerical experiments - IM1 and reactor geometries}
+	}\end{enumerate}
+\end{enumerate}}
+\end{block}
 \end{frame}
 %---------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
