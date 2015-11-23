@@ -309,7 +309,8 @@ P_k ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} P_k (\mu_0)
 ${\bf L}$ - streaming + collision operator \\
 ${\bf M}$ - moment-to-discrete operator \\
 ${\bf D}$ - discrete-to-moment operator \\
-${\bf \Sigma}$ - scattering operator 
+${\bf \Sigma}$ - scattering operator \\
+${\bf Q}$ - source operator
 }\end{block}
 \begin{block}{Transport Sweep} {\small
 The operation ${\bf L}^{-1}$ can be performed in different ways. For this work, we will use the matrix-free, full-domain transport sweep.
@@ -574,8 +575,6 @@ $\longrightarrow$
 \end{block}
 \end{frame}
 %---------------------------
-% COMMENTED OUT FOR RIGHT NOW
-\iffalse
 \begin{frame}[t]\frametitle{Finite element architecture}
 \begin{block}{Mass Matrix - element $K$}
 \begin{equation*}
@@ -593,7 +592,6 @@ $\longrightarrow$
 \end{equation*}
 \end{block}
 \end{frame}
-\fi
 %---------------------------
 \setbeamerfont{frametitle}{size=\normalsize}
 \begin{frame}[t]\frametitle{Summary of the 2D Linear Basis Functions}
@@ -1086,6 +1084,18 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 \end{frame}
 %---------------------------
 \subsection{}
+%---------------------------
+\begin{frame}[t]\frametitle{3D FEM/DSA Analysis}
+\centering
+\vspace{0.2cm}
+\includegraphics[width=0.32\textwidth]{images/3D_cart_mesh.eps} 
+\includegraphics[width=0.32\textwidth]{images/3D_tri_mesh.eps}
+\includegraphics[width=0.32\textwidth]{images/3D_rand_poly_mesh.eps}  \\
+\vspace{0.2cm}
+\includegraphics[width=0.32\textwidth]{images/3D_shes_poly_mesh.eps} 
+\includegraphics[width=0.32\textwidth]{images/3D_sine_poly_mesh.eps} 
+\includegraphics[width=0.32\textwidth]{images/3D_z_poly_mesh.eps} 
+\end{frame}
 %---------------------------
 \setbeamerfont{frametitle}{size=\small}
 \begin{frame}[t]\frametitle{SIP exactly linear solutions on 3D polyhedral meshes using the PWL basis functions}
