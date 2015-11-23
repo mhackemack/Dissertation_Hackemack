@@ -459,7 +459,7 @@ $d$ - dimensionality of the problem ({\em i.e.,} 1,2,3)
 \typeout{Linear Basis Functions on 2D Polygons}
 %---------------------------
 \setbeamerfont{frametitle}{size=\normalsize}
-\begin{frame}[t]\frametitle{Linear Basis Functions on 2D Polygons}
+\begin{frame}[t,label=2D_poly]\frametitle{Linear Basis Functions on 2D Polygons}
 \centering
 \includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
 \vspace{0.75cm}
@@ -489,7 +489,7 @@ $\lambda_i$ - linear basis function located at vertex $i$ \vspace{0.25cm}
 \end{frame}
 %---------------------------
 \setbeamerfont{frametitle}{size=\normalsize}
-\begin{frame}[t]\frametitle{Wachspress Rational Functions}
+\begin{frame}[t,label=main_wach]\frametitle{Wachspress Rational Functions (\hyperlink{poly_limits<1>}{\beamergotobutton{Go to extra}})}
 \centering
 \includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
 \vspace{0.3cm}
@@ -529,10 +529,20 @@ $N_V$ - number of cell vertices
 \end{frame}
 %---------------------------
 \setbeamerfont{frametitle}{size=\normalsize}
-\begin{frame}[t]\frametitle{Mean Value Coordinates}
+\begin{frame}[t,label=main_mv]\frametitle{Mean Value Coordinates (\hyperlink{poly_limits<1>}{\beamergotobutton{Go to extra}})}
 \centering
 \includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
 \vspace{0.3cm}
+\only<1>{
+\begin{block}{Preserve piecewise linear harmonic maps over triangulations}
+\begin{equation*}
+\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} = 0, \qquad u(\vec{r}) = u_0 , \, \vec{r} \in \partial \mathcal{D} 
+\end{equation*} \\
+\vspace{1.0cm}
+$u(\vec{r})$ - piecewise linear function on the cell boundary
+\end{block}
+}
+\only<2>{
 \begin{block}{}
 \begin{equation*}
 \lambda_i^{MV} (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{x}_j - \vec{x}|}
@@ -556,13 +566,37 @@ $\longrightarrow$
 \end{equation*}
 \end{columns}
 \end{block}
+}
 \end{frame}
 %---------------------------
 \setbeamerfont{frametitle}{size=\normalsize}
-\begin{frame}[t]\frametitle{Maximum Entropy Coordinates}
+\begin{frame}[t,label=main_me]\frametitle{Maximum Entropy Coordinates (\hyperlink{poly_limits<1>}{\beamergotobutton{Go to extra}})}
 \centering
 \includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
 \vspace{0.3cm}
+\only<1>{
+\begin{block}{Constrained optimization problem - Shannon Entropy}
+\begin{equation*}
+\max\displaylimits_{\lambda(\vec{x})}  H(\lambda, m), \qquad  H(\lambda, m) = - \sum\displaylimits_{i} \lambda_i (\vec{x}) \ln \left(   \frac{\lambda_i(\vec{x})}{m_i(\vec{x})} \right)
+\end{equation*} \\ \vspace{3mm}
+\begin{equation*}
+\sum\displaylimits_{i} \lambda_i (\vec{x}) = 1, \qquad \sum\displaylimits_{i} \lambda_i (\vec{x}) ( \vec{x}_i - \vec{x} ) = \vec{0}
+\end{equation*}
+\end{block}
+}
+\only<2>{
+\begin{block}{}
+\begin{equation*}
+\lambda_i^{ME} (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = m_j(\vec{x}) \exp(- \omega^* \cdot (\vec{x}_j - \vec{x}))
+\end{equation*}
+\end{block}
+\begin{block}{}{\small
+\begin{equation*}
+\mathcal{L} (\lambda, \omega_0, \omega) = - \sum\displaylimits_{i} \lambda_i (\vec{x}) \ln \left(   \frac{\lambda_i(\vec{x})}{m_i(\vec{x})} \right) - \omega_0 \left(  \sum\displaylimits_{i}  \lambda_i (\vec{x}) -1  \right) - \omega \cdot  \left(  \sum\displaylimits_{i}  \lambda_i (\vec{x}) (\vec{x}_i - \vec{x})  \right)
+\end{equation*}}
+\end{block}
+}
+\only<3>{
 \begin{block}{}
 \begin{equation*}
 \lambda_i^{ME} (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = m_j(\vec{x}) \exp(- \omega^* \cdot (\vec{x}_j - \vec{x}))
@@ -573,6 +607,7 @@ $\longrightarrow$
 \omega^* = \text{argmin} \, F(\omega, \vec{x})  \qquad F(\omega, \vec{x}) = \ln \left(  \sum_j w_j (\vec{x})  \right)
 \end{equation*}
 \end{block}
+}
 \end{frame}
 %---------------------------
 \begin{frame}[t]\frametitle{Finite element architecture}
@@ -664,7 +699,12 @@ Serendipity
 \end{columns}
 \end{frame}
 %---------------------------
-\begin{frame}[t]\frametitle{Pairwise products of the barycentric basis functions}
+\begin{frame}[t]\frametitle{Pairwise products of the barycentric basis functions - $\mu_{ab} = \lambda_a \lambda_b$}
+\only<1>{
+\centering
+{}\includegraphics[width=0.75\columnwidth]{images/rand_quad_ab.png} 
+}
+\only<2>{
 \begin{block}{Necessary Precision Properties}
 \begin{columns}
 \column{0.62\textwidth}
@@ -695,23 +735,15 @@ $D$ - interior diagonal nodes
 \mu^{K}_{ab}(\vec{r}) = 0, \qquad \left\{ ab \in D , \, \vec{r} \in \partial K  \right\}
 \end{equation*}
 \end{block}
+}
 \end{frame}
 %---------------------------
 \begin{frame}[t]\frametitle{Eliminate interior nodes to form serendipity basis}
-\begin{block}{Reduction Problem - $\left[ \xi \right] := \mathbb{A}  \left[ \mu \right]$}{\small
-\begin{equation*}
-\mathbb{A} = 
-\left[
-\begin{array}{ccccc}
-c_{11}^{11} & \ldots & c_{ab}^{11} & \ldots & c_{(n-2)n}^{11} \\
-\ldots&\ddots&\vdots&\ddots&\vdots \\
-c_{11}^{ij} & \ldots & c_{ab}^{ij} & \ldots & c_{(n-2)n}^{ij} \\
-\ldots&\ddots&\vdots&\ddots&\vdots \\
-c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)} 
-\end{array}
-\right]
-\end{equation*}
-}\end{block}
+\only<1>{
+\centering
+{}\includegraphics[width=0.75\columnwidth]{images/rand_ser_numbering.png} 
+}
+\only<2>{
 \begin{block}{Serendipity Precision Properties}{\small
 \begin{columns}
 \column{0.50\textwidth}
@@ -730,6 +762,48 @@ $\xi_{ii}$ - basis function at vertex $i$\\ \vspace{1mm}
 $\xi_{i(i+1)}$ - basis function at face midpoint between vertices ($i, i+1$)
 \end{columns}
 }\end{block}
+\begin{block}{Reduction Problem - $\left[ \xi \right] := \mathbb{A}  \left[ \mu \right]$}{\small
+\begin{equation*}
+\mathbb{A} = 
+\left[
+\begin{array}{ccccc}
+c_{11}^{11} & \ldots & c_{ab}^{11} & \ldots & c_{(n-2)n}^{11} \\
+\ldots&\ddots&\vdots&\ddots&\vdots \\
+c_{11}^{ij} & \ldots & c_{ab}^{ij} & \ldots & c_{(n-2)n}^{ij} \\
+\ldots&\ddots&\vdots&\ddots&\vdots \\
+c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)} 
+\end{array}
+\right]
+\end{equation*}
+}\end{block}
+}
+\only<3>{
+\vspace{-3mm}
+\begin{block}{Constant Precision}{\footnotesize
+\begin{equation*}
+\begin{aligned}
+\sum\displaylimits_{ii \in V} c_{aa}^{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{aa}^{i(i+1)} &= 1 , \qquad \forall aa \in V \\
+\sum\displaylimits_{ii \in V} c_{ab}^{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} &= 2 , \qquad \forall ab \in E \cup D
+\end{aligned}
+\end{equation*}
+}\end{block}
+\begin{block}{Linear Precision}{\footnotesize
+\begin{equation*}
+\begin{aligned}
+\sum\displaylimits_{ii \in V} c_{aa}^{ii} \vec{x}_{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{aa}^{i(i+1)} \vec{x}_{i (i+1)} &= \vec{x}_{aa} , \qquad \forall aa \in V \\
+\sum\displaylimits_{ii \in V} c_{ab}^{ii} \vec{x}_{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} \vec{x}_{i (i+1)} &= 2 \vec{x}_{ab} , \qquad \forall ab \in E \cup D
+\end{aligned}
+\end{equation*}
+}\end{block}
+\begin{block}{Quadratic Precision}{\footnotesize
+\begin{equation*}
+\begin{aligned}
+\sum\displaylimits_{ii \in V} c_{aa}^{ii} \vec{x}_{i} \vec{x}_{i}^T + \sum\displaylimits_{i(i+1) \in E} 2 c_{aa}^{i(i+1)} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) &= \vec{x}_{a} \vec{x}_{a}^T , \qquad &\forall aa \in V \\
+\sum\displaylimits_{ii \in V} c_{ab}^{ii} \vec{x}_{i} \vec{x}_{i}^T + \sum\displaylimits_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) &= \vec{x}_{a} \vec{x}_{b}^T + \vec{x}_{b} \vec{x}_{a}^T, \qquad &\forall ab \in E \cup D
+\end{aligned}
+\end{equation*}
+}\end{block}
+}
 \end{frame}
 %---------------------------
 \begin{frame}[t]{Special case - bilinear coordinates on the unit square}
@@ -871,13 +945,27 @@ However, this is just as difficult as the full transport problem. Instead, we es
 }\end{block}
 \end{frame}
 %---------------------------
-\begin{frame}[t]\frametitle{Two-Grid Acceleration}
-\begin{block}{}{\small
-
-}\end{block}
-\centering
-\includegraphics[width=0.4\textwidth]{images/P0_Fourier_69G.eps} \hspace{2mm}
-\includegraphics[width=0.4\textwidth]{images/P1_Fourier_69G.eps}
+\begin{frame}[t]\frametitle{Various DSA Implementations}
+\begin{block}{Historical DSA Work}
+\begin{itemize}
+	\item Gelbard and Hageman (G\&B) - efficient convergence on fine meshes
+	\item Reed - showed that G\&B diverged for coarse meshes
+	\item Alcouffe - consistency yields efficiency and robustness
+\end{itemize}
+\end{block}
+\begin{block}{Fully-consistent DSA schemes}
+\begin{itemize}
+	\item Larsen fully-consistent four step
+	\item Fully-consist DSA (FCDSA)
+\end{itemize}
+\end{block}
+\begin{block}{Partially-consistent DSA schemes}
+\begin{itemize}
+	\item Modified four step (M4S)
+	\item Waering-Larsen-Adams (WLA)
+	\item Modified Interior Penalty DSA (MIP)
+\end{itemize}
+\end{block}
 \end{frame}
 %---------------------------
 \subsection{MIP Diffusion Form}
@@ -955,7 +1043,7 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 		\begin{gather*}
 			 \Big<  D \vec{\nabla} \delta \Phi , \vec{\nabla} b  \Big>_{\mathcal{D}} + \Big<  \sigma \delta  \Phi ,  b  \Big>_{\mathcal{D}}    \\
 			+  \Big\{ \kappa_e^{MIP} [\![ \delta  \Phi ]\!] , [\![  b ]\!]\Big\}_{E_h^i} - \Big\{  [\![  \delta \Phi ]\!] , \{\!\{  D \partial_n b \}\!\}\Big\}_{E_h^i} -\Big\{ \{\!\{  D \partial_n \delta \Phi \}\!\} , [\![ b ]\!]\Big\}_{E_h^i} \\
-			+ \Big\{ \kappa_e^{MIP} \delta  \Phi ,   b \Big\}_{\partial \mathcal{D}^{vac}} -  \frac{1}{2} \Big\{  \delta \Phi  ,  D \partial_n b \Big\}_{\partial \mathcal{D}^{vac}} -  \frac{1}{2} \Big\{   D 				\partial_n \delta \Phi ,   b \Big\}_{\partial \mathcal{D}^{vac}}  \\
+			+ \Big\{ \kappa_e^{MIP} \delta  \Phi ,   b \Big\}_{\partial \mathcal{D}^{vac}} -  \frac{1}{2} \Big\{  \delta \Phi  ,  D \partial_n b \Big\}_{\partial \mathcal{D}^{vac}} -  \frac{1}{2} \Big\{   D \partial_n \delta \Phi ,   b \Big\}_{\partial \mathcal{D}^{vac}}  \\
  = \Big<  R , b  \Big>_{\mathcal{D}}  +  \Big\{  \delta J_{inc}, b  \Big\}_{\partial \mathcal{D}^{ref}}
         	\end{gather*} }
 \end{block}
@@ -964,6 +1052,56 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 			\kappa_e^{MIP} = \max(\frac{1}{4},  \kappa_e^{SIP})
 		\end{align*} }
 	\end{block}
+\end{frame}
+%---------------------------
+\begin{frame}[t]\frametitle{Two-Grid Acceleration - Ideal for graphite and heavy-water configurations}
+\only<1>{
+\vspace{-4mm}
+\begin{columns}
+\column{0.61\textwidth}
+\begin{block}{Multigroup system of equations}{\footnotesize
+\vspace{-2mm}
+\begin{equation*}
+\begin{aligned}
+{\bf L} \psi_g &=  {\bf M} \sum_{g'=0}^G {\bf S}_{g g'} \phi_{g'} + {\bf Q}_g \\ 
+{\bf L} \psi_g^{(k+1/2)} &= {\bf M} \sum_{g'=0}^g {\bf S}_{g g'} \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf S}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
+\end{aligned}
+\end{equation*}
+}\end{block}
+\begin{block}{Error and residual}{\footnotesize
+\begin{equation*}
+\begin{aligned}
+{\bf L} \delta \Psi_g^{(k+1/2)} &= {\bf M} \sum_{g'=0}^g {\bf S}_{g g'} \delta \Phi_{g'}^{(k+1/2)} + {\bf R}_g^{(k+1/2)} \\
+{\bf R}_g^{(k+1/2)} &= {\bf M} \sum_{g'=g+1}^G {\bf S}_{g g'} \left(  \Phi_{g'}^{(k+1/2)} - \Phi_{g'}^{(k)}  \right)
+\end{aligned}
+\end{equation*}
+}\end{block}
+\begin{block}{Solution update}{\footnotesize
+\begin{equation*}
+\delta \Phi_{g}^{(k+1/2)} = \epsilon^{(k+1/2)} \, \xi_g, \qquad \sum\displaylimits_{g=0}^{G} \xi_g = 1
+\end{equation*}
+}\end{block}
+\column{0.36\textwidth}
+\begin{block}{1G Error Diffusion System}{\footnotesize
+\begin{equation*}
+\vec{\nabla} \cdot \Big< D \Big> \vec{\nabla} \epsilon + \Big< \sigma \Big> \epsilon = \Big< R \Big>
+\end{equation*} \\ \vspace{2mm}
+\begin{equation*}
+\begin{aligned}
+&\Big< D \Big> = \sum\displaylimits_{g=0}^{G} D_g \xi_g \\
+&\Big< \sigma \Big> = \sum\displaylimits_{g=0}^{G} \left(  \sigma_{t,g} \xi_g - \sum\displaylimits_{g'=0}^{G} \sigma_{s,0}^{gg'} \xi_g \right) \\
+&\Big< R \Big> = \sum\displaylimits_{g=0}^{G} R_g^{(k+1/2)}
+\end{aligned}
+\end{equation*}
+}\end{block}
+\end{columns}
+}
+\only<2>{
+\vspace{1.5cm}
+\centering
+\includegraphics[width=0.485\textwidth]{images/P0_Fourier_69G.eps} \hfill
+\includegraphics[width=0.485\textwidth]{images/P1_Fourier_69G.eps}
+}
 \end{frame}
 %---------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -982,7 +1120,7 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 \end{block}
 \begin{block}{MIP DSA}{\footnotesize
 \begin{enumerate}
-	\item Analyze the 2D polygonal basis functions with DSA preconditioning through Fourier/numerical analysis
+	\item Analyze the 2D polygonal basis functions with MIP DSA preconditioning through Fourier/numerical analysis
 	\item Analyze the effects of AMR with polygonal basis functions on the MIP DSA PCG iteration counts (with and without bootstrapping)
 	\item Extend the analysis of MIP DSA to arbitrary convex 3D polyhedra
 	\item Implement MIP DSA in PDT using HYPRE
@@ -1108,6 +1246,8 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 \includegraphics[width=0.32\textwidth]{images/z_poly_lin_contour.png} 
 \end{frame}
 %---------------------------
+% QUAD MMS SOLUTION - CURRENTLY COMMENTED OUT
+\iffalse
 \setbeamerfont{frametitle}{size=\small}
 \begin{frame}[t]\frametitle{SIP convergence study - quadratic solution on 3D cube using the PWL basis functions}
 \begin{block}{}
@@ -1121,6 +1261,7 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 \centering
 \includegraphics[width=0.9\textwidth]{images/sip_quad_full_paint.png} 
 \end{frame}
+\fi
 %---------------------------
 \setbeamerfont{frametitle}{size=\small}
 \begin{frame}[t]\frametitle{SIP convergence study - gaussian solution on 3D cube using the PWL basis functions}
@@ -1216,7 +1357,7 @@ Graphite + Air Duct & 2138 & 23 \\ \hline
 \end{block}
 \begin{block}{MIP DSA}{\footnotesize
 \begin{enumerate}
-	\item {\color{blue} Analyze the 2D polygonal basis functions with DSA preconditioning through Fourier/numerical analysis}
+	\item {\color{blue} Analyze the 2D polygonal basis functions with MIP DSA preconditioning through Fourier/numerical analysis}
 	\item {\color{blue} Extend the analysis of MIP DSA to arbitrary convex 3D polyhedra}
 	\item {\color{amber} Analyze the effects of AMR with polygonal basis functions on the MIP DSA PCG iteration counts (with and without bootstrapping)}
 	\item {\color{blue} Implement MIP DSA in PDT using HYPRE}
@@ -1279,6 +1420,7 @@ A special acknowledgment to the Department of Energy Rickover Fellowship Program
 \typeout{***********************************************************************************}
 \typeout{Backup Slides}
 \section{Backup Slides}
+\iffalse
 \subsection{Stretch Goals}
 %---------------------------
 \setbeamerfont{frametitle}{size=\large}
@@ -1286,22 +1428,51 @@ A special acknowledgment to the Department of Energy Rickover Fellowship Program
 
 \end{frame}
 %---------------------------
+\fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Limits of the 2D linear polygonal FEM basis functions}
 %---------------------------
 \setbeamerfont{frametitle}{size=\large}
-\begin{frame}[t]\frametitle{Limits of the Wachspress coordinates}
-
-\end{frame}
-%---------------------------
-\setbeamerfont{frametitle}{size=\large}
-\begin{frame}[t]\frametitle{Limits of the mean value coordinates}
-
-\end{frame}
-%---------------------------
-\setbeamerfont{frametitle}{size=\large}
-\begin{frame}[t]\frametitle{Limits of the maximum entropy coordinates}
-
+\begin{frame}[t,label=poly_limits]\frametitle{\small Linear POLYFEM limits - Wachspress, mean value, and max entropy (\hyperlink{2D_poly<1>}{\beamergotobutton{Go back}})}
+\begin{block}{General form}
+\begin{equation*}
+\lambda_i (\vec{x}) = \frac{w_i (\vec{x})}{\sum\displaylimits_j w_j (\vec{x})}
+\end{equation*}
+\end{block}
+\begin{columns}
+\column{0.45\textwidth}
+\begin{block}{\small Nodal limits - $\lim\displaylimits_{\vec{x} \rightarrow \vec{x}_j} \lambda_i (\vec{x}) $}
+\begin{equation*}
+\begin{aligned}
+\lambda_i (\vec{x}) &= \frac{w_i / w_j}{1+ \sum\displaylimits_{k \neq j} w_k / w_j}, \qquad i \neq j \\
+\lambda_j (\vec{x}) &= \frac{1}{1+ \sum\displaylimits_{k \neq j} w_k / w_j}
+\end{aligned}
+\end{equation*} \\ \vspace{2mm}
+\begin{equation*}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}_j} \frac{w_k (\vec{x})}{w_j (\vec{x})} = 0, \qquad k \neq j
+\end{equation*}\\ \vspace{2mm}
+\begin{equation*}
+\therefore \lambda_i (\vec{x}_j) = \delta_{ij}
+\end{equation*}
+\end{block}
+\column{0.52\textwidth}
+\vspace{-5mm}
+\begin{block}{\small Edge limits - $\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^*} \lambda_i (\vec{x})$, $x^* \in  e_j$}{
+\begin{equation*}
+\begin{aligned}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^*} \left|  w_i (\vec{x})  \right| &= \infty , \qquad i = (j,j+1) \\
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^*} \left|   w_i (\vec{x})  \right| &< \infty, \qquad i \neq (j,j+1)
+\end{aligned}
+\end{equation*}\\ \vspace{3mm}
+\begin{equation*}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^*} \lambda_i (\vec{x}) = 
+\begin{cases}
+\frac{|| \vec{x}_{j+1} - \vec{x}  ||}{|| \vec{x}_{j+1} - \vec{x}_{j}  ||}, & i=j \\ \, \\
+\frac{|| \vec{x}_{j} - \vec{x}  ||}{|| \vec{x}_{j+1} - \vec{x}_{j}  ||}, & i=j+1
+\end{cases}
+\end{equation*}
+}\end{block}
+\end{columns}
 \end{frame}
 %---------------------------
 \backupend
