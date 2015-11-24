@@ -391,7 +391,7 @@ $d$ - dimensionality of the problem ({\em i.e.,} 1,2,3)
 }
 \only<3>{
 \vspace{0.5cm}
-{}\includegraphics[width=0.55\columnwidth]{images/locally_refined_nodes.png}
+{}\includegraphics[width=0.65\columnwidth]{images/locally_refined_nodes.png}
 }
 \only<4>{
 \centering
@@ -722,7 +722,8 @@ Serendipity
 {\small
 $V$ - vertex nodes \\
 $E$ - face midpoint nodes \\
-$D$ - interior diagonal nodes
+$D$ - interior diagonal nodes \\ \vspace{3mm}
+$V+E+D = n + n + \frac{n(n-3)}{2}$
 }
 \end{columns}
 \end{block}
@@ -798,8 +799,8 @@ c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)}
 \begin{block}{Quadratic Precision}{\footnotesize
 \begin{equation*}
 \begin{aligned}
-\sum\displaylimits_{ii \in V} c_{aa}^{ii} \vec{x}_{i} \vec{x}_{i}^T + \sum\displaylimits_{i(i+1) \in E} 2 c_{aa}^{i(i+1)} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) &= \vec{x}_{a} \vec{x}_{a}^T , \qquad &\forall aa \in V \\
-\sum\displaylimits_{ii \in V} c_{ab}^{ii} \vec{x}_{i} \vec{x}_{i}^T + \sum\displaylimits_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) &= \vec{x}_{a} \vec{x}_{b}^T + \vec{x}_{b} \vec{x}_{a}^T, \qquad &\forall ab \in E \cup D
+\sum\displaylimits_{ii \in V} c_{aa}^{ii} \vec{x}_{i} \vec{x}_{i}^T + \sum\displaylimits_{i(i+1) \in E} c_{aa}^{i(i+1)} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) &= \vec{x}_{a} \vec{x}_{a}^T , \qquad &\forall aa \in V \\
+\sum\displaylimits_{ii \in V} c_{ab}^{ii} \vec{x}_{i} \vec{x}_{i}^T + \sum\displaylimits_{i(i+1) \in E} c_{ab}^{i(i+1)} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) &= \vec{x}_{a} \vec{x}_{b}^T + \vec{x}_{b} \vec{x}_{a}^T, \qquad &\forall ab \in E \cup D
 \end{aligned}
 \end{equation*}
 }\end{block}
@@ -948,15 +949,17 @@ However, this is just as difficult as the full transport problem. Instead, we es
 \begin{frame}[t]\frametitle{Various DSA Implementations}
 \begin{block}{Historical DSA Work}
 \begin{itemize}
+	\item Kopp \& Lebedev - independently proposed method
 	\item Gelbard and Hageman (G\&B) - efficient convergence on fine meshes
 	\item Reed - showed that G\&B diverged for coarse meshes
 	\item Alcouffe - consistency yields efficiency and robustness
 \end{itemize}
 \end{block}
+\onslide<2->{
 \begin{block}{Fully-consistent DSA schemes}
 \begin{itemize}
 	\item Larsen fully-consistent four step
-	\item Fully-consist DSA (FCDSA)
+	\item Fully-consistent DSA (FCDSA)
 \end{itemize}
 \end{block}
 \begin{block}{Partially-consistent DSA schemes}
@@ -966,6 +969,7 @@ However, this is just as difficult as the full transport problem. Instead, we es
 	\item Modified Interior Penalty DSA (MIP)
 \end{itemize}
 \end{block}
+}
 \end{frame}
 %---------------------------
 \subsection{MIP Diffusion Form}
@@ -974,25 +978,26 @@ However, this is just as difficult as the full transport problem. Instead, we es
 \typeout{DSA}
 %---------------------------
 \setbeamerfont{frametitle}{size=\small}
-\begin{frame}[t]\frametitle{The diffusion equation is used as our low-order operator}
+\begin{frame}[t]\frametitle{The diffusion equation is used as our low-order operator}\vspace{-2mm}
 	\begin{block}{The Diffusion Equation}\vspace{-0.25cm} {\small 
      		\begin{align*}
  	 		{ \small -{\bf \nabla} \cdot D {\bf \nabla} \Phi ({\bf r}) + \sigma \Phi ({\bf r}) = q ({\bf r}), \qquad  {\bf r} \in \mathcal{D} }
         	\end{align*} }\vspace{-0.25cm}
-        	\end{block}
+        	\end{block}\vspace{-1mm}
         	\begin{block}{General Boundary Conditions} \vspace{-0.4cm} {\small 
 		\begin{align*}
  	 		{ \small \Phi ({\bf r})  = \Phi_0 ({\bf r}) , \qquad {\bf r} \in \partial \mathcal{D}^d } \\
  	 		{ \small -D \partial_n \Phi ({\bf r})  = J_0 ({\bf r}) , \qquad {\bf r} \in \partial \mathcal{D}^n } \\
  	 		{ \small \frac{1}{4} \Phi ({\bf r})  + \frac{1}{2}D \partial_n \Phi ({\bf r})  = J^{inc} ({\bf r}) ,  \qquad {\bf r} \in \partial \mathcal{D}^r}
         		\end{align*} } \vspace{-0.25cm}
-    \end{block}
+    \end{block}\vspace{-1mm}
 	\begin{block}{Desirable diffusion form properties} {\small 
 	\begin{itemize}
+		\item Discontinuous form
+		\item Agnostic of directionality of interior faces
 		\item Can handle concave and degenerate polytope cells
 		\item Symmetric Positive-Definite (SPD) 
 		\item Availability of suitable preconditioners
-		\item Agnostic of directionality of interior faces
 	\end{itemize} }
 	\end{block}
 \end{frame}
@@ -1054,6 +1059,7 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 	\end{block}
 \end{frame}
 %---------------------------
+\subsection{}
 \begin{frame}[t]\frametitle{Two-Grid Acceleration - Ideal for graphite and heavy-water configurations}
 \only<1>{
 \vspace{-4mm}
