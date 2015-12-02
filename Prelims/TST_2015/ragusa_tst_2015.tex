@@ -463,10 +463,10 @@ Recall the DSA equation:
 	\item Modified Zerr problem - used optimal sweep aggregation parameters
 	\begin{itemize}
 	\item homogeneous cube - about 500 mfp and c=0.9999
-	\item $S_8$ level-symmetric quadrature
+	\item $S_8$ level-symmetric quadrature (80 directions total)
 	\end{itemize}
 	\item pointwise convergence tolerance of 1e-8
-	\item SI precondition with MIP DSA using \tcr{HYPRE PCG and AMG}
+	\item SI precondition with MIP DSA using \tcr{HYPRE PCG and AMG} ($\sim$22 SI @ high core counts, and $\sim$10 CG iters/DSA)
 	\end{itemize}
 \end{block}
 \end{figure}
@@ -555,7 +555,8 @@ Gauss-Seidel iterations over thermal groups:
 \end{block}
 \centering
 
-\vspace{3mm}
+Example: $S_8$ level-symmetric quadratures, 64,000 spatial DOFs, 99 energy groups (IM1 XS-data), run locally on 8 procs.
+%\vspace{1mm}
 \begin{table}
 \footnotesize
 \begin{tabular}{|c|c|c|}
@@ -567,7 +568,7 @@ Graphite + Air Duct & 2138 & 23 \\ \hline
 \end{tabular}
 \end{table}
 
-\vspace{3mm}
+%\vspace{2mm}
 \begin{table}
 \footnotesize
 \begin{tabular}{|c|c|c|}
