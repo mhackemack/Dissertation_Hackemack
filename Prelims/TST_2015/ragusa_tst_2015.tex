@@ -20,6 +20,9 @@
 \usepackage{epstopdf}
 %\usepackage[dvipsnames]{xcolor}
 %\usepackage{enumitem}
+
+\usepackage{pdfpages}
+
 %\setlist{nolistsep} % or \setlist{noitemsep} to leave space around whole list
 % Load some optional sub-parts of PGF
 %\usetikzlibrary{decorations.pathmorphing}
@@ -169,6 +172,13 @@ College Station, TX, USA 77843\\[1ex]
 \begin{frame}[label=title,plain]
     \titlepage
 \end{frame}
+
+
+
+{
+\setbeamercolor{background canvas}{bg=}
+\includepdf[pages={1-1}]{./cert_overview_1_slide.pdf}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \typeout{***********************************************************************************}
