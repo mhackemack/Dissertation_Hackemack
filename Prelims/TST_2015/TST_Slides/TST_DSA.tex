@@ -1,0 +1,216 @@
+\pdfminorversion=4
+\documentclass[compress,10pt]{beamer}
+%For no animations, add handout to [] options
+%For no figures or top banner, add draft to [] options
+%apsectratio=169 (16:9) or 54 (5:4) or 43 (4:3) or 32 (3:2)
+
+%Load the myriad packages
+\usepackage{color}
+\usepackage{amssymb,amsmath}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{tikz}
+%\usepackage[numbers, super]{natbib}
+\usepackage{grffile} %spaces in file names
+\usepackage{parskip}
+%\usepackage[T1]{fontenc} %for sc and bf
+%\usepackage{times}
+\usepackage{wasysym}
+\usepackage{bigstrut}
+\usepackage{epstopdf}
+%\usepackage[dvipsnames]{xcolor}
+%\usepackage{enumitem}
+%\setlist{nolistsep} % or \setlist{noitemsep} to leave space around whole list
+% Load some optional sub-parts of PGF
+%\usetikzlibrary{decorations.pathmorphing}
+%\usetikzlibrary{positioning}
+%\usetikzlibrary{calc}
+%\usetikzlibrary{shapes.geometric}
+%\usepackage{pgfplots}
+%\usepackage{rotating}
+%\usepackage[no-math]{fontspec}
+%\usepackage{xltxtra}
+%\usepackage{xunicode}
+%\defaultfontfeatures{Mapping=tex-text}
+%%\setsansfont[Mapping=tex-text]{Optima}
+%\setsansfont[Mapping=tex-text]{Helvetica Neue}
+% Optional for code samples
+%
+%singular
+\newcommand{\fref}[1]{Fig.~\ref{fig:#1}}
+\newcommand{\Fref}[1]{Figure~\ref{fig:#1}}
+\newcommand{\eref}[1]{Eq.~(\ref{eq:#1})}
+\newcommand{\Eref}[1]{Equation~(\ref{eq:#1})}
+\newcommand{\tref}[1]{Table~\ref{tab:#1}}
+%plural
+\newcommand{\frefs}[2]{Figs.~\ref{fig:#1} and \ref{fig:#2}}
+\newcommand{\Frefs}[2]{Figures~\ref{fig:#1} and \ref{fig:#2}}
+\newcommand{\erefs}[2]{Eqs.~(\ref{eq:#1}) and (\ref{eq:#2})}
+\newcommand{\Erefs}[2]{Equations~(\ref{eq:#1}) and (\ref{eq:#2})}
+\newcommand{\trefs}[2]{Tables~\ref{tab:#1} and \ref{tab:#2}}
+%range
+\newcommand{\frefss}[2]{Figs.~\ref{fig:#1} - \ref{fig:#2}}
+\newcommand{\Frefss}[2]{Figures~\ref{fig:#1} - \ref{fig:#2}}
+\newcommand{\erefss}[2]{Eqs.~(\ref{eq:#1}) - (\ref{eq:#2})}
+\newcommand{\Erefss}[2]{Equations~(\ref{eq:#1}) - (\ref{eq:#2})}
+\newcommand{\trefss}[2]{Tables~\ref{tab:#1} - \ref{tab:#2}}
+%misc.
+\newcommand{\nn}[1]{\ensuremath{^{#1}}} %[1] is # of commands
+\newcommand{\keff}{\ensuremath{{k_\mathrm{eff}}}}
+\newcommand{\kinf}{\ensuremath{{k_\infty}}}
+\newcommand{\alphaT}{\ensuremath{{\alpha_{_T}}}}
+\newcommand{\SN}{\ensuremath{{\text{S}_\text{N}}}}
+\newcommand{\order}[1]{\ensuremath{\mathcal{O}\left(#1\right)}}
+%Note: tarticle has ``several'' changes from article
+%in this vein.
+% some simplifying commands
+\newcommand{\eg}{{\it e.g.}}
+\newcommand{\ie}{{\it i.e.}}
+\newcommand{\etal}{{\it et al.}}
+\newcommand{\acite}[1]{{\bf(Add Citation: #1)}}
+\newcommand{\E}{\mathcal{E}}
+% derivative - d
+\newcommand{\ud}{\,\mathrm{d}}
+% bold unit vector n-hat
+\newcommand{\nhat}{\hat{\bf n}}
+\newcommand{\tensor}[1]{\mathcal{#1}}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\newcommand{\om}{\boldsymbol{\Omega}}
+%
+
+%Don't number backup slides
+\newcommand{\backupbegin}{
+    \newcounter{finalframe}
+    \setcounter{finalframe}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+    \setcounter{framenumber}{\value{finalframe}}
+}
+
+%Colors!
+\definecolor{maroon}{rgb}{0.5,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{amber}{rgb}{1.0, 0.49, 0.0}
+
+%Get rid of navigation icons
+\setbeamertemplate{navigation symbols}{}
+\useoutertheme{infolines}
+
+\setbeamercovered{transparent}
+\usepackage{lipsum}
+
+%Aggie-themed
+%\pgfdeclareimage[height=0.1in]{TAMUlogo}{images/tamu_engineering.png}
+%\pgfdeclareimage[height=0.15in]{DOElogo}{images/DOE_logo.png}
+%\logo{\raisebox{-8pt}{\pgfuseimage{TAMUlogo} \hspace{1pt} \pgfuseimage{DOElogo}}}
+%\titlegraphic{\includegraphics[height=0.15\textheight]{images/seal.png}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Optional packages, used to show off certain tricks
+
+\newlength \figwidth
+\setlength \figwidth {0.5\textwidth}
+
+\setlength{\leftmargin}{-2cm}
+\setlength{\rightmargin}{-2cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mode<presentation>
+{
+    \usepackage[english]{babel}
+    \usetheme{Frankfurt}
+
+    %Make it Aggie Maroon
+    \usecolortheme[RGB={80,0,0}]{structure}
+
+    % This will typeset only the frames (or slides) that have the given label ("current" in this case).
+    %  \includeonlyframes{current}
+}
+
+\title[Polytope DGFEM Transport]{Higher-Order DGFEM Transport Calculations on Polytope Meshes for Massively-Parallel Architectures}
+
+\author[Hackemack]{{\Large Michael W. Hackemack} \vspace{0.35cm} \\ Chair: {\small Jean C. Ragusa} \\ Committee Members: {\small Marvin L. Adams, Jim E. Morel, Nancy M. Amato } \\ External Advisor: {\small Troy Becker}}
+
+%TAMU
+\institute[Texas A\&M University]{\scriptsize Department of Nuclear Engineering\\
+Texas A\&M University \\
+College Station, TX, USA 77843\\[1ex]
+\href{mailto:mike\_hack@tamu.edu}{mike\_hack@tamu.edu}}
+
+\date[November 24, 2015]
+
+% You can override the default acknowledgment, and address if you want
+%\acknowledgement{*Submitted in partial fulfillment of the requirements of NUEN 610 \\
+%(Nuclear Reactor Design)}
+%\address{Nuclear Engineering Department \\
+%            Texas A\&M University \\
+%            College Station, TX 77843-3133}}
+
+% If you don't want the menu section outline above the title, do this:
+%\setbeamertemplate{headline}{}
+
+\renewcommand{\ss}{ss}
+\vfuzz=2pt
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\begin{frame}[t]\frametitle{MIP DSA Timing Data with PDT on Vulcan using HYPRE}
+\begin{figure}[t]
+\centering
+{}\includegraphics[width=0.75\textwidth]{Vulcan_DSA_Timing.eps}
+\begin{block}{Problem Description}
+	\begin{itemize}
+	\item Modified Zerr problem - used optimal sweep aggregation parameters
+	\begin{itemize}
+	\item homogeneous cube - about 500 mfp and c=0.9999
+	\item $S8$ level-symmetric quadrature
+	\end{itemize}
+	\item pointwise convergence tolerance of 1e-8
+	\item SI preconditioned with MIP DSA using HYPRE PCG and AMG
+	\end{itemize}
+\end{block}
+\end{figure}
+\end{frame}
+
+\begin{frame}[t]\frametitle{MIP DSA Timing Data with PDT on Vulcan using HYPRE}
+\vspace{0.9cm}
+\centering
+{}\includegraphics[width=1.00\textwidth]{Vulcan_DSA_Timing.eps}
+\end{frame}
+
+\begin{frame}[t]\frametitle{\small Two-grid fourier analysis on 99G graphite: P0 (left) and P1 (right)}
+\vspace{1.5cm}
+\centering
+\includegraphics[width=0.495\textwidth]{P0_Fourier_99G.eps} \hfill
+\includegraphics[width=0.495\textwidth]{P1_Fourier_99G.eps}
+\end{frame}
+
+\begin{frame}[t]\frametitle{ Preliminary PDT two-grid results}
+\centering
+\vspace{1cm}
+\begin{table}
+\footnotesize
+\begin{tabular}{|c|c|c|}
+\hline
+Materials & Unaccelerated Iterations & Accelerated Iterations  \\
+\hline \hline
+Graphite Only & 2027 & 21 \\ \hline
+Graphite + Air Duct & 2138 & 23 \\ \hline
+\end{tabular}
+\end{table}
+\vspace{1cm}
+\begin{table}
+\footnotesize
+\begin{tabular}{|c|c|c|}
+\hline
+Materials & Unaccelerated Solve Time  & Accelerated Solve Time  \\
+\hline \hline
+Graphite Only & 51.67 hours & 31.23 minutes \\ \hline
+Graphite + Air Duct & 54.5 hours & 35.56 minutes \\ \hline
+\end{tabular}
+\end{table}
+
+\end{frame}
+\end{document}
+
