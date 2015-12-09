@@ -585,7 +585,7 @@ Finally, the last terms to consider of the discretized transport equation are th
 \section{Solution Procedures}
 \label{sec::Sn_Solution}
 
-To this point, we have properly described the procedures to discretize the transport problem in energy, angle, and space. We now spend the remainder of this chapter discussing various methodologies to efficiently solve the tightly-coupled system of equations composing our transport problem. Section \ref{sec::Sn_Solution_Iterative} will discuss the different iterative procedures that can be employed to efficiently converge the angular and energy portions of the solution space and Section \ref{sec::Sn_Solution_Sweeping} will then discuss how we can efficiently solve the spatial portion of the solution for any given iteration or applicable mesh. We conclude by describing an efficient means to 
+To this point, we have properly described the procedures to discretize the transport problem in energy, angle, and space. We now spend the remainder of this chapter discussing various methodologies to efficiently solve the tightly-coupled system of equations composing our transport problem. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Iterative Procedures
@@ -609,14 +609,43 @@ To this point, we have properly described the procedures to discretize the trans
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - Transport Sweeping
-\subsection{Spatial Solution Procedures - Transport Sweeping}
-\label{sec::Sn_Solution_Sweeping}
+%%%   SubSubSection - Source Iteration
+\subsubsection{Source Iteration}
+\label{sec::Sn_Solution_Iterative_SI}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - AMR
-\subsection{Traditional Adaptive Mesh Refinement Procedures}
-\label{sec::Sn_Solution_AMR}
+%%%   SubSubSection - Source Iteration
+\subsubsection{Krylov Subspace Methods - GMRES}
+\label{sec::Sn_Solution_Iterative_GMRES}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Spatial Solution Procedures
+\subsection{Spatial Solution Procedures}
+\label{sec::Sn_Solution_Spatial}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSubSection - Transport Sweeping
+\subsubsection{Spatial Solution Procedures - Transport Sweeping}
+\label{sec::Sn_Solution_Spatial_Sweeping}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth]{figures/sec_Sn/triangle_graph_nocycle.eps}
+\caption[blah]{blah.}
+\label{fig::Sn_Solution_Spatial_Sweeping_sweepNOcycle}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth]{figures/sec_Sn/graph_with_cycling.eps}
+\caption[blah]{blah.}
+\label{fig::Sn_Solution_Spatial_Sweeping_sweepWcycle}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSubSection - AMR
+\subsubsection{Adaptive Mesh Refinement Procedures}
+\label{sec::Sn_Solution_Spatial_AMR}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
