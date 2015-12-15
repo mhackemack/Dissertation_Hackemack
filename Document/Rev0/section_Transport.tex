@@ -125,7 +125,7 @@ From this distribution of energy values, we then say that a particular energy gr
 \Delta E_g \in [E_g, E_{g-1}].
 \end{equation}
 
-\noindent Figure \ref{fig::Sn_MG_energy_bands} provides a visual representation between the $G+1$ discrete energy values and the $G$ energy groups. While the order that we have prescribed may seem illogical (high-to-low), it has been historically applied this way because radiation transport problems are iteratively solved from high energy to low energy. If the group structure is well chosen, then the transport solution can be more efficiently and easily obtained with this high-to-low energy group structure.
+\noindent Figure \ref{fig::Sn_MG_energy_bands} provides a visual representation between the $G+1$ discrete energy values and the $G$ energy groups. While the order that we have prescribed may seem illogical (high-to-low) to those outside of the radiation physics community, it has been historically applied this way because radiation transport problems are iteratively solved from high energy to low energy. If the group structure is well chosen, then the transport solution can be more efficiently and easily obtained with this high-to-low energy group structure.
 
 \begin{figure}[bht]
 \centering
@@ -585,7 +585,7 @@ Finally, the last terms to consider of the discretized transport equation are th
 \section{Solution Procedures}
 \label{sec::Sn_Solution}
 
-To this point, we have properly described the procedures to discretize the transport problem in energy, angle, and space. We now spend the remainder of this chapter discussing various methodologies to efficiently solve the tightly-coupled system of equations composing our transport problem. 
+To this point, we have properly described the procedures to discretize the transport problem in energy, angle, and space. We now spend the remainder of this chapter discussing various methodologies to efficiently solve the tightly-coupled system of equations composing our transport problem. Section \ref{sec::Sn_Solution_Iterative} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Iterative Procedures
@@ -623,9 +623,11 @@ To this point, we have properly described the procedures to discretize the trans
 \subsection{Spatial Solution Procedures}
 \label{sec::Sn_Solution_Spatial}
 
+Section \ref{sec::Sn_Solution_Iterative} 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - Transport Sweeping
-\subsubsection{Spatial Solution Procedures - Transport Sweeping}
+\subsubsection{Transport Sweeping}
 \label{sec::Sn_Solution_Spatial_Sweeping}
 
 \begin{figure}
@@ -653,4 +655,4 @@ To this point, we have properly described the procedures to discretize the trans
 \section{Conclusions}
 \label{sec::Sn_Conclusions}
 
-In this chapter
+In this chapter, we have presented the tightly-coupled system of equations that comprise the DGFEM $S_N$ transport equation. 
