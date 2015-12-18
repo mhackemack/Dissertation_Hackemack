@@ -33,7 +33,7 @@ For neutral particle transport, the following assumptions \cite{duderstadt1979tr
 	\item Particles do not experience any external force fields ({\em e.g.} gravity).
 \end{enumerate}
 
-These assumptions lead to the first order form of the Boltzmann Transport Equation, which we simply call the transport equation for brevity. The remainder of the chapter is layed out as follows. Section \ref{sec::Sn_neut} provides the general form of the neutron transport equation with some variants. Section \ref{sec::Sn_MG} describes how we discretize the transport equation in energy with the multigroup methodology and Section \ref{sec::Sn_Angle} presents the angular discretization via collocation. Section \ref{sec::Sn_Spatial} will conclude our discretization procedures in the spatial domain. Section \ref{sec::Sn_Solution} will present the iterative procedures used to converge our solution space. We then present concluding remarks for the chapter in Section \ref{sec::Sn_Conclusions}.
+These assumptions lead to the first order form of the Boltzmann Transport Equation, which we simply call the transport equation for brevity. The remainder of the chapter is layed out as follows. Section \ref{sec::Sn_neut} provides the general form of the neutron transport equation with some variants. Section \ref{sec::Sn_MG} describes how we discretize the transport equation in energy with the multigroup methodology and Section \ref{sec::Sn_Angle} presents the angular discretization via collocation. Section \ref{sec::Sn_BC} details which boundary conditions will be employed for our work. Section \ref{sec::Sn_Spatial} will conclude our discretization procedures in the spatial domain. Section \ref{sec::Sn_Solution} will present the iterative procedures used to converge our solution space. We then present concluding remarks for the chapter in Section \ref{sec::Sn_Conclusions}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Neutron Transport Equation
@@ -360,9 +360,9 @@ For this dissertation, we will use the following notation to define the product 
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   Section - Spatial Discretization
-\section{Spatial Discretization}
-\label{sec::Sn_Spatial}
+%%%   Section - Boundary Conditions
+\section{Boundary Conditions}
+\label{sec::Sn_BC}
 
 Using the energy and angular discretizations presented in Sections \ref{sec::Sn_MG} and \ref{sec::Sn_Angle}, respectively, we write the standard, steady-state, multigroup $S_N$ transport equation for one angular direction, $m$, and one energy group, $g$:
 
@@ -374,7 +374,7 @@ Using the energy and angular discretizations presented in Sections \ref{sec::Sn_
 \end{aligned} , 
 \end{equation}
 
-\noindent where we have dropped the spatial parameter for clariy and is beholden to the following general, discretized boundary condition:
+\noindent where we have dropped the spatial parameter for clarity and is beholden to the following general, discretized boundary condition:
 
 \begin{equation}
 \label{eq::Sn_mg_sn_trans_eq_bc}
@@ -402,6 +402,11 @@ For this dissertation work, we will consider only one type of boundary condition
 
 \noindent For problems where the reflecting boundaries align with the $x,y,z$ axes, this will not be an issue with standard quadrature sets ({\em e.g.} level-symmetric or Gauss-Legendre-Chebyshev). However, if the reflecting boundaries do not align in this manner, then additional care must be employed in calculating appropriate angular quadrature sets.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - Spatial Discretization
+\section{Spatial Discretization}
+\label{sec::Sn_Spatial}
+
 For the spatial discretization of the problem domain, we simplify Eq. (\ref{eq::Sn_mg_sn_trans_eq}) into a single energy group and drop the fission term (it can be lumped into the 0th order external source term and will act similarly to the total interaction term)
 
 \begin{equation}
@@ -409,7 +414,7 @@ For the spatial discretization of the problem domain, we simplify Eq. (\ref{eq::
 \vec{\Omega}_m \cdot \vec{\nabla} \Psi_{m}  + \sigma_{t}   \Psi_{m}=  \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi}    \sum_{n=-p}^{p}  Y_{p,n} (  \vec{\Omega}_m ) \left[ \sigma_{s,p}  \Phi_{p,n,}  + Q_{p,n} \right]
 \end{equation}
 
-\noindent to form $M$ ($m=1,...,M$) angularly discrete equations. We then lay down an unstructured mesh $\mathcal{T}_h \in \mathbb{R}^{d}$, over the spatial domain, where $d$ is the dimensionality of the problem ($d=1,2,3$). This mesh consists of non-overlapping spatial elements to form a complete union over the entire spatial domain: $\mathcal{D} = \bigcup_{K \in \mathcal{T}_h} K$. To form the DGFEM set of equations \cite{ern2013theory,wareing2001discontinuous}, we consider a spatial cell $K \in \mathbb{R}^d$ which has $N_V^K$ vertices and $N_f^K$ faces. Each face of cell $K$ resides in dimension $\mathbb{R}^{d-1}$ and is formed by a connection of a subset of vertices. For a 1D problem, each face is a single point. For a 2D problem, each face is a line segment connecting two distinct points. For a 3D problem, each face is a $\mathbb{R}^2$ closed polygon (not necessarily coplanar) which may or not be convex. An example of this interconnection between elements is given for a $\mathbb{R}^2$ problem in Figure \ref{fig::Sn_two_ref_cells} between our cell of interest, $K$, and another cell, $K'$, separated by the face $f$. We have chosen the normal direction of the face to have orientation from cell $K$ to cell $K'$ while we form the DGFEM equations for cell $K$. This means that if we were instead analyzing cell $K'$, then the face $f$ normal, $\vec{n}' $, would be opposite ({\em i.e.} $\vec{n}' = -\vec{n}$).
+\noindent to form $M$ ($m=1,...,M$) angularly discrete equations. We then lay down an unstructured mesh, $\mathbb{T}_h \in \mathbb{R}^{d}$, over the spatial domain, where $d$ is the dimensionality of the problem ($d=1,2,3$). This mesh consists of non-overlapping spatial elements to form a complete union over the entire spatial domain: $\mathcal{D} = \bigcup_{K \in \mathbb{T}_h} K$. To form the DGFEM set of equations \cite{ern2013theory,wareing2001discontinuous}, we consider a spatial cell $K \in \mathbb{R}^d$ which has $N_V^K$ vertices and $N_f^K$ faces. Each face of cell $K$ resides in dimension $\mathbb{R}^{d-1}$ and is formed by a connection of a subset of vertices. For a 1D problem, each face is a single point. For a 2D problem, each face is a line segment connecting two distinct points. For a 3D problem, each face is a $\mathbb{R}^2$ closed polygon (not necessarily coplanar) which may or not be convex. An example of this interconnection between elements is given for a $\mathbb{R}^2$ problem in Figure \ref{fig::Sn_two_ref_cells} between our cell of interest, $K$, and another cell, $K'$, separated by the face $f$. We have chosen the normal direction of the face to have orientation from cell $K$ to cell $K'$ while we form the DGFEM equations for cell $K$. This means that if we were instead analyzing cell $K'$, then the face $f$ normal, $\vec{n}' $, would be opposite ({\em i.e.} $\vec{n}' = -\vec{n}$).
 
 \begin{figure}
 \centering
@@ -442,7 +447,7 @@ Next, we left-multiply Eq. (\ref{eq::Sn_trans_eq_simple_no_energy_groups}) by an
  \Big< f, g \Big>_f \equiv \int_f f \, g \, d s
 \end{equation}
 
-\noindent correspond to integrations over the cell and faces, respectively, where $dr \in \mathbb{R}^d$ is within the cell and $ds \in \mathbb{R}^{d-1}$ is along the cell boundary. We note that we will use this notation of the inner product for the remainder of the dissertation unless otherwise stated. We then separate the summation of the cell $K$ boundary integration terms into two different types: outflow boundaries ($\partial K^+ = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m > 0 \}$) and inflow boundaries ($\partial K^- = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m < 0 \}$). The inflow boundaries can further be separated into inflow from another cell: $\partial K^- \backslash \partial \mathcal{D} $; inflow from incident flux on the domain boundary: $\partial K^- \cap \partial \mathcal{D}^d $; and reflecting domain boundaries: $\partial K^- \cap \partial \mathcal{D}^r $. At this point, we note that the derivation can comprise an additional step by using Gauss' Divergence Theorem again on the streaming term. This is sometimes performed for radiation transport work but we will not do so here. Therefore, with the cell boundary terminology as proposed, Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK}) can be written into the following form:
+\noindent correspond to integrations over the cell and faces, respectively, where $dr \in \mathbb{R}^d$ is within the cell and $ds \in \mathbb{R}^{d-1}$ is along the cell boundary. We note that we will use this notation of the inner product for the remainder of the dissertation unless otherwise stated. We then separate the summation of the cell $K$ boundary integration terms into two different types: outflow boundaries ($\partial K^+ = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m > 0 \}$) and inflow boundaries ($\partial K^- = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m < 0 \}$). The inflow boundaries can further be separated into inflow from another cell: $\partial K^- \backslash \partial \mathcal{D} $; inflow from incident flux on the domain boundary: $\partial K^- \cap \partial \mathcal{D}^d $; and reflecting domain boundaries: $\partial K^- \cap \partial \mathcal{D}^r $. At this point, we note that the derivation can comprise an additional step by using Gauss' Divergence Theorem again on the streaming term. This is sometimes performed for radiation transport work so that mass matrix lumping can be performed, but we will not do so here. Therefore, with the cell boundary terminology as proposed, Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK}) can be written into the following form:
 
 \begin{equation}
 \label{eq::Sn_DGFEM_trans_eq_cellK_diff_faces}
@@ -470,7 +475,7 @@ We can now deal with the boundary fluxes, $\tilde{\Psi}_m$, by enforcing the ubi
 
 \begin{equation}
 \label{eq::Sn_ang_flux_trace}
-\Psi_m^{\pm} (\vec{r}) \equiv \lim_{s \rightarrow 0^{\pm}} \Psi_m \Big( \vec{r} + s (\vec{\Omega}_m \cdot \vec{n}) \vec{n}_m \Big) .
+\Psi_m^{\pm} (\vec{r}) \equiv \lim_{s \rightarrow 0^{\pm}} \Psi_m \Big( \vec{r} + s (\vec{\Omega}_m \cdot \vec{n}) \vec{n} \Big) .
 \end{equation}
 
 \noindent This trace has the notation, with $\vec{n}$ pointing outwards from cell $K$, of $\Psi_m^-$ corresponding to fluxes within the cell and $\Psi_m^+$ corresponding to fluxes out of the cell. Now, using the upwind scheme as previously defined, we can write our complete set of DGFEM equations for cell $K$ as
@@ -485,7 +490,7 @@ We can now deal with the boundary fluxes, $\tilde{\Psi}_m$, by enforcing the ubi
 \end{aligned} .
 \end{equation} 
 
-\noindent We note that fluxes without the trace superscript are all within the cell. By completely defining our mathematical formulation for an arbitrary spatial cell, it is easy to see that the full set of equations to define our discretized solution space for a single angle and energy group comprises of a simple double integration loop. The full set of equations can be formed by looping over all spatial cells, $\mathcal{D} = \bigcup_{K \in \mathcal{T}_h} K$, while further looping over all faces within each cell, $\partial \mathcal{D}_K = \bigcup_{ f \in N_f^K} f$. Section \ref{sec::Sn_Solution} will further detail how all the DGFEM equations are formed along with efficient solution methods. We conclude this section by defining the elementary matrix terms for a given cell as follows.
+\noindent We note that fluxes without the trace superscript are all within the cell. By completely defining our mathematical formulation for an arbitrary spatial cell, it is easy to see that the full set of equations to define our discretized solution space for a single angle and energy group comprises of a simple double integration loop. The full set of equations can be formed by looping over all spatial cells, $\mathcal{D} = \bigcup_{K \in \mathbb{T}_h} K$, while further looping over all faces within each cell, $\partial \mathcal{D}_K = \bigcup_{ f \in N_f^K} f$. Section \ref{sec::Sn_Solution} will further detail how all the DGFEM equations are formed along with efficient solution methods. We conclude this section by defining the elementary matrix terms for a given cell as follows.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Mass
@@ -496,7 +501,7 @@ In the spatially discretized equations presented in Section \ref{sec::Sn_Spatial
 
 \begin{equation}
 \label{eq::Sn_mass_matrix_analytical}
-{\bf M}_K =    \int_K {\bf b}_K \, {\bf b}_K^T \, d {\vec{r}} ,
+{\bf M}_K =    \int_K {\bf b}_K \, {\bf b}_K^T \, d r ,
 \end{equation}
 
 \noindent where ${\bf b}_K$ corresponds to the set of $N_K$ basis functions that have non-zero measure in cell $K$. Depending on the FEM basis functions utilized, the integrals in Eq. (\ref{eq::Sn_mass_matrix_analytical}) can be directly integrated analytically. However, if in general, the basis functions cannot be analytically integrated on an arbitrary set of cell shapes, then a numerical integration scheme becomes necessary. If we define a quadrature set, $\left\{  \vec{x}_q , w_q^{K}  \right\}_{q=1}^{N_q}$, for cell $K$, consisting of $N_q$ points, $\vec{x}_q$, and weights, $w_q^K$, then we can numerically calculate the mass matrix by the following
@@ -539,10 +544,10 @@ Next, we will consider the streaming term that has the form: $ \Big( \vec{\Omega
 
 \begin{equation}
 \label{eq::Sn_streaming_matrix_analytical}
-\vec{{\bf G}}_K =    \int_K \vec{\nabla} {\bf b}_K \, {\bf b}_K^T \, d {\vec{r}} ,
+\vec{{\bf G}}_K =    \int_K \vec{\nabla} {\bf b}_K \, {\bf b}_K^T \, d r ,
 \end{equation}
 
-\noindent which has dimensionality $(N_K \text{x} N_K \text{x} d)$. We choose to store the elementary streaming matrix in this form and not store $M$ separate $(N_K \text{x} N_K)$ local matrices corresponding to the application of the dot product ($ \vec{\Omega}_m  \cdot \int_K  \vec{\nabla} {\bf b}_K \, {\bf b}_K^T \, d {\vec{r}}$). Instead we simply evaluate the dot product with the appropriate angular direction whenever necessary. This has great benefit when trying to run large transport problems when memory becomes a premium and processor operations are not our limiting bottleneck. 
+\noindent which has dimensionality $(N_K \text{x} N_K \text{x} d)$. We choose to store the elementary streaming matrix in this form and not store $M$ separate $(N_K \text{x} N_K)$ local matrices corresponding to the application of the dot product ($ \vec{\Omega}_m  \cdot \int_K  \vec{\nabla} {\bf b}_K \, {\bf b}_K^T \, d r$). Instead we simply evaluate the dot product with the appropriate angular direction whenever necessary. This has great benefit when trying to run large transport problems when memory becomes a premium and processor operations are not our limiting bottleneck. 
 
 Just like the elementary mass matrix, we can use the same spatial quadrature set, $\left\{  \vec{x}_q , w_q^{K}  \right\}_{q=1}^{N_q}$, for cell $K$ to numerically calculate the streaming matrix:
 
@@ -578,7 +583,47 @@ Just like the elementary mass matrix, we can use the same spatial quadrature set
 \subsection{Elementary Surface Matrices}
 \label{sec::Sn_Spatial_Surface}
 
-Finally, the last terms to consider of the discretized transport equation are those found on the faces of the cell boundary: $  \vec{\Omega}_m \cdot  \Big<  \vec{n} \, b_m, \Psi_m  \Big>_{\partial K}$. These terms are analagous to the cell mass matrix but are computed on the cell boundary with dimensionality $(d-1)$.
+Finally, the last terms to consider of the discretized transport equation are those found on the faces of the cell boundary: $  \vec{\Omega}_m \cdot  \Big<  \vec{n} \, b_m, \Psi_m  \Big>_{\partial K}$. These terms are analagous to the cell mass matrix but are computed on the cell boundary with dimensionality $(d-1)$. Analyzing a single face, $f$, in cell $K$, the analytical surface matrix is of the form,
+
+\begin{equation}
+\label{eq::Sn_surface_matrix_analytical}
+\vec{{\bf F}}^{f,K}  =    \int_f \vec{n} (\vec{r}) \, {\bf b}_K \, {\bf b}_K^T \, d s ,
+\end{equation}
+
+\noindent where we allow the outward surface normal, $\vec{n}$, to vary along the cell face. For 1D problems as well as 2D problems with colinear cell faces (no curvature), the outward normals would be constant along the entire face. However, there are many cases where 3D mesh cells would not have coplanar vertices along a face. Then, the outward normal would not be constant along the face and would need to be taken into account during integration procedures. A simple example of non-coplanar face vertices would be an orthogonal hexahedral cell that has its vertices undergo a randomized displacement.
+
+With the analytical form of the surface matrices defined in Eq. (\ref{eq::Sn_surface_matrix_analytical}), we can see that they have dimensionality, $(N_K \text{x} N_K \text{x} d)$. This is the same dimensionality as the cell streaming term. However, it is possible to reduce the dimensionality of the surface matrices if it is desired to reduce the memory footprint. There are some basis sets where all but $N_b^{f,K}$ basis functions are zero along face $f$. If we also restrict the mesh cell faces of our transport problems to have colinear (in 2D) or coplanar (in 3D) vertices so that the outward normal is constant along a face $f$, then we can define the surface matrix as $\int_f {\bf b}_K \, {\bf b}_K^T \, d s$. For these basis sets with $N_b^{f,K}$ non-zero face values on colinear/coplanar face $f$, the surface matrix has reduced dimensionality of $(N_b^{f,K} \text{x} N_b^{f,K})$.
+
+Just like the cell mass and streaming matrices, it is possible that the basis functions cannot be integrated analytically. Analogous to the cell-wise quadrature, we can define a quadrature set for  face face $f$: $\left\{  \vec{x}_q , w_q^{f}  \right\}_{q=1}^{N_q^f}$. This quadrature set is not specific for just one of the cells that face $f$ separates. If the quadrature set can exactly integrate the basis functions of both cells $K$ and $K'$ (as defined by Figure \ref{fig::Sn_two_ref_cells}), then only 1 quadrature set needs to be defined for both cells. Using this quadrature set, we can numerically calculate the surface matrix for face $f$ along cell $K$:
+
+\begin{equation}
+\label{eq::Sn_surface_matrix_numerical}
+\vec{{\bf F}}^{f,K} =    \sum_{q = 1}^{N_q^f} w_{q}^f \vec{n} (\vec{x}_q) \, {\bf b}_K (\vec{x}_q) \, {\bf b}_K^T (\vec{x}_q) .
+\end{equation}
+
+\noindent Similar to the cell-wise spatial quadrature sets, the sum of the weights of these face-wise quadrature sets need to exactly equal the geometric measure of face $f$. This means that $\sum_{q = 1}^{N_q^f}$ is equal to 1.0 in 1 dimension, the length of the face edge in 2 dimensions and the face area in 3 dimensions. 
+
+Using the same notation as the cell-wise mass and streaming matrices, the local face-wise surface matrix for face $f$ has the full matrix form,
+
+\begin{equation}
+\label{eq::Sn_surface_matrix_array}
+\vec{{\bf F}}^{f,K} =   \left[
+\begin{array} {ccccc}
+	\int_f \vec{n} \, b_1 \, b_1  & \ldots & \int_f \vec{n} \, b_1 \, b_j  & \ldots & \int_f \vec{n} \, b_1 \, b_{N_K} \\
+	\vdots  &  & \vdots  &  & \vdots \\
+	\int_f \vec{n} \,  b_i \, b_1  & \ldots & \int_f \vec{n} \, b_i \, b_j  & \ldots & \int_f \vec{n} \, b_i \, b_{N_K} \\
+	\vdots  &  & \vdots  &  & \vdots \\
+	\int_f \vec{n} \,  b_{N_K} \, b_1  & \ldots & \int_f \vec{n} \,  b_{N_K} \, b_j  & \ldots & \int_f \vec{n} \,  b_{N_K} \, b_{N_K} \\
+\end{array}
+\right] ,
+\end{equation}
+
+\noindent where an individual matrix entry is of the form:
+
+\begin{equation}
+\label{eq::Sn_streaming_matrix_entry}
+\vec{{ F}}_{i,j}^{f,K} =  \int_f \vec{n} \, b_i \, b_j .
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Solution Procedures
@@ -608,10 +653,28 @@ To this point, we have properly described the procedures to discretize the trans
 \label{fig::Sn_Solution_Iterative_scattmatrix}
 \end{figure}
 
+\begin{equation}
+\label{eq::Sn_full_sol_ops}
+\begin{aligned}
+{\bf L} {\bf \Psi} &=  {\bf M} {\bf \Sigma} {\bf \Phi} +  {\bf Q} \\
+{\bf \Phi} &=  {\bf D} {\bf \Psi}
+\end{aligned}
+\end{equation}
+
+\noindent where ${\bf L}$ is the fully-discretized loss operator which consists of total interaction and streaming terms, ${\bf M}$ is the moment-to-discrete operator of the angular discretization, ${\bf D}$ is the discrete-to-moment operator of the angular discretization, ${\bf \Sigma}$ is the scattering operator of the multigroup and angular discretizations, and ${\bf Q}$ is the full phase-space distributed source.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - Source Iteration
 \subsubsection{Source Iteration}
 \label{sec::Sn_Solution_Iterative_SI}
+
+\begin{equation}
+\label{eq::Sn_si_iter}
+\begin{aligned}
+ {\bf \Psi}^{(\ell+1)} &= {\bf L}^{-1}  {\bf M} {\bf \Sigma} {\bf \Phi}^{(\ell)} + {\bf L}^{-1}  {\bf Q} \\
+{\bf \Phi}^{(\ell+1)} &=  {\bf D} {\bf \Psi}^{(\ell+1)}
+\end{aligned}
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - Source Iteration
@@ -646,8 +709,48 @@ Section \ref{sec::Sn_Solution_Iterative}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - AMR
-\subsubsection{Adaptive Mesh Refinement Procedures}
+\subsubsection{Adaptive Mesh Refinement}
 \label{sec::Sn_Solution_Spatial_AMR}
+
+\begin{equation}
+\label{eq::Sn_AMR_jump_err_est}
+\eta_K^r = \int\displaylimits_{\partial K} [\![ \Phi^r ]\!]^2 d \, s = \int\displaylimits_{\partial K} \left(  \sum_m w_m [\![ \Psi_m^r ]\!]  \right)^2
+\end{equation}
+
+\noindent where $[\![ \cdot ]\!]$ is the jump operator along a face defined as,
+
+\begin{equation}
+\label{eq::Sn_AMR_jump_def}
+[\![ \Phi (\vec{r}) ]\!] = \Phi^+ (\vec{r}) - \Phi^- (\vec{r}),
+\end{equation}
+
+\noindent and the terms,$\Phi^+ (\vec{r})$ and $\Phi^- (\vec{r})$, are subject to the trace:
+
+\begin{equation}
+\label{eq::Sn_AMR_jump_trace}
+\Phi^{\pm} (\vec{r})  = \lim\displaylimits_{s \rightarrow 0^{\pm}} \Phi (\vec{r} + s \vec{n}).
+\end{equation}
+
+\noindent In this case, the outward normal, $\vec{n}$, is determined with respect to the element $K$ along its boundary, $\partial K$. With this trace, $\Phi^- (\vec{r})$ always corresponds to the solution within cell $K$. Investigating face $f$ of cell $K$, the across-face solution, $\Phi^+ (\vec{r})$, is dependent on the boundary type of face $f$. The across-face solutions can be succinctly writen:
+
+\begin{equation}
+\label{eq::Sn_AMR_across_face_vals}
+\Phi^+ (\vec{r}) = 
+\begin{cases}
+\lim\displaylimits_{s \rightarrow 0^{+}} \Phi (\vec{r} + s \vec{n}) & \vec{r} \notin \partial \mathcal{D} \\
+\sum\displaylimits_{\vec{\Omega} \cdot \vec{n} > 0}  \Psi_m^- (\vec{r}) + \sum\displaylimits_{\vec{\Omega} \cdot \vec{n} < 0} \Psi_{m}^{inc} (\vec{r}) & \vec{r} \in \partial \mathcal{D}^d \\
+\Phi^- (\vec{r}) & \vec{r} \in \partial \mathcal{D}^r
+\end{cases}.
+\end{equation}
+
+\noindent From Eq. (\ref{eq::Sn_AMR_across_face_vals}), the across-face solutions for interior faces, incident boundaries and reflecting boundaries have different meanings. For an interior face $f$ ($\vec{r} \notin \partial \mathcal{D}$), the across-face solution comes from the cell $K'$ (as defined by Figure \ref{fig::Sn_two_ref_cells}). For incident boundaries ($\vec{r} \in \partial \mathcal{D}^d$), the across-face solution is a combination of integrals of the outgoing ($\Psi_m^-$) and incident boundary fluxes ($\Psi_m^{inc}$). Finally, for reflecting boundaries ($\vec{r} \in \partial \mathcal{D}^r$), the across-face solutions are simply the within-cell solutions. Therefore, the solution jump is exactly zero for all reflecting boundaries.
+
+\begin{equation}
+\label{eq::Sn_AMR_err_crit}
+\eta_K^r \geq \alpha \max\displaylimits_{K' \in \mathbb{T}_h^r} \left(  \eta_{K'}^{r} \right)
+\end{equation}
+
+\noindent where $\alpha$ is a user-defined value $(0,1)$. This refinement criterion has a simple meaning. If, for example, $\alpha = 0.2$, then a cell will be refined if its error estimate is greater than 20\% of the cell with the largest error estimate. This does not necessarily mean that 80\% of the mesh cells will be refined at level $r$. Instead, the criterion simply states that any cell above a particular threshold will be refined. This means that it is theoretically possible for the extreme cases of 1 or all cells being refined at a particular refinement cycle.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -655,4 +758,5 @@ Section \ref{sec::Sn_Solution_Iterative}
 \section{Conclusions}
 \label{sec::Sn_Conclusions}
 
-In this chapter, we have presented the tightly-coupled system of equations that comprise the DGFEM $S_N$ transport equation. 
+In this chapter, we have presented the tightly-coupled system of equations that comprise the DGFEM $S_N$ transport equation. We began with the fully-continuous transport equation presented in Section \ref{sec::Sn_neut} and then discretized it in energy, angle and space in Sections \ref{sec::Sn_MG}, \ref{sec::Sn_Angle}, and \ref{sec::Sn_Spatial}, respectively. Appropriate boundary conditions were presented in Section \ref{sec::Sn_BC}. For this work, we will only utilize incoming-incident and reflecting boundary conditions and not use any further albedo terms. We finished this chapter in Section \ref{sec::Sn_Solution} by describing the procedures that will be utilized to solve our system of equations.
+
