@@ -125,7 +125,7 @@ From this distribution of energy values, we then say that a particular energy gr
 \Delta E_g \in [E_g, E_{g-1}].
 \end{equation}
 
-\noindent Figure \ref{fig::Sn_MG_energy_bands} provides a visual representation between the $G+1$ discrete energy values and the $G$ energy groups. While the order that we have prescribed may seem illogical (high-to-low) to those outside of the radiation physics community, it has been historically applied this way because radiation transport problems are iteratively solved from high energy to low energy. If the group structure is well chosen, then the transport solution can be more efficiently and easily obtained with this high-to-low energy group structure.
+\noindent Figure \ref{fig::Sn_MG_energy_bands} provides a visual representation between the $G+1$ discrete energy values and the $G$ energy groups. While the order that we have prescribed may seem illogical (high-to-low) to those outside of the radiation physics community, it has been historically applied this way because radiation transport problems are iteratively solved from high energy to low energy. If the group structure is well chosen, then the transport solution can be more efficiently and easily obtained.
 
 \begin{figure}[bht]
 \centering
@@ -656,23 +656,43 @@ To this point, we have properly described the procedures to discretize the trans
 \begin{equation}
 \label{eq::Sn_full_sol_ops}
 \begin{aligned}
-{\bf L} {\bf \Psi} &=  {\bf M} {\bf \Sigma} {\bf \Phi} +  {\bf Q} \\
-{\bf \Phi} &=  {\bf D} {\bf \Psi}
+{\bf L} {\bf \Psi} - {\bf M} {\bf \Sigma} {\bf \Phi}  =    {\bf Q} \\
+{\bf \Phi} =  {\bf D} {\bf \Psi}
 \end{aligned}
 \end{equation}
 
-\noindent where ${\bf L}$ is the fully-discretized loss operator which consists of total interaction and streaming terms, ${\bf M}$ is the moment-to-discrete operator of the angular discretization, ${\bf D}$ is the discrete-to-moment operator of the angular discretization, ${\bf \Sigma}$ is the scattering operator of the multigroup and angular discretizations, and ${\bf Q}$ is the full phase-space distributed source.
+\noindent where ${\bf L}$ is the fully-discretized loss operator which consists of total interaction and streaming terms, ${\bf M}$ is the moment-to-discrete operator of the angular discretization, ${\bf D}$ is the discrete-to-moment operator of the angular discretization, ${\bf \Sigma}$ is the scattering operator of the multigroup and angular discretizations, and ${\bf Q}$ is the full phase-space distributed source. In this case the source contains contributions from boundary and domain sources, fission sources, and scattering sources from outside the group set into the group set of interest.
+
+
+
+\begin{equation}
+\label{eq::Sn_full_sol_moments_only}
+\left[ {\bf I} - {\bf D} {\bf L}^{-1}{\bf M} {\bf \Sigma}   \right] {\bf \Phi} =  {\bf D} {\bf L}^{-1}  {\bf Q} 
+\end{equation}
+
+\noindent where we define,
+
+\begin{equation}
+\label{eq::Sn_trans_op_T}
+{\bf T} \equiv {\bf D} {\bf L}^{-1}{\bf M} {\bf \Sigma} ,
+\end{equation}
+
+\noindent for further brevity.
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - Source Iteration
 \subsubsection{Source Iteration}
 \label{sec::Sn_Solution_Iterative_SI}
 
+One simple method to invert $({\bf I} - {\bf T})$ of Eq. (\ref{eq::Sn_full_sol_moments_only}) is the {\em source iteration} technique, also known as {\em richardson iteration}.
+
 \begin{equation}
 \label{eq::Sn_si_iter}
 \begin{aligned}
- {\bf \Psi}^{(\ell+1)} &= {\bf L}^{-1}  {\bf M} {\bf \Sigma} {\bf \Phi}^{(\ell)} + {\bf L}^{-1}  {\bf Q} \\
-{\bf \Phi}^{(\ell+1)} &=  {\bf D} {\bf \Psi}^{(\ell+1)}
+ {\bf \Psi}^{(\ell+1)} = {\bf L}^{-1}  {\bf M} {\bf \Sigma} {\bf \Phi}^{(\ell)} + {\bf L}^{-1}  {\bf Q} \\
+{\bf \Phi}^{(\ell+1)} =  {\bf D} {\bf \Psi}^{(\ell+1)}
 \end{aligned}
 \end{equation}
 
@@ -686,12 +706,20 @@ To this point, we have properly described the procedures to discretize the trans
 \subsection{Spatial Solution Procedures}
 \label{sec::Sn_Solution_Spatial}
 
-Section \ref{sec::Sn_Solution_Iterative} 
+Section \ref{sec::Sn_Solution_Iterative} presented the methodology that we will employ to iteratively converge our transport solutions in energy and angle (flux moments). Both richardson iteration and GMRES were presented as methods that can invert the $({\bf I} - {\bf T})$ operator. In both of these iterative methods, the common operation of interest is the inversion of the loss operator (${\bf L}$). There are different techniques that could be used to perform this operation, including serveral matrix-dependent and matrix-free methodologies. For this work, we will utilize the full-domain transport sweep as we outline next in Section \ref{sec::Sn_Solution_Spatial_Sweeping}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - Transport Sweeping
 \subsubsection{Transport Sweeping}
 \label{sec::Sn_Solution_Spatial_Sweeping}
+
+The full-domain transport sweep is a beneficial matrix-free scheme because of the following:
+
+\begin{itemize}
+\item The number of sweep iterations does not grow with increasing problem size or processor counts. This is in contrast with partial-domain sweeping like {\em parallel block jacobi} (PBJ) \cite{zerr2011solution}.
+\item Does not require the formation of $M$ separate matrices for each of the angular directions. 
+\item 
+\end{itemize}
 
 \begin{figure}
 \centering
@@ -738,12 +766,12 @@ Section \ref{sec::Sn_Solution_Iterative}
 \Phi^+ (\vec{r}) = 
 \begin{cases}
 \lim\displaylimits_{s \rightarrow 0^{+}} \Phi (\vec{r} + s \vec{n}) & \vec{r} \notin \partial \mathcal{D} \\
-\sum\displaylimits_{\vec{\Omega} \cdot \vec{n} > 0}  \Psi_m^- (\vec{r}) + \sum\displaylimits_{\vec{\Omega} \cdot \vec{n} < 0} \Psi_{m}^{inc} (\vec{r}) & \vec{r} \in \partial \mathcal{D}^d \\
+\sum\displaylimits_{\vec{\Omega}_m \cdot \vec{n} > 0}  \Psi_m^- (\vec{r}) + \sum\displaylimits_{\vec{\Omega}_m \cdot \vec{n} < 0} \Psi_{m}^{inc} (\vec{r}) & \vec{r} \in \partial \mathcal{D}^d \\
 \Phi^- (\vec{r}) & \vec{r} \in \partial \mathcal{D}^r
 \end{cases}.
 \end{equation}
 
-\noindent From Eq. (\ref{eq::Sn_AMR_across_face_vals}), the across-face solutions for interior faces, incident boundaries and reflecting boundaries have different meanings. For an interior face $f$ ($\vec{r} \notin \partial \mathcal{D}$), the across-face solution comes from the cell $K'$ (as defined by Figure \ref{fig::Sn_two_ref_cells}). For incident boundaries ($\vec{r} \in \partial \mathcal{D}^d$), the across-face solution is a combination of integrals of the outgoing ($\Psi_m^-$) and incident boundary fluxes ($\Psi_m^{inc}$). Finally, for reflecting boundaries ($\vec{r} \in \partial \mathcal{D}^r$), the across-face solutions are simply the within-cell solutions. Therefore, the solution jump is exactly zero for all reflecting boundaries.
+\noindent From Eq. (\ref{eq::Sn_AMR_across_face_vals}), the across-face solutions for interior faces, incident boundaries and reflecting boundaries have different meanings. For an interior face $f$ ($\vec{r} \notin \partial \mathcal{D}$), the across-face solution comes from the cell $K'$ (as defined by Figure \ref{fig::Sn_two_ref_cells}). For incident boundaries ($\vec{r} \in \partial \mathcal{D}^d$), the across-face solution is a combination of integrals of the outgoing ($\Psi_m^-$) and incident boundary fluxes ($\Psi_m^{inc}$). Finally, for reflecting boundaries ($\vec{r} \in \partial \mathcal{D}^r$), the across-face solutions are simply the within-cell solutions. Therefore, the solution jump is exactly zero for all reflecting boundaries and yields no contribution to the error estimate.
 
 \begin{equation}
 \label{eq::Sn_AMR_err_crit}
