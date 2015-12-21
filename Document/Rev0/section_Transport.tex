@@ -201,7 +201,7 @@ We first expand the angular flux and the scattering cross section in spherical h
 \label{eq::Sn_Angle_moments}
 \begin{aligned}
 	\Phi_{p,n} &\equiv \int_{4 \pi} d\Omega \, \Psi(\vec{\Omega}) \, Y_{p,n} (\vec{\Omega}), \\
-	\sigma_{s,p} &\equiv  \int_{-1}^{1} \, d \mu \, \sigma_s ( \mu) P_p (\mu)  ,
+	\sigma_{s,p} &\equiv  \int_{-1}^{1} \, d \mu_0 \, \sigma_s ( \mu_0) P_p (\mu_0)  ,
 \end{aligned}
 \end{equation}
 
@@ -210,9 +210,9 @@ We first expand the angular flux and the scattering cross section in spherical h
 \begin{equation}
 \label{eq::Sn_Angle_other_terms}
 \begin{aligned}
-	\mu &\equiv \vec{\Omega}' \cdot \vec{\Omega}, \\
-	\sigma_s ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} \sigma_s ( \mu ) ,\\
-	P_p ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} P_p (\mu).
+	\mu_0 &\equiv \vec{\Omega}' \cdot \vec{\Omega}, \\
+	\sigma_s ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} \sigma_s ( \mu_0 ) ,\\
+	P_p ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} P_p (\mu_0).
 \end{aligned}
 \end{equation}
 
@@ -532,7 +532,7 @@ Since ${\bf b}_K$ consists of a column vector for the basis functions and ${\bf 
 
 \begin{equation}
 \label{eq::Sn_mass_matrix_entry}
-M_{i,j}^K =  \int_K b_i \, b_j .
+M_{i,j,K} =  \int_K b_i \, b_j .
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -575,7 +575,7 @@ Just like the elementary mass matrix, we can use the same spatial quadrature set
 
 \begin{equation}
 \label{eq::Sn_streaming_matrix_entry}
-\vec{G}_{i,j}^K =  \int_K \vec{\nabla}b_i \, b_j .
+\vec{G}_{i,j,K} =  \int_K \vec{\nabla}b_i \, b_j .
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -587,7 +587,7 @@ Finally, the last terms to consider of the discretized transport equation are th
 
 \begin{equation}
 \label{eq::Sn_surface_matrix_analytical}
-\vec{{\bf F}}^{f,K}  =    \int_f \vec{n} (\vec{r}) \, {\bf b}_K \, {\bf b}_K^T \, d s ,
+\vec{{\bf F}}_{f,K}  =    \int_f \vec{n} (\vec{r}) \, {\bf b}_K \, {\bf b}_K^T \, d s ,
 \end{equation}
 
 \noindent where we allow the outward surface normal, $\vec{n}$, to vary along the cell face. For 1D problems as well as 2D problems with colinear cell faces (no curvature), the outward normals would be constant along the entire face. However, there are many cases where 3D mesh cells would not have coplanar vertices along a face. Then, the outward normal would not be constant along the face and would need to be taken into account during integration procedures. A simple example of non-coplanar face vertices would be an orthogonal hexahedral cell that has its vertices undergo a randomized displacement.
@@ -598,7 +598,7 @@ Just like the cell mass and streaming matrices, it is possible that the basis fu
 
 \begin{equation}
 \label{eq::Sn_surface_matrix_numerical}
-\vec{{\bf F}}^{f,K} =    \sum_{q = 1}^{N_q^f} w_{q}^f \vec{n} (\vec{x}_q) \, {\bf b}_K (\vec{x}_q) \, {\bf b}_K^T (\vec{x}_q) .
+\vec{{\bf F}}_{f,K} =    \sum_{q = 1}^{N_q^f} w_{q}^f \vec{n} (\vec{x}_q) \, {\bf b}_K (\vec{x}_q) \, {\bf b}_K^T (\vec{x}_q) .
 \end{equation}
 
 \noindent Similar to the cell-wise spatial quadrature sets, the sum of the weights of these face-wise quadrature sets need to exactly equal the geometric measure of face $f$. This means that $\sum_{q = 1}^{N_q^f}$ is equal to 1.0 in 1 dimension, the length of the face edge in 2 dimensions and the face area in 3 dimensions. 
@@ -622,7 +622,7 @@ Using the same notation as the cell-wise mass and streaming matrices, the local 
 
 \begin{equation}
 \label{eq::Sn_streaming_matrix_entry}
-\vec{{ F}}_{i,j}^{f,K} =  \int_f \vec{n} \, b_i \, b_j .
+\vec{{ F}}_{i,j,f,K} =  \int_f \vec{n} \, b_i \, b_j .
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -667,7 +667,7 @@ To this point, we have properly described the procedures to discretize the trans
 
 \begin{equation}
 \label{eq::Sn_full_sol_moments_only}
-\left[ {\bf I} - {\bf D} {\bf L}^{-1}{\bf M} {\bf \Sigma}   \right] {\bf \Phi} =  {\bf D} {\bf L}^{-1}  {\bf Q} 
+\left( {\bf I} -{\bf T} \right) {\bf \Phi} =  {\bf D} {\bf L}^{-1}  {\bf Q} 
 \end{equation}
 
 \noindent where we define,
