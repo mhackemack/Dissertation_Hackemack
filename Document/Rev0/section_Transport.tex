@@ -188,33 +188,140 @@ We first define an approximate angular flux distribution for a region $s$:
 \section{Angular Discretization}
 \label{sec::Sn_Angle}
 
-Now that we have provided the discretization of the energy variable, we next focus on the discretization of the transport problem in angle. We will do this in two stages: 1) expand the angular flux in the scattering source and the distributed external source in spherical harmonics and 2) collocate the angular flux at the interpolation points of the trial space. We will perform these discretization procedures by taking the stready-state equation presented in Eq. (\ref{eq::Sn_transport_eq_op_SS}), dropping the fission term and spatial parameterization, and using only 1 energy group:
+Now that we have provided the discretization of the energy variable, we next focus on the discretization of the transport problem in angle. We will do this in two stages: 1) expand the scattering source and the distributed external source in spherical harmonics and 2) collocate the angular flux at the interpolation points of the angular trial space. We will perform these discretization procedures by taking the stready-state equation presented in Eq. (\ref{eq::Sn_transport_eq_op_SS}), dropping spatial parameterization, combining the fission and external sources into a single term, and using only 1 energy group:
 
 \begin{equation}
 \label{eq::Sn_Angle_simple_trans_eq}
-\vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{\Omega}) + \sigma_t \Psi (\vec{\Omega}) = \int_{4 \pi}  d\Omega' \, \sigma_s ( \vec{\Omega}' \cdot \vec{\Omega}) \Psi (\vec{\Omega}') + Q  (\vec{\Omega}) .
+\vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{\Omega}) + \sigma_t \Psi (\vec{\Omega}) = \int_{4 \pi}  d\Omega' \, \sigma_s ( \vec{\Omega}' \rightarrow \vec{\Omega}) \Psi (\vec{\Omega}') + Q  (\vec{\Omega}) .
 \end{equation}
 
-We first expand the angular flux and the scattering cross section in spherical harmonics,
+We first develop an approximation for the scattering term in Eq. (\ref{eq::Sn_Angle_simple_trans_eq}) by expanding the angular flux and the scattering cross section in spherical harmonics functions and Legendre polynomials, respectively. We begin by first assuming that the material is isotropic in relation to the radiation's initial direction. From this assumption, the parameterization of the scattering cross section can be written in terms of only the scattering angle, $\mu_0$,
 
 \begin{equation}
-\label{eq::Sn_Angle_moments}
-\begin{aligned}
-	\Phi_{p,n} &\equiv \int_{4 \pi} d\Omega \, \Psi(\vec{\Omega}) \, Y_{p,n} (\vec{\Omega}), \\
-	\sigma_{s,p} &\equiv  \int_{-1}^{1} \, d \mu_0 \, \sigma_s ( \mu_0) P_p (\mu_0)  ,
-\end{aligned}
+\label{eq::Sn_scatt_xs}
+\sigma_s ( \vec{\Omega}' \rightarrow \vec{\Omega}) = \frac{1}{2 \pi} \sigma_s ( \vec{\Omega}' \cdot \vec{\Omega}) = \frac{1}{2 \pi} \sigma_s ( \mu_0) , 
 \end{equation}
 
-\noindent where we have used the following relationships:
+\noindent where $\mu_0 \equiv  \vec{\Omega}' \cdot \vec{\Omega}$. With this simplification, the scattering cross section can now be expanded in an infinite series in terms of the Legendre polynomials,
 
 \begin{equation}
-\label{eq::Sn_Angle_other_terms}
-\begin{aligned}
-	\mu_0 &\equiv \vec{\Omega}' \cdot \vec{\Omega}, \\
-	\sigma_s ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} \sigma_s ( \mu_0 ) ,\\
-	P_p ( \vec{\Omega}' \cdot \vec{\Omega}) &\equiv  \frac{1}{2 \pi} P_p (\mu_0).
-\end{aligned}
+\label{eq::Sn_scatt_xs_legendre}
+\sigma_s ( \vec{\Omega}' \rightarrow \vec{\Omega}) = \sum\displaylimits_{p=0}^{\infty} \frac{2p + 1}{4 \pi}  \sigma_{s,p} P_p ( \mu_0) , 
 \end{equation}
+
+\noindent where $\sigma_{s,p}$ is the $p$ angular moment of the scattering cross section. These angular moments of the scattering cross section have the form:
+
+\begin{equation}
+\label{eq::Sn_scatt_xs_moments}
+	\sigma_{s,p} \equiv  \int_{-1}^{1} \, d \mu_0 \, \sigma_s ( \mu_0) P_p (\mu_0)  .
+\end{equation}
+
+With the scattering cross section redefined, we can now expand the angular flux in terms of an infinite series of the spherical harmonics functions, $Y$,
+
+\begin{equation}
+\label{eq::Sn_ang_flux_sph_harm_funcs}
+\Psi (\vec{\Omega}) = \frac{1}{4 \pi} \sum\displaylimits_{k=0}^{\infty} \sum\displaylimits_{n=-k}^{k} \Phi_{k,n} Y_{k,n} (\vec{\Omega})
+\end{equation}
+
+\noindent where the angular moments of the angular flux, $\Phi_{k,n}$, have the form:
+
+\begin{equation}
+\label{eq::Sn_flux_moments}
+	\Phi_{k,n} \equiv \int_{4 \pi} d\Omega \, \Psi(\vec{\Omega}) \, Y_{p,n} (\vec{\Omega}).
+\end{equation}
+
+\noindent We note that the $p$ and $k$ orders of the scattering cross section and angular flux expansions, respectively, are not corresponding. We then take the scattering cross section expansion of Eq. (\ref{eq::Sn_scatt_xs_legendre}) and the angular flux expansion of Eq. (\ref{eq::Sn_ang_flux_sph_harm_funcs}), and insert them into the original scattering term of the right-hand-side of Eq. (\ref{eq::Sn_Angle_simple_trans_eq}). After significant algebra and manipulations, which we will not include here for brevity, the scattering term can be greatly simplified (the full details of this are located in Appendix \ref{sec::appendix_SN}). Eq. (\ref{eq::Sn_Angle_simple_trans_eq}) can now be written again with this alternate and simplified scattering term that is composed of the cross section and angular flux moments:
+
+\begin{equation}
+\label{eq::Sn_Angle_simple_trans_eq_w_moments_inf}
+\vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{\Omega}) + \sigma_t \Psi (\vec{\Omega}) = \sum_{p=0}^{\infty} \frac{2p + 1}{4 \pi} \sigma_{s,p}   \sum_{n=-p}^{p}  \Phi_{p,n}  Y_{p,n} (  \vec{\Omega} )+ Q  (\vec{\Omega}) .
+\end{equation}
+
+From the initial assumption of material isotropy (which may or not be an approximation), the scattering term of Eq. (\ref{eq::Sn_Angle_simple_trans_eq_w_moments_inf}) has introduced no approximation. Unfortunately, this form requires an infinite series expansion which we cannot use with only finite computational resources. Instead, we truncate the series at some maximum expansion order, $N_p$, which, in general, introduces an approximate form for the scattering. However, we note that if the problem scattering can be exactly captured with moments through order $N_p$, then we have introduced no approximation with this truncation. With this order of truncation, we again write the angularly continuous Eq. (\ref{eq::Sn_Angle_simple_trans_eq_w_moments_inf}), but also fold the source term into the spherical harmonics expansion,
+
+\begin{equation}
+\label{eq::Sn_Angle_simple_trans_eq_w_moments_trunc}
+\vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{\Omega}) + \sigma_t \Psi (\vec{\Omega}) = \sum_{p=0}^{N_p} \frac{2p + 1}{4 \pi}   \sum_{n=-p}^{p}   Y_{p,n} (  \vec{\Omega} ) \left[ \sigma_{s,p} \Phi_{p,n} + Q_{p,n}  \right] .
+\end{equation}
+
+At this point, one may wonder why we have alterred the scattering operator so that it is terms of moments of the scattering cross sections and the angular flux. The reason is two-fold which will also be discussed in further detail later in this chapter. First, it greatly reduces the phase space of the scattering cross sections. With proper preprocessing, the scattering cross sections can be simplified into just their Legendre moments, instead of having to store angle-to-angle quantities ($\vec{\Omega}' \rightarrow \vec{\Omega}$). For every group-to-group combination in energy ($g' \rightarrow g$), there are only the $N_p$ moments of the scattering cross section. Secondly, the contribution of the angular flux into the scattering source with its moments can also greatly reduce the dimensional space that needs to be stored in computer memory. This will be discussed later in further detail in Section \ref{sec::Sn_Solution_Iterative}, but it simply means that we only have to store $N_{mom}$ angular flux moments for use in the scattering source. In 1 dimension, $N_{mom}$ is equal to ($N_p + 1$). In 2 dimensions, $N_{mom}$ is equal to $\frac{(N_p + 1) (N_p + 2)}{2}$. In 3 dimensions, $N_{mom}$ is equal to $(N_p + 1)^2$. For comparative purposes, we have plotted $N_{mom}$ for 1,2, and 3 dimensions up to order 8 in Figure \ref{fig::Sn_Num_Sph_Harm_Moments}.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.65\textwidth]{figures/sec_Sn/Num_Sph_Harm_Moments.eps}
+\caption[Number of spherical harmonics moments]{Number of spherical harmonics moments, $N_{mom}$, in 1D, 2D, and 3D as a function of the expansion order, $p$.}
+\label{fig::Sn_Num_Sph_Harm_Moments}
+\end{figure}
+
+Up to this point, we have only presented the methodology to express our source terms with expansions of the spherical harmonics functions. Next, we describe the second portion of our angular discretization by deriving the standard $S_N$ equations using a collocation technique. We begin by choosing a set of $M$ distinct points and weights to form a quadrature set in angular space: $\{  \vec{\Omega}_m, w_m \}_{m=1}^M$. We will give further details about the required characteristics of this quadrature set as well as a couple of common options a little later. Using this quadrature set, we can further define the a trial space for the angular flux,
+
+\begin{equation}
+\label{eq::Sn_ang_flux_basis}
+\Psi (\vec{\Omega}) = \sum\displaylimits_{m=1}^{M} B_m (\vec{\Omega})  \Psi_m ,
+\end{equation}
+
+\noindent where the angular bases, $B_m$, satisfy the {\em Kronecker} property,
+
+\begin{equation}
+\label{eq::Sn_ang_basis_kroneker}
+ B_j (\vec{\Omega}_m) = \delta_{j,m}, 
+\end{equation}
+
+\noindent as well as the {\em Lagrange} property,
+
+\begin{equation}
+\label{eq::Sn_ang_basis_lagrange}
+\sum\displaylimits_{m=1}^{M} B_m (\vec{\Omega}_m) = 1  ,
+\end{equation}
+
+\noindent and the singular value of the angular flux along a given direction has the following notation:
+
+\begin{equation}
+\label{eq::Sn_ang_flux_identity}
+\Psi_m = \Psi (\vec{\Omega}_m).
+\end{equation}
+
+Next, we substitute Eq. (\ref{eq::Sn_ang_flux_basis}) into Eq. (\ref{eq::Sn_Angle_simple_trans_eq_w_moments_trunc}), drop the external source for clarity, and collocate at the interpolation (quadrature) points,
+
+\begin{equation}
+\label{eq::Sn_Angle_simple_trans_eq_w_ang_basis}
+\begin{aligned}
+\vec{\Omega} \cdot \vec{\nabla} \left( \sum\displaylimits_{m=1}^{M} B_m (\vec{\Omega}_k)  \Psi_m \right) + \sigma_t \left(  \sum\displaylimits_{m=1}^{M} B_m (\vec{\Omega}_k)  \Psi_m \right) \\
+= \sum_{p=0}^{N_p} \frac{2p + 1}{4 \pi} \sigma_{s,p}   \sum_{n=-p}^{p}   Y_{p,n} (  \vec{\Omega} ) \left(  \sum\displaylimits_{m=1}^M \Psi_m \int_{4 \pi} d\Omega \, B_m (\vec{\Omega}_k)  \, Y_{p,n} (\vec{\Omega})  \right)  \\
+k=1,...,M
+\end{aligned} ,
+\end{equation}
+
+\noindent where we inserted Eq. (\ref{eq::Sn_ang_flux_basis}) into Eq. (\ref{eq::Sn_flux_moments}) to form a slightly modified form for the angular flux moments:
+
+\begin{equation}
+\label{eq::Sn_flux_mom_int_w_basis}
+\Phi_{p,n} = \sum\displaylimits_{m=1}^M \Psi_m \int_{4 \pi} d\Omega \, B_m (\vec{\Omega})  \, Y_{p,n} (\vec{\Omega}).
+\end{equation}
+
+\noindent The {\em Kronecker} property of Eq. (\ref{eq::Sn_ang_basis_kroneker}), is then used at the collocation points so that Eq. (\ref{eq::Sn_Angle_simple_trans_eq_w_ang_basis}) can be simplified into the following form (where we have reintroduced the distributed source term in terms of its contribution for angle $m$):
+
+\begin{equation}
+\label{eq::Sn_trans_eq_angle_disc_FINAL}
+\begin{aligned}
+\vec{\Omega}_m \cdot \vec{\nabla} \Psi_{m}  + \sigma_{t}   \Psi_{m}=  \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi}  \sigma_{s,p}  \sum_{n=-p}^{p}  Y_{p,n} (  \vec{\Omega}_m )  \Phi_{p,n}  + Q_{m}  \\
+m=1,...,M
+\end{aligned} .
+\end{equation}
+
+Equation (\ref{eq::Sn_trans_eq_angle_disc_FINAL}) represents the transport equation that has been discretized into $M$ separate equations in angle (for 1 energy group and no spatial discretization). Up to this point, we have simply stated that there is some angular quadrature set of size $M$ that will satisfy some conditions of the solution, but we have not explicitly stated these conditions. For this work we will require our angular quadrature set to maintain the following properties:
+
+\begin{enumerate}
+\item The weights sum to $4 \pi$: $\sum\displaylimits_m w_m = 4 \pi$.
+\item The odd angular moments sum to $\vec{0}$: $\sum\displaylimits_m w_m \left( \vec{\Omega}_m  \right)^n =  \vec{0}$ ($n=1,3,5,...$).
+\item $\sum\displaylimits_m w_m  \vec{\Omega}_m \vec{\Omega}_m = \frac{4 \pi}{3} \mathbb{I}  $, where $\mathbb{I}$ is the identity tensor.
+\item The points and weights are symmetric about the primary axes in angular space. 
+\item The points and weights also need to have symmetry about the problem domain boundary (this is not an issue if the domain is a rectangle in 2D or an orthogonal parallelepiped in 3D). This point is described in greater detail in Section \ref{sec::Sn_BC}.
+\end{enumerate}
+
+\noindent Point 4 requires some additional explanation. In 1 dimension, this corresponds to symmetry about the point 0 on the interval $[-1, 1]$. In 2 dimensions, this corresponds to quadrant-to-quadrant symmetry about the x-y primary axes of the unit circle. In 3 dimensions, this corresponds to octant-to-octant symmetry about the x-y-z primary axes of the unit sphere. 
+
+From these properties, especially property 4, our 2D and 3D quadrature sets can be constructed in a simple and consistent manner (1D quadrature sets have different construction and our work does not include them). For both 2D and 3D problems, we can generate a subset of the quadrature points and weights on a single octant of the unit sphere, where each quadrature point in this subset has the form: $\vec{\Omega}_1 = [\mu_1, \eta_1 , \xi_1]$ (the `1' subscript corresponds to the primary octant). If we are solving a 2D problem, we would then project the quadrature points onto the unit circle so that they have the form: $\vec{\Omega}_1 = [\mu_1, \eta_1 ]$ (we can then view the primary octant as the primary quadrant). Once we have defined the quadrature points and weights for the primary quadrant or octant, we can then directly calculate the remainder of the quadrature set by mapping to the other quadrants or octants. Table \ref{tab::Sn_2D_octant_mapping} presents the mapping from the primary quadrant to the other 3 quadrants for 2D problems. Table \ref{tab::Sn_3D_octant_mapping} presents the mapping from the primary octant to the other 7 octants for 3D problems.
 
 \begin{table}[hbt]
 \centering
@@ -240,7 +347,7 @@ We first expand the angular flux and the scattering cross section in spherical h
 \caption{3D angle mapping from the first octant into the other 7 octants.}
 \begin{tabular}{|c|ccc|}
 	\hline
-	Quadrant & $\mu$ & $\eta$ & $\xi $ \\
+	Octant & $\mu$ & $\eta$ & $\xi $ \\
 	\hline
 	1 & $\mu_1=\mu_1$ & $\eta_1=\eta_1$ & $\xi_1=\xi_1$ \\
 	\hline
@@ -262,14 +369,14 @@ We first expand the angular flux and the scattering cross section in spherical h
 \label{tab::Sn_3D_octant_mapping}
 \end{table}
 
-We conclude our discussion of angular discretizations by presenting two common angular quadrature sets that will be employed in this dissertation work. Section \ref{sec::Sn_Angle_LS} presents the Level Symmetric (LS) quadrature set and Section \ref{sec::Sn_Angle_PGLC} presents the Product Gauss-Legendre-Chebyshev (PGLC) quadrature set.
+We conclude our discussion of angular discretizations by presenting two common angular quadrature sets that will be employed in this dissertation work. Section \ref{sec::Sn_Angle_LS} presents the Level Symmetric (LS) quadrature set and Section \ref{sec::Sn_Angle_PGLC} presents the Product Gauss-Legendre-Chebyshev (PGLC) quadrature set. Both of these quadrature sets can be formed from the procedure outlined before: form the primary octant and then map as appropriate.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Level-Symmetric
-\subsection{Level-Symmetric Quadrature Set}
+\subsection{Level Symmetric Quadrature Set}
 \label{sec::Sn_Angle_LS}
 
-The first quadrature set we present is the common Level Symmetric set.
+The first quadrature set we present is the common Level Symmetric set \cite{lewis1984computational}.
 
 \begin{figure}
 \centering
@@ -630,12 +737,16 @@ Using the same notation as the cell-wise mass and streaming matrices, the local 
 \section{Solution Procedures}
 \label{sec::Sn_Solution}
 
-To this point, we have properly described the procedures to discretize the transport problem in energy, angle, and space. We now spend the remainder of this chapter discussing various methodologies to efficiently solve the tightly-coupled system of equations composing our transport problem. Section \ref{sec::Sn_Solution_Iterative} 
+To this point, we have properly described the procedures to discretize the transport problem in energy, angle, and space. We now spend the remainder of this chapter discussing various methodologies to efficiently solve the tightly-coupled system of equations composing our transport problem. Section \ref{sec::Sn_Solution_Iterative} details the iterative procedures used to solve the transport problem in energy and angle, and Section \ref{sec::Sn_Solution_Spatial} then describes how we solve the spatial portion of the problem for a single energy/angle iteration.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Iterative Procedures
 \subsection{Angle and Energy Iteration Procedures}
 \label{sec::Sn_Solution_Iterative}
+
+The fully discretized transport equation has an angular flux solution, ${\bf \Psi}$, with dimensionality of $(G \text{x} M \text{x} N_{dof})$. The angular flux moments, ${\bf \Phi}$, have dimensionality of $(G \text{x} N_{mom} \text{x} N_{dof})$. Depending on the necessary fidelity of the problem, the full phase-space of the solution can become extremely large to solve. We can have {\em billions} of total unkowns to solve for if we simply have $N_{dof} \approx O(10^6)$, $M \approx O(10^2)$, and $G \approx O(10^1)$. 
+
+In theory, if we had the computer memory, we could construct a left-hand-side matrix of dimensionality $(G \text{x} M \text{x} N_{dof})$x$(G \text{x} M \text{x} N_{dof})$ with a corresponding right-hand-side vector of dimensionality $(G \text{x} M \text{x} N_{dof})$x1, we could then directly solve for the full phase-space angular flux solution at once. However, because the dimensional space of the unknowns can rapidly grow and become to large for hardware memory, transport problems have traditionally been solved iteratively. We now detail the procedures that we will employ to iteratively obtain the phase-space solution in energy and angle.
 
 \begin{figure}
 \centering
@@ -737,8 +848,10 @@ The full-domain transport sweep is a beneficial matrix-free scheme because of th
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - AMR
-\subsubsection{Adaptive Mesh Refinement}
+\subsubsection{Spatial Adaptive Mesh Refinement}
 \label{sec::Sn_Solution_Spatial_AMR}
+
+
 
 \begin{equation}
 \label{eq::Sn_AMR_jump_err_est}
