@@ -14,14 +14,16 @@
 \chapter{\uppercase {FEM Basis Functions for Unstructured Polytopes}}
 \label{sec::BF}
 
-In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various 
+In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various elementary matrices needed to form the full set of spatially-discretized PDEs. These included the mass, streaming, and surface matrices where the integrations on the element's domain and boundary require combinations of the basis functions' values and gradients.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - 2D Linear
 \section{Linear Basis Functions on 2D Polygons}
 \label{sec::BF_2DLinear}
 
+Figure \ref{fig::BF_2D_ref_polygon}, gives an image of a reference polygon along with the geometric notations we will use to define the different linear polygonal coordinates. An element, $K\in \mathbb{R}^2$, is defined by a closed set of $N_K$ points (vertices) in $\mathbb{R}^2$. The vertices are ordered ($1,...,N_K$) in a counter-clockwise manner without restriction on their convexity. Face $j$ on the polygon, $e_j$, is defined as the line segment between vertices $j$ and $j+1$. The vertex $j+1$ is determined in general as $j+1 =\mod(j,N_K)+1$, which gives a wrap-around definition of vertex $N_K+1 = 1$.
 
+We complete our geometric description for the polygonal coordinate system by analyzing a point $\vec{x}$ inside the polygon's domain, as also seen in Figure \ref{fig::BF_2D_ref_polygon}. $\alpha_j$ is the angle between the points ($\vec{x}_j, \vec{x}, \vec{x}_{j+1}$). Since element $K$ is defined by a closed set of $\mathbb{R}^2$ points, $\alpha_j$ is strongly bounded: ($[0, \pi]$). We conclude by defining $|\vec{u}|$ as the Euclidean distance of the vector $\vec{u}$. This means that $|\vec{x} - \vec{x}_j|$ is the distance between the points $\vec{x}$ and $\vec{x}_j$ and $|e_j|$ is the length of face $j$ between points $\vec{x}_j$ and $\vec{x}_{j+1}$.
 
 \begin{figure}[hbt]
 \centering
@@ -119,7 +121,7 @@ and
 b_{j}^{W} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})}
 \end{equation}
 
-\noindent where the weight function for vertex $j$, $w_j$, has the following definition:
+\noindent where the Wachspress weight function for vertex $j$, $w_j$, has the following definition:
 
 \begin{equation}
 \label{eq::BF_wach_weights}
@@ -254,12 +256,14 @@ w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, 
 \subsection{Mean Value Basis Functions}
 \label{sec::BF_2DLinear_MV}
 
+At this point, we now introduce the first new polygonal basis set to be used for the transport equation: the {\em mean value coordinates}. 
+
 \begin{equation}
 \label{eq::BF_MV_BF}
 b_{j}^{MV} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})}
 \end{equation}
 
-\noindent where the weight function for vertex $j$, $w_j$, has the following definition:
+\noindent where the mean value weight function for vertex $j$, $w_j$, has the following definition:
 
 \begin{equation}
 \label{eq::BF_MV_weights}
@@ -278,12 +282,14 @@ The final linearly-complete 2D basis functions that we will analyze in this work
 b_{j}^{ME} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})}
 \end{equation}
 
-\noindent where the weight function for vertex $j$, $w_j$, has the following definition:
+\noindent where the maximum entropy weight function for vertex $j$, $w_j$, has the following definition:
 
 \begin{equation}
 \label{eq::BF_ME_weights}
 w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \kappa \cdot (\vec{x}_j - \vec{x}))
 \end{equation}
+
+\noindent In Eq. (\ref{eq::BF_ME_weights}), $m_j$ 
 
 \begin{equation}
 \label{eq::BF_ME_prior_funcs}

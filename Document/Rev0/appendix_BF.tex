@@ -40,6 +40,13 @@ As it was stated in Section \ref{sec::BF_2DLinear}, the Wachspress, mean value, 
 \lambda_i^{W} (\vec{x}) = \frac{w_i^W  (\vec{x}) }{\sum_j w_j^W  (\vec{x}) }
 \end{equation}
 
+\noindent where the weight function for vertex $i$, $w_i$, has the following definition:
+
+\begin{equation}
+\label{eq::BF_wach_weights}
+w_i (\vec{x})  = \frac{A(\vec{x}_{i-1}, \vec{x}_{i}, \vec{x}_{i+1})}{A(\vec{x}, \vec{x}_{i-1}, \vec{x}_{i}) \, A(\vec{x}, \vec{x}_{i}, \vec{x}_{i+1})}
+\end{equation}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Sub Section - MV Limits
 \subsection{Limits of the Mean Value Coordinates}
@@ -48,6 +55,13 @@ As it was stated in Section \ref{sec::BF_2DLinear}, the Wachspress, mean value, 
 \begin{equation}
 \label{eq::App_BF_MVBF}
 \lambda_i^{MV} (\vec{x}) = \frac{w_i^{MV}  (\vec{x}) }{\sum_j w_j^{MV}  (\vec{x}) }
+\end{equation}
+
+\noindent where the weight function for vertex $i$, $w_i$, has the following definition:
+
+\begin{equation}
+\label{eq::BF_MV_weights}
+w_i (\vec{x})  = \frac{\tan(\alpha_{i-1} / 2) + \tan(\alpha_i / 2)}{|\vec{x}_i - \vec{x}|}
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -60,3 +74,16 @@ As it was stated in Section \ref{sec::BF_2DLinear}, the Wachspress, mean value, 
 \label{eq::App_BF_MEBF}
 \lambda_i^{ME} (\vec{x}) = \frac{w_i^{ME}  (\vec{x}) }{\sum_j w_j^{ME}  (\vec{x}) }
 \end{equation}
+
+\noindent where the weight function for vertex $i$, $w_i$, has the following definition:
+
+\begin{equation}
+\label{eq::BF_ME_weights}
+w_i (\vec{x})  = m_i(\vec{x}) \exp(-  \kappa \cdot (\vec{x}_i - \vec{x}))
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - Analytical PWQ
+\section{Analytical Form for the Quadratic Serendipity PWL Basis Functions}
+\label{sec::appendix_BF_PWQ}
+

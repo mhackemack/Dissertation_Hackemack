@@ -181,7 +181,7 @@ We first define an approximate angular flux distribution for a region $s$:
 \end{aligned}
 \end{equation}
 
-\noindent It is noted that we do not need to redefine the fission spectrum or the distributed external sources since they are not weighted with the angular flux solution. With this energy factorization, we would expect, in general, that the approximation error will tend to zero as the number of discrete energy groups increases (thereby making the energy bins thinner). This is especially true if the group structure is chosen with many more bins in energy regions with large variations in the energy solution. For certain problems, the region-dependent energy function is well understood ({\em i.e.} almost exactly known). This means, that for these problems, we can achieve reasonable solution accuracy with only a few groups where the energy bins of the multigroup discretization are well chosen. A good example of these kinds of problems are thermal-spectrum nuclear reactors which have historically achieved reasonable solutions with as few as 4-10 energy groups.
+\noindent It is noted that we do not need to redefine the fission spectrum or the distributed external sources since they are not weighted with the angular flux solution. With this energy factorization, we would expect, in general, that the approximation error will tend to zero as the number of discrete energy groups increases (thereby making the energy bins thinner). This is especially true if the group structure is chosen with many more bins in energy regions with large variations in the energy solution. For certain problems, the region-dependent energy function is well understood ({\em i.e.} almost exactly known). This means, that for these problems, we can achieve reasonable solution accuracy with only a few groups where the energy bins of the multigroup discretization are well chosen.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Angle Discretization
@@ -382,29 +382,58 @@ The first quadrature set we present is the common Level Symmetric set \cite{lewi
 \centering
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS2.eps}
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS2_3D.eps}
 		\caption{}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS4.eps}
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS4_3D.eps}
 		\caption{}
 	\end{subfigure}
 	\vfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS8.eps}
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS8_3D.eps}
 		\caption{}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS16.eps}
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS16_3D.eps}
 		\caption{}
 	\end{subfigure}
-\caption[Level-Symmetric angular quadrature set]{Level-Symmetric angular quadrature set of order (a) 2, (b) 4, (c) 8, and (d) 16.}
-\label{fig::Sn_Angle_LS_Quads}
+\caption[3D Level-Symmetric angular quadrature set]{Level-Symmetric angular quadrature sets of order (a) 2, (b) 4, (c) 8, and (d) 16.}
+\label{fig::Sn_Angle_LS_Quads_3D}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS2_2D.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS4_2D.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS8_2D.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS16_2D.eps}
+		\caption{}
+	\end{subfigure}
+\caption[2D Level-Symmetric angular quadrature set]{Projection of the 3D Level-Symmetric angular quadrature set with orders (a) 2, (b) 4, (c) 8, and (d) 16 projected onto the x-y space on the unit circle.}
+\label{fig::Sn_Angle_LS_Quads_2D}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -423,47 +452,88 @@ The second angular quadrature set we will present is a Product Gauss-Legendre-Ch
 
 From the listed differences, we can already discern some clear advantages and disadvantages from a fully-symmetric quadrature set like LS. If a high number of angles are required for a problem, then negative weights do not arise. This is beneficial for transport problems with significant discontinuities. Also, the quadrature directions can be preferentially distributed in the primary octant if required for a particular problem. For example, if the transport solution is smoothly varying in the polar direction and not in the azimuthal direction, then we can specify a larger number of quadrature points in the azimuthal direction, with much fewer points in the polar direction. However, this also highlights the fact that the quadrature weights are aligned with the polar level, which can lead to less accurate moment integrations for certain transport problems. 
 
-For this dissertation, we will use the following notation to define the product nature of the PGLC quadrature points: $S_{a}^{p}$. Here, $a$ and $p$ correspond to the number of azimuthal and polar directions in the primary octant, respectively. We demonstrate this definition in Figure \ref{fig::Sn_Angle_PGLC_Quads} with several combinations of azimuthal and polar directions. Again, the size of the direction marker corresponds to the relative weight of quadrature point. One can clearly see that the weights vary on the polar levels and all azimuthal weights on a given polar level are constant.
+For this dissertation, we will use the following notation to define the product nature of the PGLC quadrature points: $S_{a}^{p}$. Here, $a$ and $p$ correspond to the number of azimuthal and polar directions in the primary octant, respectively. We demonstrate this definition in Figure \ref{fig::Sn_Angle_PGLC_Quads_3D} with several combinations of azimuthal and polar directions. Figure \ref{fig::Sn_Angle_PGLC_Quads_2D} then presents the projections of these quadrature sets onto the unit circle for use in 2D transport problems. Again, the size of the direction marker corresponds to the relative weight of quadrature point. One can clearly see that the weights vary on the polar levels and all azimuthal weights on a given polar level are constant.
 
 \begin{figure}
 \centering
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC2_2.png}
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC2_2_3D.png}
 		\caption{}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC2_4.png}
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC2_4_3D.png}
 		\caption{}
 	\end{subfigure}
 	\vfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC4_2.png}
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC4_2_3D.png}
 		\caption{}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC4_4.png}
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC4_4_3D.png}
 		\caption{}
 	\end{subfigure}
 	\vfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC6_6.png}
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC6_6_3D.png}
 		\caption{}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
-		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC8_8.png}
+		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/PGLC8_8_3D.png}
 		\caption{}
 	\end{subfigure}
-\caption[Product Gauss-Legendre-Chebyshev angular quadrature set]{Product Gauss-Legendre-Chebyshev angular quadrature set with orders: (a) S$_2^2$, (b) S$_2^4$, (c) S$_4^2$, (d) S$_4^4$, (e) S$_6^6$, and (f) S$_8^8$.}
-\label{fig::Sn_Angle_PGLC_Quads}
+\caption[3D Product Gauss-Legendre-Chebyshev angular quadrature set]{Product Gauss-Legendre-Chebyshev angular quadrature set with orders: (a) S$_2^2$, (b) S$_2^4$, (c) S$_4^2$, (d) S$_4^4$, (e) S$_6^6$, and (f) S$_8^8$.}
+\label{fig::Sn_Angle_PGLC_Quads_3D}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.46\textwidth}
+		\centering
+		\includegraphics[width=0.85\textwidth]{figures/sec_Sn/PGLC2_2_2D.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.46\textwidth}
+		\centering
+		\includegraphics[width=0.85\textwidth]{figures/sec_Sn/PGLC2_4_2D.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.46\textwidth}
+		\centering
+		\includegraphics[width=0.85\textwidth]{figures/sec_Sn/PGLC4_2_2D.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.46\textwidth}
+		\centering
+		\includegraphics[width=0.85\textwidth]{figures/sec_Sn/PGLC4_4_2D.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.46\textwidth}
+		\centering
+		\includegraphics[width=0.85\textwidth]{figures/sec_Sn/PGLC6_6_2D.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.46\textwidth}
+		\centering
+		\includegraphics[width=0.85\textwidth]{figures/sec_Sn/PGLC8_8_2D.eps}
+		\caption{}
+	\end{subfigure}
+\caption[2D Product Gauss-Legendre-Chebyshev angular quadrature set]{Projection of the 3D Product Gauss-Legendre-Chebyshev angular quadrature set with orders: (a) S$_2^2$, (b) S$_2^4$, (c) S$_4^2$, (d) S$_4^4$, (e) S$_6^6$, and (f) S$_8^8$ projected onto the x-y space on the unit circle.}
+\label{fig::Sn_Angle_PGLC_Quads_2D}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -737,14 +807,28 @@ Using the same notation as the cell-wise mass and streaming matrices, the local 
 \section{Solution Procedures}
 \label{sec::Sn_Solution}
 
-To this point, we have properly described the procedures to discretize the transport problem in energy, angle, and space. We now spend the remainder of this chapter discussing various methodologies to efficiently solve the tightly-coupled system of equations composing our transport problem. Section \ref{sec::Sn_Solution_Iterative} details the iterative procedures used to solve the transport problem in energy and angle, and Section \ref{sec::Sn_Solution_Spatial} then describes how we solve the spatial portion of the problem for a single energy/angle iteration.
+To this point, we have properly described the procedures to discretize the transport problem in energy, angle, and space. Combining the results of Sections \ref{sec::Sn_MG}, \ref{sec::Sn_Angle}, and \ref{sec::Sn_Spatial}, we write the fully-discretized DGFEM multigroup $S_N$ equations for an element $K$, where the test function $b_{m,g}$ for a single direction and energy group is now used:
+
+\begin{equation}
+\label{eq::Sn_DGFEM_trans_eq_cellK_bmg_complete}
+\begin{aligned}
+-  \Big( \vec{\Omega}_m \cdot  & \vec{\nabla} b_{m,g}, \Psi_{m,g} \Big)_{K}   + \Big(  \sigma_{t,g} b_{m,g} ,   \Psi_{m,g} \Big)_{K} +  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}_{m,g}^{-}  \Big>_{\partial K^+}  \\
+  + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}_{m,g}^{+}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}^{-}_{m',g}  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
+= & \sum\displaylimits_{g'=1}^G \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi} \sum_{n=-p}^{p}   Y_{p,n} (  \vec{\Omega}_m )  \Big( \sigma_{s,p}^{g' \rightarrow g} \, b_{m,g},  \Phi_{p,n,g'} \Big)_{K}  \\
++ & \left(  b_{m,g} ,   Q_{m,g} \right)_{K} + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}_{m,g}^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}^d}
+\end{aligned} .
+\end{equation} 
+
+\noindent All of the notations used in Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK_bmg_complete}) remain unchanged from Section \ref{sec::Sn_Spatial}.
+
+We now spend the remainder of this chapter discussing various methodologies to efficiently solve the tightly-coupled system of equations composing our transport problem. Section \ref{sec::Sn_Solution_Iterative} details the iterative procedures used to solve the transport problem in energy and angle, and Section \ref{sec::Sn_Solution_Spatial} then describes how we solve the spatial portion of the problem for a single energy/angle iteration.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Iterative Procedures
 \subsection{Angle and Energy Iteration Procedures}
 \label{sec::Sn_Solution_Iterative}
 
-The fully discretized transport equation has an angular flux solution, ${\bf \Psi}$, with dimensionality of $(G \text{x} M \text{x} N_{dof})$. The angular flux moments, ${\bf \Phi}$, have dimensionality of $(G \text{x} N_{mom} \text{x} N_{dof})$. Depending on the necessary fidelity of the problem, the full phase-space of the solution can become extremely large to solve. We can have {\em billions} of total unkowns to solve for if we simply have $N_{dof} \approx O(10^6)$, $M \approx O(10^2)$, and $G \approx O(10^1)$. 
+The fully discretized transport equation has an angular flux solution, ${\bf \Psi}$, with dimensionality of $(G \text{x} M \text{x} N_{dof})$. The angular flux moments, ${\bf \Phi}$, have dimensionality of $(G \text{x} N_{mom} \text{x} N_{dof})$. Depending on the necessary fidelity of the problem, the full phase-space of the solution can become extremely large to solve. We can have {\em billions} of total unkowns to solve for if we simply have $N_{dof} \approx O(10^6)$, $M \approx O(10^2)$, and $G \approx O(10^1)$. These orders of number of unknowns in space, angle, and energy are of reasonable size for 3D transport problems.
 
 In theory, if we had the computer memory, we could construct a left-hand-side matrix of dimensionality $(G \text{x} M \text{x} N_{dof})$x$(G \text{x} M \text{x} N_{dof})$ with a corresponding right-hand-side vector of dimensionality $(G \text{x} M \text{x} N_{dof})$x1, we could then directly solve for the full phase-space angular flux solution at once. However, because the dimensional space of the unknowns can rapidly grow and become to large for hardware memory, transport problems have traditionally been solved iteratively. We now detail the procedures that we will employ to iteratively obtain the phase-space solution in energy and angle.
 
@@ -817,7 +901,9 @@ One simple method to invert $({\bf I} - {\bf T})$ of Eq. (\ref{eq::Sn_full_sol_m
 \subsection{Spatial Solution Procedures}
 \label{sec::Sn_Solution_Spatial}
 
-Section \ref{sec::Sn_Solution_Iterative} presented the methodology that we will employ to iteratively converge our transport solutions in energy and angle (flux moments). Both richardson iteration and GMRES were presented as methods that can invert the $({\bf I} - {\bf T})$ operator. In both of these iterative methods, the common operation of interest is the inversion of the loss operator (${\bf L}$). There are different techniques that could be used to perform this operation, including serveral matrix-dependent and matrix-free methodologies. For this work, we will utilize the full-domain transport sweep as we outline next in Section \ref{sec::Sn_Solution_Spatial_Sweeping}.
+Section \ref{sec::Sn_Solution_Iterative} presented the methodology that we will employ to iteratively converge our transport solutions in energy and angle (flux moments). Both richardson iteration and GMRES were presented as methods that can invert the $({\bf I} - {\bf T})$ operator. In both of these iterative methods, the common operation of interest is the inversion of the loss operator (${\bf L}$). There are different techniques that could be used to perform this operation, including serveral matrix-dependent and matrix-free methodologies. 
+
+For this work, the loss operator inversion on some unstructured mesh, $\mathbb{T}_h$, will be performed by use of the full-domain transport sweep as outlined next in Section \ref{sec::Sn_Solution_Spatial_Sweeping}. We will generate our 2D and 3D polytope meshes by two different methods: 1) Voronoi mesh generation in Section \ref{sec::Sn_Solution_Spatial_Voronoi} and 2) adaptive mesh refinement in Section \ref{sec::Sn_Solution_Spatial_AMR}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - Transport Sweeping
@@ -845,6 +931,13 @@ The full-domain transport sweep is a beneficial matrix-free scheme because of th
 \caption[blah]{blah.}
 \label{fig::Sn_Solution_Spatial_Sweeping_sweepWcycle}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSubSection - Voronoi
+\subsubsection{Polytope Grids Formed from Voronoi Mesh Generation}
+\label{sec::Sn_Solution_Spatial_Voronoi}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - AMR
