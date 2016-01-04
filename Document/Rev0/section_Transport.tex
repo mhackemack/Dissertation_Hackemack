@@ -253,7 +253,7 @@ At this point, one may wonder why we have alterred the scattering operator so th
 \label{fig::Sn_Num_Sph_Harm_Moments}
 \end{figure}
 
-Up to this point, we have only presented the methodology to express our source terms with expansions of the spherical harmonics functions. Next, we describe the second portion of our angular discretization by deriving the standard $S_N$ equations using a collocation technique. We begin by choosing a set of $M$ distinct points and weights to form a quadrature set in angular space: $\{  \vec{\Omega}_m, w_m \}_{m=1}^M$. We will give further details about the required characteristics of this quadrature set as well as a couple of common options a little later. Using this quadrature set, we can further define the a trial space for the angular flux,
+Up to this point, we have only presented the methodology to express our source terms with expansions of the spherical harmonics functions. Next, we describe the second portion of our angular discretization by deriving the standard $S_N$ equations using a collocation technique. We begin by choosing a set of $M$ distinct points and weights to form a quadrature set in angular space: $\{  \vec{\Omega}_m, w_m \}_{m=1}^M$. We will give further details about the required characteristics of this quadrature set as well as a couple of common options a little later. Using this quadrature set, we can further define a trial space for the angular flux,
 
 \begin{equation}
 \label{eq::Sn_ang_flux_basis}
@@ -316,7 +316,7 @@ Equation (\ref{eq::Sn_trans_eq_angle_disc_FINAL}) represents the transport equat
 \item The odd angular moments sum to $\vec{0}$: $\sum\displaylimits_m w_m \left( \vec{\Omega}_m  \right)^n =  \vec{0}$ ($n=1,3,5,...$).
 \item $\sum\displaylimits_m w_m  \vec{\Omega}_m \vec{\Omega}_m = \frac{4 \pi}{3} \mathbb{I}  $, where $\mathbb{I}$ is the identity tensor.
 \item The points and weights are symmetric about the primary axes in angular space. 
-\item The points and weights also need to have symmetry about the problem domain boundary (this is not an issue if the domain is a rectangle in 2D or an orthogonal parallelepiped in 3D). This point is described in greater detail in Section \ref{sec::Sn_BC}.
+\item The points and weights also need to have symmetry about the problem domain boundary (this is not an issue if the domain is a rectangle in 2D or an orthogonal parallelepiped in 3D). This point is important for reflecting boundary conditions and is described in greater detail in Section \ref{sec::Sn_BC}.
 \end{enumerate}
 
 \noindent Point 4 requires some additional explanation. In 1 dimension, this corresponds to symmetry about the point 0 on the interval $[-1, 1]$. In 2 dimensions, this corresponds to quadrant-to-quadrant symmetry about the x-y primary axes of the unit circle. In 3 dimensions, this corresponds to octant-to-octant symmetry about the x-y-z primary axes of the unit sphere. 
@@ -369,7 +369,7 @@ From these properties, especially property 4, our 2D and 3D quadrature sets can 
 \label{tab::Sn_3D_octant_mapping}
 \end{table}
 
-We conclude our discussion of angular discretizations by presenting two common angular quadrature sets that will be employed in this dissertation work. Section \ref{sec::Sn_Angle_LS} presents the Level Symmetric (LS) quadrature set and Section \ref{sec::Sn_Angle_PGLC} presents the Product Gauss-Legendre-Chebyshev (PGLC) quadrature set. Both of these quadrature sets can be formed from the procedure outlined before: form the primary octant and then map as appropriate.
+We conclude our discussion of angular discretizations by presenting two common angular quadrature sets that will be employed in this dissertation work. Section \ref{sec::Sn_Angle_LS} presents the Level Symmetric (LS) quadrature set and Section \ref{sec::Sn_Angle_PGLC} presents the Product Gauss-Legendre-Chebyshev (PGLC) quadrature set. Both of these quadrature sets can be formed from the procedure outlined before: form the primary octant and then map appropriately.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Level-Symmetric
@@ -667,12 +667,27 @@ We can now deal with the boundary fluxes, $\tilde{\Psi}_m$, by enforcing the ubi
 \end{aligned} .
 \end{equation} 
 
-\noindent We note that fluxes without the trace superscript are all within the cell. By completely defining our mathematical formulation for an arbitrary spatial cell, it is easy to see that the full set of equations to define our discretized solution space for a single angle and energy group comprises of a simple double integration loop. The full set of equations can be formed by looping over all spatial cells, $\mathcal{D} = \bigcup_{K \in \mathbb{T}_h} K$, while further looping over all faces within each cell, $\partial \mathcal{D}_K = \bigcup_{ f \in N_f^K} f$. Section \ref{sec::Sn_Solution} will further detail how all the DGFEM equations are formed along with efficient solution methods. We conclude this section by defining the elementary matrix terms for a given cell as follows.
+\noindent We note that fluxes without the trace superscript are all within the cell. By completely defining our mathematical formulation for an arbitrary spatial cell, it is easy to see that the full set of equations to define our discretized solution space for a single angle and energy group comprises of a simple double integration loop. The full set of equations can be formed by looping over all spatial cells, $\mathcal{D} = \bigcup_{K \in \mathbb{T}_h} K$, while further looping over all faces within each cell, $\partial \mathcal{D}_K = \bigcup_{ f \in N_f^K} f$. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Convergence
+\subsection{Convergence Rates of the DGFEM $S_N$ Equation}
+\label{sec::Sn_Spatial_Convergence}
+
+This double integration loop allows us to write the variational form for the one-group $S_N$ equation. We do this by taking Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK_complete}), performing another integration-by-parts on the streaming term, mulitplying by the angular weight, $w_m$, and summing over all elements and all angular directions. 
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Elementary
+\subsection{Elementary Matrices on an Arbitrary Spatial Cell}
+\label{sec::Sn_Spatial_Matrices}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Mass
-\subsection{Elementary Mass Matrices}
-\label{sec::Sn_Spatial_Mass}
+\subsubsection{Elementary Mass Matrices}
+\label{sec::Sn_Spatial_Matrices_Mass}
 
 In the spatially discretized equations presented in Section \ref{sec::Sn_Spatial}, there are several reaction terms that appear with the form: $\Big( \sigma  b_m , \Psi_m  \Big)_K$ for a given angular direction, $m$, and for a spatial cell, $K$. In FEM analysis these reaction terms are ubiquitously referred to as the mass matrix terms \cite{zeinkiewicz2005finite,akin1982application}. For cell $K$, we define the elementary mass matrix, ${\bf M}$ as
 
@@ -714,8 +729,8 @@ M_{i,j,K} =  \int_K b_i \, b_j .
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Streaming
-\subsection{Elementary Streaming Matrices}
-\label{sec::Sn_Spatial_Streaming}
+\subsubsection{Elementary Streaming Matrices}
+\label{sec::Sn_Spatial_Matrices_Streaming}
 
 Next, we will consider the streaming term that has the form: $ \Big( \vec{\Omega}_m \cdot \vec{\nabla}  b_m , \Psi_m  \Big)_K$ for a given angular direction, $m$, and for a spatial cell, $K$. $\vec{\nabla} $ is the gradient operator in physical space. It has the form of $\vec{\nabla} = \left[ \frac{d}{dx} \right]$ in 1 dimension, the form of $\vec{\nabla} = \left[ \frac{\partial}{\partial x} , \frac{\partial}{\partial y} \right]$ in 2 dimensions, and the form of $\vec{\nabla} = \left[ \frac{\partial}{\partial x} , \frac{\partial}{\partial y} , \frac{\partial}{\partial z} \right]$ in 3 dimensions. Since for every cell, the streaming term is applied for all $M$ angles in the angular discretization, we define the analytical elementary streaming matrix:
 
@@ -757,8 +772,8 @@ Just like the elementary mass matrix, we can use the same spatial quadrature set
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Surface
-\subsection{Elementary Surface Matrices}
-\label{sec::Sn_Spatial_Surface}
+\subsubsection{Elementary Surface Matrices}
+\label{sec::Sn_Spatial_Matrices_Surface}
 
 Finally, the last terms to consider of the discretized transport equation are those found on the faces of the cell boundary: $  \vec{\Omega}_m \cdot  \Big<  \vec{n} \, b_m, \Psi_m  \Big>_{\partial K}$. These terms are analagous to the cell mass matrix but are computed on the cell boundary with dimensionality $(d-1)$. Analyzing a single face, $f$, in cell $K$, the analytical surface matrix is of the form,
 
