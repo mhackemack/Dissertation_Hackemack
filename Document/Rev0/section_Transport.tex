@@ -40,7 +40,7 @@ These assumptions lead to the first order form of the Boltzmann Transport Equati
 \section{The Neutron Transport Equation}
 \label{sec::Sn_neut}
 
-The time-dependent neutron angular flux, $\Psi (\vec{r}, E, \vec{\Omega}, t)$, at spatial position $\vec{r}$, with energy $E$ moving in direction $\vec{\Omega}$ and at time $t$, is defined within an open, convex spatial domain $\mathcal{D}$, with boundary, $\partial \mathcal{D}$ by the general neutron transport equation:
+The time-dependent neutron angular flux, $\Psi (\vec{r}, E, \vec{\Omega}, t)$, at spatial position $\vec{r}$, with energy $E$ moving in direction $\vec{\Omega}$ and at time $t$, is defined within an open, convex spatial domain $\mathcal{D}$, with boundary, $\partial \mathcal{D}$, by the general neutron transport equation:
 
 
 \begin{equation}
@@ -281,7 +281,7 @@ Up to this point, we have only presented the methodology to express our source t
 \Psi_m = \Psi (\vec{\Omega}_m).
 \end{equation}
 
-Next, we substitute Eq. (\ref{eq::Sn_ang_flux_basis}) into Eq. (\ref{eq::Sn_Angle_simple_trans_eq_w_moments_trunc}), drop the external source for clarity, and collocate at the interpolation (quadrature) points,
+Next, we substitute Eq. (\ref{eq::Sn_ang_flux_basis}) into Eq. (\ref{eq::Sn_Angle_simple_trans_eq_w_moments_trunc}), drop the external source for clarity, and collocate at the ($k=1,...,M$) interpolation (quadrature) points,
 
 \begin{equation}
 \label{eq::Sn_Angle_simple_trans_eq_w_ang_basis}
@@ -309,19 +309,19 @@ m=1,...,M
 \end{aligned} .
 \end{equation}
 
-Equation (\ref{eq::Sn_trans_eq_angle_disc_FINAL}) represents the transport equation that has been discretized into $M$ separate equations in angle (for 1 energy group and no spatial discretization). Up to this point, we have simply stated that there is some angular quadrature set of size $M$ that will satisfy some conditions of the solution, but we have not explicitly stated these conditions. For this work we will require our angular quadrature set to maintain the following properties:
+Equation (\ref{eq::Sn_trans_eq_angle_disc_FINAL}) represents the transport equation that has been discretized into $M$ separate equations in angle (for 1 energy group and no spatial discretization). Up to this point, we have simply stated that there is some angular quadrature set composed of $M$ directions and weights that will satisfy some conditions of the solution, but we have not explicitly stated these conditions. For this work we will require our angular quadrature set to maintain the following properties:
 
 \begin{enumerate}
-\item The weights sum to $4 \pi$: $\sum\displaylimits_m w_m = 4 \pi$.
+\item The weights can sum to 1 by some normalization procedure: $\sum\displaylimits_m w_m = 1$.
 \item The odd angular moments sum to $\vec{0}$: $\sum\displaylimits_m w_m \left( \vec{\Omega}_m  \right)^n =  \vec{0}$ ($n=1,3,5,...$).
-\item $\sum\displaylimits_m w_m  \vec{\Omega}_m \vec{\Omega}_m = \frac{4 \pi}{3} \mathbb{I}  $, where $\mathbb{I}$ is the identity tensor.
+\item $\sum\displaylimits_m w_m  \vec{\Omega}_m \vec{\Omega}_m = \frac{1}{3} \mathbb{I}  $, where $\mathbb{I}$ is the identity tensor.
 \item The points and weights are symmetric about the primary axes in angular space. 
 \item The points and weights also need to have symmetry about the problem domain boundary (this is not an issue if the domain is a rectangle in 2D or an orthogonal parallelepiped in 3D). This point is important for reflecting boundary conditions and is described in greater detail in Section \ref{sec::Sn_BC}.
 \end{enumerate}
 
 \noindent Point 4 requires some additional explanation. In 1 dimension, this corresponds to symmetry about the point 0 on the interval $[-1, 1]$. In 2 dimensions, this corresponds to quadrant-to-quadrant symmetry about the x-y primary axes of the unit circle. In 3 dimensions, this corresponds to octant-to-octant symmetry about the x-y-z primary axes of the unit sphere. 
 
-From these properties, especially property 4, our 2D and 3D quadrature sets can be constructed in a simple and consistent manner (1D quadrature sets have different construction and our work does not include them). For both 2D and 3D problems, we can generate a subset of the quadrature points and weights on a single octant of the unit sphere, where each quadrature point in this subset has the form: $\vec{\Omega}_1 = [\mu_1, \eta_1 , \xi_1]$ (the `1' subscript corresponds to the primary octant). If we are solving a 2D problem, we would then project the quadrature points onto the unit circle so that they have the form: $\vec{\Omega}_1 = [\mu_1, \eta_1 ]$ (we can then view the primary octant as the primary quadrant). Once we have defined the quadrature points and weights for the primary quadrant or octant, we can then directly calculate the remainder of the quadrature set by mapping to the other quadrants or octants. Table \ref{tab::Sn_2D_octant_mapping} presents the mapping from the primary quadrant to the other 3 quadrants for 2D problems. Table \ref{tab::Sn_3D_octant_mapping} presents the mapping from the primary octant to the other 7 octants for 3D problems.
+From these properties, especially property 4, our 2D and 3D quadrature sets can be constructed in a simple and consistent manner (1D quadrature sets have different construction and our work does not include them). For both 2D and 3D problems, we can generate a subset of the quadrature points and weights on a single octant of the unit sphere, where each quadrature point in this subset has the form: $\vec{\Omega}_1 = [\mu_1, \eta_1 , \xi_1]$ (the `1' subscript corresponds to the primary octant). If we are solving a 2D problem, we would then project the quadrature points onto the $(0 < \theta < \frac{\pi}{2})$ portion of the unit circle so that they have the form: $\vec{\Omega}_1 = [\mu_1, \eta_1 ]$ (we can then view the primary octant as the primary quadrant). Once we have defined the quadrature points and weights for the primary quadrant or octant, we can then directly calculate the remainder of the quadrature set by mapping to the other quadrants or octants. Table \ref{tab::Sn_2D_octant_mapping} presents the mapping from the primary quadrant to the other 3 quadrants for 2D problems. Table \ref{tab::Sn_3D_octant_mapping} presents the mapping from the primary octant to the other 7 octants for 3D problems.
 
 \begin{table}[hbt]
 \centering
@@ -376,7 +376,18 @@ We conclude our discussion of angular discretizations by presenting two common a
 \subsection{Level Symmetric Quadrature Set}
 \label{sec::Sn_Angle_LS}
 
-The first quadrature set we present is the common Level Symmetric set \cite{lewis1984computational}.
+The first quadrature set we present is the common Level Symmetric set that has had extensive use in the radiation transport community \cite{lewis1984computational,carlson1968computing}. Its defining characteristic is the restriction that it is rotationally symmetric (invariant) about all three axes of the primary octant. This leads to a two-fold additional set of restrictions: 1) once the location of the first ordinate is selected, then all other ordinates are known; and 2) the weights can become negative. This negativity of the weights can be problematic and lead to unphysical solutions if the angular flux is not sufficiently smooth.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/sec_Sn/Ang_Quad_Coord_Sys.png}
+\caption[Angular Coordinate System]{Angular coordinate system for the direction $\vec{\Omega}$.}
+\label{fig::Ang_Coord_Sys}
+\end{figure}
+
+We begin our description of the LS quadrature by analyzing the angular coordinate system 
+
+We conclude this discussion of the LS quadrature set with some examples. Figure \ref{fig::Sn_Angle_LS_Quads_3D} provides a visual depiction of the LS nodes and weights in the primary octant for varying orders. The magnitude of the weights are characterized by the relative size of the nodes. Figure \ref{fig::Sn_Angle_LS_Quads_2D} then provides the projection of the 3D LS quadrature set onto to the unit circle for various orders for use in 2D problems. We have included the full quadrature set in this image including the quadrant-to-quadrant mapping. 
 
 \begin{figure}
 \centering
@@ -432,7 +443,7 @@ The first quadrature set we present is the common Level Symmetric set \cite{lewi
 		\includegraphics[width=0.92\textwidth]{figures/sec_Sn/LS16_2D.eps}
 		\caption{}
 	\end{subfigure}
-\caption[2D Level-Symmetric angular quadrature set]{Projection of the 3D Level-Symmetric angular quadrature set with orders (a) 2, (b) 4, (c) 8, and (d) 16 projected onto the x-y space on the unit circle.}
+\caption[2D Level-Symmetric angular quadrature set]{Projection of the 3D Level-Symmetric angular quadrature set with orders (a) 2, (b) 4, (c) 8, and (d) 16 onto the x-y space on the unit circle.}
 \label{fig::Sn_Angle_LS_Quads_2D}
 \end{figure}
 
@@ -441,7 +452,7 @@ The first quadrature set we present is the common Level Symmetric set \cite{lewi
 \subsection{Product Gauss-Legendre-Chebyshev Quadrature Set}
 \label{sec::Sn_Angle_PGLC}
 
-The second angular quadrature set we will present is a Product Gauss-Legendre-Chebyshev (PGLC) set. It is formed by the product-wise multiplication of a Gauss-Chebyshev quadrature in the azimuthal direction and a Gauss-Legendre quadrature in the polar direction. It has the following key differences from the Level Symmetric set:
+The second angular quadrature set we will present is a Product Gauss-Legendre-Chebyshev (PGLC) set \cite{abu1977compatible}. It is formed by the product-wise multiplication of a Gauss-Chebyshev quadrature in the azimuthal direction and a Gauss-Legendre quadrature in the polar direction. It has the following key differences from the Level Symmetric set:
 
 \begin{itemize}
 	\item Does not have $90^o$ rotational invariance within the primary octant; still maintains octant-to-octant symmetry however;
@@ -452,7 +463,7 @@ The second angular quadrature set we will present is a Product Gauss-Legendre-Ch
 
 From the listed differences, we can already discern some clear advantages and disadvantages from a fully-symmetric quadrature set like LS. If a high number of angles are required for a problem, then negative weights do not arise. This is beneficial for transport problems with significant discontinuities. Also, the quadrature directions can be preferentially distributed in the primary octant if required for a particular problem. For example, if the transport solution is smoothly varying in the polar direction and not in the azimuthal direction, then we can specify a larger number of quadrature points in the azimuthal direction, with much fewer points in the polar direction. However, this also highlights the fact that the quadrature weights are aligned with the polar level, which can lead to less accurate moment integrations for certain transport problems. 
 
-For this dissertation, we will use the following notation to define the product nature of the PGLC quadrature points: $S_{a}^{p}$. Here, $a$ and $p$ correspond to the number of azimuthal and polar directions in the primary octant, respectively. We demonstrate this definition in Figure \ref{fig::Sn_Angle_PGLC_Quads_3D} with several combinations of azimuthal and polar directions. Figure \ref{fig::Sn_Angle_PGLC_Quads_2D} then presents the projections of these quadrature sets onto the unit circle for use in 2D transport problems. Again, the size of the direction marker corresponds to the relative weight of quadrature point. One can clearly see that the weights vary on the polar levels and all azimuthal weights on a given polar level are constant.
+For this dissertation, we will use the following notation to define the product nature of the PGLC quadrature points: $S_{a}^{p}$. Here, $a$ and $p$ correspond to the number of azimuthal and polar directions in the primary octant, respectively. We demonstrate this definition in Figure \ref{fig::Sn_Angle_PGLC_Quads_3D} for the primary octant with several combinations of azimuthal and polar directions. Figure \ref{fig::Sn_Angle_PGLC_Quads_2D} then presents the projections of these quadrature sets onto the unit circle for use in 2D transport problems. Again, the size of the direction marker corresponds to the relative weight of quadrature point. One can clearly see that the weights vary on the polar levels and all azimuthal weights on a given polar level are constant.
 
 \begin{figure}
 \centering
@@ -532,7 +543,7 @@ For this dissertation, we will use the following notation to define the product 
 		\includegraphics[width=0.85\textwidth]{figures/sec_Sn/PGLC8_8_2D.eps}
 		\caption{}
 	\end{subfigure}
-\caption[2D Product Gauss-Legendre-Chebyshev angular quadrature set]{Projection of the 3D Product Gauss-Legendre-Chebyshev angular quadrature set with orders: (a) S$_2^2$, (b) S$_2^4$, (c) S$_4^2$, (d) S$_4^4$, (e) S$_6^6$, and (f) S$_8^8$ projected onto the x-y space on the unit circle.}
+\caption[2D Product Gauss-Legendre-Chebyshev angular quadrature set]{Projection of the 3D Product Gauss-Legendre-Chebyshev angular quadrature set with orders: (a) S$_2^2$, (b) S$_2^4$, (c) S$_4^2$, (d) S$_4^4$, (e) S$_6^6$, and (f) S$_8^8$ onto the x-y space on the unit circle.}
 \label{fig::Sn_Angle_PGLC_Quads_2D}
 \end{figure}
 
