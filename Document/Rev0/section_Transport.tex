@@ -685,7 +685,7 @@ We can now deal with the boundary fluxes, $\tilde{\Psi}_m$, by enforcing the ubi
 \subsection{Convergence Rates of the DGFEM $S_N$ Equation}
 \label{sec::Sn_Spatial_Convergence}
 
-This double integration loop allows us to write the variational form for the one-group $S_N$ equation. We do this by taking Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK_complete}), performing another integration-by-parts on the streaming term, mulitplying by the angular weight, $w_m$, and summing over all elements and all angular directions. 
+We do this by taking Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK_complete}), performing another integration-by-parts on the streaming term, mulitplying by the angular weight, $w_m$, and summing over all elements and all angular directions. 
 
 
 
@@ -858,6 +858,8 @@ The fully discretized transport equation has an angular flux solution, ${\bf \Ps
 
 In theory, if we had the computer memory, we could construct a left-hand-side matrix of dimensionality $(G \text{x} M \text{x} N_{dof})$x$(G \text{x} M \text{x} N_{dof})$ with a corresponding right-hand-side vector of dimensionality $(G \text{x} M \text{x} N_{dof})$x1, we could then directly solve for the full phase-space angular flux solution at once. However, because the dimensional space of the unknowns can rapidly grow and become to large for hardware memory, transport problems have traditionally been solved iteratively. We now detail the procedures that we will employ to iteratively obtain the phase-space solution in energy and angle.
 
+Because the only coupling that arises between the set of multigroup $S_N$ equations is between the energy groups in the scattering source, our iterative procedures principally lie in the energy domain. 
+
 \begin{figure}
 \centering
 	\begin{subfigure}[b]{0.58\textwidth}
@@ -912,7 +914,7 @@ One simple method to invert $({\bf I} - {\bf T})$ of Eq. (\ref{eq::Sn_full_sol_m
 \begin{equation}
 \label{eq::Sn_si_iter}
 \begin{aligned}
- {\bf \Psi}^{(\ell+1)} = {\bf L}^{-1}  {\bf M} {\bf \Sigma} {\bf \Phi}^{(\ell)} + {\bf L}^{-1}  {\bf Q} \\
+ {\bf \Psi}^{(\ell+1)} = {\bf L}^{-1} \left(  {\bf M} {\bf \Sigma} {\bf \Phi}^{(\ell)} +  {\bf Q} \right) \\
 {\bf \Phi}^{(\ell+1)} =  {\bf D} {\bf \Psi}^{(\ell+1)}
 \end{aligned}
 \end{equation}
@@ -940,8 +942,10 @@ The full-domain transport sweep is a beneficial matrix-free scheme because of th
 
 \begin{itemize}
 \item The number of sweep iterations does not grow with increasing problem size or processor counts. This is in contrast with partial-domain sweeping like {\em parallel block jacobi} (PBJ) \cite{zerr2011solution}.
-\item Does not require the formation of $M$ separate matrices for each of the angular directions. 
-\item 
+\item The iterative solver does need to build any matrices explicitly but only requires the action of ${\bf L}^{-1}$.
+\item Does not require the formation of $M$ separate matrices for each of the angular directions (for 1 energy group). This is both memory and computationaly intensive for any problems of appreciable size.
+\item The matrix-vector operations on a single element within a transport sweep can be efficiently performed depending on the group set structure and the angle aggregation as outlined in Section \ref{sec::Sn_Solution_Iterative}.
+\item The matrix-free transport sweep favors higher-order DGFEM schemes since they will yield more processor work per element with less memory caching (which is the current bottleneck with massively-parallel calculations).
 \end{itemize}
 
 \begin{figure}
@@ -1010,7 +1014,7 @@ The full-domain transport sweep is a beneficial matrix-free scheme because of th
 \eta_K^r \geq \alpha \max\displaylimits_{K' \in \mathbb{T}_h^r} \left(  \eta_{K'}^{r} \right)
 \end{equation}
 
-\noindent where $\alpha$ is a user-defined value $(0,1)$. This refinement criterion has a simple meaning. If, for example, $\alpha = 0.2$, then a cell will be refined if its error estimate is greater than 20\% of the cell with the largest error estimate. This does not necessarily mean that 80\% of the mesh cells will be refined at level $r$. Instead, the criterion simply states that any cell above a particular threshold will be refined. This means that it is theoretically possible for the extreme cases of 1 or all cells being refined at a particular refinement cycle.
+\noindent where $\alpha$ is a user-defined value $(0,1)$. This refinement criterion has a simple meaning. If, for example, $\alpha = 0.2$, then a cell will be refined if its error estimate is greater than 20\% of the cell with the largest error estimate. This does not necessarily mean that 80\% of the mesh cells will be refined at level $r$. Instead, the criterion simply states that any cell above a particular threshold will be refined. This means that it is theoretically possible for the extreme cases of 1 or all cells being refined at a particular refinement cycle. The first extreme case could arise with a single spatial cell having a strong solution discontinuity stemming from a strong localized source. The second extreme case could arise when the intercell solution jumps are about equivalent stemming from an incredibly smooth discretized solution at that particular refinement cycle.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
