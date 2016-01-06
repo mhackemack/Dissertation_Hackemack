@@ -385,14 +385,14 @@ The first quadrature set we present is the common Level Symmetric set that has h
 \label{fig::Ang_Coord_Sys}
 \end{figure}
 
-We begin our description of the LS quadrature by analyzing the 3D angular coordinate system for a particular direction, $\vec{\Omega}$, as depicted in Figure \ref{fig::Ang_Coord_Sys}. The angular direction, $\vec{\Omega} = [\vec{\Omega}_x, \vec{\Omega}_y, \vec{\Omega}_z]$, is typically described with its directional cosines: $\mu$, $\eta$, and $\xi$. These are described by the angles $\theta$ and $\gamma$ of the coordinate system and allow us to give a functional form for each direction component:
+We begin our description of the LS quadrature by analyzing the 3D angular coordinate system for a particular direction, $\vec{\Omega}$, as depicted in Figure \ref{fig::Ang_Coord_Sys}. The angular direction, $\vec{\Omega} = [\vec{\Omega}_x, \vec{\Omega}_y, \vec{\Omega}_z]$, is typically described with its directional cosines: $\mu$, $\eta$, and $\xi$. These are described by the angles $\theta$ and $\gamma$ of the coordinate system, which are the azimuthal and polar angles, respectively, and allow us to give a functional form for each direction component:
 
 \begin{equation}
 \label{eq::Sn_Angle_angle_components}
 \begin{aligned}
 \vec{\Omega}_x =& \mu = \cos (\theta) \sin (\gamma)  =\cos (\theta)  \sqrt{1 - \xi^2}  \\
-\vec{\Omega}_x =& \eta = \sin (\theta) \sin (\gamma)  =\sin (\theta)   \sqrt{1 - \xi^2}   \\
-\vec{\Omega}_y =& \xi = \cos (\gamma)
+\vec{\Omega}_y =& \eta = \sin (\theta) \sin (\gamma)  =\sin (\theta)   \sqrt{1 - \xi^2}   \\
+\vec{\Omega}_z =& \xi = \cos (\gamma)
 \end{aligned} .
 \end{equation}
 
@@ -402,6 +402,32 @@ We begin our description of the LS quadrature by analyzing the 3D angular coordi
 \label{eq::Sn_Angle_angle_cos_relation}
 \mu^2 + \eta^2 + \xi^2 = 1 .
 \end{equation}
+
+
+We next specify the order of the quadrature set, $N$, which we restrict to only positive even integers. Each direction cosine ($\mu$, $\eta$, and $\xi$) then contains exactly $N/2$ positive values with respect to each of the three axes. This leads to exactly $\frac{N(N+2)}{8}$ total angular directions in the primary octant. Because of the rotational invariance of the quadrature set, no ordinate axis receives preferential clustering of the nodes. This means that the index value of each ordinate is identical: 
+
+\begin{equation}
+\label{eq::Sn_Angle_LS_index_values}
+\mu_i = \eta_i = \xi_i, \qquad i \in (1,N/2)
+\end{equation}
+
+As previously stated, once the location of the first ordinate, $\mu_1$, is selected, then the remaining are directly known. However, to maintain the relation of Eq. (\ref{eq::Sn_Angle_angle_cos_relation}), this first ordinate has restrictions placed on it. It must maintain a positive value: $\mu_1^2 \in (0, 1/3]$. Also, for the $S2$ set (N=2), there is exactly one direction cosine with no degrees of freedom. This requires that $\mu_1^2 = 1/3$ for the $S2$ case.
+
+With $\mu_1$ now selected, we can consider an ordinate set [$\mu_i, \eta_j, \xi_k $], where $i+j+k = N/2 + 2$. To maintain the appropriate Euclidean norm, a recursion relation can be derived (which we will not do for brevity):
+
+\begin{equation}
+\label{eq::Sn_Angle_LS_ord_det}
+\mu_i^2 = \mu_{i-1}^2 + \Delta
+\end{equation}
+
+\noindent where the spacing constant, $\Delta$, has the form:
+
+\begin{equation}
+\label{eq::Sn_Angle_LS_ord_det_constant}
+ \Delta = \frac{2 (1-3 \mu_1^2)}{N-2}. 
+\end{equation}
+
+\noindent Based on this recursion form, we can see that if $\mu_1^2$ is close to 0, then the ordinates will be clustered around the poles of the primary octant. Likewise, if $\mu_1^2$ is close to $1/3$, then the ordinates will be clustered away from the poles. For this work, we choose to select values of $\mu_1$ in conformance with the $LQ_N$ quadrature set because they can exactly integrate the polynomials of the Legendre expansion of the scattering cross sections \cite{carlson1971}. We finally note that the weights of the $LQ_N$ set become negative for $N \geq 20$.
 
 We conclude this discussion of the LS quadrature set with some examples. Figure \ref{fig::Sn_Angle_LS_Quads_3D} provides a visual depiction of the LS nodes and weights in the primary octant for varying orders. The magnitude of the weights are characterized by the relative size of the nodes. Figure \ref{fig::Sn_Angle_LS_Quads_2D} then provides the projection of the 3D LS quadrature set onto to the unit circle for various orders for use in 2D problems. We have included the full quadrature set in this image including the quadrant-to-quadrant mapping. 
 
@@ -471,7 +497,7 @@ We conclude this discussion of the LS quadrature set with some examples. Figure 
 The second angular quadrature set we will present is a Product Gauss-Legendre-Chebyshev (PGLC) set \cite{abu1977compatible}. It is formed by the product-wise multiplication of a Gauss-Chebyshev quadrature in the azimuthal direction and a Gauss-Legendre quadrature in the polar direction. It has the following key differences from the Level Symmetric set:
 
 \begin{itemize}
-	\item Does not have $90^o$ rotational invariance within the primary octant; still maintains octant-to-octant symmetry however;
+	\item Does not have $90^o$ rotational invariance within the primary octant; we still maintain octant-to-octant symmetry via mapping however;
 	\item Has more control over the placement of the anglular directions within the primary octant;
 	\item Quadrature weights are aligned with the polar level;
 	\item Has strictly positive weights for all polar and azimuthal combinations.
@@ -479,7 +505,32 @@ The second angular quadrature set we will present is a Product Gauss-Legendre-Ch
 
 From the listed differences, we can already discern some clear advantages and disadvantages from a fully-symmetric quadrature set like LS. If a high number of angles are required for a problem, then negative weights do not arise. This is beneficial for transport problems with significant discontinuities. Also, the quadrature directions can be preferentially distributed in the primary octant if required for a particular problem. For example, if the transport solution is smoothly varying in the polar direction and not in the azimuthal direction, then we can specify a larger number of quadrature points in the azimuthal direction, with much fewer points in the polar direction. However, this also highlights the fact that the quadrature weights are aligned with the polar level, which can lead to less accurate moment integrations for certain transport problems. 
 
-For this dissertation, we will use the following notation to define the product nature of the PGLC quadrature points: $S_{a}^{p}$. Here, $a$ and $p$ correspond to the number of azimuthal and polar directions in the primary octant, respectively. We demonstrate this definition in Figure \ref{fig::Sn_Angle_PGLC_Quads_3D} for the primary octant with several combinations of azimuthal and polar directions. Figure \ref{fig::Sn_Angle_PGLC_Quads_2D} then presents the projections of these quadrature sets onto the unit circle for use in 2D transport problems. Again, the size of the direction marker corresponds to the relative weight of quadrature point. One can clearly see that the weights vary on the polar levels and all azimuthal weights on a given polar level are constant.
+Because the PGLC quadrature set is formed by product-wise multiplication, we simply need to specify the component nodes and weights in both the azimuthal and polar directions to fully define all ordinates in the primary octant. The azimuthal direction, $\theta$, uses the positive range of the Gauss-Chebyshev quadrature set \cite{abramowitz1966handbook}. With the azimuthal direction restricted to its positive values in the primary octant, this corresponds to the upper-right portion of the unit circle: $\theta \in [0, \pi / 2]$. If we specify $A$ azimuthal directions for our quadrature set in the primary octant, then the azimuthal nodes and weights can be directly stated as 
+
+\begin{equation}
+\label{eq::Sn_Angle_GC_quad}
+\theta_m = \frac{2m - 1}{4A} \pi \qquad \text{and} \qquad w_m = \frac{\pi}{2 A} ,
+\end{equation}
+
+\noindent respectively. 
+
+For the polar direction, a Gauss-Legendre quadrature set is used \cite{abramowitz1964handbook}. Similar to the azimuthal direction, we restrict the integration of the polar direction to its positive values: $\xi \in (0,1)$. If we specify $P$ polar directions, then the cosine of the polar nodes, $\xi$, of our quadrature set are the positive roots of the $2P$-order Legendre polynomials taken over the inveral $[-1, 1]$. In this case, we simply discard the negative roots. The corresponding Legendre weights are given by the following formula,
+
+\begin{equation}
+\label{eq::Sn_Angle_PGLC_legendre_weights}
+w_n = \frac{2}{(1-\xi_n^2) (L_{2P}' (\xi_n))^2} ,
+\end{equation}
+
+\noindent where $ L_{2P}'$ is the derivative of the $2P$-order Legendre polynomial.
+
+With the azimuthal directions specified by Eq. (\ref{eq::Sn_Angle_GC_quad}) and the polar cosines specified by the Legendre polynomial roots, any ordinate can now be determined by the definition of the angular directions in Eq. (\ref{eq::Sn_Angle_angle_components}). The ordinate weights can be specified in a similar manner. From Eqs. (\ref{eq::Sn_Angle_GC_quad}) and (\ref{eq::Sn_Angle_PGLC_legendre_weights}), any ordinate weight, $w_{m,n}$, can be calculated by the pairwise products of the azimuthal and polar weights: $w_{m,n} = w_m w_n$. This means that we can specify the integral, $F$, of some function $f (\theta, \gamma)$ over the primary octant of the unit sphere,
+
+\begin{equation}
+\label{eq::Sn_Angle_PGLC_product_weights}
+F = \sum_{m=1}^{A} \sum_{n=1}^{P} w_m w_n  f(\theta_m , \gamma_n).
+\end{equation}
+
+For this dissertation, we will use the following notation to define the product nature of the PGLC quadrature points: $S_{A}^{P}$. Here, $A$ and $P$ correspond to the number of azimuthal and polar directions in the primary octant, respectively. We demonstrate this definition in Figure \ref{fig::Sn_Angle_PGLC_Quads_3D} for the primary octant with several combinations of azimuthal and polar directions. Figure \ref{fig::Sn_Angle_PGLC_Quads_2D} then presents the projections of these quadrature sets onto the unit circle for use in 2D transport problems. Again, the size of the direction marker corresponds to the relative weight of the quadrature point. One can clearly see that the weights vary on the polar levels and all azimuthal weights on a given polar level are constant.
 
 \begin{figure}
 \centering
@@ -826,7 +877,7 @@ Using the same notation as the cell-wise mass and streaming matrices, the local 
 
 \begin{equation}
 \label{eq::Sn_surface_matrix_array}
-\vec{{\bf F}}^{f,K} =   \left[
+\vec{{\bf F}}_{f,K} =   \left[
 \begin{array} {ccccc}
 	\int_f \vec{n} \, b_1 \, b_1  & \ldots & \int_f \vec{n} \, b_1 \, b_j  & \ldots & \int_f \vec{n} \, b_1 \, b_{N_K} \\
 	\vdots  &  & \vdots  &  & \vdots \\
