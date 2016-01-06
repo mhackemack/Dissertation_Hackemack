@@ -256,7 +256,14 @@ w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, 
 \subsection{Mean Value Basis Functions}
 \label{sec::BF_2DLinear_MV}
 
-At this point, we now introduce the first new polygonal basis set to be used for the transport equation: the {\em mean value coordinates}. 
+At this point, we now introduce the first new polygonal basis set for use with the transport equation: the {\em mean value coordinates} (MV) developed by Floater \cite{floater2003mean,hormann2006mean}. The original motivation behind the MV coordinates was to approximate harmonic maps on a polygon by a set of piecewise linear maps over a triangulation of the polygon for use in computer aided graphic design.
+
+\begin{equation}
+\label{eq::BF_MV_laplace}
+\nabla^2 u = 0 ,
+\end{equation}
+
+\noindent with $u(\vec{r}) = u_0$ constituting a piecewise linear function 
 
 \begin{equation}
 \label{eq::BF_MV_BF}
