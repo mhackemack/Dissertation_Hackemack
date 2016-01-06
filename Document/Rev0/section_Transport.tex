@@ -321,7 +321,7 @@ Equation (\ref{eq::Sn_trans_eq_angle_disc_FINAL}) represents the transport equat
 
 \noindent Point 4 requires some additional explanation. In 1 dimension, this corresponds to symmetry about the point 0 on the interval $[-1, 1]$. In 2 dimensions, this corresponds to quadrant-to-quadrant symmetry about the x-y primary axes of the unit circle. In 3 dimensions, this corresponds to octant-to-octant symmetry about the x-y-z primary axes of the unit sphere. 
 
-From these properties, especially property 4, our 2D and 3D quadrature sets can be constructed in a simple and consistent manner (1D quadrature sets have different construction and our work does not include them). For both 2D and 3D problems, we can generate a subset of the quadrature points and weights on a single octant of the unit sphere, where each quadrature point in this subset has the form: $\vec{\Omega}_1 = [\mu_1, \eta_1 , \xi_1]$ (the `1' subscript corresponds to the primary octant). If we are solving a 2D problem, we would then project the quadrature points onto the $(0 < \theta < \frac{\pi}{2})$ portion of the unit circle so that they have the form: $\vec{\Omega}_1 = [\mu_1, \eta_1 ]$ (we can then view the primary octant as the primary quadrant). Once we have defined the quadrature points and weights for the primary quadrant or octant, we can then directly calculate the remainder of the quadrature set by mapping to the other quadrants or octants. Table \ref{tab::Sn_2D_octant_mapping} presents the mapping from the primary quadrant to the other 3 quadrants for 2D problems. Table \ref{tab::Sn_3D_octant_mapping} presents the mapping from the primary octant to the other 7 octants for 3D problems.
+From these properties, especially property 4, our 2D and 3D quadrature sets can be constructed in a simple and consistent manner (1D quadrature sets have different construction and our work does not include them). For both 2D and 3D problems, we can generate a subset of the quadrature points and weights on a single octant of the unit sphere, where each quadrature point in this subset has the form: $\vec{\Omega} = [\mu, \eta , \xi]$ . If we are solving a 2D problem, we would then project the quadrature points onto the $(0 < \theta < \frac{\pi}{2})$ portion of the unit circle so that they have the form: $\vec{\Omega} = [\mu, \eta ]$ (we can then view the primary octant as the primary quadrant). Once we have defined the quadrature points and weights for the primary quadrant or octant, we can then directly calculate the remainder of the quadrature set by mapping to the other quadrants or octants. Table \ref{tab::Sn_2D_octant_mapping} presents the mapping from the primary quadrant to the other 3 quadrants for 2D problems. Table \ref{tab::Sn_3D_octant_mapping} presents the mapping from the primary octant to the other 7 octants for 3D problems. In these tables, the `1' subscript corresponds to those angles generated in the primary quadrant or octant.
 
 \begin{table}[hbt]
 \centering
@@ -385,7 +385,23 @@ The first quadrature set we present is the common Level Symmetric set that has h
 \label{fig::Ang_Coord_Sys}
 \end{figure}
 
-We begin our description of the LS quadrature by analyzing the angular coordinate system 
+We begin our description of the LS quadrature by analyzing the 3D angular coordinate system for a particular direction, $\vec{\Omega}$, as depicted in Figure \ref{fig::Ang_Coord_Sys}. The angular direction, $\vec{\Omega} = [\vec{\Omega}_x, \vec{\Omega}_y, \vec{\Omega}_z]$, is typically described with its directional cosines: $\mu$, $\eta$, and $\xi$. These are described by the angles $\theta$ and $\gamma$ of the coordinate system and allow us to give a functional form for each direction component:
+
+\begin{equation}
+\label{eq::Sn_Angle_angle_components}
+\begin{aligned}
+\vec{\Omega}_x =& \mu = \cos (\theta) \sin (\gamma)  =\cos (\theta)  \sqrt{1 - \xi^2}  \\
+\vec{\Omega}_x =& \eta = \sin (\theta) \sin (\gamma)  =\sin (\theta)   \sqrt{1 - \xi^2}   \\
+\vec{\Omega}_y =& \xi = \cos (\gamma)
+\end{aligned} .
+\end{equation}
+
+\noindent The direction cosines are related and necessarily must have a Euclidean norm of 1:
+
+\begin{equation}
+\label{eq::Sn_Angle_angle_cos_relation}
+\mu^2 + \eta^2 + \xi^2 = 1 .
+\end{equation}
 
 We conclude this discussion of the LS quadrature set with some examples. Figure \ref{fig::Sn_Angle_LS_Quads_3D} provides a visual depiction of the LS nodes and weights in the primary octant for varying orders. The magnitude of the weights are characterized by the relative size of the nodes. Figure \ref{fig::Sn_Angle_LS_Quads_2D} then provides the projection of the 3D LS quadrature set onto to the unit circle for various orders for use in 2D problems. We have included the full quadrature set in this image including the quadrant-to-quadrant mapping. 
 
