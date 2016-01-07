@@ -286,7 +286,7 @@ The final linearly-complete 2D basis functions that we will analyze in this work
 
 \begin{equation}
 \label{eq::BF_ME_BF}
-b_{j}^{ME} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})}
+b_{j}^{ME} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})} .
 \end{equation}
 
 \noindent where the maximum entropy weight function for vertex $j$, $w_j$, has the following definition:
@@ -296,7 +296,7 @@ b_{j}^{ME} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})}
 w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \kappa \cdot (\vec{x}_j - \vec{x}))
 \end{equation}
 
-\noindent In Eq. (\ref{eq::BF_ME_weights}), $m_j$ 
+\noindent In Eq. (\ref{eq::BF_ME_weights}), $m_j$ is called the prior distribution and is a key component of Bayesian inference \cite{kullback1951information,jaynes1963information}. In the context of Eq. (\ref{eq::BF_ME_weights}), the prior distribution $m_j$ can be viewed as a weight function associated with vertex $j$. This means that there is variability that one can employ for these weight functions. 
 
 \begin{equation}
 \label{eq::BF_ME_prior_funcs}
@@ -322,7 +322,18 @@ w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \kappa \cdot (\vec{x}_j - \vec{x}))
 \subsection{Summary of 2D Linear Basis Functions on Polygons}
 \label{sec::BF_2DLinear_Summary}
 
-
+\begin{table}
+\caption[Summary of the 2D polygonal basis functions]{Summary of the 2D coordinate systems used on polygons. }
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Basis Function & Dimension & Polytope Types & Integration & Direct/Iterative \\
+\hline \hline
+Wachspress	&2D/3D&	Convex&	Numerical	&Direct\\ \hline
+PWL&	1D/2D/3D&	Convex/Concave&	Analytical	&Direct\\ \hline
+Mean Value&	2D&	Convex/Concave&	Numerical	&Direct\\ \hline
+Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
+\end{tabular}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Quadratic Basis Functions
