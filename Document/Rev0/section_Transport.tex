@@ -33,7 +33,7 @@ For neutral particle transport, the following assumptions \cite{duderstadt1979tr
 	\item Particles do not experience any external force fields ({\em e.g.} gravity).
 \end{enumerate}
 
-These assumptions lead to the first order form of the Boltzmann Transport Equation, which we simply call the transport equation for brevity. The remainder of the chapter is layed out as follows. Section \ref{sec::Sn_neut} provides the general form of the neutron transport equation with some variants. Section \ref{sec::Sn_MG} describes how we discretize the transport equation in energy with the multigroup methodology and Section \ref{sec::Sn_Angle} presents the angular discretization via collocation. Section \ref{sec::Sn_BC} details which boundary conditions will be employed for our work. Section \ref{sec::Sn_Spatial} will conclude our discretization procedures in the spatial domain. Section \ref{sec::Sn_Solution} will present the iterative procedures used to converge our solution space. We then present concluding remarks for the chapter in Section \ref{sec::Sn_Conclusions}.
+These assumptions lead to the first order form of the Boltzmann Transport Equation, which we simply call the transport equation for brevity. The remainder of the chapter is outlined as follows. Section \ref{sec::Sn_neut} provides the general form of the neutron transport equation with some variants. Section \ref{sec::Sn_MG} describes how we discretize the transport equation in energy with the multigroup methodology and Section \ref{sec::Sn_Angle} presents the angular discretization via collocation. Section \ref{sec::Sn_BC} details which boundary conditions will be employed for our work. Section \ref{sec::Sn_Spatial} will conclude our discretization procedures in the spatial domain. Section \ref{sec::Sn_Solution} will present the iterative procedures used to converge our solution space. We then present concluding remarks for the chapter in Section \ref{sec::Sn_Conclusions}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Neutron Transport Equation
@@ -692,14 +692,14 @@ Next, we left-multiply Eq. (\ref{eq::Sn_trans_eq_simple_no_energy_groups}) by an
 
 \begin{equation}
 \label{eq::Sn_spatial_inner_products_cell}
- \Big( f, g \Big)_K \equiv \int_K f \, g \, d r
+ \Big( u, v \Big)_K \equiv \int_K u \, v \, d r
 \end{equation} 
 
 \noindent and
 
 \begin{equation}
 \label{eq::Sn_spatial_inner_products_face}
- \Big< f, g \Big>_f \equiv \int_f f \, g \, d s
+ \Big< u, v \Big>_f \equiv \int_f u \, v \, d s
 \end{equation}
 
 \noindent correspond to integrations over the cell and faces, respectively, where $dr \in \mathbb{R}^d$ is within the cell and $ds \in \mathbb{R}^{d-1}$ is along the cell boundary. We note that we will use this notation of the inner product for the remainder of the dissertation unless otherwise stated. We then separate the summation of the cell $K$ boundary integration terms into two different types: outflow boundaries ($\partial K^+ = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m > 0 \}$) and inflow boundaries ($\partial K^- = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m < 0 \}$). The inflow boundaries can further be separated into inflow from another cell: $\partial K^- \backslash \partial \mathcal{D} $; inflow from incident flux on the domain boundary: $\partial K^- \cap \partial \mathcal{D}^d $; and reflecting domain boundaries: $\partial K^- \cap \partial \mathcal{D}^r $. At this point, we note that the derivation can comprise an additional step by using Gauss' Divergence Theorem again on the streaming term. This is sometimes performed for radiation transport work so that mass matrix lumping can be performed, but we will not do so here. Therefore, with the cell boundary terminology as proposed, Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK}) can be written into the following form:
@@ -752,15 +752,41 @@ We can now deal with the boundary fluxes, $\tilde{\Psi}_m$, by enforcing the ubi
 \subsection{Convergence Rates of the DGFEM $S_N$ Equation}
 \label{sec::Sn_Spatial_Convergence}
 
-We do this by taking Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK_complete}), performing another integration-by-parts on the streaming term, mulitplying by the angular weight, $w_m$, and summing over all elements and all angular directions. 
+Because we seek to investigate the use of high-order spatial basis functions for the transport equation, we need to . We do this by taking Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK_complete}), performing another integration-by-parts on the streaming term, mulitplying by the angular weight, $w_m$, and summing over all elements and all angular directions. This leads to the variational form for the 1-group $S_N$ equation:
 
+\begin{equation}
+\label{eq::Sn_DGFEM_variational_form}
+\begin{aligned}
+\sum\displaylimits_{m=1}^M w_m& \Big[  \Big(  b_m, \vec{\Omega}_m \cdot   \vec{\nabla} \Psi_{m} \Big)_{\mathcal{D}} + \Big( \sigma_t  b_m,  \Psi_{m} \Big)_{\mathcal{D}}  \Big]  \\
++ \sum\displaylimits_{m=1}^M w_m& \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, [\![ \Psi_m]\!]  \Big>_{E_h^i} \\
++ \sum\displaylimits_{m=1}^M w_m& \Big[ \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_{m'}  \Big>_{\partial \mathcal{D}_m^{r-}} -  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m  \Big>_{\partial \mathcal{D}_m^-}   \Big] \\
+= \sum\displaylimits_{m=1}^M w_m&     \sum_{p=0}^{N_P} \sum_{n=-p}^{p} \frac{2p + 1}{4 \pi}  Y_{p,n} (  \vec{\Omega}_m )  \Big(   b_m, \sigma_{s,p} \,  \Phi_{p,n,} +  Q_{p,n} \Big)_{\mathcal{D}}  \\
+- \sum\displaylimits_{m=1}^M w_m&   \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{inc}  \Big>_{\partial \mathcal{D}_m^- }
+\end{aligned}
+\end{equation}
 
+\noindent where the inner products over the whole domain and over all interior faces are
 
+\begin{equation}
+\label{eq::Sn_DGFEM_vol_inner_prod}
+\Big( u, v \Big)_{\mathcal{D}} \equiv \sum_{K \in \mathbb{T}_h}  \Big( u, v \Big)_{K} ,
+\end{equation}
+
+\noindent and 
+
+\begin{equation}
+\label{eq::Sn_DGFEM_surf_inner_prod}
+\Big< u, v \Big>_{E_h^i} \equiv \sum_{f \in E_h^i}  \Big< u, v \Big>_{f} ,
+\end{equation}
+
+\noindent respectively. The interior faces are designated as the non-repeating set: $E_h^i \in \cup_{K \in  \mathbb{T}_h} \partial K \backslash \partial \mathcal{D}$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Elementary
 \subsection{Elementary Matrices on an Arbitrary Spatial Cell}
 \label{sec::Sn_Spatial_Matrices}
+
+In Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK_complete}), we presented the full set of spatially-discretized equations needed to solve the angular flux solution for cell $K$ for a single angular direction. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Mass

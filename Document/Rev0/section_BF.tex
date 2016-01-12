@@ -16,6 +16,8 @@
 
 In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various elementary matrices needed to form the full set of spatially-discretized PDEs. These included the mass, streaming, and surface matrices where the integrations on the element's domain and boundary require combinations of the basis functions' values and gradients.
 
+The remainder of the this chapter is organized as follows. In Section \ref{sec::BF_2DLinear}, we present the 2D, linearly-complete, barycentric, polygonal basis functions that we will analyze in this dissertation. We give their properties along with a comparison to historical basis functions that are exact on non-polygonal elements (triangles and quadrilaterals). We then present in Section \ref{sec::BF_2DQuadratic} the methodology to convert the barycentric polygonal basis functions presented in Section \ref{sec::BF_2DLinear} into a serendipity space of basis functions with quadratic-completeness. Section \ref{sec::BF_3DLinear} then presentes the 3D, linearly-complete, polyhedral basis functions that will be exclusively used in Chapter \ref{sec::DSA} for 3D DSA calculations. We then present numerical results pertaining to our linear and quadratic 2D basis functions in Section \ref{sec::BF_Results}. We then present concluding remarks for the chapter in Section \ref{sec::BF_Conclusions}.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - 2D Linear
 \section{Linear Basis Functions on 2D Polygons}
@@ -32,7 +34,7 @@ We complete our geometric description for the polygonal coordinate system by ana
 \label{fig::BF_2D_ref_polygon}
 \end{figure}
 
-In this dissertation, all 1st-order, two-dimensional basis functions for a cell will obey the properties for barycentric coordinates. They will form a {\em partition of unity},
+In this dissertation, all 1st-order, two-dimensional basis functions for an element $K$ will obey the properties for barycentric coordinates. They will form a {\em partition of unity},
 
 \begin{equation}
 \sum_{i=1}^{N_K} b_i (\vec{x})  =  1;
@@ -78,14 +80,14 @@ y_i - y
 \label{eq::BF_linear_constraint_terms}
 \end{equation}
 
-\noindent respectively.
+\noindent respectively. Equation (\ref{eq::BF_linear_interp_req_vector}) states that our interpolation functions (the basis functions) can exactly reproduce polynomial functions up to order 1. This is why we state that our basis functions are linearly-complete. However, we will not restrict our $N_K$ basis functions to be polynomials. In fact, of the basis functions that we will use, only the PWL coordinates are formed by combinations of polynomial functions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Linear
 \subsection{Traditional Linear Basis Functions - $\mathbb{P}_{1}$ and $\mathbb{Q}_{1}$ Spaces}
 \label{sec::BF_2DLinear_LDandBLD}
 
-Before presenting basis function sets applicable to polytope finite elements, we first provide two common basis functions that are exact on triangles and convex quadrilaterals: the $\mathbb{P}_{1}$ and $\mathbb{Q}_{1}$ spaces, respectively. 
+Before presenting basis function sets applicable to polygonal finite elements, we first provide two common basis functions that are exact on triangles and convex quadrilaterals: the $\mathbb{P}_{1}$ and $\mathbb{Q}_{1}$ spaces, respectively. 
 
 \begin{equation}
 \label{eq::2D_lin_basis_functions}
@@ -144,7 +146,6 @@ w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, 
 
 %%%%%%%%%%%%%%%
 % Begin::2D PWL basis function plots
-\pagebreak
 \begin{figure}
 \label{fig::2D_PWL_unit_square_basis_functions}
 \centering
@@ -486,6 +487,8 @@ We then define an angular flux solution that is linear in both space and angle a
 		0
 	\end{array} \right] .
 \end{equation}
+
+\noindent The sum of the quadrature weights is handled by simply renormalizing those that are generated in Section \ref{sec::Sn_Angle} to $2 \pi$.
 
 Our boundary conditions for all inflow boundaries are then uniquely determined by the angular flux solution of Eq. (\ref{eq::BF_Results_Linear_fluxsols}). Inserting the angular flux solution of Eq. (\ref{eq::BF_Results_Linear_fluxsols}) into Eq. (\ref{eq::BF_Results_Linear_angflux}), we obtain the distributed source that will produce our exactly-linear solution space:
 
