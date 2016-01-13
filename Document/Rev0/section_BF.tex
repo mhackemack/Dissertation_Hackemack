@@ -485,7 +485,7 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 \end{table}
 
 \begin{figure}
-\label{fig::2D_Summary_unit_square_basis_functions}
+\label{fig::2D_Linear_Summary_unit_square_basis_functions}
 \centering
 	\begin{subfigure}[b]{0.35\textwidth}
 		\centering
@@ -510,7 +510,7 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_MAXENT1_contour_b4.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Contour plots of the different linear basis function on the unit square located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
+\caption[Contour plots of the linear basis functions on the unit square.]{Contour plots of the different linear basis function on the unit square located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
 \end{figure}
 
 \begin{figure}
@@ -539,7 +539,7 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_MAXENT1_contour_b5.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Contour plots of the different linear basis function on the degenerate square located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
+\caption[Contour plots of the linear basis functions on the degenerate pentagon.]{Contour plots of the different linear basis function on the degenerate pentagon located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -564,11 +564,74 @@ x = A^+ b + \left[ I - A^+ A  \right] w
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection -Analytical PWL
-\subsection{Analytical form of the quadratic serendipity extension of the PWL functions}
+%%%   SubSection -Analytical PWQ
+\subsection{Analytical Form of the Quadratic Serendipity Extension of the PWL Functions}
 \label{sec::BF_2DQuadratic_PWQ}
 
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - 2D quadratic summary
+\subsection{Summary of 2D Quadratic Serendipity Basis Functions on Polygons}
+\label{sec::BF_2DQuadratic_Summary}
+
+\begin{figure}
+\label{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF4}
+\centering
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_WACHSPRESS2_contour_b4.eps}
+		\caption{}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_PWLD2_contour_b4.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_MV2_contour_b4.eps}
+		\caption{}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_MAXENT2_contour_b4.eps}
+		\caption{}
+	\end{subfigure}
+\caption[Contour plots of the quadratic basis functions on the unit square.]{Contour plots of the different quadratic serendipity basis function on the unit square located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
+\end{figure}
+
+\begin{figure}
+\label{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF8}
+\centering
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_WACHSPRESS2_contour_b8.eps}
+		\caption{}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_PWLD2_contour_b8.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_MV2_contour_b8.eps}
+		\caption{}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_MAXENT2_contour_b8.eps}
+		\caption{}
+	\end{subfigure}
+\caption[Contour plots of the quadratic basis functions on the unit square.]{Contour plots of the different quadratic serendipity basis function on the unit square at a mid-face node located at (0,1/2): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - 3D
