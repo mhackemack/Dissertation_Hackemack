@@ -130,6 +130,37 @@ b_{j}^{W} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})}
 w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, \vec{x}_{j-1}, \vec{x}_{j}) \, A(\vec{x}, \vec{x}_{j}, \vec{x}_{j+1})}
 \end{equation}
 
+
+
+\begin{figure}
+\label{fig::2D_WACHSPRESS1_unit_square_basis_functions}
+\centering
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_WACHSPRESS1_contour_b4.eps}
+		\caption{}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_WACHSPRESS1_contour_b3.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_WACHSPRESS1_contour_b1.eps}
+		\caption{}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_WACHSPRESS1_contour_b2.eps}
+		\caption{}
+	\end{subfigure}
+\caption{Contour plots of the Wachspress basis functions on the unit square for the vertices located at: (a) (0,1), (b) (1,1), (c) (0,0), and (d) (1,0).}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - PWL
 \subsection{Piecewise Linear (PWL) Basis Functions}
@@ -278,6 +309,35 @@ b_{j}^{MV} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})}
 w_j (\vec{x})  = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{x}_j - \vec{x}|}
 \end{equation}
 
+\begin{figure}
+\label{fig::2D_MV1_unit_square_basis_functions}
+\centering
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_MV1_contour_b4.eps}
+		\caption{}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_MV1_contour_b3.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_MV1_contour_b1.eps}
+		\caption{}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_MV1_contour_b2.eps}
+		\caption{}
+	\end{subfigure}
+\caption{Contour plots of the mean value basis functions on the unit square for the vertices located at: (a) (0,1), (b) (1,1), (c) (0,0), and (d) (1,0).}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Maximum Entropy
 \subsection{Maximum Entropy Basis Functions}
@@ -317,6 +377,35 @@ w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \kappa \cdot (\vec{x}_j - \vec{x})),
 \label{eq::BF_ME_face_funcs}
 \rho_j (\vec{x}) = || \vec{x} - \vec{x}_j || + || \vec{x} - \vec{x}_{j+1} || - || \vec{x}_{j+1} - \vec{x}_j ||
 \end{equation}
+
+\begin{figure}
+\label{fig::2D_ME1_unit_square_basis_functions}
+\centering
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_MAXENT1_contour_b4.eps}
+		\caption{}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_MAXENT1_contour_b3.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_MAXENT1_contour_b1.eps}
+		\caption{}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_MAXENT1_contour_b2.eps}
+		\caption{}
+	\end{subfigure}
+\caption{Contour plots of the maximum entropy basis functions on the unit square for the vertices located at: (a) (0,1), (b) (1,1), (c) (0,0), and (d) (1,0).}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - 2D linear summary
