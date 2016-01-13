@@ -161,6 +161,41 @@ w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, 
 \caption{Contour plots of the Wachspress basis functions on the unit square for the vertices located at: (a) (0,1), (b) (1,1), (c) (0,0), and (d) (1,0).}
 \end{figure}
 
+\begin{figure}
+\label{fig::2D_WACHSPRESS1_deg_square_basis_functions}
+\centering
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_WACHSPRESS1_contour_b4.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_WACHSPRESS1_contour_b5.eps}
+		\caption{}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_WACHSPRESS1_contour_b3.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_WACHSPRESS1_contour_b1.eps}
+		\caption{}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_WACHSPRESS1_contour_b2.eps}
+		\caption{}
+	\end{subfigure}
+\caption{Contour plots of the Wachspress basis functions on the degnerate pentagon for the vertices located at: (a) (1/2,1), (b) (0,1), (c) (1,1), (d) (0,0), and (e) (1,0).}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - PWL
 \subsection{Piecewise Linear (PWL) Basis Functions}
@@ -173,115 +208,69 @@ w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, 
 
 \noindent $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function which is unity at the cell center and linearly decreases to zero to each cell vertex. $\alpha_{j}^{K}$ is the weight parameter for vertex $j$ in cell $K$. 
 
-
-
-%%%%%%%%%%%%%%%
-% Begin::2D PWL basis function plots
 \begin{figure}
-\label{fig::2D_PWL_unit_square_basis_functions}
+\label{fig::2D_PWLD1_unit_square_basis_functions}
 \centering
-	\begin{subfigure}[b]{0.48\textwidth}
+	\begin{subfigure}[b]{0.35\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/sec_BF/PWL_square_contour_1.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_PWLD1_contour_b4.eps}
 		\caption{}
 	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.48\textwidth}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/sec_BF/PWL_square_contour_2.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_PWLD1_contour_b3.eps}
 		\caption{}
 	\end{subfigure}
 	\vfill
-	\begin{subfigure}[b]{0.48\textwidth}
+	\begin{subfigure}[b]{0.35\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/sec_BF/PWL_square_contour_3.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_PWLD1_contour_b1.eps}
 		\caption{}
 	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.48\textwidth}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/sec_BF/PWL_square_contour_4.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/square_PWLD1_contour_b2.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Contour plots of the PWL basis functions on the unit square for the vertices located at: (a) (0,0), (b) (1,0), (c) (1,1), and (d) (0,1).}
+\caption{Contour plots of the Wachspress basis functions on the unit square for the vertices located at: (a) (0,1), (b) (1,1), (c) (0,0), and (d) (1,0).}
 \end{figure}
 
 \begin{figure}
-\label{fig::2D_pentagon_vertices}
+\label{fig::2D_PWLD1_deg_square_basis_functions}
 \centering
-	\begin{subfigure}[b]{0.40\textwidth}
+	\begin{subfigure}[b]{0.35\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/sec_BF/reg_pent_verts.png}
-		\caption{}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.40\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/sec_BF/deg_pent_verts.png}
-		\caption{}
-	\end{subfigure}
-\caption{Vertex structure for a (a) regular pentagonal cell and a (b) degenerate pentagonal cell.}
-\end{figure}
-
-\begin{figure}
-\label{fig::2D_PWL_pentagon_basis_functions_contour}
-\centering
-	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/sec_BF/PWL_rpent_contour_A.png}
-		\caption{}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/sec_BF/PWL_dpent_contour_A.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_PWLD1_contour_b4.eps}
 		\caption{}
 	\end{subfigure}
 	\vfill
-	\begin{subfigure}[b]{0.48\textwidth}
+	\begin{subfigure}[b]{0.35\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/sec_BF/PWL_rpent_contour_E.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_PWLD1_contour_b5.eps}
 		\caption{}
 	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.48\textwidth}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/sec_BF/PWL_dpent_contour_E.png}
-		\caption{}
-	\end{subfigure}
-\caption{Contour plots of the PWL basis functions for a regular pentagon: (a) and (c) as well as a degenerate pentagon: (b) and (d).}
-\end{figure}
-
-\begin{figure}
-\label{fig::2D_PWL_pentagon_basis_functions_plot}
-\centering
-	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/sec_BF/PWL_rpent_plot_A.png}
-		\caption{}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/sec_BF/PWL_dpent_plot_A.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_PWLD1_contour_b3.eps}
 		\caption{}
 	\end{subfigure}
 	\vfill
-	\begin{subfigure}[b]{0.48\textwidth}
+	\begin{subfigure}[b]{0.35\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/sec_BF/PWL_rpent_plot_E.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_PWLD1_contour_b1.eps}
 		\caption{}
 	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.48\textwidth}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/sec_BF/PWL_dpent_plot_E.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_PWLD1_contour_b2.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Plots of the PWL basis functions for a regular pentagon: (a) and (c) as well as a degenerate pentagon: (b) and (d).}
+\caption{Contour plots of the PWLD basis functions on the degnerate pentagon for the vertices located at: (a) (1/2,1), (b) (0,1), (c) (1,1), (d) (0,0), and (e) (1,0).}
 \end{figure}
-% End::2D PWL basis function plots
-%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Mean Value
@@ -521,7 +510,36 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_MAXENT1_contour_b4.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Contour plots of the different linear basis function located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
+\caption{Contour plots of the different linear basis function on the unit square located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
+\end{figure}
+
+\begin{figure}
+\label{fig::2D_Summary_deg_square_basis_functions}
+\centering
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_WACHSPRESS1_contour_b5.eps}
+		\caption{}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_PWLD1_contour_b5.eps}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_MV1_contour_b5.eps}
+		\caption{}
+	\end{subfigure}
+	\hspace{1cm}
+	\begin{subfigure}[b]{0.35\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_MAXENT1_contour_b5.eps}
+		\caption{}
+	\end{subfigure}
+\caption{Contour plots of the different linear basis function on the degenerate square located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
