@@ -752,7 +752,7 @@ We can now deal with the boundary fluxes, $\tilde{\Psi}_m$, by enforcing the ubi
 \subsection{Convergence Rates of the DGFEM $S_N$ Equation}
 \label{sec::Sn_Spatial_Convergence}
 
-Because we seek to investigate the use of high-order spatial basis functions for the transport equation, we need to . We do this by taking Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK_complete}), performing another integration-by-parts on the streaming term, mulitplying by the angular weight, $w_m$, and summing over all elements and all angular directions. This leads to the variational form for the 1-group $S_N$ equation:
+Because we seek to investigate the use of high-order spatial basis functions for the transport equation, we need to form an estimate of the spatial error based on some measure of the mesh. We do this by taking Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK_complete}), performing another integration-by-parts on the streaming term, mulitplying by the angular weight, $w_m$, and summing over all elements and all angular directions. This leads to the variational form for the 1-group $S_N$ equation:
 
 \begin{equation}
 \label{eq::Sn_DGFEM_variational_form}
@@ -779,7 +779,19 @@ Because we seek to investigate the use of high-order spatial basis functions for
 \Big< u, v \Big>_{E_h^i} \equiv \sum_{f \in E_h^i}  \Big< u, v \Big>_{f} ,
 \end{equation}
 
-\noindent respectively. The interior faces are designated as the non-repeating set: $E_h^i \in \cup_{K \in  \mathbb{T}_h} \partial K \backslash \partial \mathcal{D}$.
+\noindent respectively. The interior faces are designated as the non-repeating set: $E_h^i \in \cup_{K \in  \mathbb{T}_h} \partial K \backslash \partial \mathcal{D}$. In Eq. (\ref{eq::Sn_DGFEM_variational_form}), the interior jump term, $[\![ \Psi_m]\!]$, is defined as,
+
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_jump}
+[\![ \Psi_m]\!] = \Psi_m^{+} - \Psi_m^{-} ,
+\end{equation}
+
+\noindent which is beholden to the following trace condition:
+
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_trace}
+\Psi_m^{\pm} \equiv \lim\displaylimits_{s \rightarrow 0^\pm} \Psi (\vec{r} + s (\vec{\Omega}_m \cdot \vec{n} ) \, \vec{\Omega}_m ) .
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Elementary
