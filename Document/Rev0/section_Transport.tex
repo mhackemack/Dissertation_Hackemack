@@ -758,7 +758,7 @@ Because we seek to investigate the use of high-order spatial basis functions for
 \label{eq::Sn_DGFEM_variational_form}
 \begin{aligned}
 \sum\displaylimits_{m=1}^M w_m& \Big[  \Big(  b_m, \vec{\Omega}_m \cdot   \vec{\nabla} \Psi_{m} \Big)_{\mathcal{D}} + \Big( \sigma_t  b_m,  \Psi_{m} \Big)_{\mathcal{D}}  \Big]  \\
-+ \sum\displaylimits_{m=1}^M w_m& \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, [\![ \Psi_m]\!]  \Big>_{E_h^i} \\
++ \sum\displaylimits_{m=1}^M w_m& \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m^{+}, [\![ \Psi_m]\!]  \Big>_{E_h^i} \\
 + \sum\displaylimits_{m=1}^M w_m& \Big[ \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_{m'}  \Big>_{\partial \mathcal{D}_m^{r-}} -  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m  \Big>_{\partial \mathcal{D}_m^-}   \Big] \\
 = \sum\displaylimits_{m=1}^M w_m&     \sum_{p=0}^{N_P} \sum_{n=-p}^{p} \frac{2p + 1}{4 \pi}  Y_{p,n} (  \vec{\Omega}_m )  \Big(   b_m, \sigma_{s,p} \,  \Phi_{p,n,} +  Q_{p,n} \Big)_{\mathcal{D}}  \\
 - \sum\displaylimits_{m=1}^M w_m&   \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{inc}  \Big>_{\partial \mathcal{D}_m^- }
@@ -786,12 +786,17 @@ Because we seek to investigate the use of high-order spatial basis functions for
 [\![ \Psi_m]\!] = \Psi_m^{+} - \Psi_m^{-} ,
 \end{equation}
 
-\noindent which is beholden to the following trace condition:
+\noindent and along with the inflow basis function, $b_m^{+}$, is beholden to the following trace condition:
 
 \begin{equation}
 \label{eq::Sn_Spatial_Convergence_trace}
-\Psi_m^{\pm} \equiv \lim\displaylimits_{s \rightarrow 0^\pm} \Psi (\vec{r} + s (\vec{\Omega}_m \cdot \vec{n} ) \, \vec{\Omega}_m ) .
+\begin{aligned}
+\Psi_m^{\pm} \equiv \lim\displaylimits_{s \rightarrow 0^\pm} \Psi_m (\vec{r} - u s  \, \vec{\Omega}_m ) \\
+u (\vec{r}) = \text{sgn} \left(  \vec{n} (\vec{r}) \cdot  \vec{\Omega}_m \right)
+\end{aligned} .
 \end{equation}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Elementary
