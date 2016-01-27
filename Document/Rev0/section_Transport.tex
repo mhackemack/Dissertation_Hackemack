@@ -791,13 +791,41 @@ Because we seek to investigate the use of high-order spatial basis functions for
 \begin{equation}
 \label{eq::Sn_Spatial_Convergence_trace}
 \begin{aligned}
-\Psi_m^{\pm} \equiv \lim\displaylimits_{s \rightarrow 0^\pm} \Psi_m (\vec{r} - u s  \, \vec{\Omega}_m ) \\
+\Psi_m^{\pm} \equiv \lim\displaylimits_{s \rightarrow 0^\pm} \Psi_m (\vec{r} - u (\vec{r})  s  \, \vec{\Omega}_m ) \\
 u (\vec{r}) = \text{sgn} \left(  \vec{n} (\vec{r}) \cdot  \vec{\Omega}_m \right)
 \end{aligned} .
 \end{equation}
 
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_DGnorm_psi}
+|| \Psi - \Psi_{exact} ||_{DG} = C^{\Psi} \frac{h^q}{(p+1)^q}
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_DGnorm_phi}
+|| \Phi - \Phi_{exact} ||_{DG} = C^{\Phi} \frac{h^q}{(p+1)^q}
+\end{equation}
+
+\noindent where $q = \min (p+1/2, r - 1/2)$ and $r$ is the regularity index of the continuous transport solution.
 
 
+
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.495\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_Sn/hconv_larger.eps}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.495\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_Sn/Nconv_larger.eps}
+	\end{subfigure}
+\caption[$L_2$ transport convergence rates]{blah}
+\label{fig::Sn_Spatial_Convergence}
+\end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Elementary
 \subsection{Elementary Matrices on an Arbitrary Spatial Cell}
