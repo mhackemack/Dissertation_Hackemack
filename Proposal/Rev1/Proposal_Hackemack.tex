@@ -412,14 +412,14 @@ C_M = \frac{100}{L_x^2 L_y^2} \qquad \text{and} \qquad \gamma = \frac{L_x L_y}{1
 \subsection{Diffusion Synthetic Acceleration for Massively-Parallel Problems}
 \label{sec::CW_DSA}
 
-As it was previously stated, efficient methods for inverting the streaming operator do not guarantee efficiency in solving the transport problem for optically thick configurations. 
+As it was previously stated, efficient methods for inverting the streaming operator do not guarantee efficiency in solving the transport problem for optically thick configurations. We recast the discretized transport equation from Eq. (\ref{eq::trans_eq}):
 
 \begin{equation}
 \label{eq::CW_trans_eq}
 \begin{aligned}
 {\bf A} \Psi &= {\bf B} \Phi +  {\bf C} \Phi + {\bf Q} \\
 \Phi &= {\bf D} \Psi
-\end{aligned}
+\end{aligned} ,
 \end{equation}
 
 \noindent where ${\bf A}$, ${\bf B}$, ${\bf C}$, and ${\bf Q}$ are different operators of the transport problem. We then define an iterative procedure of the form,
@@ -445,14 +445,14 @@ As it was previously stated, efficient methods for inverting the streaming opera
 \end{aligned} \, ,
 \end{equation}
 
-\noindent are the errors in the angular fluxes and flux moments, ${\bf R}^{(k+1/2)}$ is some residual in the error, and the operators ${\bf B}$ and ${\bf B'}$ are not necessarily the same. If we could exactly solve for the error in Eqs. (\ref{eq::CW_trans_eq_it_diff} - \ref{eq::CW_delta_fluxes}), then the exact solution could be calculated by: $\Phi =  \Phi^{(k+1/2)} + \delta \Phi^{(k+1/2)}$. Unfortunately, Eq. (\ref{eq::CW_trans_eq_it_diff}) is just as difficult to solve as Eq. (\ref{eq::CW_trans_eq}). Therefore, we estimate Eq. (\ref{eq::CW_trans_eq_it_diff}) with a low-order operator that is easy to solve.
+\noindent are the errors in the angular fluxes and flux moments, ${\bf R}^{(k+1/2)}$ is some residual in the error, and the operators ${\bf B}$ and ${\bf B'}$ are not necessarily the same. If we could exactly solve for the error in Eqs. (\ref{eq::CW_trans_eq_it_diff} - \ref{eq::CW_delta_fluxes}), then the exact solution could be calculated by: $\Phi =  \Phi^{(k+1/2)} + \delta \Phi^{(k+1/2)}$. Unfortunately, Eq. (\ref{eq::CW_trans_eq_it_diff}) is just as difficult to solve as Eq. (\ref{eq::CW_trans_eq}). Therefore, we estimate Eq. (\ref{eq::CW_trans_eq_it_diff}) with a low-order operator that is easy to solve. We will next briefly described the low-order operator that we will utilize in Section \ref{sec::CW_DSA_MIP}.
 
 
 %%%%%%%%%%%%%%%%%%%
 \subsubsection{Modified Interior Penalty Diffusion Form for DSA Preconditioning}
 \label{sec::CW_DSA_MIP}
 
-As previously stated in Section \ref{sec::PS}, the diffusion operator has been utilized in different forms for the low-order operators of Eq. (\ref{eq::CW_trans_eq_it_diff}). As mentioned, the MIP DSA form has many beneficial properties and it has been extensively analyzed for 2D transport problems \cite{ref::DSA_wang_ragusa,turcksin2014discontinuous}. In this dissertation work, we will extend the MIP DSA analysis to 3D transport problems. We will also extensively analyze the scalability 
+As previously stated in Section \ref{sec::PS}, the diffusion operator has been utilized in different forms for the low-order operators of Eq. (\ref{eq::CW_trans_eq_it_diff}). As mentioned, the MIP DSA form has many beneficial properties and it has been extensively analyzed for 2D transport problems \cite{ref::DSA_wang_ragusa,turcksin2014discontinuous}. In this dissertation work, we will extend the MIP DSA analysis to 3D transport problems. We will also extensively analyze its scalability for massively-parallel problems.
 
 The MIP diffusion form is defined with the following bilinear left-hand-side,
 
@@ -613,7 +613,6 @@ We have presented the dissertation work that has been completed to date as well 
 \begin{enumerate}
 	\item Analyze the 2D linear polygonal basis functions for use in DGFEM transport calculations
 	\item Perform the same analysis with the quadratic serendipity basis functions
-	\item Determine the effects of numerical integration on highly-distorted polygonal elements
 	\item Perform analysis on benchmark cases using polygonal meshes (including AMR)
 	\item Analyze the 2D polygonal basis functions with DSA preconditioning through Fourier/numerical analysis
 	\item Analyze the effects of AMR with polygonal basis functions on the MIP DSA PCG iteration counts (with and without bootstrapping)
@@ -623,7 +622,7 @@ We have presented the dissertation work that has been completed to date as well 
 		\item Analyze the scalability of the method to high processor counts.
 		\item Perform parametric studies on aggregation/partitioning factors to generate a performance model.
 		\item Implement and perform analysis of two-grid acceleration at scale.
-		\item Conclude with real-worl numerical experiments on high-fidelity meshes (IM1 and reactor geometries).
+		\item Conclude with real-world numerical experiments on high-fidelity meshes (IM1 and reactor geometries).
 	\end{itemize}
 \end{enumerate}
 
