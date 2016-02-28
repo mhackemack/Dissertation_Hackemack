@@ -28,43 +28,197 @@
 \subsection{History}
 \label{sec::DSA_Introduction_History}
 
+cleanup the beginning here later...
+
+The ability to efficiently invert the transport (streaming and collision) operator does not necessarily mean that transport solutions can be easily obtained. In general, radiation transport solutions are obtained iteratively. The simplest and widely-used method is a fixed-point scheme ({\em i.e.} richardson iteration) ubiquitously called source iteration (SI) in the transport community. Unfortunately, the iteration process of SI can converge arbitrarily slowly if the problem is optically thick \cite{ref::adams_larsen_iter_methods}. This corresponds to long mean free paths for neutronics problems. This also corresponds to time steps and material heat capacities tending to infinity and zero, respectively, for thermal radiative transport (TRT) problems.
+
+For these problem regimes in which solution is prohibitively slow, additional steps should be taken to speed up, or accelerate, solution convergence \cite{ref::adams_larsen_iter_methods}. The most used methods to assist in solution convergence are often called synthetic acceleration techniques. These techniques were first introduced by Kopp  \cite{kopp1963synthetic} and Lebedev \cite{lebedevI,lebedevII,lebedevIII,lebedevIV,lebedevV,lebedevVI,lebedevVII} in the 1960's. From Kopp's and Lebedev's work, Gelbard and Hageman then introduced two synthetic acceleration options for the low-order operator: diffusion and $S_2$ \cite{gelbard1969synthetic}. Their diffusion preconditioning led to efficient convergence properties on fine spatial meshes. Reed then showed that Gelbard and Hageman's diffusion preconditioning would yield a diverging system for coarse meshes \cite{reed1971effectiveness}. At this point in time, no one knew if an unconditionally efficient acceleration method could be derived.
+
+Then in 1976, Alcouffe proposed a remedy to Gelbard and Reed that he called diffusion synthetic acceleration (DSA) \cite{alcouffe1976stable,alcouffe1977DSA,alcouffe1977diffusion}. He showed that if you derived the diffusion operator consistently with the discretized transport operator, then SI could be accelerated with DSA in an efficient and robust manner. Larsen and McCoy then demonstrated that unconditional stability required that consistency be maintained in both spatial and angular discretization in their four-step procedure \cite{larsen1982unconditionally_I,larsen1982unconditionally_II}. However, Adams and Martin then showed that partially-consistent diffusion discretizations could effectively accelerate DFEM discretizations of the neutron transport equation \cite{ref::dsa_DFEM_adams_martin}. Their modified-four-step procedure (M4S), based on Larsen and McCoy's work, was shown to be unconditionally stable for regular geometries, but divergent for unstructured multi-dimensional meshes \cite{warsa2002fully}. In more recent years, alternate discretizations for the diffusion operator have been applied to unstructured multi-dimensional grids. These include the partially consistent Wareing-Larsen-Adams (WLA) DSA \cite{ref::WLA_DSA}, the fully consistent DSA (FCDSA) \cite{warsa2002fully}, and the partially consistent MIP DSA \cite{ref::DSA_wang_ragusa,wang2009adaptive,turcksin2014discontinuous}.
+
+Most recently, the partially consistent MIP DSA method has been shown to be an unconditionally stable acceleration method for the 2D DFEM transport equation on unstructured meshes. Wang showed that it acted as an effective preconditioner for higher-order DFEM discretizations on triangles \cite{ref::DSA_wang_ragusa,wang2009adaptive}. Turcksin and Ragusa then extended the work to arbitrary polygonal meshes \cite{turcksin2014discontinuous}. The MIP diffusion operator is symmetric positive definite (SPD) and was shown to be efficiently invertible with preconditioned conjugate gradient (PCG) and advanced preconditioners such as algebraic multi-grid (AMG) \cite{turcksin2014discontinuous}.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - DSA Theory
-\subsection{Theory}
-\label{sec::DSA_Introduction_Theory}
+%%%   SubSection - Synthetic Acceleration
+\subsection{Synthetic Acceleration}
+\label{sec::DSA_Introduction_SA}
 
 
 
 \begin{equation}
-\label{eq::simple_trans_eq_op}
-{\bf L} \Psi = {\bf M \Sigma} \Phi + {\bf Q}
+\label{eq::DSA_simple_trans_eq_w_ops}
+\left(  {\bf A} - {\bf B}  \right) \Psi = {\bf Q} ,
 \end{equation}
 
-\begin{equation}
-\label{eq::simple_trans_af_iterate}
-{\bf L} \Psi^{(\ell+1)} = {\bf M \Sigma} \Phi^{(\ell)} + {\bf Q}
-\end{equation}
+\noindent where ${\bf A}$ and ${\bf B}$ are both linear operators, $\Psi$ is the full angular flux solution in space, angle, and energy, and ${\bf Q}$ is the source or driving function. If we had the ability to efficiently invert $\left(  {\bf A} - {\bf B}  \right)$ directly, then $\Psi$ could be directly computed:
 
 \begin{equation}
-\label{eq::simple_trans_iterate_err}
-{\bf L} \left( \Psi^{(\ell+1)} - \Psi \right)= {\bf M \Sigma} \left( \Phi^{(\ell)} - \Phi \right)
+\label{eq::DSA_simple_trans_eq_w_ops_inverted}
+\Psi = \left(  {\bf A} - {\bf B}  \right)^{-1} {\bf Q} .
 \end{equation}
 
-\begin{equation}
-\label{}
-\delta \Psi^{(\ell+1)} \equiv \left( \Psi^{(\ell+1)} - \Psi \right) \qquad \text{and} \qquad \delta \Phi^{(\ell+1)} = {\bf D}  \delta \Psi^{(\ell+1)}
-\end{equation}
+\noindent However, since in practice the discretized version of $\left(  {\bf A} - {\bf B}  \right)$ is much more costly to directly invert than the discretized version of ${\bf A}$, we instead choose to iteratively solve for $\Psi$.
+
+To compute $\Psi$, the following iterative system of equations is usually employed,
 
 \begin{equation}
-\label{eq::simple_diffusion_equation}
--\vec{\nabla} \cdot D \vec{\nabla} \Phi + \sigma \Phi = Q, \qquad \vec{r} \in \mathcal{D}
+\label{eq::DSA_simple_trans_eq_w_ops_iterates}
+ {\bf A} \Psi^{(k+1)} - {\bf B}  \Psi^{(k)} = {\bf Q} ,
 \end{equation}
 
+\noindent where directly solving for $\Psi^{(k+1)}$ yields the following:
+
 \begin{equation}
-\label{eq::diffusion_weak_form}
-\Big< D \vec{\nabla} \Phi, \vec{\nabla} \Phi^* \Big>_{\mathcal{D}} + \Big<  \sigma   \Phi ,  \Phi^*  \Big>_{\mathcal{D}} = \Big<  Q, \Phi^*  \Big>_{\mathcal{D}} + \Big\{ D \partial_n \Phi,  \Phi^* \Big\}_{\partial \mathcal{D}}
+\label{eq::DSA_simple_trans_eq_sol_w_ops_iterates}
+ \Psi^{(k+1)} =  {\bf A}^{-1} {\bf B}  \Psi^{(k)} +  {\bf A}^{-1} {\bf Q} .
 \end{equation}
+
+\noindent For brevity, we define a new operator ${\bf C} = {\bf A}^{-1} {\bf B}$ which is known as the iteration operator. The spectral radius, $\rho$, of this operator is simply the supremum of the absolute values of its eigenvalues. For this work, we assume that $\rho$ is less than unity to guarantee convergence. We next define the residual, $r^{(k)}$, as the difference between two successive solution iterates,
+
+\begin{equation}
+\label{eq::DSA_synthetic_eq_residual}
+r^{(k)} = \Psi^{(k)} - \Psi^{(k-1)} ,
+\end{equation}
+
+\noindent which can also be written as the following:
+
+\begin{equation}
+\label{eq::DSA_synthetic_eq_residual_op}
+r^{(k)} = {\bf C}\Psi^{(k-1)} .
+\end{equation}
+
+With the iteration operator, ${\bf C}$, and the residual for iterate $k$ ,$r^{(k)}$, defined, we can then write the true, converged solution in terms of the solution at iteration $k$ and an infinite series of residuals:
+
+\begin{equation}
+\label{eq::DSA_synthetic_eq_true_sol}
+\Psi = \Psi^{(k)} + \sum_{n=1}^{\infty} r^{(k+n)} .
+\end{equation}
+
+\noindent Using both Eqs. (\ref{eq::DSA_synthetic_eq_residual_op}) and (\ref{eq::DSA_synthetic_eq_true_sol}), we can rewrite Eq. (\ref{eq::DSA_synthetic_eq_true_sol}) using the iteration operator and the last residual,
+
+\begin{equation}
+\label{eq::DSA_synthetic_eq_true_sol_it_op}
+\Psi = \Psi^{(k)} + \left(  {\bf I} + {\bf C} + {\bf C}^2 + ...  \right) {\bf C} r^{(k)}.
+\end{equation}
+
+\noindent Since we have assumed that the spectral radius of {\bf C} is less than unity, then the infinite operator series of Eq. (\ref{eq::DSA_synthetic_eq_true_sol_it_op}) converges to $\left(  {\bf I} - {\bf C}   \right)^{-1} {\bf C}$. This means that we can succinctly write Eq. (\ref{eq::DSA_synthetic_eq_true_sol_it_op}) as the following:
+
+\begin{equation}
+\label{eq::DSA_synthetic_eq_true_sol_it_op_succinct}
+\Psi = \Psi^{(k)} + \left(  {\bf I} - {\bf C}   \right)^{-1} {\bf C} r^{(k)}.
+\end{equation}
+
+\noindent By using the definition of ${\bf C}$ along with some linear algebra, Eq. (\ref{eq::DSA_synthetic_eq_true_sol_it_op_succinct}) becomes 
+
+\begin{equation}
+\label{eq::DSA_synthetic_eq_true_sol_orig_ops}
+\Psi = \Psi^{(k)} + \left(  {\bf A} - {\bf B}   \right)^{-1} {\bf B} r^{(k)}.
+\end{equation}
+
+We would like to use the results of Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) to immediately compute our exact transport solution, $\Psi$. However, this would require the inversion of $\left(  {\bf A} - {\bf B}  \right)$ which we did not employ originally in Eq. (\ref{eq::DSA_simple_trans_eq_w_ops}) because of the difficulty. This means that, in its current form, Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) is no more useful to us than Eq. (\ref{eq::DSA_simple_trans_eq_w_ops}). This would then be an exercise in futility if we were restricted to only working with the $\left(  {\bf A} - {\bf B}  \right)$ operator. Instead, suppose that we could define an operator, ${\bf W}$, that closely approximates $\left(  {\bf A} - {\bf B}  \right)$ but it is easily invertible. If ${\bf W}$ efficiently approximates the slowest converging error modes of $\left(  {\bf A} - {\bf B}  \right)$, then Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) can be modified to form a new iterative procedure.
+
+The new iterative procedure begins by simply taking the half-iterate of Eq. (\ref{eq::DSA_simple_trans_eq_sol_w_ops_iterates}) instead of its full version: ${(k+1/2)}$ instead of {(k+1)}. This half-iterate has the form
+
+\begin{equation}
+\label{eq::DSA_synthetic_eq_half_it}
+\Psi^{(k+1/2)} = {\bf C} \Psi^{(k)} + {\bf A}^{-1} {\bf Q}.
+\end{equation}
+
+\noindent We can then express the full-iterate by the suggestion of Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}). Using the low-order operator, we express the full-iterate as the following,
+
+\begin{equation}
+\label{eq::DSA_synthetic_eq_half_it_correction}
+\Psi^{(k+1)} =\Psi^{(k+1/2)} + {\bf W}^{-1} {\bf B}  r^{(k+1/2)},
+\end{equation}
+
+\noindent where $r^{(k+1/2)} = \Psi^{(k+1/2)} - \Psi^{(k)}$. We can also express Eq. (\ref{eq::DSA_synthetic_eq_half_it_correction}) in terms of just the previous iterate ,$\Psi^{(k)}$, and a new operator:
+
+\begin{equation}
+\label{eq::DSA_synthetic_eq_new_algo}
+\Psi^{(k+1)} = \left[  {\bf I} - {\bf W}^{-1} \left(  {\bf A} - {\bf B}  \right)  \right] {\bf C} \Psi^{(k)} + \left({\bf I} + {\bf W}^{-1} {\bf B} \right) {\bf A}^{-1} {\bf Q} .
+\end{equation}
+
+\noindent Observe that as ${\bf W}$ more closely approximates $\left(  {\bf A} - {\bf B}  \right)$, the operator ${\bf W}^{-1} \left(  {\bf A} - {\bf B}  \right)$ converges to the identity matrix, ${\bf I}$. This means that the spectral radius of this new iteration matrix will approach zero as ${\bf W}$ gets closer to $\left(  {\bf A} - {\bf B}  \right)$ and therefore more quickly and efficiently converge to the true solution.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - DSA
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Diffusion Synthetic Acceleration Methodologies}
+\label{sec::DSA_DSA}
+
+The procedures outlined in Section \ref{sec::DSA_Introduction_SA} define a general methodology to perform synthetic acceleration on the transport equation. We could utilize any of the acceleration strategies that have been developed over the years including DSA, TSA, BPA, etc. The only difference arises in what form the low-order operator, ${\bf W}$, will take. We obviously are focusing on DSA for this dissertation work, and we do so by first describing in Section \ref{sec::DSA_DSA_1G} a simple 1-group specification of the synthetic acceleration methodology just presented. We then present a pair of strategies that can be employed to accelerate thermal neutron upscattering in Section \ref{sec::DSA_DSA_MG}.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - 1-group
+\subsection{Simple 1-group DSA Strategy}
+\label{sec::DSA_DSA_1G}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - MG
+\subsection{DSA Acceleration Strategies for Thermal Neutron Upscattering}
+\label{sec::DSA_DSA_MG}
+
+%%%%%%%%%%%%%
+%%%   SubSubSection - Two-Grid
+\subsubsection{Multigroup Richardson Acceleration}
+\label{sec:DSA_DSA_MG_WGS}
+
+\begin{equation}
+\label{eq::DSA_WG_trans_it_eq}
+{\bf L_{gg}} \psi_g^{(k+1/2)} =  {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
+\end{equation}
+
+
+%%%%%%%%%%%%%
+%%%   SubSubSection - Two-Grid
+\subsubsection{Two-Grid Acceleration}
+\label{sec:DSA_DSA_MG_TG}
+
+The second acceleration methodology that we will investigate is the two-grid acceleration scheme devised by Adams and Morel \cite{adams1993two}. 
+
+\begin{equation}
+\label{eq::DSA_TG_trans_it_eq}
+{\bf L_{gg}} \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^g {\bf \Sigma}_{g g'} \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
+\end{equation}
+
+\noindent In operator form, the full solution and half-iterate equations are given by
+
+\begin{equation}
+\label{eq::DSA_TG_trans_eq_ops}
+{\bf L} \Psi = {\bf M} {\bf S_D} \Phi + {\bf M} {\bf S_U} \Phi + {\bf Q} ,
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::DSA_TG_trans_it_eq_ops}
+{\bf L} \Psi^{(k+1/2)} = {\bf M} {\bf S_D} \Phi^{(k+1/2)} + {\bf M} {\bf S_U} \Phi^{(k)} + {\bf Q} ,
+\end{equation}
+
+\noindent respectively. ${\bf S_D}$ and ${\bf S_U}$ are the downscatter and upscatter portions of the scattering matrix, respectively. These matrices still contain all of the scattering moments; they are simply restricted in energy. By moving the downscattering portion to the left side of the equation, inverting the ${\bf L}$ operator, and applying the discrete-to-moment operator, ${\bf D}$, we can rewrite the iteration equation of Eq. (\ref{eq::DSA_TG_trans_it_eq_ops}) in terms of only the flux moments:
+
+\begin{equation}
+\label{eq::DSA_TG_half_it}
+\left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} {\bf S_D} \right]\Phi^{(k+1/2)} = {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} \Phi^{(k)} + {\bf D}{\bf L}^{-1}  {\bf Q}
+\end{equation}
+
+\noindent By inverting the left-side operator, we directly solve for the half-iterate flux moments,
+
+\begin{equation}
+\label{eq::DSA_TG_half_it_sol}
+\begin{aligned}
+\Phi^{(k+1/2)} &= \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} {\bf S_D} \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} \Phi^{(k)} + {\bf b}  \\
+{\bf b} &= \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} {\bf S_D} \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf Q}
+\end{aligned} ,
+\end{equation}
+
+\noindent where we reduced the driving function to ${\bf b}$ for brevity.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -73,6 +227,38 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Symmetric Interior Penalty Form of the Diffusion Equation}
 \label{sec::DSA_SIP}
+
+So far, we have presented several strategies in Section \ref{sec::DSA_DSA} in which DSA can be used to accelerate both within-group scattering and upscattering. We have also simply stated that our low-order operator will be the diffusion equation. However, we have not presented the exact form of the diffusion equation that we will utilize. In Section \ref{sec::DSA_MIP}, we present the full form of the modified interior penalty (MIP) form of the diffusion equation that we will use as our low-order operator for DSA calculations. However, we first present in this Section a more generalized version of the interior penalty form that we could use as a stand-alone solver for the standard diffusion equation: the symmetric interior penalty (SIP) form \cite{arnold2002unified,ragusa2015discontinuous,ref::SIP_3D}.
+
+We begin our discussion of the SIP form by analyzing the standard form of the diffusion equation,
+
+\begin{equation}
+\label{eq::DSA_standard_diff_eq}
+- \vec{\nabla}  \cdot D (\vec{r})  \vec{\nabla} \Phi (\vec{r}) + \sigma \Phi (\vec{r}) = Q (\vec{r}) , \qquad \vec{r} \in \mathcal{D} ,
+\end{equation}
+
+\noindent with Dirichlet boundary conditions
+
+\begin{equation}
+\label{eq::DSA_standard_diff_eq_dirichlet_bound}
+\Phi (\vec{r}) = \Phi_0 (\vec{r}), \qquad \vec{r} \in \partial \mathcal{D}^d ,
+\end{equation}
+
+\noindent Neumann boundary conditions
+
+\begin{equation}
+\label{eq::DSA_standard_diff_eq_neumann_bound}
+- D \partial_n \Phi (\vec{r}) = J_0 (\vec{r}), \qquad \vec{r} \in \partial \mathcal{D}^n ,
+\end{equation}
+
+\noindent and Robin boundary conditions
+
+\begin{equation}
+\label{eq::DSA_standard_diff_eq_robin_bound}
+\frac{1}{4}\Phi (\vec{r}) + \frac{D}{2} \partial_n \Phi (\vec{r}) = J^{inc} (\vec{r}), \qquad \vec{r} \in \partial \mathcal{D}^r .
+\end{equation}
+
+
 
 \begin{equation}
 \label{eq::penalty_boundary_term}
@@ -239,25 +425,6 @@ b^{MIP} (\Phi^*) = \Big<  Q, \Phi^*  \Big>_{\mathcal{D}}  + \Big\{ \delta  J^{in
 \begin{equation}
 \label{eq::MIP_penalty_term}
 \kappa_e^{MIP} = \text{max} \left( \kappa_e^{SIP}, \frac{1}{4} \right)
-\end{equation}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   Section - MG
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Multigroup Applications of Diffusion Synthetic Acceleration}
-\label{sec::DSA_MG}
-
-\begin{equation}
-\label{eq::DSA_MG::mg_trans_op}
-{\bf L}_g \Psi_g =  {\bf M} \sum_{g'=1}^{G} {\bf S}_{gg'} \Phi_{g'} + Q_g, \qquad \Phi_g \equiv  {\bf D} \Psi_g
-\end{equation}
-
-
-\begin{equation}
-\label{eq::DSA_MG::mg_error_terms}
-\delta \Psi_g^{(\ell+1)} \equiv \Psi_g - \Psi_g^{(\ell+1)} \qquad \text{and} \qquad \delta \Phi_g^{(\ell+1)} \equiv  {\bf D} \delta \Psi_g^{(\ell+1)},
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
