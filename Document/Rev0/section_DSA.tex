@@ -159,17 +159,43 @@ The procedures outlined in Section \ref{sec::DSA_Introduction_SA} define a gener
 
 
 
-Recall the operator form of the fully discretized transport equation as defined in Section \ref{sec::Sn_Solution_Iterative}. 
+Recall the operator form of the fully discretized transport equation as defined in Section \ref{sec::Sn_Solution_Iterative},
 
 \begin{equation}
 \label{eq::DSA_1G_trans_eq_ops}
 \begin{aligned}
 {\bf L} {\bf \Psi} &= {\bf M} {\bf \Sigma} {\bf \Phi}  +    {\bf Q} \\
 {\bf \Phi} &=  {\bf D} {\bf \Psi}
-\end{aligned}
+\end{aligned},
 \end{equation}
 
-\noindent where ${\bf L}$ is the total interaction and streaming operator, ${\bf M}$ is the moment-to-discrete operator, ${\bf D}$ is the discrete-to-moment operator, ${\bf \Sigma}$ is the scattering operator, and ${\bf Q}$ is the forcing function.
+\noindent where ${\bf L}$ is the total interaction and streaming operator, ${\bf M}$ is the moment-to-discrete operator, ${\bf D}$ is the discrete-to-moment operator, ${\bf \Sigma}$ is the scattering operator, and ${\bf Q}$ is the forcing function. In this case, we simply treat this discretized problem as only having 1 energy group. The functional form of the discretized moment-to-discrete and discrete-to-moment operators are
+
+\begin{equation}
+\label{eq::DSA_1G_M}
+M_m \equiv \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi}   \sum_{n=-p}^{p}  Y_{p,n} (  \vec{\Omega}_m )   ,
+\end{equation}
+
+\noindent and 
+
+\begin{equation}
+\label{eq::DSA_1G_D}
+D_{p,n} \equiv \sum_{m=1}^M w_m Y_{p,n} (\vec{\Omega}_m)  \Psi(\vec{\Omega_m}) ,
+\end{equation}
+
+\noindent respectively. This means that the operation ${\bf D} {\bf L}^{-1}$ corresponds to a full-domain transport sweep followed by the computation of the flux moments from the angular flux. We next apply our half-iterate and previous iterate indices on Eq. (\ref{eq::DSA_1G_trans_eq_ops}) to form the iteration procedure for our transport equation
+
+\begin{equation}
+\label{eq::DSA_1G_trans_eq_ops_its}
+{\bf L} {\bf \Psi}^{(k+1/2)}= {\bf M} {\bf \Sigma} {\bf \Phi}^{(k)}  +    {\bf Q} 
+\end{equation}
+
+\noindent We can then use the ${\bf D} {\bf L}^{-1}$ operator to present our transport equation of Eq. (\ref{eq::DSA_1G_trans_eq_ops_its}) in terms of just the half-iterate flux moments,
+
+\begin{equation}
+\label{eq::DSA_1G_trans_eq_ops_mom}
+ {\bf \Phi}^{(k+1/2)}  =  {\bf D} {\bf L}^{-1} {\bf M} {\bf \Sigma}  {\bf \Phi}^{(k)} +  {\bf D} {\bf L}^{-1}   {\bf Q} .
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
