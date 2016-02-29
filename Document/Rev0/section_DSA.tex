@@ -32,7 +32,7 @@ cleanup the beginning here later...
 
 The ability to efficiently invert the transport (streaming and collision) operator does not necessarily mean that transport solutions can be easily obtained. In general, radiation transport solutions are obtained iteratively. The simplest and widely-used method is a fixed-point scheme ({\em i.e.} richardson iteration) ubiquitously called source iteration (SI) in the transport community. Unfortunately, the iteration process of SI can converge arbitrarily slowly if the problem is optically thick \cite{ref::adams_larsen_iter_methods}. This corresponds to long mean free paths for neutronics problems. This also corresponds to time steps and material heat capacities tending to infinity and zero, respectively, for thermal radiative transport (TRT) problems.
 
-For these problem regimes in which solution is prohibitively slow, additional steps should be taken to speed up, or accelerate, solution convergence \cite{ref::adams_larsen_iter_methods}. The most used methods to assist in solution convergence are often called synthetic acceleration techniques. These techniques were first introduced by Kopp  \cite{kopp1963synthetic} and Lebedev \cite{lebedevI,lebedevII,lebedevIII,lebedevIV,lebedevV,lebedevVI,lebedevVII} in the 1960's. From Kopp's and Lebedev's work, Gelbard and Hageman then introduced two synthetic acceleration options for the low-order operator: diffusion and $S_2$ \cite{gelbard1969synthetic}. Their diffusion preconditioning led to efficient convergence properties on fine spatial meshes. Reed then showed that Gelbard and Hageman's diffusion preconditioning would yield a diverging system for coarse meshes \cite{reed1971effectiveness}. At this point in time, no one knew if an unconditionally efficient acceleration method could be derived.
+For these problem regimes in which solution is prohibitively slow, additional steps should be taken to speed up, or accelerate, solution convergence \cite{ref::adams_larsen_iter_methods}. The most used methods to assist in solution convergence are often called synthetic acceleration techniques. These techniques were first introduced by Kopp \cite{kopp1963synthetic} and Lebedev \cite{lebedevI,lebedevII,lebedevIII,lebedevIV,lebedevV,lebedevVI,lebedevVII} in the 1960's. From Kopp's and Lebedev's work, Gelbard and Hageman then introduced two synthetic acceleration options for the low-order operator: diffusion and $S_2$ \cite{gelbard1969synthetic}. Their diffusion preconditioning led to efficient convergence properties on fine spatial meshes. Reed then showed that Gelbard and Hageman's diffusion preconditioning would yield a diverging system for coarse meshes \cite{reed1971effectiveness}. At this point in time, no one knew if an unconditionally efficient acceleration method could be derived.
 
 Then in 1976, Alcouffe proposed a remedy to Gelbard and Reed that he called diffusion synthetic acceleration (DSA) \cite{alcouffe1976stable,alcouffe1977DSA,alcouffe1977diffusion}. He showed that if you derived the diffusion operator consistently with the discretized transport operator, then SI could be accelerated with DSA in an efficient and robust manner. Larsen and McCoy then demonstrated that unconditional stability required that consistency be maintained in both spatial and angular discretization in their four-step procedure \cite{larsen1982unconditionally_I,larsen1982unconditionally_II}. However, Adams and Martin then showed that partially-consistent diffusion discretizations could effectively accelerate DFEM discretizations of the neutron transport equation \cite{ref::dsa_DFEM_adams_martin}. Their modified-four-step procedure (M4S), based on Larsen and McCoy's work, was shown to be unconditionally stable for regular geometries, but divergent for unstructured multi-dimensional meshes \cite{warsa2002fully}. In more recent years, alternate discretizations for the diffusion operator have been applied to unstructured multi-dimensional grids. These include the partially consistent Wareing-Larsen-Adams (WLA) DSA \cite{ref::WLA_DSA}, the fully consistent DSA (FCDSA) \cite{warsa2002fully}, and the partially consistent MIP DSA \cite{ref::DSA_wang_ragusa,wang2009adaptive,turcksin2014discontinuous}.
 
@@ -44,7 +44,7 @@ Most recently, the partially consistent MIP DSA method has been shown to be an u
 \subsection{Synthetic Acceleration}
 \label{sec::DSA_Introduction_SA}
 
-
+Synthetic acceleration techniques have been widely used in the nuclear engineering community to improve solution convergence for prohibitively slow problems. We now provide a general framework for how synthetic acceleration methods are derived. We begin by expressing our neutron transport equation in the following form,
 
 \begin{equation}
 \label{eq::DSA_simple_trans_eq_w_ops}
@@ -88,7 +88,7 @@ r^{(k)} = \Psi^{(k)} - \Psi^{(k-1)} ,
 r^{(k)} = {\bf C}\Psi^{(k-1)} .
 \end{equation}
 
-With the iteration operator, ${\bf C}$, and the residual for iterate $k$ ,$r^{(k)}$, defined, we can then write the true, converged solution in terms of the solution at iteration $k$ and an infinite series of residuals:
+With the iteration operator, ${\bf C}$, and the residual for iterate $k$ , $r^{(k)}$, defined, we can then write the true, converged solution in terms of the solution at iteration $k$ and an infinite series of residuals:
 
 \begin{equation}
 \label{eq::DSA_synthetic_eq_true_sol}
@@ -102,7 +102,7 @@ With the iteration operator, ${\bf C}$, and the residual for iterate $k$ ,$r^{(k
 \Psi = \Psi^{(k)} + \left(  {\bf I} + {\bf C} + {\bf C}^2 + ...  \right) {\bf C} r^{(k)}.
 \end{equation}
 
-\noindent Since we have assumed that the spectral radius of {\bf C} is less than unity, then the infinite operator series of Eq. (\ref{eq::DSA_synthetic_eq_true_sol_it_op}) converges to $\left(  {\bf I} - {\bf C}   \right)^{-1} {\bf C}$. This means that we can succinctly write Eq. (\ref{eq::DSA_synthetic_eq_true_sol_it_op}) as the following:
+\noindent Since we have assumed that the spectral radius of {\bf C} is less than unity, the infinite operator series of Eq. (\ref{eq::DSA_synthetic_eq_true_sol_it_op}) converges to $\left(  {\bf I} - {\bf C}   \right)^{-1} {\bf C}$. This means that we can succinctly write Eq. (\ref{eq::DSA_synthetic_eq_true_sol_it_op}) as the following:
 
 \begin{equation}
 \label{eq::DSA_synthetic_eq_true_sol_it_op_succinct}
@@ -157,6 +157,15 @@ The procedures outlined in Section \ref{sec::DSA_Introduction_SA} define a gener
 \subsection{Simple 1-group DSA Strategy}
 \label{sec::DSA_DSA_1G}
 
+\begin{equation}
+\label{eq::DSA_simple_trans_eq}
+\vec{\Omega} \cdot \vec{\nabla} \psi_m + \sigma_t \psi_m = \frac{\sigma_s}{4 \pi} \phi + \frac{Q}{4 \pi}, \qquad m=1,...,M
+\end{equation}
+
+\begin{equation}
+\label{eq::DSA_simple_trans_eq_it}
+\left[ \vec{\Omega} \cdot \vec{\nabla} + \sigma_t \right] \psi_m^{(k+1/2)} = \frac{\sigma_s}{4 \pi} \phi^{(k)} + \frac{Q}{4 \pi}, \qquad m=1,...,M
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -180,7 +189,7 @@ The procedures outlined in Section \ref{sec::DSA_Introduction_SA} define a gener
 \subsubsection{Two-Grid Acceleration}
 \label{sec:DSA_DSA_MG_TG}
 
-The second acceleration methodology that we will investigate is the two-grid acceleration scheme devised by Adams and Morel \cite{adams1993two}. 
+The second acceleration methodology that we will investigate is the two-grid acceleration scheme devised by Adams and Morel \cite{adams1993two}. The derived the 
 
 \begin{equation}
 \label{eq::DSA_TG_trans_it_eq}
