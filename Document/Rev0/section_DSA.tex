@@ -157,15 +157,19 @@ The procedures outlined in Section \ref{sec::DSA_Introduction_SA} define a gener
 \subsection{Simple 1-group DSA Strategy}
 \label{sec::DSA_DSA_1G}
 
-\begin{equation}
-\label{eq::DSA_simple_trans_eq}
-\vec{\Omega} \cdot \vec{\nabla} \psi_m + \sigma_t \psi_m = \frac{\sigma_s}{4 \pi} \phi + \frac{Q}{4 \pi}, \qquad m=1,...,M
-\end{equation}
+
+
+Recall the operator form of the fully discretized transport equation as defined in Section \ref{sec::Sn_Solution_Iterative}. 
 
 \begin{equation}
-\label{eq::DSA_simple_trans_eq_it}
-\left[ \vec{\Omega} \cdot \vec{\nabla} + \sigma_t \right] \psi_m^{(k+1/2)} = \frac{\sigma_s}{4 \pi} \phi^{(k)} + \frac{Q}{4 \pi}, \qquad m=1,...,M
+\label{eq::DSA_1G_trans_eq_ops}
+\begin{aligned}
+{\bf L} {\bf \Psi} &= {\bf M} {\bf \Sigma} {\bf \Phi}  +    {\bf Q} \\
+{\bf \Phi} &=  {\bf D} {\bf \Psi}
+\end{aligned}
 \end{equation}
+
+\noindent where ${\bf L}$ is the total interaction and streaming operator, ${\bf M}$ is the moment-to-discrete operator, ${\bf D}$ is the discrete-to-moment operator, ${\bf \Sigma}$ is the scattering operator, and ${\bf Q}$ is the forcing function.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -182,6 +186,7 @@ The procedures outlined in Section \ref{sec::DSA_Introduction_SA} define a gener
 \label{eq::DSA_WG_trans_it_eq}
 {\bf L_{gg}} \psi_g^{(k+1/2)} =  {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
 \end{equation}
+
 
 
 %%%%%%%%%%%%%
@@ -479,19 +484,26 @@ We now present the results showing the efficacy of a discontinuous diffusion for
 
 We present our first numerical example by demonstrating that the various polygonal finite element basis sets satisfy the thick diffusion limit. 
 
+\begin{equation}
+\label{eq::BF_Results_TDL_trans_eq}
+\vec{\Omega} \cdot \vec{\nabla} \Psi + \sigma_t \Psi =   \frac{\sigma_s}{4 \pi} \sigma_t +  \frac{Q_0}{4 \pi}
+\end{equation}
 
 \begin{equation}
 \label{eq::BF_Results_TDL_scaling}
 \begin{aligned}
 	\sigma_t &\rightarrow \frac{\sigma_t}{\epsilon} \\
 	\sigma_a &\rightarrow \epsilon \sigma_t\\
+	\sigma_s &\rightarrow \left( \frac{1}{\epsilon} - \epsilon   \right) \sigma_t \\
 	\frac{Q_0}{4 \pi} &\rightarrow \epsilon \frac{Q_0}{4 \pi}
 \end{aligned}
 \end{equation}
 
+\noindent Inserting these scaled cross sections and source term into Eq. (\ref{eq::BF_Results_TDL_trans_eq}) leads to following scaled transport equation:
+
 \begin{equation}
 \label{eq::BF_Results_TDL_scaled_trans_eq}
-\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{\sigma_t}{\epsilon} \Psi = \sigma_t \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} + \epsilon \frac{Q_0}{4 \pi}
+\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{\sigma_t}{\epsilon} \Psi = \sigma_t \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} + \epsilon \frac{Q_0}{4 \pi} .
 \end{equation}
 
 \begin{equation}
