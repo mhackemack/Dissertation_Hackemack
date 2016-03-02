@@ -437,31 +437,6 @@ b^{MIP} (\Phi^*) = \Big<  Q, \Phi^*  \Big>_{\mathcal{D}}  + \Big\{ \delta  J^{in
 \end{equation}
 
 
-
-\begin{figure}
-\label{fig::IP_cart_tri_meshes}
-\centering
-	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/sec_DSA/IP_cart_mesh.png}
-		\caption{}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.48\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/sec_DSA/IP_tri_mesh.png}
-		\caption{}
-	\end{subfigure}
-\caption{blah}
-\end{figure}
-
-\begin{figure}
-\centering
-\label{fig::IP_coefficient_degradation}
-\includegraphics[width=0.8\textwidth]{figures/sec_DSA/IP_penalty_coeff.png}
-\caption{Maximum SIP orthogonal projections (solid) and penalty coefficients (dashed) on ordered cartesian (black) and triangular (blue) grids. }
-\end{figure}
-
 \begin{equation}
 \label{eq::MIP_penalty_term}
 \kappa_e^{MIP} = \text{max} \left( \kappa_e^{SIP}, \frac{1}{4} \right)
@@ -478,7 +453,7 @@ b^{MIP} (\Phi^*) = \Big<  Q, \Phi^*  \Big>_{\mathcal{D}}  + \Big\{ \delta  J^{in
 \begin{figure}
 \centering
 \includegraphics[width=0.60\textwidth]{figures/sec_DSA/fourier_sq_layout.png}
-\caption{Fourier domain for 2D quadrilateral cells or an axial slice of 3D hexahedral cells in a regular grid.}
+\caption[Fourier domain]{Fourier domain for 2D quadrilateral cells or an axial slice of 3D hexahedral cells in a regular grid.}
 \label{fig::}
 \end{figure}
 
@@ -515,6 +490,8 @@ We present our first numerical example by demonstrating that the various polygon
 \vec{\Omega} \cdot \vec{\nabla} \Psi + \sigma_t \Psi =   \frac{\sigma_s}{4 \pi} \sigma_t +  \frac{Q_0}{4 \pi}
 \end{equation}
 
+\noindent As the transport problem becomes more optically thick, the total mean free paths of the neutroncs increases. In the thick diffusion limit, the domain mean free path approaches infinity. If we fix the physical dimensions of the problem to some finite value, then we can scale the cross sections and the source term to reflect the properties of the thick diffusion limit. In the limit the total and scattering cross sections tend to infinity whilc the absorption cross section and the source term tend to zero. If we introduce a scaling parameter, $\epsilon$, 
+
 \begin{equation}
 \label{eq::BF_Results_TDL_scaling}
 \begin{aligned}
@@ -532,39 +509,53 @@ We present our first numerical example by demonstrating that the various polygon
 \vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{\sigma_t}{\epsilon} \Psi = \sigma_t \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} + \epsilon \frac{Q_0}{4 \pi} .
 \end{equation}
 
-\begin{equation}
-\label{eq::BF_Results_TDL_scaled_diff_eq}
-\epsilon \vec{\nabla} \cdot \frac{1}{3 \sigma_t}  \vec{\nabla} \Phi + \epsilon \sigma_t \Phi =  \epsilon Q_0
-\end{equation}
+\noindent We can also use the scaled terms of Eq. (\ref{eq::BF_Results_TDL_scaling}) to give the corresponding scaled diffusion equation. If we take the 0th and 1st moments of Eq. (\ref{eq::BF_Results_TDL_scaled_trans_eq}) in the usual way and assume that the P1 terms obey Fick's Law, then the scaled diffusion equation is
 
 \begin{equation}
-\label{eq::BF_Results_TDL_normalized_eqs}
-\begin{aligned}
-\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{1}{\epsilon} \Psi &=  \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} +  \frac{\epsilon}{4 \pi} \\
-\frac{\epsilon}{3} {\nabla}^2 \Phi &+ \epsilon  \Phi =  \epsilon 
-\end{aligned}
+\label{eq::BF_Results_TDL_scaled_diff_eq}
+\epsilon \vec{\nabla} \cdot \frac{1}{3 \sigma_t}  \vec{\nabla} \Phi + \epsilon \sigma_t \Phi =  \epsilon Q_0.
 \end{equation}
+
+\noindent One can immediately see that Eq. (\ref{eq::BF_Results_TDL_scaled_diff_eq}) does not truly scale because there is an $\epsilon$ for each term. This is the desired behavior we want to see from the diffusion equation because, as $\epsilon \rightarrow 0$, the transport equation will converge to its diffusive limit and satisfy a diffusion equation.
+
+For the sake of analysis, we seek to 
+
+\begin{equation}
+\label{eq::BF_Results_TDL_normalized_trans_eq}
+\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{1}{\epsilon} \Psi =  \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} +  \frac{\epsilon}{4 \pi} ,
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::BF_Results_TDL_normalized_diff_eq}
+\frac{\epsilon}{3} {\nabla}^2 \Phi + \epsilon  \Phi =  \epsilon ,
+\end{equation}
+
+\noindent respectively.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - SIP Results
 \subsection{SIP used as a Diffusion Solver}
 \label{sec::DSA_Results_SIP}
 
-We first wish to know how an interior penalty form of the diffusion equation will perform on unstructured polyhedral grids. We will perform this analysis with a stand-alone MATLAB code. The polyhedral mesh types for this analysis are presented in Section \ref{sec::DSA_Results_SIP_Geometry}. 
+We first wish to know how an interior penalty form of the diffusion equation will perform on unstructured polyhedral grids. The SIP diffusion formulation has previously been analyzed for use as a DFEM diffusion solver for unstructured 2D polygonal grids \cite{ragusa2015discontinuous}. The MIP DSA form has also been successfully utilized for unstructured 2D polygonal grids \cite{turcksin2014discontinuous}. Here, we first seek to extend the efficacy of the SIP form as a diffusion solver on polyhedral mesh cellls. We will do this by analyzing the following two problem types:
 
 \begin{enumerate}
-	\item A purely-linear solution to determine if linear basis functions will span the solution space;
-	\item The Method of Manufactured Solutions to test basis function convergence rates;
+	\item A exactly-linear solution to determine if linear basis functions will span the solution space;
+	\item The Method of Manufactured Solutions to test basis function convergence rates.
 \end{enumerate}
 
-\noindent in Sections \ref{sec::DSA_Results_SIP_Linear} and \ref{sec::DSA_Results_SIP_MMS}, respectively. 
+The polyhedral mesh types that we employ for this analysis are presented in Section \ref{sec::DSA_Results_SIP_Geometry}. Next, the exactly-linear solution analysis is performed in Section \ref{sec::DSA_Results_SIP_Linear}. Finally, the MMS analysis to confirm the second order convergence rates of the 3D PWL basis functions is presented in Section \ref{sec::DSA_Results_SIP_MMS}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - SIP Results = Geometry
 \subsubsection{Geometry Specification for the SIP Problems}
 \label{sec::DSA_Results_SIP_Geometry}
 
-For this work in
+To analyze the SIP diffusion form on 3D polyhedral grids, we will utilize many of the 2D polygonal grids that were used in Section \ref{sec::BF_Results_Linear}. For this analysis we will resuse the cartesian, ordered-triangular, polygonal sinusoidal, and polygonal-z meshes. We will also use purely-randomized polygonal grids formed from Voronoi mesh generation as outlined in Section \ref{sec::Sn_Solution_Spatial_Voronoi}. To form the needed 3D polyhedral grids, we will take these 2D grids and simply extrude the meshes in the z-dimension. 
+
+Figure \ref{fig::SIP_mesh_slices} provides the 2D mesh types that will be utilized in this analysis. Figure \ref{fig::SIP_mesh_extruded} then provides the same meshes after they have been extruded in the z-dimension. We note that it will not simply be these exact grids that are employed. For the MMS analysis in Section \ref{sec::DSA_Results_SIP_MMS}, various refinements of these meshes will be utilized.
 
 \begin{figure}
 \centering
@@ -597,7 +588,7 @@ For this work in
 		\includegraphics[width=0.85\textwidth]{figures/sec_DSA/SIP_z_poly_mesh.png}
 		\caption{}
 	\end{subfigure}
-\caption{Axial slices of the different mesh types: (a) cartesian, (b) ordered triangles, (c) random polygons, (d) sinusoidal polygons, and (e) polygonal z-mesh.}
+\caption{2D grids to be extruded of the different mesh types: (a) cartesian, (b) ordered triangles, (c) random polygons, (d) sinusoidal polygons, and (e) polygonal z-mesh.}
 \label{fig::SIP_mesh_slices}
 \end{figure}
 
@@ -638,25 +629,29 @@ For this work in
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - SIP Results = Linear
-\subsubsection{Purely-Linear Solution}
+\subsubsection{Exactly-Linear Solution}
 \label{sec::DSA_Results_SIP_Linear}
 
-We first test SIP by enforcing a sytem that yields a purely-linear solution. Linear finite elements should then theoretically fully-span the solution space. We can achieve this mathematically by setting the cross-section and right-hand-source terms to zero, $\sigma = Q = 0$. Robin boundary conditions are imposed on opposite faces in 1 dimension, with homogeneous Neumann boundary conditions on all other faces. If the Robin boundaries are chosen in the y-direction, with $y \in (0,L)$, then the analytical solution for the problem will be 
+We first test SIP by enforcing a sytem that yields an exactly-linear diffusion solution. Linear finite elements should then theoretically fully-span the solution space. We can achieve this mathematically by setting the cross-section and right-hand-source terms to zero, $\sigma = Q = 0$. Robin boundary conditions are imposed on opposite faces in 1 dimension, with homogeneous Neumann boundary conditions on all other faces. If the Robin boundaries are chosen in the y-direction, with $y \in (0,L)$, then the analytical solution for the problem will be 
 
 \begin{equation}
-\label{eq::mms_lin_solution}
+\label{eq::SIP_mms_lin_solution}
 \Phi(x,y,z) = \frac{4 J^{inc}}{L + 4D} \left(  L + 2 D - y \right),
 \end{equation}
 
 \noindent with the following boundary conditions in the y-direction:
 
 \begin{equation}
-\label{eq::mms_lin_bcs}
+\label{eq::SIP_mms_lin_bcs}
 \begin{aligned}
 \Phi - 2D \partial_y \Phi = & 4 J^{inc}, \qquad & \forall (x,z),y=0 \\
 \Phi + 2D \partial_y \Phi = & 0, \qquad & \forall (x,z),y=L
 \end{aligned}.
 \end{equation}
+
+\noindent In Eqs. (\ref{eq::SIP_mms_lin_solution}) and (\ref{eq::SIP_mms_lin_bcs}), $D$ is once again the standard diffusion coefficient and $J^{inc}$ is the incoming current on the $y=0$ boundary. For this analysis, we choose $D$ to be 2, $J^{inc}$ to be 9, and $L$ to be 1. Using Eq. (\ref{eq::SIP_mms_lin_solution}), our solution has a value of 20 at $y=0$ and linearly-decreases to 16 at $y=1$.
+
+Using the 3D PWL basis functions, which were previously used for SIP on 2D polygons \cite{ragusa2015discontinuous}, the linear solutions are presented in Figure \ref{fig::SIP_linear_sol} at the midplane axial slice of $z=L/2$. We can see from the exact contour lines in the plots that SIP can capture an exactly-linear solution even on some highly distorted polyhedral grids.
 
 \begin{figure}
 \centering
@@ -690,13 +685,15 @@ We first test SIP by enforcing a sytem that yields a purely-linear solution. Lin
 		\caption{}
 	\end{subfigure}
 \caption{Axial slice showing the contours for the linear solution of the different mesh types: (a) cartesian, (b) ordered triangles, (c) random polygons, (d) sinusoidal polygons, and (e) polygonal z-mesh.}
-\label{fig::SIP_mesh_slices}
+\label{fig::SIP_linear_sol}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - SIP Results = MMS
 \subsubsection{Method of Manufactured Solutions}
 \label{sec::DSA_Results_SIP_MMS}
+
+We next test to see if the SIP diffusion form can capture the appropriate second order convergencerates with the 3D PWL basis functions. These basis functions were previously shown to capture the appropriate convergence rates for the DGFEM transport equation on 3D hexahedral grids \cite{bailey2008phd}.
 
 \begin{equation}
 \label{eq::SIP_quad_mms_solution}
