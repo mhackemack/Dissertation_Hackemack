@@ -22,10 +22,12 @@
 \section{Introduction}
 \label{sec::DSA_Introduction}
 
+In this chapter, we analyze the Modified Interior Penalty (MIP) form of the diffusion equation as a discretization scheme for use with Diffusion Synthetic Acceleration (DSA) of the DFEM $S_N$ transport equation on unstructured grids. Specifically, we wish to analyze its efficacy on massively-parallel computer architectures where scalability of solution times and memory footprints can become burdensome.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - History
-\subsection{History}
+\subsection{Review of Diffusion Synthetic Accleration Schemes}
 \label{sec::DSA_Introduction_History}
 
 cleanup the beginning here later...
@@ -41,7 +43,7 @@ Most recently, the partially consistent MIP DSA method has been shown to be an u
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Synthetic Acceleration
-\subsection{Synthetic Acceleration}
+\subsection{Synthetic Acceleration Overview}
 \label{sec::DSA_Introduction_SA}
 
 Synthetic acceleration techniques have been widely used in the nuclear engineering community to improve solution convergence for prohibitively slow problems. We now provide a general framework for how synthetic acceleration methods are derived. We begin by expressing our neutron transport equation in the following form,
@@ -467,6 +469,31 @@ b^{MIP} (\Phi^*) = \Big<  Q, \Phi^*  \Big>_{\mathcal{D}}  + \Big\{ \delta  J^{in
 
 \noindent where $i=\sqrt{-1}$
 
+iteration matrices here...
+
+spectral radius = largest eigenvalue here...
+
+For this work, all fourier analysis was performed in MATLAB. All the eigenmodes corresponding to a fourier wave number for a given iteration matrix can be easily computed with MATLAB's built-in {\em eig} function. The maximum eigenvalue is found over the wave number space by use of the Nelder-Mead simplex algorithm \cite{nelder1965simplex}. We stress that some sort of minimization algorithm must be employed because some problem configurations can have extremely narrow local maxima. These difficult to find local maxima can correspond to the global maximum which is our desired spectral radius that we wish to compute. 
+
+We illustrate the necessity for a minimization algorithm in Figure \ref{fig::DSA_fourier_modes_showing_search_need}. We have modeled a single 2D square mesh cell with dimensions $X=1$ and $Y=1$. The total cross section, $\sigma_t$, is set to $10^{-2}$ and the scattering ratio, $c$, set to 0.9999. We use the $S4$ level-symmetric quadrature set. The left image of Figure \ref{fig::DSA_fourier_modes_showing_search_need} has the 2D fourier wave number span the full domain space of $[\lambda_x,\lambda_y]=[0,2 \pi]^2$. The right image zooms in on the wave number ranging: $[\lambda_x,\lambda_y]=[0,1/4]^2$. From the right image, we can see two extremely narrow local maxima. We can qualitatively ascertain that these local maxima would be difficult to find if we had simply laid a grid of wave number points over $[0,2 \pi]^2$. Chang and Adams presented an even more extreme example of a difficult to find global maximum using transport synthetic acceleration \cite{chang2003analysis}.
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS4_x=1e-2_dydx=1_contour.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.495\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS4_x=1e-2_dydx=1_contour_ZOOM.png}
+		\caption{}
+	\end{subfigure}
+\caption[2D fourier wave form for MIP with the PWL coordinates]{2D fourier wave form for MIP, with 1 square cell with 1e-2 mfp, with the PWL coordinates, with the LS4 quadrature, and where the wave numbers range from: (a) $[\lambda_x,\lambda_y]=[0,2 \pi]^2$ and (b) $[\lambda_x,\lambda_y]=[0,1/4]^2$.}
+\label{fig::DSA_fourier_modes_showing_search_need}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Results
@@ -475,7 +502,7 @@ b^{MIP} (\Phi^*) = \Big<  Q, \Phi^*  \Big>_{\mathcal{D}}  + \Big\{ \delta  J^{in
 \section{Numerical Results}
 \label{sec::DSA_Results}
 
-
+We now present all results 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -542,8 +569,8 @@ For the sake of analysis, we seek to
 We first wish to know how an interior penalty form of the diffusion equation will perform on unstructured polyhedral grids. The SIP diffusion formulation has previously been analyzed for use as a DFEM diffusion solver for unstructured 2D polygonal grids \cite{ragusa2015discontinuous}. The MIP DSA form has also been successfully utilized for unstructured 2D polygonal grids \cite{turcksin2014discontinuous}. Here, we first seek to extend the efficacy of the SIP form as a diffusion solver on polyhedral mesh cellls. We will do this by analyzing the following two problem types:
 
 \begin{enumerate}
-	\item A exactly-linear solution to determine if linear basis functions will span the solution space;
-	\item The Method of Manufactured Solutions to test basis function convergence rates.
+	\item An exactly-linear solution to determine if linear basis functions will span the solution space;
+	\item The Method of Manufactured Solutions (MMS) to test basis function convergence rates.
 \end{enumerate}
 
 The polyhedral mesh types that we employ for this analysis are presented in Section \ref{sec::DSA_Results_SIP_Geometry}. Next, the exactly-linear solution analysis is performed in Section \ref{sec::DSA_Results_SIP_Linear}. Finally, the MMS analysis to confirm the second order convergence rates of the 3D PWL basis functions is presented in Section \ref{sec::DSA_Results_SIP_MMS}.
@@ -785,7 +812,7 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection -  PHI
-\subsubsection{Periodic Horizontal Interface (PHI) Problem}
+\subsubsection{Periodic Horizontal Interface Problem}
 \label{sec::DSA_Results_1G_PHI}
 
 \begin{table}
@@ -881,26 +908,18 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSubSection -  AMR Iron Water
+\subsubsection{Performance of MIP with Adaptive Mesh Refinement}
+\label{sec::DSA_Results_1G_AMR}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection -  Scaling
-\subsubsection{Scalability of the MIP DSA Preconditioner}
-\label{sec::DSA_Results_1G_Scaling}
+\subsection{Scalability of the MIP DSA Preconditioner}
+\label{sec::DSA_Results_Scaling}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - MIP Results
-\subsection{MIP Results}
-\label{sec::DSA_Results_MIP}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSubSection - MIP Results = Simple Homo Domain
-\subsubsection{Simple Homogeneous Problem Results}
-\label{sec::DSA_Results_MIP_Homo}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSubSection - MIP Results = Hetero
-\subsubsection{Heterogenous Problem Results}
-\label{sec::DSA_Results_MIP_Hetero}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -910,4 +929,6 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions}
 \label{sec::DSA_conclusions}
+
+In this chapter, we analyzed the Modified Interior Penalty form of the diffusion equation for use as the diffusion solver for DSA preconditioning of the DGFEM $S_N$ transport equation.
 
