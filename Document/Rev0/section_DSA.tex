@@ -22,7 +22,7 @@
 \section{Introduction}
 \label{sec::DSA_Introduction}
 
-In this chapter, we analyze the Modified Interior Penalty (MIP) form of the diffusion equation as a discretization scheme for use with Diffusion Synthetic Acceleration (DSA) of the DFEM $S_N$ transport equation on unstructured grids. Specifically, we wish to analyze its efficacy on massively-parallel computer architectures where scalability of solution times and memory footprints can become burdensome.
+In this chapter, we analyze the Modified Interior Penalty (MIP) form of the diffusion equation as a discretization scheme for use with Diffusion Synthetic Acceleration (DSA) of the DFEM $S_N$ transport equation on unstructured grids. Specifically, we wish to analyze its efficacy on massively-parallel computer architectures where scalability of solution times and memory footprints can become burdensome. This chapter is laid out in the following manner. The remainder of this Section will provide an overview of synthetic acceleration techniques as well as a review of DSA schemes. Section \ref{sec::DSA_DSA} provides the DSA methodologies that we will employ for 1-group and thermal neutron upscattering acceleration. We then present the discontinuous Symmetric Interior Penalty (SIP) form of the diffuion equation in Section \ref{sec::DSA_SIP} as well as the MIP variant that we will use for our DSA analysis in Section \ref{sec::DSA_MIP}. The theoretical Fourier analysis tool is given in Section \ref{sec::DSA_Fourier}. Results are provided in Section \ref{sec::DSA_Results} and we finish the chapter with some concluding remarks in Section \ref{sec::DSA_Conclusions}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -159,7 +159,10 @@ The procedures outlined in Section \ref{sec::DSA_Introduction_SA} define a gener
 \subsection{Simple 1-group DSA Strategy}
 \label{sec::DSA_DSA_1G}
 
-
+\begin{equation}
+\label{eq::DSA_1G_simple_trans}
+\vec{\Omega}_m \cdot \vec{\nabla} \psi_m + \sigma_t \psi_m =  c \frac{ \sigma_t}{4 \pi} \phi + \frac{Q}{4 \pi}
+\end{equation}
 
 Recall the operator form of the fully discretized transport equation as defined in Section \ref{sec::Sn_Solution_Iterative},
 
@@ -222,7 +225,7 @@ D_{p,n} \equiv \sum_{m=1}^M w_m Y_{p,n} (\vec{\Omega}_m)  \Psi(\vec{\Omega_m}) ,
 \subsubsection{Two-Grid Acceleration}
 \label{sec:DSA_DSA_MG_TG}
 
-The second acceleration methodology that we will investigate is the two-grid acceleration scheme devised by Adams and Morel \cite{adams1993two}. The derived the 
+The second acceleration methodology that we will investigate is the two-grid acceleration scheme devised by Adams and Morel \cite{adams1993two}. They originally derived the scheme to accelerate 1D multigroup transport problems that are dominated by thermal neutron upscattering. 
 
 \begin{equation}
 \label{eq::DSA_TG_trans_it_eq}
@@ -362,7 +365,7 @@ b^{SIP} (\Phi^*) = \Big<  Q, \Phi^*  \Big>_{\mathcal{D}}  - \Big\{   J_{0}, \Phi
 \end{aligned} .
 \end{equation}
 
-\noindent As previously stated, the general penalty term, $\kappa$ of Eqs. (\ref{eq::penalty_boundary_term} - \ref{eq::SIP_interior_laplacian_term}) needs to have sufficient positive measure to ensure stability. From previous investigations \cite{ref::DSA_2D_arb_poly,wang2009adaptive,ref::DSA_wang_ragusa}, we choose the penalty coefficient to be face dependent:
+\noindent As previously stated, the general penalty term, $\kappa$ of Eqs. (\ref{eq::penalty_boundary_term} - \ref{eq::SIP_interior_laplacian_term}) needs to have sufficient positive measure to ensure stability. From previous investigations \cite{ref::DSA_wang_ragusa,wang2009adaptive,turcksin2014discontinuous}, we choose the penalty coefficient to be face dependent:
 
 \begin{equation}
 \kappa_e^{SIP} = 
@@ -391,8 +394,6 @@ b^{SIP} (\Phi^*) = \Big<  Q, \Phi^*  \Big>_{\mathcal{D}}  - \Big\{   J_{0}, \Phi
 \label{tab::orth_proj_2D}
 \end{table}
 
-
-
 \begin{table}[h]
 \centering
 \caption{Orthogonal projection, $h$, for different polyhedral types: $V_K$ is the volume of cell $K$, $A_e$ is the area of face $e$, and $SA_K$ is the surface area of cell $K$.}
@@ -406,6 +407,22 @@ b^{SIP} (\Phi^*) = \Big<  Q, \Phi^*  \Big>_{\mathcal{D}}  - \Big\{   J_{0}, \Phi
 \end{tabular}
 \label{tab::orth_proj_3D}
 \end{table}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Stiffness Matrix
+\subsection{Elementary Stiffness Matrices}
+\label{sec::DSA_SIP_Stiffness}
+
+In Eqs. (\ref{eq::SIP_bilinear_form}) and (\ref{eq::SIP_linear_form}), there are two additional elementary matrix types 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Face Gradient Matrix
+\subsection{Elementary Surface Gradient Matrices}
+\label{sec::DSA_SIP_SurfaceGradient}
+
+The second new elementary matrix corresponds to the integrals of the product of the basis functions with their gradients on a given surface. For a given face $f$, these matrices are of the general form: $\Big<  D \partial_n b, \Phi \Big>_f$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -766,28 +783,28 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 \begin{figure}
 \centering
 \includegraphics[width=0.75\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_Wachspress1_LS2,4,8,16.png}
-\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the Wachspress coordinates for the homogeneous infinite medium case as a function of the mesh optical thickness.}
+\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the linear Wachspress coordinates for the homogeneous infinite medium case as a function of the mesh optical thickness.}
 \label{fig::DSA_1G_Fourier_Wach1}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.75\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_PWLD1_LS2,4,8,16.png}
-\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the PWL coordinates for the homogeneous infinite medium case as a function of the mesh optical thickness.}
+\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the linear PWL coordinates for the homogeneous infinite medium case as a function of the mesh optical thickness.}
 \label{fig::DSA_1G_Fourier_PWL1}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.75\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_MV1_LS2,4,8,16.png}
-\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the mean value coordinates for the homogeneous infinite medium case as a function of the mesh optical thickness.}
+\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the linear mean value coordinates for the homogeneous infinite medium case as a function of the mesh optical thickness.}
 \label{fig::DSA_1G_Fourier_MV1}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.75\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_MAXENT1_LS2,4,8,16.png}
-\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the maximum entropy coordinates for the homogeneous infinite medium case as a function of the mesh optical thickness.}
+\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the linear maximum entropy coordinates for the homogeneous infinite medium case as a function of the mesh optical thickness.}
 \label{fig::DSA_1G_Fourier_ME1}
 \end{figure}
 
@@ -814,6 +831,21 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 %%%   SubSubSection -  PHI
 \subsubsection{Periodic Horizontal Interface Problem}
 \label{sec::DSA_Results_1G_PHI}
+
+When DSA is applied to multidimensional problems (2D and 3D), the preconditioning of the transport operators can degrade in the presence of heterogeneous configurations with large material discontinuities \cite{azmy2002unconditionally}. The Periodic Horizontal Interface (PHI) problem is considered a litmus test for heterogeneous DSA techniques. This problem consists of horizontal strips of alternating optically thick and optically thin materials that are 1 cell in depth. We define $\sigma_1$ as the optically thick total cross section and $\sigma_2$ as the optically thin total cross section. We then define a tuning parameter, $\sigma$, and allow the region cross sections to have the following form:
+
+\begin{equation}
+\begin{aligned}
+\sigma_1 &= \sigma \\
+\sigma_2 &= \frac{1}{\sigma}
+\end{aligned}.
+\end{equation}
+
+\noindent We can see that increasing the value of $\sigma$ will increase the magnitude of difference between the two region cross sections. Therefore, as $\sigma$ grows large, the material discontinuities will grow which could potentially reduce the performance of our DSA scheme.
+
+From the analysis presented in Section \ref{sec::DSA_Results_1G_2DHomo}, we showed that our different 2D linear and quadratic basis functions were robust and stable, even for mesh cells with large aspect ratios. For this PHI analysis, we concentrate on analyzing just the linear PWL coordinates as our basis functions. Just like before, we will also examine different level-symmetric quadrature sets and their effects problems with varying optical thickness. The optical thickness and diffusivity of the problem is increased by varying both $\sigma$ and the scattering ratio, $c$. This study was conducted with the sequence, $\sigma = \left[ 10, 20, 40, 80, 160, 320, 640  \right]$, and with following scattering ratios: $c = \left[ 0.9,0.99,0.999,0.9999,0.99999,0.999999  \right]$.
+
+The full results of this PHI analysis are presented in Tables \ref{tab::DSA_2DPHI_LS2} - \ref{tab::DSA_2DPHI_LS16} for the LS2, LS4, LS8, and LS16 quadratures, respectively. From these tables, we can see that MIP DSA loses its effectiveness as the heterogeneity and overall diffusivity of the problem increases. The theoretical spectral radii are greater than any of the values presented for the homogeneous case from Figure \ref{fig::DSA_1G_Fourier_PWL1}. This result is true even for the example with the smallest heterogeneity and smallest diffusivity ($\sigma=10$ and $c=0.9$). We can gain some more knowledge of the DSA degradation by observing the eigenvalue dependency on the fourier wave numbers for our problems. Figure \ref{fig::PHI_sig=10_c=0.9} provides the eigenvalue distribution based off the fourier wave numbers for the different quadrature sets for $\sigma=10$ and $c=0.9$. Figure \ref{fig::PHI_sig=640_c=0.9999} then provides the same information for $\sigma=640$ and $c=0.9999$.
 
 \begin{table}
 \caption{Spectral radius for the 2D PHI problem with the PWL basis functions and LS2 quadrature.}
@@ -907,12 +939,79 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 \label{tab::DSA_2DPHI_LS16}
 \end{table}
 
+\begin{figure}
+\centering
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS2_sigt=10_c=9_contour.png}
+		\caption{LS2}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS4_sigt=10_c=9_contour.png}
+		\caption{LS4}
+	\end{subfigure}
+	}
+	\vspace{1.5cm}
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS8_sigt=10_c=9_contour.png}
+		\caption{LS8}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS16_sigt=10_c=9_contour.png}
+		\caption{LS16}
+	\end{subfigure}
+	}
+\caption{Fourier wave number distribution for the 2D PHI problem with $\sigma=10$ and $c=0.9$ and different level-symmetric quadratures.}
+\label{fig::PHI_sig=10_c=0.9}
+\end{figure}
+
+\begin{figure}
+\centering
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS2_sigt=640_c=9999_contour.png}
+		\caption{LS2}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS4_sigt=640_c=9999_contour.png}
+		\caption{LS4}
+	\end{subfigure}
+	}
+	\vspace{1.5cm}
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS8_sigt=640_c=9999_contour.png}
+		\caption{LS8}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS16_sigt=640_c=9999_contour.png}
+		\caption{LS16}
+	\end{subfigure}
+	}
+\caption{Fourier wave number distribution for the 2D PHI problem with $\sigma=640$ and $c=0.9999$ and different level-symmetric quadratures.}
+\label{fig::PHI_sig=640_c=0.9999}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection -  AMR Iron Water
 \subsubsection{Performance of MIP DSA with Adaptive Mesh Refinement}
 \label{sec::DSA_Results_1G_AMR}
 
-For the final theoretical analysis of DSA with the MIP form, we analyze the acceleration performance when AMR is utilized on a sufficiently optically thick transport with material discontinuities. The 2D transport problem that will be examined is similar to the Iron-Water problem \cite{khalil1985nodal}. It was modified by Wang and Ragusa for use with higher-order basis functions on triangular meshes with hanging nodes \cite{ref::DSA_wang_ragusa}. We will reexamine their work on degenarate polygonal grids and not use hanging nodes. The complete geometric desciption of our problem including boundary conditions and material distributions is given in Figure \ref{fig::DSA_IW_Description}. The material properties for each region which include the total cross section, scattering ratio, and source strength are given in Table \ref{tab::DSA_IW_mats}.
+For the final theoretical analysis of DSA with the MIP form, we analyze the acceleration performance when AMR is utilized on a sufficiently optically thick transport with material discontinuities. The 2D transport problem that will be examined is similar to the Iron-Water problem \cite{khalil1985nodal}. It was modified by Wang and Ragusa for use with higher-order basis functions on triangular meshes with hanging nodes \cite{ref::DSA_wang_ragusa}. We will reexamine their work on degenarate polygonal grids and not use hanging nodes. The complete geometric desciption of our problem including boundary conditions and material distributions is given in Figure \ref{fig::DSA_IW_Description}. The material properties for each region which include the total cross section, scattering ratio, and source strength are given in Table \ref{tab::DSA_IW_mats}. Scattering is isotropic. 
+
 
 
 \begin{table}
@@ -1040,7 +1139,7 @@ III & 1.0 & 0.30 & 0.0\\
 \subsection{Scalability of the MIP DSA Preconditioner}
 \label{sec::DSA_Results_Scaling}
 
-So far, we have presented a detailed theoretical analysis of DSA preconditioning with the MIP diffusion form. 
+So far, we have presented a detailed theoretical analysis of DSA preconditioning with the MIP diffusion form. We have shown that the different 2D and 3D basis functions provided in Chapter \ref{sec::BF} are robust and stable, even on mesh cells with high aspect ratios.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1048,16 +1147,71 @@ So far, we have presented a detailed theoretical analysis of DSA preconditioning
 \subsubsection{Weak Scaling with a Homogeneous Zerr Problem}
 \label{sec::DSA_Results_Scaling_Zerr}
 
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth]{figures/sec_DSA/Vulcan_DSA_Timing.eps}
+\caption{blah}
+\label{fig::DSA_Vulcan_MIP_Timing}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection -  Parametric HYPRE
-\subsubsection{Aggregation and Partitioning Effects}
+\subsubsection{Aggregation and Partitioning Effects on the HYPRE PCG Algorithm}
 \label{sec::DSA_Results_Scaling_Parametric}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - Scaling
+%%%   SubSection - MG IM1
 \subsection{Thermal Neutron Upscattering Acceleration}
 \label{sec::DSA_Results_IM1}
+
+We conclude the results of this chapter by presenting 
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/sec_DSA/IM1_configuration_Rev1.png}
+\caption{Configuration of the IM1 problem with the outer layers of air removed.}
+\label{fig::IM1_config}
+\end{figure}
+
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.775\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IM1_EC_Jac.eps}
+		\caption{Richardson}
+	\end{subfigure}
+	
+	\begin{subfigure}[b]{0.775\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IM1_EC_GS.eps}
+		\caption{}
+	\end{subfigure}
+\caption{Spectral shape of the infinite medium iteration matrices for the IM1 problem materials.}
+\label{fig::IM1_mats_EC}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.7\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/P0_Unaccelerated_IM1_Fourier_TG.eps}
+		\caption{Gauss-Seidel}
+	\end{subfigure}
+}
+	\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.7\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/P0_Accelerated_IM1_Fourier_TG.eps}
+		\caption{}
+	\end{subfigure}
+}
+\caption{1D fourier analysis for some IM1 materials of interest. (a) }
+\label{fig::IM1_TG_fourier_somemates}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1065,7 +1219,7 @@ So far, we have presented a detailed theoretical analysis of DSA preconditioning
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions}
-\label{sec::DSA_conclusions}
+\label{sec::DSA_Conclusions}
 
 In this chapter, we analyzed the Modified Interior Penalty form of the diffusion equation for use as the diffusion solver for DSA preconditioning of the DGFEM $S_N$ transport equation.
 

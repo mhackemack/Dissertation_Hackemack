@@ -62,7 +62,7 @@ The time-dependent neutron angular flux, $\Psi (\vec{r}, E, \vec{\Omega}, t)$, a
 \end{aligned} .
 \end{equation}
 
-\noindent In Eqs. (\ref{eq::Sn_transport_eq_full}) and (\ref{eq::Sn_transport_bc_full}), the physical properties of the system are defined as the following: $\sigma_t (\vec{r}, E,t)$ is the total neutron cross section, $\chi (\vec{r}, E,t)$ is the neutron fission spectrum, $\sigma_f (\vec{r}, E',t)$ is the fission cross section, $\nu (\vec{r}, E',t)$ is the average number of neutroncs emitted per fission, $\sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega,t)$ is the scattering cross section, and $Q_{ext} (\vec{r}, E, \vec{\Omega},t)$ is a distributed external source. 
+\noindent In Eqs. (\ref{eq::Sn_transport_eq_full}) and (\ref{eq::Sn_transport_bc_full}), the physical properties of the system are defined as the following: $\sigma_t (\vec{r}, E,t)$ is the total neutron cross section, $\chi (\vec{r}, E,t)$ is the neutron fission spectrum, $\sigma_f (\vec{r}, E',t)$ is the fission cross section, $\nu (\vec{r}, E',t)$ is the average number of neutroncs emitted per fission, $\sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega,t)$ is the scattering cross section, $Q_{ext} (\vec{r}, E, \vec{\Omega},t)$ is a distributed external source, $\Psi^{inc} (\vec{r}, E, \vec{\Omega},t)$ is the incident boundary source, and $\gamma (\vec{r}, E' \rightarrow E, \vec{\Omega}' \rightarrow \vec{\Omega},t) \Psi (\vec{r}, E', \vec{\Omega}',t)$ is the boundary albedo. 
 
 We can simplify Eq. (\ref{eq::Sn_transport_eq_full}) to:
 
@@ -153,7 +153,7 @@ For the remainder of this energy discretization procedure, we will utilize the s
 \begin{equation}
 \label{eq::Sn_MG_exact_condensed_terms}
 \begin{aligned}
-\sigma_{t,g} (\vec{r},\vec{\Omega}) & \equiv \frac{\int_{E_{g}}^{E_{g-1}} \sigma_{t} (\vec{r},\vec{\Omega},E) \Psi (\vec{r},\vec{\Omega}, E) \, dE}{\int_{E_{g}}^{E_{g-1}} \int_{4 \pi} \Psi (\vec{r},\vec{\Omega}, E) \, dE}\\
+\sigma_{t,g} (\vec{r}) & \equiv \frac{\int_{E_{g}}^{E_{g-1}} \sigma_{t} (\vec{r},\vec{\Omega},E) \int_{4 \pi} \Psi (\vec{r},\vec{\Omega}, E) \, dE d\Omega}{\int_{E_{g}}^{E_{g-1}} \int_{4 \pi} \Psi (\vec{r},\vec{\Omega}, E) \, dE d\Omega}\\
 \nu\sigma_{f,g} (\vec{r}) & \equiv \frac{\int_{E_{g}}^{E_{g-1}} \nu\sigma_{f} (\vec{r},E)  \int_{4 \pi} \Psi (\vec{r},\vec{\Omega}, E) \, dE d\Omega}{\int_{E_{g}}^{E_{g-1}} \int_{4 \pi} \Psi (\vec{r},\vec{\Omega}, E) \, dE d\Omega} \\
 \chi_g & \equiv \int_{E_{g}}^{E_{g-1}} \chi  (\vec{r},E) \, dE \\
 \sigma_{s}^{g' \rightarrow g} (\vec{r},\vec{\Omega}' , \vec{\Omega} ) & \equiv \frac{\int_{E_{g'}}^{E_{g'-1}} \left[ \int_{E_{g}}^{E_{g-1}} \sigma_s (\vec{r},E' \rightarrow E,\vec{\Omega}' , \vec{\Omega} ) \, dE \right] \Psi (\vec{r},\vec{\Omega}', E') \, dE' }{\int_{E_{g}}^{E_{g-1}}  \Psi (\vec{r},\vec{\Omega}, E) \, dE} \\
@@ -175,7 +175,7 @@ We first define an approximate angular flux distribution for a region $s$:
 \begin{equation}
 \label{eq::MG_approx_condensed_terms}
 \begin{aligned}
-\sigma_{t,g} (\vec{r},\vec{\Omega}) & \equiv \frac{\int_{E_{g}}^{E_{g-1}} \sigma_{t} (\vec{r},\vec{\Omega},E) f_{s} (E) \, dE}{\int_{E_{g}}^{E_{g-1}} f_{s} (E) \, dE} ,\\
+\sigma_{t,g} (\vec{r}) & \equiv \frac{\int_{E_{g}}^{E_{g-1}} \sigma_{t} (\vec{r},E) f_{s} (E) \, dE}{\int_{E_{g}}^{E_{g-1}} f_{s} (E) \, dE} ,\\
 \nu\sigma_{f,g} (\vec{r}) & \equiv \frac{\int_{E_{g}}^{E_{g-1}} \nu\sigma_{f} (\vec{r},E)  f_{s} (E) \, dE }{\int_{E_{g}}^{E_{g-1}} f_{s} (E) \, dE}, \\
 \sigma_{s}^{g' \rightarrow g} (\vec{r},\vec{\Omega}' , \vec{\Omega} ) & \equiv \frac{\int_{E_{g'}}^{E_{g'-1}} \left[ \int_{E_{g}}^{E_{g-1}} \sigma_s (\vec{r},E' \rightarrow E,\vec{\Omega}' , \vec{\Omega} ) \, dE \right] f_{s} (E')\, dE' }{\int_{E_{g}}^{E_{g-1}}  f_{s} (E) \, dE} .
 \end{aligned}
@@ -227,7 +227,7 @@ With the scattering cross section redefined, we can now expand the angular flux 
 
 \begin{equation}
 \label{eq::Sn_flux_moments}
-	\Phi_{k,n} \equiv \int_{4 \pi} d\Omega \, \Psi(\vec{\Omega}) \, Y_{p,n} (\vec{\Omega}).
+	\Phi_{k,n} \equiv \int_{4 \pi} d\Omega \, \Psi(\vec{\Omega}) \, Y_{k,n} (\vec{\Omega}).
 \end{equation}
 
 \noindent We note that the $p$ and $k$ orders of the scattering cross section and angular flux expansions, respectively, are not corresponding. We then take the scattering cross section expansion of Eq. (\ref{eq::Sn_scatt_xs_legendre}) and the angular flux expansion of Eq. (\ref{eq::Sn_ang_flux_sph_harm_funcs}), and insert them into the original scattering term of the right-hand-side of Eq. (\ref{eq::Sn_Angle_simple_trans_eq}). After significant algebra and manipulations, which we will not include here for brevity, the scattering term can be greatly simplified (the full details of this are located in Appendix \ref{sec::appendix_SN}). Eq. (\ref{eq::Sn_Angle_simple_trans_eq}) can now be written again with this alternate and simplified scattering term that is composed of the cross section and angular flux moments:
@@ -702,7 +702,7 @@ Next, we left-multiply Eq. (\ref{eq::Sn_trans_eq_simple_no_energy_groups}) by an
  \Big< u, v \Big>_f \equiv \int_f u \, v \, d s
 \end{equation}
 
-\noindent correspond to integrations over the cell and faces, respectively, where $dr \in \mathbb{R}^d$ is within the cell and $ds \in \mathbb{R}^{d-1}$ is along the cell boundary. We note that we will use this notation of the inner product for the remainder of the dissertation unless otherwise stated. We then separate the summation of the cell $K$ boundary integration terms into two different types: outflow boundaries ($\partial K^+ = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m > 0 \}$) and inflow boundaries ($\partial K^- = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m < 0 \}$). The inflow boundaries can further be separated into inflow from another cell: $\partial K^- \backslash \partial \mathcal{D} $; inflow from incident flux on the domain boundary: $\partial K^- \cap \partial \mathcal{D}^d $; and reflecting domain boundaries: $\partial K^- \cap \partial \mathcal{D}^r $. At this point, we note that the derivation can comprise an additional step by using Gauss' Divergence Theorem again on the streaming term. This is sometimes performed for radiation transport work so that mass matrix lumping can be performed, but we will not do so here. Therefore, with the cell boundary terminology as proposed, Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK}) can be written into the following form:
+\noindent correspond to integrations over the cell and faces, respectively, where $dr \in \mathbb{R}^d$ is within the cell and $ds \in \mathbb{R}^{d-1}$ is along the cell boundary. We note that we will use this notation of the inner product for the remainder of the dissertation unless otherwise stated. We then separate the summation of the cell $K$ boundary integration terms into two different types: outflow boundaries ($\partial K^+ = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m > 0 \}$) and inflow boundaries ($\partial K^- = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m < 0 \}$). The inflow boundaries can further be separated into inflow from another cell: $\partial K^- \backslash \partial \mathcal{D} $; inflow from incident flux on the domain boundary: $\partial K^- \cap \partial \mathcal{D}^d $; and reflecting domain boundaries: $\partial K^- \cap \partial \mathcal{D}^r $. At this point, we note that the derivation can comprise an additional step by using Gauss' Divergence Theorem again on the streaming term. This is sometimes performed for radiation transport work so that mass matrix lumping can be performed, but we will not do so here at this time. Therefore, with the cell boundary terminology as proposed, Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK}) can be written into the following form:
 
 \begin{equation}
 \label{eq::Sn_DGFEM_trans_eq_cellK_diff_faces}
@@ -831,7 +831,7 @@ u (\vec{r}) = \text{sgn} \left(  \vec{n} (\vec{r}) \cdot  \vec{\Omega}_m \right)
 \subsection{Elementary Matrices on an Arbitrary Spatial Cell}
 \label{sec::Sn_Spatial_Matrices}
 
-In Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK_complete}), we presented the full set of spatially-discretized equations needed to solve the angular flux solution for cell $K$ for a single angular direction. 
+In Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK_complete}), we presented the full set of spatially-discretized equations needed to solve the angular flux solution for cell $K$ for a single angular direction. In the equation, several terms of various types arise including interaction, $\Big( \sigma  b_m , \Psi_m  \Big)_K$, streaming, $ \Big( \vec{\Omega}_m \cdot \vec{\nabla}  b_m , \Psi_m  \Big)_K$, and surface, $     \Big< \left( \vec{\Omega}_m \cdot  \vec{n} \right) \, b_m, \Psi_m  \Big>_{\partial K}$. Each of these correspond to a different elementary matrix type. We now present how to compute the mass, streaming, and surface matrices in Sections \ref{sec::Sn_Spatial_Matrices_Mass}, \ref{sec::Sn_Spatial_Matrices_Streaming}, and \ref{sec::Sn_Spatial_Matrices_Surface}, respectively.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Mass
@@ -979,7 +979,7 @@ To this point, we have properly described the procedures to discretize the trans
 -  \Big( \vec{\Omega}_m \cdot  & \vec{\nabla} b_{m,g}, \Psi_{m,g} \Big)_{K}   + \Big(  \sigma_{t,g} b_{m,g} ,   \Psi_{m,g} \Big)_{K} +  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}_{m,g}^{-}  \Big>_{\partial K^+}  \\
   + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}_{m,g}^{+}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}^{-}_{m',g}  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
 = & \sum\displaylimits_{g'=1}^G \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi} \sum_{n=-p}^{p}   Y_{p,n} (  \vec{\Omega}_m )  \Big( \sigma_{s,p}^{g' \rightarrow g} \, b_{m,g},  \Phi_{p,n,g'} \Big)_{K}  \\
-+ & \left(  b_{m,g} ,   Q_{m,g} \right)_{K} + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}_{m,g}^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}^d}
++ & \left(  b_{m,g} ,   Q_{m,g} \right)_{K} - \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}_{m,g}^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}^d}
 \end{aligned} .
 \end{equation} 
 
@@ -1047,27 +1047,43 @@ Because the only coupling that arises between the set of multigroup $S_N$ equati
 \subsubsection{Source Iteration}
 \label{sec::Sn_Solution_Iterative_SI}
 
-One simple method to invert $({\bf I} - {\bf T})$ of Eq. (\ref{eq::Sn_full_sol_moments_only}) is the {\em source iteration} technique, also known as {\em richardson iteration}.
+One simple method to invert $({\bf I} - {\bf T})$ of Eq. (\ref{eq::Sn_full_sol_moments_only}) is the {\em source iteration} technique, also known as {\em richardson iteration}. If we isolate a single group set, $gs$, then the 
+
+\begin{equation}
+\label{eq::Sn_pre_si_iter}
+{\bf L}_{gs} {\bf \Psi}_{gs}^{(\ell+1)} =    {\bf M}_{gs} {\bf \Sigma}_{gs} {\bf \Phi}_{gs}^{(\ell)} +  {\bf Q}_{gs} 
+\end{equation}
 
 \begin{equation}
 \label{eq::Sn_si_iter}
 \begin{aligned}
- {\bf \Psi}^{(\ell+1)} = {\bf L}^{-1} \left(  {\bf M} {\bf \Sigma} {\bf \Phi}^{(\ell)} +  {\bf Q} \right) \\
-{\bf \Phi}^{(\ell+1)} =  {\bf D} {\bf \Psi}^{(\ell+1)}
+ {\bf \Psi}_{gs}^{(\ell+1)} = {\bf L}_{gs}^{-1} \left(  {\bf M}_{gs} {\bf \Sigma}_{gs} {\bf \Phi}_{gs}^{(\ell)} +  {\bf Q}_{gs} \right) \\
+{\bf \Phi}_{gs}^{(\ell+1)} =  {\bf D}_{gs} {\bf \Psi}_{gs}^{(\ell+1)}
 \end{aligned}
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - Source Iteration
-\subsubsection{Krylov Subspace Methods - GMRES}
+\subsubsection{Krylov Subspace Methods}
 \label{sec::Sn_Solution_Iterative_GMRES}
+
+Source iteration is not the only iterative technique that can be employed to invert $({\bf I} - {\bf T})$ for a given group set. In the last 20 years, krylov subspace methods have been applied to the discretized transport equation \cite{oliveira1998preconditioned,guthrie1999gmres,patton2002application}. Because $({\bf I} - {\bf T})$ is not symmetric, we want to only use krylov methods that can solve non-symmetric matrices. The two krylov subspace methods that we would naturally want to employ are GMRES and BiCGSTAB \cite{saad1986gmres,saad2003iterative}. We will not describe the implementations of these methods here for brevity. However, we will state that most of the computational machinery required to perform richardson iterations can also be used for these krylov methods. The only modifications/extensions that are needed are summarized in the following list.
+
+\begin{enumerate}
+\item Construction of the right-hand-side: ${\bf b} = {\bf D} {\bf L}^{-1} {\bf Q}$. From this equation, it is obvious that we need just one initial transport sweep to properly build this right-hand-side.
+\item The operation of the matrix $({\bf I} - {\bf T})$ on a krylov vector, $\nu$. This can easily be accomplished with the same machinery as richardson iteration by simply subtracting the original flux moment vector by the updated moments after one transport sweep.
+\item Modify the calculation of the convergence criterion so that the norm of the iteration residual, normalized by the right-hand-side, is smaller than some prescribed tolerance:
+$\frac{||{\bf b} - ({\bf I} - {\bf T}) {\bf x} ||_2}{||{\bf b}||_2} < \text{tol}$.
+\end{enumerate}
+
+Combined with the appropriate linear algebra operations, these three small alterations are all that are required to properly utilize the krlov solver for the transport equation. It is not immediately obvious how one would would precondition the krylov iterations in the context of transport sweeping. However, just like the richardson iteration scheme, we will provide the implementation of DSA preconditioning for krylov in Chapter \ref{sec::DSA}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Spatial Solution Procedures
 \subsection{Spatial Solution Procedures}
 \label{sec::Sn_Solution_Spatial}
 
-Section \ref{sec::Sn_Solution_Iterative} presented the methodology that we will employ to iteratively converge our transport solutions in energy and angle (flux moments). Both richardson iteration and GMRES were presented as methods that can invert the $({\bf I} - {\bf T})$ operator. In both of these iterative methods, the common operation of interest is the inversion of the loss operator (${\bf L}$). There are different techniques that could be used to perform this operation, including several matrix-dependent and matrix-free methodologies. 
+Section \ref{sec::Sn_Solution_Iterative} presented the methodology that we will employ to iteratively converge our transport solutions in energy and angle (flux moments). Both richardson iteration and the krylov methods were presented as methods that can invert the $({\bf I} - {\bf T})$ operator. In both of these iterative methods, the common operation of interest is the inversion of the loss operator (${\bf L}$). There are different techniques that could be used to perform this operation, including several matrix-dependent and matrix-free methodologies. 
 
 For this work, the loss operator inversion on some unstructured mesh, $\mathbb{T}_h$, will be performed by use of the full-domain transport sweep as outlined next in Section \ref{sec::Sn_Solution_Spatial_Sweeping}. We will generate our 2D and 3D polytope meshes by two different methods: 1) Voronoi mesh generation in Section \ref{sec::Sn_Solution_Spatial_Voronoi} and 2) adaptive mesh refinement in Section \ref{sec::Sn_Solution_Spatial_AMR}.
 
@@ -1147,12 +1163,14 @@ The full-domain transport sweep is a beneficial matrix-free scheme because of th
 
 \noindent From Eq. (\ref{eq::Sn_AMR_across_face_vals}), the across-face solutions for interior faces, incident boundaries and reflecting boundaries have different meanings. For an interior face $f$ ($\vec{r} \notin \partial \mathcal{D}$), the across-face solution comes from the cell $K'$ (as defined by Figure \ref{fig::Sn_two_ref_cells}). For incident boundaries ($\vec{r} \in \partial \mathcal{D}^d$), the across-face solution is a combination of integrals of the outgoing ($\Psi_m^-$) and incident boundary fluxes ($\Psi_m^{inc}$). Finally, for reflecting boundaries ($\vec{r} \in \partial \mathcal{D}^r$), the across-face solutions are simply the within-cell solutions. Therefore, the solution jump is exactly zero for all reflecting boundaries and yields no contribution to the error estimate.
 
+With the error estimates defined for all cells $K \in \mathbb{T}_h^r$ for refinement level $r$, a criterion is needed to determine which cells should be refined. For this work, we choose to employ
+
 \begin{equation}
 \label{eq::Sn_AMR_err_crit}
-\eta_K^r \geq \alpha \max\displaylimits_{K' \in \mathbb{T}_h^r} \left(  \eta_{K'}^{r} \right)
+\eta_K^r \geq \alpha \max\displaylimits_{K' \in \mathbb{T}_h^r} \left(  \eta_{K'}^{r} \right),
 \end{equation}
 
-\noindent where $\alpha$ is a user-defined value $(0,1)$. This refinement criterion has a simple meaning. If, for example, $\alpha = 0.2$, then a cell will be refined if its error estimate is greater than 20\% of the cell with the largest error estimate. This does not necessarily mean that 80\% of the mesh cells will be refined at level $r$. Instead, the criterion simply states that any cell above a particular threshold will be refined. This means that it is theoretically possible for the extreme cases of 1 or all cells being refined at a particular refinement cycle. The first extreme case could arise with a single spatial cell having a strong solution discontinuity stemming from a strong localized source. The second extreme case could arise when the intercell solution jumps are about equivalent stemming from an incredibly smooth discretized solution at that particular refinement cycle.
+\noindent where $\alpha$ is a user-defined value $(0,1)$. This refinement criterion has a simple meaning. If, for example, $\alpha = 0.2$, then a cell will be refined if its error estimate is greater than 20\% of the cell with the largest error estimate. This does not necessarily mean that 80\% of the mesh cells will be refined at level $r$. Instead, the criterion simply states that any cell above a particular threshold will be refined. This means that it is theoretically possible for the extreme cases of 1 or all cells being refined at a particular refinement cycle. The first extreme case could arise with a single spatial cell having a strong solution discontinuity stemming from a strong localized source. The second extreme case could arise when the intercell solution jumps are about equivalent stemming from an incredibly smooth discretized solution at that particular refinement cycle. We could also enforce a uniform refinement of all the spatial cells by setting $\alpha=0$.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
