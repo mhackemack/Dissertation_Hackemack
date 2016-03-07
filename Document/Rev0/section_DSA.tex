@@ -313,13 +313,13 @@ We begin our discussion of the SIP form by analyzing the standard form of the di
 \begin{equation}
 \label{eq::SIP_boundary_laplacian_term}
 \begin{aligned}
-\Big<  D \vec{\nabla}  \Phi , \vec{\nabla} \Phi^*  \Big>_{\mathcal{D}} - \Big\{   D \partial_n \Phi, \Phi^* \Big\}_{\partial \mathcal{D}^d} - \Big\{  \Phi, D \partial_n \Phi^* \Big\}_{\partial \mathcal{D}^d} \\ + \Big\{ \kappa (\Phi - \Phi_0),  \Phi^* \Big\}_{\partial \mathcal{D}^d} = - \Big\{  \Phi_0, D \partial_n \Phi^* \Big\}_{\partial \mathcal{D}^d} 
+\Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{\mathcal{D}} - \Big<   D \partial_n b, \Phi \Big>_{\partial \mathcal{D}^d} - \Big<  b, D \partial_n \Phi \Big>_{\partial \mathcal{D}^d} \\ + \Big< \kappa b,  (\Phi - \Phi_0) \Big>_{\partial \mathcal{D}^d} = - \Big< D \partial_n b ,  \Phi_0 \Big>_{\partial \mathcal{D}^d} 
 \end{aligned}
 \end{equation}
 
 \begin{equation}
 \label{eq::SIP_interior_laplacian_term}
-\Big\{ \kappa [\![   \Phi ]\!] , [\![  \Phi^* ]\!]\Big\}_{E_h^i} + \Big\{  [\![   \Phi ]\!] , \{\!\{  D \partial_n \Phi^* \}\!\}\Big\}_{E_h^i} + \Big\{ \{\!\{  D \partial_n  \Phi \}\!\} , [\![  \Phi^* ]\!]\Big\}_{E_h^i} = 0
+\Big< \kappa [\![   b ]\!] , [\![  \Phi ]\!]\Big>_{E_h^i} + \Big<  [\![   b ]\!] , \{\!\{  D \partial_n \Phi \}\!\}\Big>_{E_h^i} + \Big< \{\!\{  D \partial_n  b \}\!\} , [\![  \Phi ]\!]\Big>_{E_h^i} = 0
 \end{equation}
 
 The mean value and the jump of the terms on a face are
@@ -341,7 +341,7 @@ The mean value and the jump of the terms on a face are
 Using Eqs. (\ref{eq::SIP_boundary_laplacian_term}) and (\ref{eq::SIP_interior_laplacian_term}), the SIP form of the diffusion equation can be succinctly written as
 
 \begin{equation}
-a^{SIP}( \Phi, \Phi^*) = b^{SIP}(\Phi^*),
+a^{SIP}( b, \Phi) = b^{SIP}(b),
 \label{eq::SIP_weak_form}
 \end{equation}
 
@@ -350,9 +350,9 @@ a^{SIP}( \Phi, \Phi^*) = b^{SIP}(\Phi^*),
 \begin{equation}
 \label{eq::SIP_bilinear_form}
 \begin{aligned}
-a^{SIP}( \Phi, \Phi^*)  = \Big<  D \vec{\nabla}  \Phi , \vec{\nabla} \Phi^*  \Big>_{\mathcal{D}} + \Big<  \sigma   \Phi ,  \Phi^*  \Big>_{\mathcal{D}}  +  \frac{1}{2} \Big\{    \Phi , \Phi^* \Big\}_{\partial \mathcal{D}^r}   \\
-+  \Big\{ \kappa_e^{SIP} [\![   \Phi ]\!] , [\![  \Phi^* ]\!]\Big\}_{E_h^i} + \Big\{  [\![   \Phi ]\!] , \{\!\{  D \partial_n \Phi^* \}\!\}\Big\}_{E_h^i}  + \Big\{ \{\!\{  D \partial_n  \Phi \}\!\} , [\![ \Phi^* ]\!]\Big\}_{E_h^i} \\
-+ \Big\{ \kappa_e^{SIP}   \Phi ,   \Phi^* \Big\}_{\partial \mathcal{D}^d} - \Big\{   \Phi  ,  D \partial_n \Phi^* \Big\}_{\partial \mathcal{D}^d} - \Big\{   D 				\partial_n  \Phi , \Phi^* \Big\}_{\partial \mathcal{D}^d}  
+a^{SIP}( b, \Phi)  = \Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{\mathcal{D}} + \Big(  \sigma   b ,  \Phi  \Big)_{\mathcal{D}}  +  \frac{1}{2} \Big<    b , \Phi \Big>_{\partial \mathcal{D}^r}   \\
++  \Big< \kappa_e^{SIP} [\![   b ]\!] , [\![  \Phi ]\!]\Big>_{E_h^i} + \Big<  [\![   b ]\!] , \{\!\{  D \partial_n \Phi \}\!\}\Big>_{E_h^i}  + \Big< \{\!\{  D \partial_n  b \}\!\} , [\![ \Phi ]\!]\Big>_{E_h^i} \\
++ \Big< \kappa_e^{SIP}   b ,   \Phi \Big>_{\partial \mathcal{D}^d} - \Big<   b  ,  D \partial_n \Phi \Big>_{\partial \mathcal{D}^d} - \Big<   D 				\partial_n  b , \Phi \Big>_{\partial \mathcal{D}^d}  
 \end{aligned} ,
 \end{equation}
 
@@ -361,7 +361,7 @@ a^{SIP}( \Phi, \Phi^*)  = \Big<  D \vec{\nabla}  \Phi , \vec{\nabla} \Phi^*  \Bi
 \begin{equation}
 \label{eq::SIP_linear_form}
 \begin{aligned}
-b^{SIP} (\Phi^*) = \Big<  Q, \Phi^*  \Big>_{\mathcal{D}}  - \Big\{   J_{0}, \Phi^*  \Big\}_{\partial \mathcal{D}^n} +  2 \Big\{   J^{inc}, \Phi^*  \Big\}_{\partial 				\mathcal{D}^r} \\ + \Big\{ \kappa_e^{SIP}   \Phi_0 ,   \Phi^* \Big\}_{\partial \mathcal{D}^d} - \Big\{   \Phi_0  ,  D \partial_n \Phi^* \Big\}_{\partial 					\mathcal{D}^d} 
+b^{SIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  - \Big<   b, J_{0}  \Big>_{\partial \mathcal{D}^n} +  2 \Big<  b, J^{inc}  \Big>_{\partial	\mathcal{D}^r} \\ + \Big< \kappa_e^{SIP}  b, \Phi_0  \Big>_{\partial \mathcal{D}^d} - \Big<    D \partial_n b ,\Phi_0 \Big>_{\partial	\mathcal{D}^d} 
 \end{aligned} .
 \end{equation}
 
@@ -433,7 +433,7 @@ The second new elementary matrix corresponds to the integrals of the product of 
 \label{sec::DSA_MIP}
 
 \begin{equation}
-a^{MIP}( \delta \Phi, \Phi^*) = b^{MIP}(\Phi^*),
+a^{MIP}( b, \delta \Phi) = b^{MIP}(b),
 \label{eq::MIP_weak_form}
 \end{equation}
 
@@ -442,9 +442,9 @@ a^{MIP}( \delta \Phi, \Phi^*) = b^{MIP}(\Phi^*),
 \begin{equation}
 \label{eq::MIP_bilinear_form}
 \begin{aligned}
-a^{MIP}(\delta \Phi, \Phi^*)  = \Big<  D \vec{\nabla} \delta  \Phi , \vec{\nabla} \Phi^*  \Big>_{\mathcal{D}} + \Big<  \sigma \delta  \Phi ,  \Phi^*  \Big>_{\mathcal{D}}    \\
-+  \Big\{ \kappa_e^{MIP} [\![ \delta  \Phi ]\!] , [\![  \Phi^* ]\!]\Big\}_{E_h^i} + \Big\{  [\![  \delta \Phi ]\!] , \{\!\{  D \partial_n \Phi^* \}\!\}\Big\}_{E_h^i}  + \Big\{ \{\!\{  D \partial_n \delta \Phi \}\!\} , [\![ \Phi^* ]\!]\Big\}_{E_h^i} \\
-+ \Big\{ \kappa_e^{MIP}  \delta \Phi ,   \Phi^* \Big\}_{\partial \mathcal{D}^d} - \frac{1}{2} \Big\{  \delta \Phi  ,  D \partial_n \Phi^* \Big\}_{\partial \mathcal{D}^d} - \frac{1}{2} \Big\{   D \partial_n \delta  \Phi , \Phi^* \Big\}_{\partial \mathcal{D}^d}  
+a^{MIP}(b, \delta \Phi)  = \Big(  D \vec{\nabla} b , \vec{\nabla} \delta \Phi  \Big)_{\mathcal{D}} + \Big(  \sigma b , \delta \Phi  \Big)_{\mathcal{D}}    \\
++  \Big< \kappa_e^{MIP} [\![   b ]\!] , [\![  \delta \Phi ]\!]\Big>_{E_h^i} + \Big<  [\![  b ]\!] , \{\!\{  D \partial_n \delta \Phi \}\!\}\Big>_{E_h^i}  + \Big< \{\!\{  D \partial_n b \}\!\} , [\![ \delta \Phi ]\!]\Big>_{E_h^i} \\
++ \Big< \kappa_e^{MIP}  b , \delta  \Phi \Big>_{\partial \mathcal{D}^d} - \frac{1}{2} \Big<  b ,  D \partial_n \delta \Phi \Big>_{\partial \mathcal{D}^d} - \frac{1}{2} \Big<   D \partial_n b , \delta \Phi \Big>_{\partial \mathcal{D}^d}  
 \end{aligned} ,
 \end{equation}
 
@@ -452,7 +452,7 @@ a^{MIP}(\delta \Phi, \Phi^*)  = \Big<  D \vec{\nabla} \delta  \Phi , \vec{\nabla
 
 \begin{equation}
 \label{eq::MIP_linear_form}
-b^{MIP} (\Phi^*) = \Big<  Q, \Phi^*  \Big>_{\mathcal{D}}  + \Big\{ \delta  J^{inc}, \Phi^*  \Big\}_{\partial \mathcal{D}^r} .
+b^{MIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  + \Big< b, \delta  J^{inc}  \Big>_{\partial \mathcal{D}^r} .
 \end{equation}
 
 
@@ -469,12 +469,8 @@ b^{MIP} (\Phi^*) = \Big<  Q, \Phi^*  \Big>_{\mathcal{D}}  + \Big\{ \delta  J^{in
 \section{Fourier Analysis}
 \label{sec::DSA_Fourier}
 
-\begin{figure}
-\centering
-\includegraphics[width=0.60\textwidth]{figures/sec_DSA/fourier_sq_layout.png}
-\caption[Fourier domain]{Fourier domain for 2D quadrilateral cells or an axial slice of 3D hexahedral cells in a regular grid.}
-\label{fig::}
-\end{figure}
+With the acceleration methodologies and diffusion discretization scheme described in detail, we now present the Fourier Analysis tool. Fourier Analysis is commonly used to analyze the performance characteristics of acceleration schemes for the transport equation. 
+
 
 \begin{equation}
 \label{eq::fourier_sol}
@@ -485,6 +481,13 @@ b^{MIP} (\Phi^*) = \Big<  Q, \Phi^*  \Big>_{\mathcal{D}}  + \Big\{ \delta  J^{in
 \end{equation}
 
 \noindent where $i=\sqrt{-1}$
+
+\begin{figure}
+\centering
+\includegraphics[width=0.60\textwidth]{figures/sec_DSA/fourier_sq_layout.png}
+\caption[Fourier domain]{Fourier domain for 2D quadrilateral cells or an axial slice of 3D hexahedral cells in a regular grid.}
+\label{fig::DSA_fourier_grid_layout}
+\end{figure}
 
 iteration matrices here...
 
@@ -806,6 +809,147 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 \includegraphics[width=0.75\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_MAXENT1_LS2,4,8,16.png}
 \caption{Fourier analysis of the 2D MIP form with $c=4$ and using the linear maximum entropy coordinates for the homogeneous infinite medium case as a function of the mesh optical thickness.}
 \label{fig::DSA_1G_Fourier_ME1}
+\end{figure}
+
+\begin{figure}
+\centering
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS2_x=1e-2_dydx=1_contour.png}
+		\caption{1e-2 mfp}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS2_x=1e-1_dydx=1_contour.png}
+		\caption{1e-1 mfp}
+	\end{subfigure}
+	}
+	\vspace{0.5cm}
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS2_x=1_dydx=1_contour.png}
+		\caption{1e0 mfp}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS2_x=10_dydx=1_contour.png}
+		\caption{1e1 mfp}
+	\end{subfigure}
+	}
+	\vspace{0.5cm}
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS2_x=100_dydx=1_contour.png}
+		\caption{1e2 mfp}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS2_x=1000_dydx=1_contour.png}
+		\caption{1e3 mfp}
+	\end{subfigure}
+	}
+\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL coordinates and LS2 quadrature.}
+\label{fig::2D_homo_dsa_wave_LS2}
+\end{figure}
+
+\begin{figure}
+\centering
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS4_x=1e-2_dydx=1_contour.png}
+		\caption{1e-2 mfp}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS4_x=1e-1_dydx=1_contour.png}
+		\caption{1e-1 mfp}
+	\end{subfigure}
+	}
+	\vspace{0.5cm}
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS4_x=1_dydx=1_contour.png}
+		\caption{1e0 mfp}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS4_x=10_dydx=1_contour.png}
+		\caption{1e1 mfp}
+	\end{subfigure}
+	}
+	\vspace{0.5cm}
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS4_x=100_dydx=1_contour.png}
+		\caption{1e2 mfp}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS4_x=1000_dydx=1_contour.png}
+		\caption{1e3 mfp}
+	\end{subfigure}
+	}
+\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL coordinates and LS4 quadrature.}
+\label{fig::2D_homo_dsa_wave_LS4}
+\end{figure}
+
+\begin{figure}
+\centering
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS8_x=1e-2_dydx=1_contour.png}
+		\caption{1e-2 mfp}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS8_x=1e-1_dydx=1_contour.png}
+		\caption{1e-1 mfp}
+	\end{subfigure}
+	}
+	\vspace{0.5cm}
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS8_x=1_dydx=1_contour.png}
+		\caption{1e0 mfp}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS8_x=10_dydx=1_contour.png}
+		\caption{1e1 mfp}
+	\end{subfigure}
+	}
+	\vspace{0.5cm}
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS8_x=100_dydx=1_contour.png}
+		\caption{1e2 mfp}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS8_x=1000_dydx=1_contour.png}
+		\caption{1e3 mfp}
+	\end{subfigure}
+	}
+\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL coordinates and LS8 quadrature.}
+\label{fig::2D_homo_dsa_wave_LS8}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
