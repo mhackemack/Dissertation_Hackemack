@@ -469,7 +469,7 @@ b^{MIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  + \Big< b, \delta  J^{inc}  \Big
 \section{Fourier Analysis}
 \label{sec::DSA_Fourier}
 
-With the acceleration methodologies and diffusion discretization scheme described in detail, we now present the Fourier Analysis tool. Fourier Analysis is commonly used to analyze the performance characteristics of acceleration schemes for the transport equation. It is a powerful tool because it allows us to express the iteration error in terms of a fourier series. Then, because of the orthogonality of the terms in the series, each fourier mode can be analyzed independently. If these modes were not independent, then we would have no means to simultaneously solve the infinite spectrum of fourier modes.
+With the acceleration methodologies and diffusion discretization scheme described in detail, we now present the Fourier Analysis tool. Fourier Analysis is commonly used to analyze the performance characteristics of acceleration schemes for the transport equation. It is a powerful tool because it allows us to express the iteration error in terms of a fourier series. Then, because of the orthogonality of the terms in the series, each fourier mode can be analyzed independently. If these modes were not independent, then we would have no ability to simultaneously solve the infinite spectrum of fourier modes.
 
 
 \begin{equation}
@@ -817,13 +817,13 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS2_x=1e-2_dydx=1_contour.png}
-		\caption{1e-2 mfp}
+		\caption{$10^{-2}$ mfp}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS2_x=1e-1_dydx=1_contour.png}
-		\caption{1e-1 mfp}
+		\caption{$10^{-1}$ mfp}
 	\end{subfigure}
 	}
 	\vspace{0.5cm}
@@ -831,13 +831,13 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS2_x=1_dydx=1_contour.png}
-		\caption{1e0 mfp}
+		\caption{$10^{0}$ mfp}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS2_x=10_dydx=1_contour.png}
-		\caption{1e1 mfp}
+		\caption{$10^{1}$ mfp}
 	\end{subfigure}
 	}
 	\vspace{0.5cm}
@@ -845,13 +845,13 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS2_x=100_dydx=1_contour.png}
-		\caption{1e2 mfp}
+		\caption{$10^{2}$ mfp}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS2_x=1000_dydx=1_contour.png}
-		\caption{1e3 mfp}
+		\caption{$10^{3}$ mfp}
 	\end{subfigure}
 	}
 \caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL coordinates and LS2 quadrature.}
@@ -864,13 +864,13 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS4_x=1e-2_dydx=1_contour.png}
-		\caption{1e-2 mfp}
+		\caption{$10^{-2}$ mfp}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS4_x=1e-1_dydx=1_contour.png}
-		\caption{1e-1 mfp}
+		\caption{$10^{-1}$ mfp}
 	\end{subfigure}
 	}
 	\vspace{0.5cm}
@@ -878,13 +878,13 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS4_x=1_dydx=1_contour.png}
-		\caption{1e0 mfp}
+		\caption{$10^{0}$ mfp}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS4_x=10_dydx=1_contour.png}
-		\caption{1e1 mfp}
+		\caption{$10^{1}$ mfp}
 	\end{subfigure}
 	}
 	\vspace{0.5cm}
@@ -892,13 +892,13 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS4_x=100_dydx=1_contour.png}
-		\caption{1e2 mfp}
+		\caption{$10^{2}$ mfp}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS4_x=1000_dydx=1_contour.png}
-		\caption{1e3 mfp}
+		\caption{$10^{3}$ mfp}
 	\end{subfigure}
 	}
 \caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL coordinates and LS4 quadrature.}
@@ -911,13 +911,13 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS8_x=1e-2_dydx=1_contour.png}
-		\caption{1e-2 mfp}
+		\caption{$10^{-2}$ mfp}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS8_x=1e-1_dydx=1_contour.png}
-		\caption{1e-1 mfp}
+		\caption{$10^{-1}$ mfp}
 	\end{subfigure}
 	}
 	\vspace{0.5cm}
@@ -925,13 +925,13 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS8_x=1_dydx=1_contour.png}
-		\caption{1e0 mfp}
+		\caption{$10^{0}$ mfp}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS8_x=10_dydx=1_contour.png}
-		\caption{1e1 mfp}
+		\caption{$10^{1}$ mfp}
 	\end{subfigure}
 	}
 	\vspace{0.5cm}
@@ -939,13 +939,13 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS8_x=100_dydx=1_contour.png}
-		\caption{1e2 mfp}
+		\caption{$10^{2}$ mfp}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS8_x=1000_dydx=1_contour.png}
-		\caption{1e3 mfp}
+		\caption{$10^{3}$ mfp}
 	\end{subfigure}
 	}
 \caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL coordinates and LS8 quadrature.}
