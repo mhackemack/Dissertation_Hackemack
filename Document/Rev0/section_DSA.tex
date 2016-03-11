@@ -1277,19 +1277,85 @@ III & 1.0 & 0.30 & 0.0\\
 \label{fig::IW_PWLD1_PGLC24_meshes}
 \end{figure}
 
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IW_PWLD2_PGLC24_cyc06.png}
+		\caption{Cycle \#6}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IW_PWLD2_PGLC24_cyc12.png}
+		\caption{Cycle \#12}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IW_PWLD2_PGLC24_cyc18.png}
+		\caption{Cycle \#18}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IW_PWLD2_PGLC24_cyc24.png}
+		\caption{Cycle \#24}
+	\end{subfigure}
+\caption{Meshes for the Iron-Water problem using the quadratic PWL coordinates and $S_{24}^2$ PGLC quadrature.}
+\label{fig::IW_PWLD2_PGLC24_meshes}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Scaling
 \subsection{Scalability of the MIP DSA Preconditioner}
 \label{sec::DSA_Results_Scaling}
 
-So far, we have presented a detailed theoretical analysis of DSA preconditioning with the MIP diffusion form. We have shown that the different 2D and 3D basis functions provided in Chapter \ref{sec::BF} are robust and stable, even on mesh cells with high aspect ratios.
+So far, we have presented a detailed theoretical analysis of DSA preconditioning with the MIP diffusion form. We have shown that the different 2D and 3D basis functions provided in Chapter \ref{sec::BF} are robust and stable, even on mesh cells with high aspect ratios. We also demonstrated that problems with large heterogeneous configurations can diminish the effectiveness of MIP DSA.
 
+Now, we need to demonstrate the scalability of MIP DSA preconditioning onto large massively-parallel computer architectures. Our ability to utilize this transport acceleration form would be greatly minimized if the DSA solve times scaled at a much worse rate compared to the transport sweep times. We specifically use the low-order diffusion operator because it is supposed to be easier to invert than the full transport operator.
+
+From the results of the Iron-Water problem in Section \ref{sec::DSA_Results_1G_AMR}, we observed that the PCG iteration counts did not appreciably grow when utilizing AMG as the preconditioner for the diffusion solve. This was in direct contrast to the simpler preconditioners (Jacobi, GS, and ILU) that had their iteration counts grow rapidly as the number of unknowns increased. Motivated by the efficiency of AMG methods with the MIP diffusion form for the simple Iron-Water AMR problem, we will continue to use AMG as the diffusion preconditioner for our massively-parallel calculations.
+
+We have implemented the 1-group and thermal upscattering DSA methodologies of Section \ref{sec::DSA_DSA} with the MIP form into Texas A\&M University's PDT code. It is a massively-parallel DGFEM $S_N$ transport code that has had good sweep scaling efficiency out to $O(10^5)-O(10^6)$ processes \cite{ref::eff_sweeps,adams2013provably}. BoomerAMG of the HYPRE library is used as the AMG diffusion preconditioner \cite{ref::hypre,yang2002boomeramg}. We next analyze the scalability of HYPRE's PCG solver with BoomerAMG preconditioning and how this performs in comparison to PDT's transport sweeping.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection -  Homo Zerr
 \subsubsection{Weak Scaling with a Homogeneous Zerr Problem}
 \label{sec::DSA_Results_Scaling_Zerr}
+
+We first test MIP's scaling with HYPRE in PDT by analyzing a simple homogenized version of the Zerr scaling problem \cite{zerr2011solution}. The problem configuration is a 3D cube that spans $[0,16]^3$ in dimension and uses strictly orthogonal hexahedral mesh cells. The total cross section is set to $\sigma_t=10$ with a scattering ratio of $c=0.9999$ and a distributed source of 1 $\frac{n}{cm^3 \, s}$ . LS8 quadrature is employed and vacuum boundary conditions are used for all boundaries. A residual tolerance of $10^{-8}$ is used for the richardson transport iterations, and a residual tolerance of $10^{-3}$ is used for the HYPRE PCG iterations.
+
+Our weak scaling study is performed with a fixed 4096 spatial cells per processor as we increase the number of processors. We do not change the physical dimensions of the problem. Instead, we simply increase the number of cells in a given coordinate direction whenever we allocate more processors in that dimension. The partitioning of the processor layout ($P_x$, $P_y$, and $P_z$), the task aggregation ($A_x$, $A_y$, and $A_z$), and the number of mesh cells per dimension ($N_x$, $N_y$, and $N_z$) are selected to minimize the time per sweep in PDT. These parallel parameters are given for the full scaling suite in Table \ref{tab::DSA_Vulcan_agg_part}.
+
+\begin{table}[h]
+\centering
+\caption{Partitioning factors, aggregation factors, and cell counts per dimension for the 3D homogeneous Zerr problem run on Vulcan.}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+$P_{tot}$&$P_{x}$&$P_{y}$&$P_{z}$&$A_{x}$&$A_{y}$&$A_{z}$ &$N_{x}$&$N_{y}$&$N_{z}$ \\
+\hline \hline
+1&1&1&1&16&16&1& 16&16&16 \\
+8&2&2&2&16&16&1&32&32&32\\
+64&8&4&2&8&16&1&64&64&64\\
+512&16&16&	2&	8&	8&	1&	128&	128&	128\\
+1024&	32&16&2&4&8&	1&	128&	128&	256\\
+2048&	32&32&2&8&4&	1&	256&	128&	256\\
+4096&	64&32&2&4&8&	1&	256&	256&	256\\
+8192&	64&64&2&4&4&	1&	256&	256&	512\\
+16384&128&	64&2&4&	4&	1&	512&	256&	512\\
+32768&128&	128&2&4&	4&	1&	512&	512&	512\\
+65536&256&	128&2&2&	4&	1&	512&	512&	1024\\
+131072&256&256&2&	4&	2&	1&	1024&	512&	1024\\
+\hline
+\end{tabular}
+\label{tab::DSA_Vulcan_agg_part}
+\end{table}
+
+The timing data for this weak scaling study is given in Figure \ref{fig::DSA_Vulcan_MIP_Timing}. As a function of processors used, we plot the overall solve time, the overall sweep time, the overall MIP DSA time, the time to build the MIP system matrix, the time to perform the HYPRE BoomerAMG setup call, and the time per HYPRE PCG iteration. The sweep time only constitutes the time taken to perform the actual sweep. This discounts the time needed to build the transport sources and prepare for each sweep. There are a lot of results that can be observed from this plot. We first note that all the solve times increase at the low processor counts because the number of sweeps increases from about 20 to 35 as the mesh optical thicknesses move into the intermediate range. The second note is that while the sweep times remain about the same, the various HYPRE times begin to scale more poorly as we get to $O(10^4)$ processors and higher. We can see that the HYPRE setup time especially begins to increase at a rapid pace for the highest core counts. Finally we observe that at certain processor values, the HYPRE times seem to `spike'. This occurs at 1024, 8192, and 65536 processor counts. By looking at the problem's parallel characteristics from Table \ref{tab::DSA_Vulcan_agg_part}, we can see that these processor counts occur when the number of mesh cells in the z-dimension is doubled. This means that the distribution of the cell sets on a processor look like an even longer and skinnier column. This behavior is analyzed in greater detail shortly in Section \ref{sec::DSA_Results_Scaling_Parametric}.
+
+From the timing results of Figure \ref{fig::DSA_Vulcan_MIP_Timing}, one must wonder about the scalability of solving the MIP equation at even higher processor counts out to $O(10^6)$ or $O(10^7)$. For this simple problem, our diffusion solver was taking about 50\%-60\% of the solve time.
 
 \begin{figure}
 \centering
@@ -1309,7 +1375,7 @@ So far, we have presented a detailed theoretical analysis of DSA preconditioning
 \subsection{Thermal Neutron Upscattering Acceleration}
 \label{sec::DSA_Results_IM1}
 
-We conclude the results of this chapter by presenting 
+We conclude the results of this chapter by presenting analysis on the ability to use DSA to accelerate the convergence of multigroup transport problems that are dominated by thermal neutron upscattering.
 
 \begin{figure}
 \centering
