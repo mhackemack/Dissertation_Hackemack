@@ -22,7 +22,7 @@
 \section{Introduction}
 \label{sec::DSA_Introduction}
 
-In this chapter, we analyze the Modified Interior Penalty (MIP) form of the diffusion equation as a discretization scheme for use with Diffusion Synthetic Acceleration (DSA) of the DFEM $S_N$ transport equation on unstructured grids. Specifically, we wish to analyze its efficacy on massively-parallel computer architectures where scalability of solution times and memory footprints can become burdensome. This chapter is laid out in the following manner. The remainder of this Section will provide an overview of synthetic acceleration techniques as well as a review of DSA schemes. Section \ref{sec::DSA_DSA} provides the DSA methodologies that we will employ for 1-group and thermal neutron upscattering acceleration. We then present the discontinuous Symmetric Interior Penalty (SIP) form of the diffuion equation in Section \ref{sec::DSA_SIP} as well as the MIP variant that we will use for our DSA analysis in Section \ref{sec::DSA_MIP}. The theoretical Fourier analysis tool is given in Section \ref{sec::DSA_Fourier}. Results are provided in Section \ref{sec::DSA_Results} and we finish the chapter with some concluding remarks in Section \ref{sec::DSA_Conclusions}
+In this chapter, we analyze the Modified Interior Penalty (MIP) form of the diffusion equation as a discretization scheme for use with Diffusion Synthetic Acceleration (DSA) of the DFEM $S_N$ transport equation on unstructured grids. Specifically, we wish to analyze its efficacy on massively-parallel computer architectures where scalability of solution times and memory footprints can become burdensome. This chapter is laid out in the following manner. The remainder of this Section will provide an overview of synthetic acceleration techniques as well as a review of DSA schemes. Section \ref{sec::DSA_DSA} provides the DSA methodologies that we will employ for 1-group and thermal neutron upscattering acceleration. We then present the discontinuous Symmetric Interior Penalty (SIP) form of the diffuion equation in Section \ref{sec::DSA_SIP} as well as the MIP variant that we will use for our DSA analysis in Section \ref{sec::DSA_MIP}. The numerical procedures that we will use to solve the diffusion system of equations is given in Section \ref{sec::DSA_Solving}. The theoretical Fourier analysis tool is given in Section \ref{sec::DSA_Fourier}. Results are provided in Section \ref{sec::DSA_Results} and we finish the chapter with some concluding remarks in Section \ref{sec::DSA_Conclusions}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -209,7 +209,7 @@ D_{p,n} \equiv \sum_{m=1}^M w_m Y_{p,n} (\vec{\Omega}_m)  \Psi(\vec{\Omega_m}) ,
 \label{sec::DSA_DSA_MG}
 
 %%%%%%%%%%%%%
-%%%   SubSubSection - Two-Grid
+%%%   SubSubSection - Richardson acceleration
 \subsubsection{Multigroup Richardson Acceleration}
 \label{sec:DSA_DSA_MG_WGS}
 
@@ -222,7 +222,7 @@ D_{p,n} \equiv \sum_{m=1}^M w_m Y_{p,n} (\vec{\Omega}_m)  \Psi(\vec{\Omega_m}) ,
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Two-Grid
-\subsubsection{Two-Grid Acceleration}
+\subsubsection{Two-Grid Acceleration and a Variant}
 \label{sec:DSA_DSA_MG_TG}
 
 The second acceleration methodology that we will investigate is the two-grid acceleration scheme devised by Adams and Morel \cite{adams1993two}. They originally derived the scheme to accelerate 1D multigroup transport problems that are dominated by thermal neutron upscattering. 
@@ -414,7 +414,41 @@ b^{SIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  - \Big<   b, J_{0}  \Big>_{\part
 \subsection{Elementary Stiffness Matrices}
 \label{sec::DSA_SIP_Stiffness}
 
-In Eqs. (\ref{eq::SIP_bilinear_form}) and (\ref{eq::SIP_linear_form}), there are two additional elementary matrix types 
+In Eqs. (\ref{eq::SIP_bilinear_form}) and (\ref{eq::SIP_linear_form}), there are two additional elementary matrix types required other than those presented in Chapter \ref{sec::Sn}. The first has the form of $\Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{K}$ and is referred to as the stiffness matrix \cite{akin1982application}. For a cell $K$, we define the stiffness matrix ${\bf S}$ as
+
+\begin{equation}
+\label{eq::DSA_stiffness_matrix_analytical}
+{\bf S}_K =    \int_K \vec{\nabla} {\bf b}_K \cdot \vec{\nabla} {\bf b}_K^T \, d r ,
+\end{equation}
+
+\noindent which has dimensionality $(N_K \text{x} N_K)$. Just like the cell-wise elementary matrices presented in Chapter \ref{sec::Sn}, it is possible that these integrals can be computed analytically, depending on the FEM basis functions used. However, for most of the 2D basis functions presented in Chapter \ref{sec::BF}, this cannot be done. Instead, we can again employ a numerical quadrature set, $\left\{  \vec{x}_q , w_q^{K}  \right\}_{q=1}^{N_q}$, for cell $K$, consisting of $N_q$ points, $\vec{x}_q$, and weights, $w_q^K$. Using this quadrature set, the stiffness matrix can be calculated by the following
+
+\begin{equation}
+\label{eq::DSA_stiffness_matrix_numerical}
+{\bf S}_K = \sum_{q = 1}^{N_q} w_{q}^K \vec{\nabla} {\bf b}_K (\vec{x}_q) \cdot  \vec{\nabla}{\bf b}_K^T (\vec{x}_q)  .
+\end{equation}
+
+\noindent In this case, the local cell-wise stiffness matrix has the full matrix form:
+
+\begin{equation}
+\label{eq::DSA_stiffness_matrix_array}
+{\bf S}_K =   \left[
+\begin{array} {ccccc}
+	\int_K \vec{\nabla}b_1 \cdot \vec{\nabla} b_1  & \ldots & \int_K \vec{\nabla}b_1 \cdot \vec{\nabla} b_j  & \ldots & \int_K \vec{\nabla}b_1 \cdot \vec{\nabla}b_{N_K} \\
+	\vdots  &  & \vdots  &  & \vdots \\
+	\int_K \vec{\nabla} b_i \cdot \vec{\nabla} b_1  & \ldots & \int_K \vec{\nabla}b_i \cdot \vec{\nabla} b_j  & \ldots & \int_K \vec{\nabla}b_i \cdot \vec{\nabla}b_{N_K} \\
+	\vdots  &  & \vdots  &  & \vdots \\
+	\int_K \vec{\nabla} b_{N_K}\cdot \vec{\nabla} b_1  & \ldots & \int_K \vec{\nabla} b_{N_K}\cdot \vec{\nabla} b_j  & \ldots & \int_K \vec{\nabla} b_{N_K} \cdot \vec{\nabla} b_{N_K} \\
+\end{array}
+\right] ,
+\end{equation}
+
+\noindent where an individual matrix entry is of the form:
+
+\begin{equation}
+\label{eq::DSA_stiffness_matrix_entry}
+S_{i,j,K} =  \int_K \vec{\nabla}b_i \cdot \vec{\nabla} b_j .
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -422,7 +456,53 @@ In Eqs. (\ref{eq::SIP_bilinear_form}) and (\ref{eq::SIP_linear_form}), there are
 \subsection{Elementary Surface Gradient Matrices}
 \label{sec::DSA_SIP_SurfaceGradient}
 
-The second new elementary matrix corresponds to the integrals of the product of the basis functions with their gradients on a given surface. For a given face $f$, these matrices are of the general form: $\Big<  D \partial_n b, \Phi \Big>_f$.
+The second new elementary matrix corresponds to the integrals of the product of the basis functions with their gradients on a given surface. For a given face $f$, these matrices are of the general form: $\Big<  D \partial_n b, \Phi \Big>_f$. These terms are analagous to the cell streaming matrix but are computed on the cell boundary with dimensionality $(d-1)$. Analyzing a single face, $f$, in cell $K$, the analytical surface gradient matrix is of the form,
+
+\begin{equation}
+\label{eq::DSA_surface_gradient_matrix_analytical}
+{\bf N}_{f,K}  =    \int_f \vec{n} (s) \cdot \vec{\nabla} {\bf b}_K \, {\bf b}_K^T \, d s ,
+\end{equation}
+
+\noindent where the surface normal, $\vec{n}$, is directed outwards from cell $K$ and is allowed to vary along the cell face. From the analytical integral, we can see that these matrices have dimensionality, $(N_K \text{x} N_K )$. We include the operation of the dot product between the outward normal and the basis function gradient for two reasons. First, it reduces the dimensionality of the matrices. Second, because the interior face terms in the SIP bilinear form are independent of the orientation of the normal unit vector along the face, we do not need to perform any additional handling of the face normals. We can see that the bilinear form is independent of the face normal orientation by observing the following relations:
+
+\begin{equation}
+\label{eq::DSA_outward_normal_notes}
+\begin{aligned}
+\Big<  [\![   u ]\!] , \{\!\{   \partial_n v \}\!\}\Big>_{f}  &= - \Big<  \{\!\{ \vec{n}  u \}\!\} , \{\!\{  \vec{n} \partial_n v \}\!\}\Big>_{f} \\
+\Big< \{\!\{   \partial_n u \}\!\} ,  [\![   v ]\!]\Big>_{f} &= - \Big<  \{\!\{ \vec{n} \partial_n  u \}\!\} , \{\!\{  \vec{n} v \}\!\}\Big>_{f}
+\end{aligned}.
+\end{equation}
+
+\noindent If the direction of the normal is changed from $\vec{n}$ to $-\vec{n}$ in Eq. (\ref{eq::DSA_outward_normal_notes}), we can see that these terms are not modified. 
+
+Similar to the surface matrix defined in Chapter \ref{sec::Sn}, it is possible that the gradients of the basis functions cannot be integrated analytically along a cell face. Using the same face-wise quadrature notation as before, $\left\{  \vec{x}_q , w_q^{f}  \right\}_{q=1}^{N_q^f}$, we can numerically calculate the surface gradient matrix for face $f$ along cell $K$:
+
+\begin{equation}
+\label{eq::DSA_surface_gradient_matrix_numerical}
+{\bf N}_{f,K} =    \sum_{q = 1}^{N_q^f} w_{q}^f \vec{n} (\vec{x}_q) \, \vec{\nabla} {\bf b}_K (\vec{x}_q) \, {\bf b}_K^T (\vec{x}_q) .
+\end{equation}
+
+In this case, the local face-wise surface gradient matrix for face $f$ has the full matrix form,
+
+\begin{equation}
+\label{eq::DSA_surface_gradient_matrix_array}
+{\bf N}_{f,K} =   \left[
+\begin{array} {ccccc}
+	\int_f \vec{n} \cdot\vec{\nabla}  b_1 \, b_1  & \ldots & \int_f \vec{n} \cdot \vec{\nabla} b_1 \, b_j  & \ldots & \int_f \vec{n} \cdot \vec{\nabla} b_1 \, b_{N_K} \\
+	\vdots  &  & \vdots  &  & \vdots \\
+	\int_f \vec{n}\cdot  \vec{\nabla} b_i \, b_1  & \ldots & \int_f \vec{n} \cdot\vec{\nabla}  b_i \, b_j  & \ldots & \int_f \vec{n}\cdot\vec{\nabla}  b_i \, b_{N_K} \\
+	\vdots  &  & \vdots  &  & \vdots \\
+	\int_f \vec{n} \cdot  \vec{\nabla} b_{N_K} \, b_1  & \ldots & \int_f \vec{n} \cdot  \vec{\nabla} b_{N_K} \, b_j  & \ldots & \int_f \vec{n} \cdot \vec{\nabla}  b_{N_K} \, b_{N_K} \\
+\end{array}
+\right] ,
+\end{equation}
+
+\noindent where an individual matrix entry is of the form:
+
+\begin{equation}
+\label{eq::DSA_surface_gradient_matrix_entry}
+N_{i,j,f,K} =  \int_f \vec{n} \cdot  \vec{\nabla} b_i \, b_j .
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -460,6 +540,44 @@ b^{MIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  + \Big< b, \delta  J^{inc}  \Big
 \label{eq::MIP_penalty_term}
 \kappa_e^{MIP} = \text{max} \left( \kappa_e^{SIP}, \frac{1}{4} \right)
 \end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - Solving MIP
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Solving the MIP Diffusion Problem}
+\label{sec::DSA_Solving}
+
+Equations (\ref{eq::MIP_bilinear_form}) and (\ref{eq::MIP_linear_form}) form the system matrix and right-hand-side, respectively, that we need to solve for a given DSA step. Just like the system of equations for the transport problem is too large to solve in a direct manner, we again employ an iterative scheme. Because the MIP bilinear form is SPD, we have natural recourse to use the simple Preconditioned Conjugate Gradient (PCG) method \cite{saad2003iterative}. If the system of equations you are trying to solve for is SPD, then Conjugate Gradient (CG) is the most light-weight iterative method possible. It has a low memory footprint and is guaranteed to converge in ($N_{dof}/2$) iterations, even if it is ill-conditioned. With a good preconditioner, then the iteration counts with PCG can be reduced substantially further. If we define ${\bf A}$ as the MIP system matrix to be inverted and ${\bf b}$ as the right-hand-side vector, then the CG algorithm acts by minimizing the residual ${\bf r} = {\bf b} - {\bf A} {\bf x}$. This is accomplished by taking successive operations of matrix-vector multiplications on conjugate krylov vectors, ${\bf p}_k$. The PCG algorithm performs one additional step by solving the equation ${\bf M} {\bf z_k} = {\bf r_k}$ at each CG iteration, where ${\bf M}$ is some preconditioner. We provide the simple pseudocode for PCG in algorithm \ref{alg::DSA_PCG}.
+
+There are several choices of preconditioners that can be employed with PCG \cite{saad2003iterative}. Depending on the structure and conditioning of the matrix to be inverted, some simple preconditioners can be effective. We can decompose the MIP system matrix, ${\bf A} = {\bf L} + {\bf D} + {\bf L}^T$, into its strictly lower-triangular portion, ${\bf L}$, its strictly diagonal portion, ${\bf D}$, and its strictly lower-triangular portion, ${\bf L}^T$. The simplest preconditioner we could employ is Jacobi preconditioning, which is just the strictly diagonal portion of the system matrix: ${\bf M} = {\bf D}$. This preconditioner is effective for diagonally-dominant matrices. The next preconditioner would be a simple Symmetric Successive Over-Relaxation (SSOR) method: ${\bf M} (\omega) = \frac{\omega}{2-\omega} \left( \frac{1}{\omega}{\bf D} + {\bf L}  \right)  {\bf D}^{-1}  \left( \frac{1}{\omega}{\bf D} + {\bf L}  \right)^T$. The PCG algorithm can be simplified with this preconditioner choice by the Eisenstat trick \cite{eisenstat1981efficient}. The final simple preconditioner that we will consider is Incomplete LU Factorization (ILU). Instead of simply decomposing the system matrix, we factorize it into a unit-lower triangular portion, $\tilde{{\bf L}}$, and an upper triangular portion, $\tilde{{\bf U}}$. These factorized matrices then form our preconditioner: ${\bf M} =\tilde{{\bf L}}\tilde{{\bf U}}$. From this factorization, the preconditioning step to solve ${\bf M} {\bf z}= {\bf r}$ is accomplished by first solving $\tilde{{\bf L}} {\bf y}= {\bf r} $, followed by $\tilde{{\bf U}} {\bf z}= {\bf y} $. While this leads to a second preconditioning step, the factorized matrices are easy to invert since they are triangular.
+
+Besides Jacobi, SSOR and ILU preconditioning, we also seek to investigate multigrid (MG) methods to invert the MIP system matrix. 
+
+\begin{algorithm}
+\caption{PCG Algorithm}
+\label{alg::DSA_PCG}
+\begin{algorithmic}[1]
+\State Compute ${\bf r}_0 = {\bf b} - {\bf A} {\bf x}_0$
+\For{k=1,2,...}
+\State Solve: ${\bf M} {\bf z}_{i-1} = {\bf r}_{i-1}$
+\State $\rho_{i-1} = {\bf r}_{i-1}^T {\bf z}_{i-1}$
+\If{$k=1$}
+	\State ${\bf p}_i  = {\bf z}_{i-1} $
+\Else
+	\State ${\bf p}_i = {\bf z}_{i-1} + \frac{\rho_{i-1}}{\rho_{i-2}}{\bf p}_{i-1}  $
+\EndIf
+\State ${\bf q}_i = {\bf A} {\bf p}_i$
+\State $\alpha_i = \frac{\rho_{i-1}}{{\bf p}_i^T{\bf q}_i} $
+\State ${\bf x}_i = {\bf x}_{i-1} + \alpha_i  {\bf p}_i$
+\State ${\bf r}_i = {\bf r}_{i-1} - \alpha_i  {\bf q}_i$
+\If{$\frac{|| {\bf r}_i ||}{|| {\bf b} ||} < \text{tol}$}
+	\State Exit
+\EndIf
+\EndFor
+\end{algorithmic}
+\end{algorithm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1339,15 +1457,15 @@ $P_{tot}$&$P_{x}$&$P_{y}$&$P_{z}$&$A_{x}$&$A_{y}$&$A_{z}$ &$N_{x}$&$N_{y}$&$N_{z
 1&1&1&1&16&16&1& 16&16&16 \\
 8&2&2&2&16&16&1&32&32&32\\
 64&8&4&2&8&16&1&64&64&64\\
-512&16&16&	2&	8&	8&	1&	128&	128&	128\\
-1024&	32&16&2&4&8&	1&	128&	128&	256\\
-2048&	32&32&2&8&4&	1&	256&	128&	256\\
-4096&	64&32&2&4&8&	1&	256&	256&	256\\
-8192&	64&64&2&4&4&	1&	256&	256&	512\\
-16384&128&	64&2&4&	4&	1&	512&	256&	512\\
-32768&128&	128&2&4&	4&	1&	512&	512&	512\\
-65536&256&	128&2&2&	4&	1&	512&	512&	1024\\
-131072&256&256&2&	4&	2&	1&	1024&	512&	1024\\
+512&16&16&	2&8&	8&1&128&128&128\\
+1024&	32&16&2&4&8&1&128&128&256\\
+2048&	32&32&2&8&4&1&256&128&256\\
+4096&	64&32&2&4&8&1&256&256&256\\
+8192&	64&64&2&4&4&1&256&256&512\\
+16384&128&	64&2&4&4&1&512&256&	512\\
+32768&128&	128&2&4&4&1&512&512&	512\\
+65536&256&	128&2&2&4&1&512&512&	1024\\
+131072&256&256&2&4&2&1&1024&512&1024\\
 \hline
 \end{tabular}
 \label{tab::DSA_Vulcan_agg_part}
@@ -1355,7 +1473,7 @@ $P_{tot}$&$P_{x}$&$P_{y}$&$P_{z}$&$A_{x}$&$A_{y}$&$A_{z}$ &$N_{x}$&$N_{y}$&$N_{z
 
 The timing data for this weak scaling study is given in Figure \ref{fig::DSA_Vulcan_MIP_Timing}. As a function of processors used, we plot the overall solve time, the overall sweep time, the overall MIP DSA time, the time to build the MIP system matrix, the time to perform the HYPRE BoomerAMG setup call, and the time per HYPRE PCG iteration. The sweep time only constitutes the time taken to perform the actual sweep. This discounts the time needed to build the transport sources and prepare for each sweep. There are a lot of results that can be observed from this plot. We first note that all the solve times increase at the low processor counts because the number of sweeps increases from about 20 to 35 as the mesh optical thicknesses move into the intermediate range. The second note is that while the sweep times remain about the same, the various HYPRE times begin to scale more poorly as we get to $O(10^4)$ processors and higher. We can see that the HYPRE setup time especially begins to increase at a rapid pace for the highest core counts. Finally we observe that at certain processor values, the HYPRE times seem to `spike'. This occurs at 1024, 8192, and 65536 processor counts. By looking at the problem's parallel characteristics from Table \ref{tab::DSA_Vulcan_agg_part}, we can see that these processor counts occur when the number of mesh cells in the z-dimension is doubled. This means that the distribution of the cell sets on a processor look like an even longer and skinnier column. This behavior is analyzed in greater detail shortly in Section \ref{sec::DSA_Results_Scaling_Parametric}.
 
-From the timing results of Figure \ref{fig::DSA_Vulcan_MIP_Timing}, one must wonder about the scalability of solving the MIP equation at even higher processor counts out to $O(10^6)$ or $O(10^7)$. For this simple problem, our diffusion solver was taking about 50\%-60\% of the solve time.
+From the timing results of Figure \ref{fig::DSA_Vulcan_MIP_Timing}, one must wonder about the scalability of solving the MIP equation at even higher processor counts out to $O(10^6)$ or $O(10^7)$. For this simple problem, our diffusion solver was taking about 50\%-60\% of the solve time. However, our transport problem was extremely coarse in angle and only 1 energy group. This leads to low parallel concurrency for the phase-space that we solve for in one transport sweep. This means that for a much larger 3D transport problem with many energy groups ($O(10^2)$) and many quadrature angles ($O(10^3)$), the fraction of time that is spent performing DSA calculations will become negligibly small. In fact, we will show a little later that our energy-collapsed thermal neutron upscattering methodologies yield DSA solve times that are not noticible.
 
 \begin{figure}
 \centering
