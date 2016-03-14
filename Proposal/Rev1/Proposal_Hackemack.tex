@@ -22,6 +22,14 @@
 \usepackage{epstopdf}
 \usepackage{commath}
 \usepackage{amssymb}
+\usepackage{titlesec}
+
+% Section parameters
+\setcounter{secnumdepth}{4}
+\titleformat{\paragraph}
+{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}
+{0pt}{3.25ex plus 1ex minus .2ex}{1.5ex plus .2ex}
 
 \begin{document}
 
@@ -144,7 +152,7 @@ The rest of this proposal is organized as follows. In Section \ref{sec::PS}, we 
 % DSA Portion
 The ability to efficiently invert the transport (streaming and collision) operator does not necessarily mean that transport solutions can be easily obtained. In general, radiation transport solutions are obtained iteratively. The simplest and widely-used method is a fixed-point scheme ({\em i.e.} richardson iteration) ubiquitously called source iteration (SI) in the transport community. Unfortunately, the iteration process of SI can converge arbitrarily slowly if the problem is optically thick \cite{ref::adams_larsen_iter_methods}. This corresponds to long mean free paths for neutronics problems. This also corresponds to time steps and material heat capacities tending to infinity and zero, respectively, for thermal radiative transport (TRT) problems.
 
-For these problem regimes in which solution is prohibitively slow, additional steps should be taken to speed up, or accelerate, solution convergence \cite{ref::adams_larsen_iter_methods}. The most used methods to assist in solution convergence are often called synthetic acceleration techniques. These techniques were first introduced by Kopp  \cite{kopp1963synthetic} and Lebedev \cite{lebedevI,lebedevII,lebedevIII,lebedevIV,lebedevV,lebedevVI,lebedevVII} in the 1960's. From Kopp's and Lebedev's work, Gelbard and Hageman then introduced two synthetic acceleration options for the low-order operator: diffusion and $S_2$ \cite{gelbard1969synthetic}. Their diffusion preconditioning led to efficient convergence properties on fine spatial meshes. Reed then showed that Gelbard and Hageman's diffusion preconditioning would yield a diverging system for coarse meshes \cite{reed1971effectiveness}. At this point in time, no one knew if an unconditionally efficient acceleration method could be derived.
+For these problem regimes in which solution is prohibitively slow, additional steps should be taken to speed up, or accelerate, solution convergence \cite{ref::adams_larsen_iter_methods}. The most used methods to assist in solution convergence are often called synthetic acceleration techniques. These techniques were first introduced by Kopp  \cite{kopp1963synthetic} and Lebedev \cite{lebedevI} in the 1960's. From Kopp's and Lebedev's work, Gelbard and Hageman then introduced two synthetic acceleration options for the low-order operator: diffusion and $S_2$ \cite{gelbard1969synthetic}. Their diffusion preconditioning led to efficient convergence properties on fine spatial meshes. Reed then showed that Gelbard and Hageman's diffusion preconditioning would yield a diverging system for coarse meshes \cite{reed1971effectiveness}. At this point in time, no one knew if an unconditionally efficient acceleration method could be derived.
 
 Then in 1976, Alcouffe proposed a remedy to Gelbard and Reed that he called diffusion synthetic acceleration (DSA) \cite{alcouffe1976stable,alcouffe1977DSA,alcouffe1977diffusion}. He showed that if you derived the diffusion operator consistently with the discretized transport operator, then SI could be accelerated with DSA in an efficient and robust manner. Larsen and McCoy then demonstrated that unconditional stability required that consistency be maintained in both spatial and angular discretization in their four-step procedure \cite{larsen1982unconditionally_I,larsen1982unconditionally_II}. However, Adams and Martin then showed that partially-consistent diffusion discretizations could effectively accelerate DFEM discretizations of the neutron transport equation \cite{ref::dsa_DFEM_adams_martin}. Their modified-four-step procedure (M4S), based on Larsen and McCoy's work, was shown to be unconditionally stable for regular geometries, but divergent for unstructured multi-dimensional meshes \cite{warsa2002fully}. In more recent years, alternate discretizations for the diffusion operator have been applied to unstructured multi-dimensional grids. These include the partially consistent Wareing-Larsen-Adams (WLA) DSA \cite{ref::WLA_DSA}, the fully consistent DSA (FCDSA) \cite{warsa2002fully}, and the partially consistent MIP DSA \cite{ref::DSA_wang_ragusa,wang2009adaptive,turcksin2014discontinuous}.
 
@@ -155,34 +163,36 @@ Most recently, the partially consistent MIP DSA method has been shown to be an u
 \section{Current Work}
 \label{sec::CW}
 
-We have just defined the current state of the art for DGFEM transport calculations on arbitrary meshes for massively-parallel problems. We also presented appropriate DSA preconditioners. Next, we define the work to be performed for this dissertation as well as some preliminary results. Section \ref{sec::CW_poly} details higher-order transport calculations on 2D polygons. Section \ref{sec::CW_DSA} details extending MIP DSA preconditioning for 3D massively parallel problems.
+We have just defined the current state of the art for DGFEM transport calculations on arbitrary meshes for massively-parallel problems. We also presented appropriate DSA preconditioners. Next, we define the work to be performed for this dissertation as well as some preliminary results. Section \ref{sec::CW_poly} details higher-order transport calculations on 2D polygons. Section \ref{sec::CW_DSA} details extending MIP DSA preconditioning for 3D massively parallel problems including accelerating problems dominated by thermal neutron upscattering.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{DGFEM Transport Calculations on Polygonal Meshes}
 \label{sec::CW_poly}
 
+
+
 \begin{figure}
 \label{fig::2D_Linear_Summary_unit_square_basis_functions}
 \centering
-	\begin{subfigure}[b]{0.275\textwidth}
+	\begin{subfigure}[b]{0.225\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/square_WACHSPRESS1_contour_b4.eps}
 		\caption{}
 	\end{subfigure}
 	\hspace{1cm}
-	\begin{subfigure}[b]{0.275\textwidth}
+	\begin{subfigure}[b]{0.225\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/square_PWLD1_contour_b4.eps}
 		\caption{}
 	\end{subfigure}
 	\vfill
-	\begin{subfigure}[b]{0.275\textwidth}
+	\begin{subfigure}[b]{0.225\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/square_MV1_contour_b4.eps}
 		\caption{}
 	\end{subfigure}
 	\hspace{1cm}
-	\begin{subfigure}[b]{0.275\textwidth}
+	\begin{subfigure}[b]{0.225\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/square_MAXENT1_contour_b4.eps}
 		\caption{}
@@ -385,22 +395,22 @@ C_M = \frac{100}{L_x^2 L_y^2} \qquad \text{and} \qquad \gamma = \frac{L_x L_y}{1
 
 \begin{figure}[hbt]
 \centering
-	\begin{subfigure}[b]{0.40\textwidth}
+	\begin{subfigure}[b]{0.35\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/ME1_cart_mesh.eps}
 	\end{subfigure}
 	\hspace{1cm}
-	\begin{subfigure}[b]{0.40\textwidth}
+	\begin{subfigure}[b]{0.35\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/ME1_cart_sol.eps}
 	\end{subfigure}
 	\par\bigskip
-	\begin{subfigure}[b]{0.40\textwidth}
+	\begin{subfigure}[b]{0.35\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/ME2_cart_mesh.eps}
 	\end{subfigure}
 	\hspace{1cm}
-	\begin{subfigure}[b]{0.40\textwidth}
+	\begin{subfigure}[b]{0.35\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/ME2_cart_sol.eps}
 	\end{subfigure}
@@ -530,30 +540,54 @@ To date, we have carried out extensive analysis for both 2D and 3D MIP DSA preco
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%
-\subsubsection{Thermal up-scatter Acceleration - Two-Grid DSA Preconditioning}
-\label{sec::CW_DSA_TG}
+\subsubsection{Thermal up-scatter Acceleration}
+\label{sec::CW_DSA_Upscatter}
 
-For this dissertation work, we will also analyze the benefits and scalability of DSA preconditioning to real-world problems. This can require the ability to efficiently converge the scattering source for a large multigroup problem. However, if there is appreciable up-scattering from the thermal energy groups, then the system can act optically thick which leads to arbitrarily-slow convergence. In particular, systems that are dominated by the thermal scattering off graphite or heavy-water behave in this manner.
+For this dissertation work, we will also analyze the benefits and scalability of DSA preconditioning to real-world problems. This can require the ability to efficiently converge the scattering source for a large multigroup problem. However, if there is appreciable up-scattering from the thermal energy groups, then the system can act optically thick which leads to arbitrarily-slow convergence. In particular, systems that are dominated by the thermal scattering off graphite or heavy-water behave in this manner. In this work, we will analyze three different thermal neutron upscattering acceleration techniques. The first method we will analyze is a multigroup richardson acceleration in Section \ref{sec::CW_DSA_Upscatter_Rich}. We will then analyze the Two-Grid acceleration method and a variant in Section \ref{sec::CW_DSA_Upscatter_TG}.
 
-To combat this slow convergence, we will analyze the scalability of the two-grid DSA preconditioning method on high-fidelity real-world problems \cite{adams1993two}. We summarize the two-grid scheme in the following manner. We first write the completely-discretized multigroup $S_N$ equations in simple operator form,
+%%%%%%%%%%%%%%%%%%%
+\paragraph{Multigroup Richardson Acceleration}
+\label{sec::CW_DSA_Upscatter_Rich}
+
+The first thermal neutron upscattering acceleration method we will consider is a multigroup richardson acceleration technique. If we lump all the thermal groups into a single set and solve simultaneously, then the transport iterations will look like the following:
+
+\begin{equation}
+\label{eq::MG_full_eq_it}
+{\bf L}_{gg} \Psi_g^{(k+1/2)} =  {\bf M} \sum_{g'=0}^G {\bf S}_{g g'} \Phi_{g'}^{(k)} + {\bf Q}_g.
+\end{equation}
+
+\noindent If we form a new equation by using the exact solution of Eq. (\ref{eq::MG_full_eq_it}) and subtracting Eq. (\ref{eq::MG_full_eq_it}) from this new equation, we get the following error equation, 
+
+\begin{equation}
+\label{eq::MG_full_eq_err}
+{\bf L}_{gg} \delta \Psi_g^{(k+1/2)} - {\bf M} \sum_{g'=0}^G {\bf S}_{g g'} \delta \Phi_{g'}^{(k+1/2)}=  {\bf M} \sum_{g'=0}^G {\bf S}_{g g'}\left( \Phi_{g'}^{(k+1/2)}- \Phi_{g'}^{(k)} \right)
+\end{equation}
+
+\noindent where the notation for the iteration error in Eq. (\ref{eq::CW_delta_fluxes}) has been extended to group-wise errors.
+
+%%%%%%%%%%%%%%%%%%%
+\paragraph{Two-Grid Acceleration and a Variant}
+\label{sec::CW_DSA_Upscatter_TG}
+
+The second thermal neutron upscattering acceleration method we will analyze is the Two-Grid acceleration technique \cite{adams1993two}. We summarize the two-grid scheme in the following manner. We first write the completely-discretized multigroup $S_N$ equations in simple operator form,
 
 \begin{equation}
 \label{eq::MG_full_eq}
-{\bf L} \Psi_g =  {\bf M} \sum_{g'=0}^G {\bf S}_{g g'} \Phi_{g'} + {\bf Q}_g,
+{\bf L}_{gg} \Psi_g =  {\bf M} \sum_{g'=0}^G {\bf S}_{g g'} \Phi_{g'} + {\bf Q}_g,
 \end{equation}
 
 \noindent where ${\bf M}$ and ${\bf S}$ are the moment-to-discrete and scattering operators, respectively. We then apply the Gauss-Seidel iteration scheme to Eq. (\ref{eq::MG_full_eq}) to form the following iterative system of equations,
 
 \begin{equation}
 \label{eq::GS_it}
-{\bf L} \Psi_g^{(k+1/2)} = {\bf M} \sum_{g'=0}^g {\bf S}_{g g'} \Phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf S}_{g g'} \Phi_{g'}^{(k)} + {\bf Q}_g .
+{\bf L}_{gg} \Psi_g^{(k+1/2)} = {\bf M} \sum_{g'=0}^g {\bf S}_{g g'} \Phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf S}_{g g'} \Phi_{g'}^{(k)} + {\bf Q}_g .
 \end{equation}
 
 We subtract Eq. (\ref{eq::GS_it}) from Eq. (\ref{eq::MG_full_eq}) to yield the following error equation for the system of Gauss-Seidel equations:
 
 \begin{equation}
 \label{eq::GS_error}
-{\bf L} \delta \Psi_g^{(k+1/2)} = {\bf M} \sum_{g'=0}^g {\bf S}_{g g'} \delta \Phi_{g'}^{(k+1/2)} + {\bf R}_g^{(k+1/2)}  ,
+{\bf L}_{gg} \delta \Psi_g^{(k+1/2)} = {\bf M} \sum_{g'=0}^g {\bf S}_{g g'} \delta \Phi_{g'}^{(k+1/2)} + {\bf R}_g^{(k+1/2)}  ,
 \end{equation}
 
 \noindent where the residual is of the form:
@@ -563,36 +597,30 @@ We subtract Eq. (\ref{eq::GS_it}) from Eq. (\ref{eq::MG_full_eq}) to yield the f
 {\bf R}_g^{(k+1/2)} = {\bf M} \sum_{g'=g+1}^G {\bf S}_{g g'} \left(  \Phi_{g'}^{(k+1/2)} - \Phi_{g'}^{(k)}  \right).
 \end{equation}
 
+%%%%%%%%%%%%%%%%%%%
+\paragraph{The IM1 Experiment}
+\label{sec::CW_DSA_Upscatter_IM1}
+
+We seek to test our thermal upscattering acceleration methods on a real-world physical problem. We have chosen to test these methods on the IM1 experiment which is seeking to determine an effective impurity model for the contamination present within graphite bricks. The problem consists of multiple materials and significantly heterogeneous configuration as seen in Figure \ref{fig::IM1_layouts_a}. The materials consist of air, wood, Boral, high density polyethylene (HDPE), borated HDPE (B-HDPE), an AmBe source, graphite, steel supports, aluminum supports, and a BF3 detector. 
+
 \begin{figure}
 \centering
-	\begin{subfigure}[b]{0.49\textwidth}
+	\begin{subfigure}[b]{0.375\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/P0_Fourier_69G.eps}
+		\includegraphics[width=\textwidth]{figures/IM1_configuration_Rev1.png}
 		\caption{}
+		\label{fig::IM1_layouts_a}
 	\end{subfigure}
 	\hfill
-	\begin{subfigure}[b]{0.49\textwidth}
+	\begin{subfigure}[b]{0.375\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/P1_Fourier_69G.eps}
+		\includegraphics[width=\textwidth]{figures/2D_IM1_Variant_Layout.png}
 		\caption{}
+		\label{fig::IM1_layouts_b}
 	\end{subfigure}
-\caption{The modal spectral radii for graphite with 69 group cross sections restricted to (a) $P_0$ scattering and (b) $P_1$ scattering.}
-\label{fig::fourier_TG}
+\caption{IM1 problem layout (left) and a simplified 2D variant (right).}
+\label{fig::IM1_layouts}
 \end{figure}
-
-
-\begin{table}
-\label{tab::TG_counts}
-\caption{Reduction of thermal iteration counts with two-grid acceleration for both a homogeneous graphit block as well as a graphite block with an air duct. 99 group cross sections are used with P1 scattering.}
-\centering
-\begin{tabular}{|c|c|c|}
-\hline
-Materials & Unaccelerated Iterations & Accelerated Iterations  \\
-\hline \hline
-Graphite Only & 2027 & 21 \\ \hline
-Graphite + Air Duct & 2138 & 23 \\ \hline
-\end{tabular}
-\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -601,7 +629,9 @@ Graphite + Air Duct & 2138 & 23 \\ \hline
 
 Thus far, we have presented the overall objectives of the dissertation work and the work that has been completed to this point. There are still several areas of work that need to be completed. They are confined to two distinct areas: 1) remaining theoretical implementation and analysis of the polygonal finite element basis functions and their extension to the quadratic serendipity space and 2) performance analysis of thermal neutron upscattering with  MIP DSA in PDT.
 
+For the analysis of the polygonal basis functions, there are a couple of items left to investigate. First, we need to analyze the convergence rates of the transport equation in a purely-absorbing medium with and without mesh alignment. If the mesh is aligned with the solution discontinuity, then the convergence rates of Eqs. (\ref{eq::bf_conv_rate_h}) and (\ref{eq::bf_conv_rate_DOF}) should be captured. However, if the mesh is not aligned with the analytical discontinuities, then the resulting numerical solutions will only live in either the $H^{1/2}$ or $H^{3/2}$ Sobolev spaces. The final polygonal basis function analysis to perform is to confirm that the quadratic basis functions can exactly capture solutions that are in $\text{span}\left\{  1,x,y,xy,x^2,y^2  \right\}$.
 
+For the DSA work in PDT, there are three items left to investigate. First, we need to complete the last of the numerical experiments to verify the theoretical results of the DSA fourier analysis. This is mostly restricted to the numerical verification of the PHI problem. Second, we will finish our analysis of the effects of partitioning and aggregation on the HYPRE setup and solve times. The raw data for this step has already been collected; it just needs to be properly analyzed and tabulated. Finally, we need to conclude the remaining numerical experiments for the IM1 problem.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
