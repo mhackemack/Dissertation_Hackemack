@@ -443,7 +443,7 @@ As it was previously stated, efficient methods for inverting the streaming opera
 
 \begin{equation}
 \label{eq::CW_trans_eq_it_diff}
-{\bf A} \delta \Psi^{(k+1/2)} = {\bf B}' \delta \Phi^{(k+1/2)} + {\bf R}^{(k+1/2)}, 
+{\bf A} \delta \Psi^{(k+1/2)} - {\bf B}' \delta \Phi^{(k+1/2)} = {\bf R}^{(k+1/2)}, 
 \end{equation}
 
 \noindent where
@@ -503,9 +503,11 @@ u^{\pm} = \lim_{s \rightarrow 0^{\pm}} u (\vec{r} + s \vec{n}) .
 
 \noindent For interior faces, we can specify an arbitrary direction for the face normal, but boundary faces require the face normals to orient outwards from the domain.
 
-To date, we have carried out extensive analysis for both 2D and 3D MIP DSA preconditioning.
+To date, we have carried out extensive analysis for both 2D and 3D MIP DSA preconditioning. This includes analyzing all the linear and quadratic serendipity polygonal coordinates using fourier analysis and comparing to numerical simulations. In addition, we have analyzed the theoretical effects of strong heterogenities in material cross sections as well the effects of the use of DSA in conjunction with AMR calculations. 
 
-\begin{figure}[hbt]
+Much work has also been performed to utilize the MIP DSA scheme to accelerate large transport calculations. Figure \ref{fig::fourier_NSR} shows an extension of the MIP analysis to 3D hexahedral cells. We demonstrate through both fourier and numerical analysis that the MIP form is unconditionally stable and robust across the full spectrum of cell optical thicknesses. In addition, the form is stable for mesh cells with large aspect ratios. We have also implemented the MIP DSA method into the PDT code at Texas A\&M University. The code uses the HYPRE library to efficiently invert the system matrix using PCG with BoomerAMG as the preconditioner \cite{ref::hypre,yang2002boomeramg}. Timing results from a homogenized Zerr weak scaling problem are presented in Figure \ref{fig::Vulcan_MIP_Timing}. We can see that our acceleration implementation yields good scaling results with the HYPRE solves and DSA takes up about 50\%-60\% of the total solve at high processor counts. We further note that we ran only a coarse transport problem with S8 angular quadrature and 1 energy group. If more angles or energy groups are used for a larger problem, then the time spent in the DSA solves will become negligible.
+
+\begin{figure}
 \centering
 	\begin{subfigure}[b]{0.48\textwidth}
 		\centering
@@ -530,17 +532,15 @@ To date, we have carried out extensive analysis for both 2D and 3D MIP DSA preco
 \label{fig::fourier_NSR}
 \end{figure}
 
-
-
-\begin{figure}[hbt]
+\begin{figure}
 \centering
-\includegraphics[width=0.85\textwidth]{figures/Vulcan_DSA_Timing.eps}
+\includegraphics[width=0.90\textwidth]{figures/Vulcan_DSA_Timing.eps}
 \caption{Timing data for MIP DSA preconditioning in the PDT code on the VULCAN cluster.}
 \label{fig::Vulcan_MIP_Timing}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%
-\subsubsection{Thermal up-scatter Acceleration}
+\subsubsection{Thermal Upscatter Acceleration}
 \label{sec::CW_DSA_Upscatter}
 
 For this dissertation work, we will also analyze the benefits and scalability of DSA preconditioning to real-world problems. This can require the ability to efficiently converge the scattering source for a large multigroup problem. However, if there is appreciable up-scattering from the thermal energy groups, then the system can act optically thick which leads to arbitrarily-slow convergence. In particular, systems that are dominated by the thermal scattering off graphite or heavy-water behave in this manner. In this work, we will analyze three different thermal neutron upscattering acceleration techniques. The first method we will analyze is a multigroup richardson acceleration in Section \ref{sec::CW_DSA_Upscatter_Rich}. We will then analyze the Two-Grid acceleration method and a variant in Section \ref{sec::CW_DSA_Upscatter_TG}.
@@ -549,59 +549,119 @@ For this dissertation work, we will also analyze the benefits and scalability of
 \paragraph{Multigroup Richardson Acceleration}
 \label{sec::CW_DSA_Upscatter_Rich}
 
-The first thermal neutron upscattering acceleration method we will consider is a multigroup richardson acceleration technique. If we lump all the thermal groups into a single set and solve simultaneously, then the transport iterations will look like the following:
+The first thermal neutron upscattering acceleration method we will consider is a multigroup richardson acceleration technique. If we lump all the $G$ thermal groups into a single set and solve simultaneously, then the transport iterations will look like the following:
 
 \begin{equation}
 \label{eq::MG_full_eq_it}
-{\bf L}_{gg} \Psi_g^{(k+1/2)} =  {\bf M} \sum_{g'=0}^G {\bf S}_{g g'} \Phi_{g'}^{(k)} + {\bf Q}_g.
+{\bf L}_{gg} \Psi_g^{(k+1/2)} =  {\bf M} \sum_{g'=1}^G {\bf S}_{g g'} \Phi_{g'}^{(k)} + {\bf Q}_g.
 \end{equation}
 
-\noindent If we form a new equation by using the exact solution of Eq. (\ref{eq::MG_full_eq_it}) and subtracting Eq. (\ref{eq::MG_full_eq_it}) from this new equation, we get the following error equation, 
+\noindent For each thermal transport sweep, we use the scattering source built from the previous sweep and solve for all $G$ thermal groups at once. If we form a new equation by using the exact solution of Eq. (\ref{eq::MG_full_eq_it}) and subtracting Eq. (\ref{eq::MG_full_eq_it}) from this new equation, we get the following error equation, 
 
 \begin{equation}
 \label{eq::MG_full_eq_err}
-{\bf L}_{gg} \delta \Psi_g^{(k+1/2)} - {\bf M} \sum_{g'=0}^G {\bf S}_{g g'} \delta \Phi_{g'}^{(k+1/2)}=  {\bf M} \sum_{g'=0}^G {\bf S}_{g g'}\left( \Phi_{g'}^{(k+1/2)}- \Phi_{g'}^{(k)} \right)
+{\bf L}_{gg} \delta \Psi_g^{(k+1/2)} - {\bf M} \sum_{g'=1}^G {\bf S}_{g g'} \delta \Phi_{g'}^{(k+1/2)}=  {\bf M} \sum_{g'=1}^G {\bf S}_{g g'}\left( \Phi_{g'}^{(k+1/2)}- \Phi_{g'}^{(k)} \right)
 \end{equation}
 
-\noindent where the notation for the iteration error in Eq. (\ref{eq::CW_delta_fluxes}) has been extended to group-wise errors.
+\noindent where the notation for the iteration error in Eq. (\ref{eq::CW_delta_fluxes}) has been extended to group-wise errors. For this acceleration method, we do not solve a multigroup diffusion equation. Instead we form our low-order DSA operator by taking the 0th and 1st order moments of Eq. (\ref{eq::MG_full_eq_err}) and perform an energy collapse to form the 1-group, averaged diffusion equation,
+
+\begin{equation}
+\label{eq::EC_diff_eq}
+- \vec{\nabla} \cdot \Big< D \Big> \vec{\nabla} \epsilon^{(k+1/2)} +  \Big< \sigma \Big> \epsilon^{(k+1/2)} = \Big< R \Big> ,
+\end{equation}
+
+\noindent where the multigroup error has been factorized: $\delta \Phi_g^{(k+1/2)} (\vec{r}) = \xi_g \epsilon (\vec{r})$. The error is split into a space-dependent modulation funciton, $\epsilon (\vec{r})$, and a group-wise spectral shape function, $\xi_g$. For each material present in the problem, the spectral shape function is determined by calculating the eigenvector corresponding to the largest eigenvalue of the following,
+
+\begin{equation}
+\label{eq::rich_accel_EC}
+{\bf T} ^{-1} {\bf S}_0 \xi = \rho \xi ,
+\end{equation}
+
+\noindent where
+
+\begin{equation}
+\label{eq::rich_accel_EC_sum}
+\sum_{g=1}^G \xi_g = 1 .
+\end{equation}
+
+\noindent Using the calculated spectral functions of Eq. (\ref{eq::rich_accel_EC}), the remaining energy-collapsed terms of Eq. (\ref{eq::EC_diff_eq}) can be computed in the following manner,
+
+\begin{equation}
+\label{eq::EC_diff_terms}
+\begin{aligned}
+\Big< D \Big> &= \sum_{g=1}^G D_g \xi_g ,\\
+\Big< \sigma \Big> &=  \sum_{g=1}^G \left(   \sigma_{t,g} \xi_g -  \sum_{g'=1}^G \sigma_{s,0}^{g,g'} \xi_{g'} \right)  ,\\
+\Big< R \Big> &= \sum_{g=1}^G R_g^{(k+1/2)},
+\end{aligned} 
+\end{equation}
+
+\noindent where the group-wise residual terms are formed from the 0th moments of the scattering matrix:
+
+\begin{equation}
+\label{eq::rich_residual}
+R_g^{(k+1/2)} =  \sum_{g'=1}^G {\bf S}_{g, g',0} \left(  \Phi_{g',0}^{(k+1/2)} - \Phi_{g',0}^{(k)}  \right).
+\end{equation}
+
+\noindent Finally, once the space-dependent modulation function is calculated for a half-iterate, $\epsilon^{(k+1/2)}$, then the update of the transport solution is simply:
+
+\begin{equation}
+\label{eq::rich_update}
+\Phi_g^{(k+1)} =  \Phi_g^{(k+1/2)} + \xi_g  \epsilon.
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%
 \paragraph{Two-Grid Acceleration and a Variant}
 \label{sec::CW_DSA_Upscatter_TG}
 
-The second thermal neutron upscattering acceleration method we will analyze is the Two-Grid acceleration technique \cite{adams1993two}. We summarize the two-grid scheme in the following manner. We first write the completely-discretized multigroup $S_N$ equations in simple operator form,
-
-\begin{equation}
-\label{eq::MG_full_eq}
-{\bf L}_{gg} \Psi_g =  {\bf M} \sum_{g'=0}^G {\bf S}_{g g'} \Phi_{g'} + {\bf Q}_g,
-\end{equation}
-
-\noindent where ${\bf M}$ and ${\bf S}$ are the moment-to-discrete and scattering operators, respectively. We then apply the Gauss-Seidel iteration scheme to Eq. (\ref{eq::MG_full_eq}) to form the following iterative system of equations,
+The second thermal neutron upscattering acceleration method we will analyze is the Two-Grid (TG) acceleration technique \cite{adams1993two}. The TG method has some similarities to the multigroup richardson acceleration of Section \ref{sec::CW_DSA_Upscatter_Rich}, but some key differences as well. First, instead of solving all $G$ thermal groups simultaneously in a transport sweep, we employ a Gauss-Seidel procedure in energy. This means that we march through the thermal groups in an outer iteration 1 at a time and converge the inner iterations as we go. This leads to a different set of transport iterations:
 
 \begin{equation}
 \label{eq::GS_it}
-{\bf L}_{gg} \Psi_g^{(k+1/2)} = {\bf M} \sum_{g'=0}^g {\bf S}_{g g'} \Phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf S}_{g g'} \Phi_{g'}^{(k)} + {\bf Q}_g .
+{\bf L}_{gg} \Psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^g {\bf S}_{g g'} \Phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf S}_{g g'} \Phi_{g'}^{(k)} + {\bf Q}_g .
 \end{equation}
 
-We subtract Eq. (\ref{eq::GS_it}) from Eq. (\ref{eq::MG_full_eq}) to yield the following error equation for the system of Gauss-Seidel equations:
+We can then form an equation for the iteration error,
 
 \begin{equation}
-\label{eq::GS_error}
-{\bf L}_{gg} \delta \Psi_g^{(k+1/2)} = {\bf M} \sum_{g'=0}^g {\bf S}_{g g'} \delta \Phi_{g'}^{(k+1/2)} + {\bf R}_g^{(k+1/2)}  ,
+\label{eq::TG_full_eq_err}
+{\bf L}_{gg} \delta \Psi_g^{(k+1/2)} - {\bf M} \sum_{g'=1}^G {\bf S}_{g g'} \delta \Phi_{g'}^{(k+1/2)}=  {\bf M} \sum_{g'=g+1}^G {\bf S}_{g g'}\left( \Phi_{g'}^{(k+1/2)}- \Phi_{g'}^{(k)} \right) ,
 \end{equation}
 
-\noindent where the residual is of the form:
+\noindent where we can obviously see that the residual error is only the upscatter portion of the scattering matrix. The only other differences lie in how we perform our interpolation and projection in energy space. We use the same 1-group energy collapsed diffusion equation and terms from Eqs. (\ref{eq::EC_diff_eq}) and (\ref{eq::EC_diff_terms}), respectively. We simply change how the spectral shape and residuals are calculated. If we decompose the 0th order scattering matrix into its strictly-lower, ${\bf S}_{L,0}$, strictly-upper, ${\bf S}_{U,0}$, and strictly-diagonal portions, ${\bf S}_{D,0}$, then the spectral shape can be computed from,
+
+\begin{equation}
+\label{eq::TG_accel_EC}
+\left( {\bf T}- {\bf S}_{L,0} - {\bf S}_{D,0} \right)^{-1}  {\bf S}_{U,0}  \xi = \rho \xi,
+\end{equation}
+
+\noindent and the diffusion equation residual from,
 
 \begin{equation}
 \label{eq::TG_residual}
-{\bf R}_g^{(k+1/2)} = {\bf M} \sum_{g'=g+1}^G {\bf S}_{g g'} \left(  \Phi_{g'}^{(k+1/2)} - \Phi_{g'}^{(k)}  \right).
+R_g^{(k+1/2)} =  \sum_{g'=g+1}^G {\bf S}_{g, g',0} \left(  \Phi_{g',0}^{(k+1/2)} - \Phi_{g',0}^{(k)}  \right).
+\end{equation}
+
+\noindent Then, following an outer iteration where we have converged the inners in each group, we update the transport iterations with the same correction as Eq. (\ref{eq::rich_update}).
+
+The final neutron upscattering acceleration method that we will investigate is a slightly modified form of TG. In the appendix of their paper, Evans, Clarno, and Morel propsed a Modified Transport Two-Grid (MTTG) acceleration scheme for use with transport synthetic acceleration \cite{evans2010transport}. We will utilize their same methodology but use the diffusion equation as our low-order operator instead of angularly-coarse transport equation to form the Modified Two-Grid (MTG) scheme. It is almost identical to the TG scheme, but we simply do not converge the inner iterations of the Gauss-Seidel process (in fact we only need to employ 1 transport sweep per energy group). The transport iterations then have a slightly modified structure,
+
+\begin{equation}
+\label{eq::MTG_it}
+{\bf L}_{gg} \Psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^{g-1} {\bf S}_{g g'} \Phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g}^G {\bf S}_{g g'} \Phi_{g'}^{(k)} + {\bf Q}_g .
+\end{equation}
+
+Then, after 1 outer iteration through all the thermal groups (only 1 sweep per group), we apply the correction from Eq. (\ref{eq::rich_update}). The only difference is that the spectral shape is calculated from the modified equation, $\left( {\bf T}- {\bf S}_{L,0} \right)^{-1} \left( {\bf S}_{D,0}+ {\bf S}_{U,0} \right) \xi = \rho \xi $, and the residual for the diffusion solve becomes,
+
+\begin{equation}
+\label{eq::MTG_residual}
+R_g^{(k+1/2)} =  \sum_{g'=g}^G {\bf S}_{g, g',0} \left(  \Phi_{g',0}^{(k+1/2)} - \Phi_{g',0}^{(k)}  \right).
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%
 \paragraph{The IM1 Experiment}
 \label{sec::CW_DSA_Upscatter_IM1}
 
-We seek to test our thermal upscattering acceleration methods on a real-world physical problem. We have chosen to test these methods on the IM1 experiment which is seeking to determine an effective impurity model for the contamination present within graphite bricks. The problem consists of multiple materials and significantly heterogeneous configuration as seen in Figure \ref{fig::IM1_layouts_a}. The materials consist of air, wood, Boral, high density polyethylene (HDPE), borated HDPE (B-HDPE), an AmBe source, graphite, steel supports, aluminum supports, and a BF3 detector. 
+We seek to test our thermal upscattering acceleration methods on a real-world physical problem. We have chosen to test these methods on the IM1 experiment which is seeking to determine an effective impurity model for the contamination present within graphite bricks. The problem consists of multiple materials and significantly heterogeneous configuration as seen in Figure \ref{fig::IM1_layouts_a}. The materials consist of air, wood, Boral, high-density polyethylene (HDPE), borated HDPE (B-HDPE), an AmBe source, graphite, steel supports, aluminum supports, and a BF3 detector. The simulations are run with 99 energy groups and with a PGLC quadrature set consisting of 30 polar and 6 azimuthal angles in each octant.
 
 \begin{figure}
 \centering
@@ -620,7 +680,33 @@ We seek to test our thermal upscattering acceleration methods on a real-world ph
 	\end{subfigure}
 \caption{IM1 problem layout (left) and a simplified 2D variant (right).}
 \label{fig::IM1_layouts}
-\end{figure}
+\end{figure} 
+
+Because the full 3D IM1 simulation setup is large, we wished to first perform some simplified analysis of the acceleration methods on a smaller problem configuration. Figure \ref{fig::IM1_layouts_b} shows a simple 2D analogue of the IM1 problem with a reflecting boundary on the left face and the only materials being AmBe, air, graphite and HPDE. We have performed theoretical analysis of the different acceleration methods on the various materials present in the IM1 experiment. Table \ref{tab::IM1_inf_med_SR} gives the infinite medium spectral radius for all the IM1 materials for both the unaccelerated and accelerated upscatter methods. In this case, the unaccelerated results simply perform the transport iterations of Eqs. (\ref{eq::MG_full_eq_it}), (\ref{eq::GS_it}), and (\ref{eq::MTG_it}) without their corresponding acceleration steps. From the table, we can clearly see that TG acceleration provides the best convergence properties for all the IM1 materials.
+
+
+\begin{table}
+\caption{Infinite medium spectral radii of the IM1 materials for the three thermal neutron upscattering methods. We include both the unaccelerated (U) and accelerated (A) cases.}
+\centering
+\def\arraystretch{1.2}
+\begin{tabular}{|c||c|c||c|c||c|c|}
+\hline
+Material & U. Rich. & A. Rich. & U. TG & A. TG & U. MTG & A. MTG \\ \hline
+Graphite & 0.9993 & 0.9613 & 0.9883 &0.4084 & 0.9993 & 0.9604 \\
+HDPE & 0.9943 & 0.8015 & 0.8916 & 0.4343&  0.9918 & 0.7527 \\
+B-HDPE &0.1336 & 0.1223  & 0.0258 & 0.0177 &  0.1331 & 0.1221 \\
+Wood & 0.9915 & 0.5326  & 0.9820 & 0.2101 &  0.9840 & 0.3836 \\
+AmBe  & 0.7068 & 0.5596 & 0.4835& 0.2724 & 0.5646 & 0.5554 \\
+Steel  & 0.9255 & 0.9215 & 0.6989 & 0.5809 &   0.9243 & 0.9215\\
+Boral  & 0.0782 & 0.0602 & 0.0023 & 0.0016 & 0.0782 & 0.0602 \\
+BF3   & 0.0351 & 0.0266 & 0.0008& 0.0006 & 0.0351 & 0.0266 \\
+Air   & 0.8845 & 0.7896 & 0.7580& 0.5282 &  0.8121 & 0.7828 \\
+\hline
+\end{tabular}
+\label{tab::IM1_inf_med_SR}
+\end{table}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -629,7 +715,7 @@ We seek to test our thermal upscattering acceleration methods on a real-world ph
 
 Thus far, we have presented the overall objectives of the dissertation work and the work that has been completed to this point. There are still several areas of work that need to be completed. They are confined to two distinct areas: 1) remaining theoretical implementation and analysis of the polygonal finite element basis functions and their extension to the quadratic serendipity space and 2) performance analysis of thermal neutron upscattering with  MIP DSA in PDT.
 
-For the analysis of the polygonal basis functions, there are a couple of items left to investigate. First, we need to analyze the convergence rates of the transport equation in a purely-absorbing medium with and without mesh alignment. If the mesh is aligned with the solution discontinuity, then the convergence rates of Eqs. (\ref{eq::bf_conv_rate_h}) and (\ref{eq::bf_conv_rate_DOF}) should be captured. However, if the mesh is not aligned with the analytical discontinuities, then the resulting numerical solutions will only live in either the $H^{1/2}$ or $H^{3/2}$ Sobolev spaces. The final polygonal basis function analysis to perform is to confirm that the quadratic basis functions can exactly capture solutions that are in $\text{span}\left\{  1,x,y,xy,x^2,y^2  \right\}$.
+For the analysis of the polygonal basis functions, there are a couple of items left to investigate. First, we need to analyze the convergence rates of the transport equation in a purely-absorbing medium with and without mesh alignment. If the mesh is aligned with the solution discontinuity, then the convergence rates of Eqs. (\ref{eq::bf_conv_rate_h}) and (\ref{eq::bf_conv_rate_DOF}) should be captured. However, if the mesh is not aligned with the analytical discontinuities, then the resulting numerical solutions will only live in either the $H^{1/2}$ or $H^{3/2}$ Sobolev spaces, due to the irregularity of the transport solutions. The final polygonal basis function analysis to perform is to confirm that the quadratic basis functions can exactly capture solutions that are in $\text{span}\left\{  1,x,y,xy,x^2,y^2  \right\}$.
 
 For the DSA work in PDT, there are three items left to investigate. First, we need to complete the last of the numerical experiments to verify the theoretical results of the DSA fourier analysis. This is mostly restricted to the numerical verification of the PHI problem. Second, we will finish our analysis of the effects of partitioning and aggregation on the HYPRE setup and solve times. The raw data for this step has already been collected; it just needs to be properly analyzed and tabulated. Finally, we need to conclude the remaining numerical experiments for the IM1 problem.
 
