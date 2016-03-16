@@ -89,7 +89,7 @@ We next restrict our problem to a single energy group and simplify the right-han
 \begin{aligned}
 -  \Big( \vec{\Omega}_m \cdot  & \vec{\nabla} b_m, \Psi_{m} \Big)_{K}   + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K} +  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{-}  \Big>_{\partial K^+}  \\
   + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{+}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}^{-}_{m'}  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
-= & \left(  b_m ,   Q_m \right)_{K} + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}^d} 
+= & \left(  b_m ,   Q_m \right)_{K} - \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}^d} 
 \end{aligned} \, .
 \end{equation}
 
@@ -350,7 +350,7 @@ We next want to analyze the convergence rate properties of transport solutions u
 
 \noindent where in this case, the frequency parameter, $\nu$, is set to 3. We test the convergence rates of this transport solution using more regular meshes: orthogonal quadrilaterals, ordered triangles, and regular polygons. Figure \ref{fig::mms_err} presents the convergence rates 
 
-We also wish to test a solution that contains an extreme local maximum. We analyze an analytical solution of the form,
+We also wish to test a solution that contains an extreme local maximum. We analyze an analytical solution that contains a local gaussian function of the form,
 
 \begin{equation}
 \label{eq::gauss_eq}
@@ -367,7 +367,7 @@ We also wish to test a solution that contains an extreme local maximum. We analy
 C_M = \frac{100}{L_x^2 L_y^2} \qquad \text{and} \qquad \gamma = \frac{L_x L_y}{100} ,
 \end{equation}
 
-\noindent respectively. However, for this transport solution, we will utilize adaptive mesh refinement strategies 
+\noindent respectively. However, for this transport solution, we will utilize adaptive mesh refinement strategies to test a different methodology in generating polygonal meshes. Figure \ref{fig::Gauss_AMR_err} contains some convergence rate analysis for the different linear basis functions and the quadratic maximu entropy coordinates. We then show the mesh refinement level and the corresponding localized gaussian solution in Figure \ref{fig::AMR_plots} for the both the linear and quadratic serendipity maximum entropy coordinates.
 
 \begin{figure}[hbt]
 \centering
@@ -682,7 +682,7 @@ We seek to test our thermal upscattering acceleration methods on a real-world ph
 \label{fig::IM1_layouts}
 \end{figure} 
 
-Because the full 3D IM1 simulation setup is large, we wished to first perform some simplified analysis of the acceleration methods on a smaller problem configuration. Figure \ref{fig::IM1_layouts_b} shows a simple 2D analogue of the IM1 problem with a reflecting boundary on the left face and the only materials being AmBe, air, graphite and HPDE. We have performed theoretical analysis of the different acceleration methods on the various materials present in the IM1 experiment. Table \ref{tab::IM1_inf_med_SR} gives the infinite medium spectral radius for all the IM1 materials for both the unaccelerated and accelerated upscatter methods. In this case, the unaccelerated results simply perform the transport iterations of Eqs. (\ref{eq::MG_full_eq_it}), (\ref{eq::GS_it}), and (\ref{eq::MTG_it}) without their corresponding acceleration steps. From the table, we can clearly see that TG acceleration provides the best convergence properties for all the IM1 materials.
+Because the full 3D IM1 simulation setup is large, we wished to first perform some simplified analysis of the acceleration methods on a smaller problem configuration. Figure \ref{fig::IM1_layouts_b} shows a simple 2D analogue of the IM1 problem with a reflecting boundary on the left face and the only materials being AmBe, air, graphite and HPDE. We have performed theoretical analysis of the different acceleration methods on the various materials present in the IM1 experiment. Table \ref{tab::IM1_inf_med_SR} gives the infinite medium spectral radius for all the IM1 materials for both the unaccelerated and accelerated upscatter methods. In this case, the unaccelerated results simply perform the transport iterations of Eqs. (\ref{eq::MG_full_eq_it}), (\ref{eq::GS_it}), and (\ref{eq::MTG_it}) without their corresponding acceleration steps. From the table, we can clearly see that TG acceleration provides the best convergence properties for all the IM1 materials. However, that does not necessarily mean that TG will give us the best overall performance when it comes to simulation run time.
 
 
 \begin{table}
