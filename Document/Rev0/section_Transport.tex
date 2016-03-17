@@ -821,34 +821,42 @@ a(\Psi^{*},\Psi - \Psi_{exact})  = 0, \qquad m=1,...,M .
 || u  ||_{DG} = a(u,u).
 \end{equation}
 
-The convergence of DGFEM methods for the hyperbolic systems has been extensively studied \cite{lesaint1974finite,houston2000stabilized,houston2002discontinuous,wang2009convergence}.
-
-\begin{equation}
-\label{eq::Sn_Spatial_Convergence_DGnorm_psi}
-|| \Psi - \Psi_{exact} ||_{DG} = C^{\Psi} \frac{h^q}{(p+1)^q}
-\end{equation}
-
-\noindent and
-
-\begin{equation}
-\label{eq::Sn_Spatial_Convergence_DGnorm_phi}
-|| \Phi - \Phi_{exact} ||_{DG} = C^{\Phi} \frac{h^q}{(p+1)^q}
-\end{equation}
-
-\noindent where $q = \min (p+1/2, r - 1/2)$ and $r$ is the regularity index of the continuous transport solution.
-
+\noindent We can also give a more simplified definition of the DG norm,
 
 \begin{equation}
 \label{eq::Sn_Spatial_Convergence_DGform}
-|| u ||^2_{DG} = \sum_{K \in \mathbb{T}_h} \left[  || u  ||^2_{L^2 (K)} + \frac{1}{2} || u^+ - u^- ||_{L^2 (\partial K)} \right]
+|| u ||^2_{DG} = \sum_{K \in \mathbb{T}_h} \left[  || u  ||^2_{L^2 (K)} + \frac{1}{2} || u^+ - u^- ||_{L^2 (\partial K)} \right],
 \end{equation}
+
+\noindent which contains the standard $L_2$ norm in the element interiors as well as additional $L_2$ norms on the element boundaries corresponding to the jump terms across the mesh cells.
+
+The convergence of DGFEM methods for the hyperbolic systems has been extensively studied \cite{lesaint1974finite,houston2000stabilized,houston2002discontinuous,wang2009convergence}. With the discretized flux solutions, $\Psi_h \in W^h_{\mathcal{D}}$ and $\Phi_h \in W^h_{\mathcal{D}}$, corresponding to our unstructured, $\mathbb{T}_h$, we can define an error for our DGFEM transport solution with the DG norm for the angular fluxes,
+
+
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_DGnorm_psi}
+|| \Psi - \Psi_{exact} ||_{DG} = C \frac{h^q}{(p+1)^q},
+\end{equation}
+
+\noindent and flux moments,
+
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_DGnorm_phi}
+|| \Phi - \Phi_{exact} ||_{DG} = C \frac{h^q}{(p+1)^q},
+\end{equation}
+
+\noindent respectively. In Eqs. (\ref{eq::Sn_Spatial_Convergence_DGnorm_psi}) and (\ref{eq::Sn_Spatial_Convergence_DGnorm_phi}), $q = \min (p+1/2, r - 1/2)$, $h$ is the maximum diameter of all the mesh elements, $p$ is the polynomial completeness of the finite element function space (this will be explained further in Chapter \ref{sec::BF}), $r$ is the regularity index of the transport solution, and $C$ is a constant that is independent of the mesh employed. We can also give an estimate for the transport solution error in the standard $L_2$ norm,
 
 \begin{equation}
 \label{eq::Sn_Spatial_Convergence_L2norm_phi}
-|| \Phi - \Phi_{exact} ||_{L^2} = C \frac{h^{s}}{(p+1)^s}
+|| \Phi - \Phi_{exact} ||_{L_2} = C \frac{h^{q+1/2}}{(p+1)^q},
 \end{equation}
 
-\noindent where $s= \min (p+1, r)$
+\noindent where $q$ has the same definition as before. We can see that for the $L_2$ norm the convergence rate is simply $1/2$ integer more than the DG norm for both the polynomial order and the regularity index.
+
+Investigating the definition of the $q$ term in Eqs. (\ref{eq::Sn_Spatial_Convergence_DGnorm_psi}), (\ref{eq::Sn_Spatial_Convergence_DGnorm_phi}), and (\ref{eq::Sn_Spatial_Convergence_L2norm_phi}) further, we can see that our DGFEM transport convergence rates are all limited by the regularity, $r$, of the solution space. The spaces to which the transport equation can reside has been investigated by others in previous works \cite{wang2009convergence,magenes1970problemes,johnson1983convergence}. If we have sufficiently smooth data, then the exact transport solution belongs, at most, in the $H^{3/2} (\mathcal{D})$ Hilbert space. For this case it is sufficient to have piecewise polynomial cross section data and incident boundary fluxes that align with our mesh. However, in the case of a pure absorber or void, the exact transport solution lives in the $H^{1/2} (\mathcal{D})$ Hilbert space. From these spaces, one would think that the transport solution regularity would impede the use of higher-order finite element spaces. We note however that these regularity indices only apply to the asymptotic convergence range, which usually only appliese to very fine meshes that are much smaller than typically employed meshes. Therefore, we expect to capture up to order $(p+1)$ convergence in preasymptotic ranges that would be employed for a wide variety of transport problems. Results capturing this irregularity behavior are presented in Chapter \ref{sec::BF}.
+
+Finally, we also seek to define the solution convergence rates in terms other than the maximum element diameter, $h$. For polytope meshes, this 
 
 \begin{figure}
 \centering
