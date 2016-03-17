@@ -752,16 +752,16 @@ We can now deal with the boundary fluxes, $\tilde{\Psi}_m$, by enforcing the ubi
 \subsection{Convergence Rates of the DGFEM $S_N$ Equation}
 \label{sec::Sn_Spatial_Convergence}
 
-Because we seek to investigate the use of high-order spatial basis functions for the transport equation, we need to form an estimate of the spatial error based on some measure of the mesh. We do this by taking Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK_complete}), performing another integration-by-parts on the streaming term, mulitplying by the angular weight, $w_m$, and summing over all elements and all angular directions. This leads to the variational form for the 1-group $S_N$ equation:
+Because we seek to investigate the use of high-order spatial basis functions for the transport equation, we need to form an estimate of the spatial error based on some measure of the mesh. We do this by taking Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK_complete}), performing another integration-by-parts on the streaming term, mulitplying by the angular weight, $w_m$, and summing over all elements and all angular directions. We also change the notation of the test function from $b_m$ to $\Psi_m^{*}$ to ease notation at a later step. This leads to the variational form for the 1-group $S_N$ equation:
 
 \begin{equation}
 \label{eq::Sn_DGFEM_variational_form}
 \begin{aligned}
-\sum\displaylimits_{m=1}^M w_m& \Big[  \Big(  b_m, \vec{\Omega}_m \cdot   \vec{\nabla} \Psi_{m} \Big)_{\mathcal{D}} + \Big( \sigma_t  b_m,  \Psi_{m} \Big)_{\mathcal{D}}  \Big]  \\
-+ \sum\displaylimits_{m=1}^M w_m& \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m^{+}, [\![ \Psi_m]\!]  \Big>_{E_h^i} \\
-+ \sum\displaylimits_{m=1}^M w_m& \Big[ \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_{m'}  \Big>_{\partial \mathcal{D}_m^{r-}} -  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m  \Big>_{\partial \mathcal{D}_m^-}   \Big] \\
-= \sum\displaylimits_{m=1}^M w_m&     \sum_{p=0}^{N_P} \sum_{n=-p}^{p} \frac{2p + 1}{4 \pi}  Y_{p,n} (  \vec{\Omega}_m )  \Big(   b_m, \sigma_{s,p} \,  \Phi_{p,n,} +  Q_{p,n} \Big)_{\mathcal{D}}  \\
-- \sum\displaylimits_{m=1}^M w_m&   \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{inc}  \Big>_{\partial \mathcal{D}_m^- }
+\sum\displaylimits_{m=1}^M w_m& \Big[  \Big(  \Psi_m^*, \vec{\Omega}_m \cdot   \vec{\nabla} \Psi_{m} \Big)_{\mathcal{D}} + \Big( \sigma_t  \Psi_m^{*},  \Psi_{m} \Big)_{\mathcal{D}}  \Big]  \\
++ \sum\displaylimits_{m=1}^M w_m& \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, \Psi_m^{* +}, [\![ \Psi_m]\!]  \Big>_{E_h^i} \\
++ \sum\displaylimits_{m=1}^M w_m& \Big[ \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, \Psi_m^{*}, {\Psi}_{m'}  \Big>_{\partial \mathcal{D}_m^{r-}} -  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, \Psi_m^{*}, {\Psi}_m  \Big>_{\partial \mathcal{D}_m^-}   \Big] \\
+= \sum\displaylimits_{m=1}^M w_m&     \sum_{p=0}^{N_P} \sum_{n=-p}^{p} \frac{2p + 1}{4 \pi}  Y_{p,n} (  \vec{\Omega}_m )  \Big(   \Psi_m^{*}, \sigma_{s,p} \,  \Phi_{p,n,} +  Q_{p,n} \Big)_{\mathcal{D}}  \\
+- \sum\displaylimits_{m=1}^M w_m&   \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, \Psi_m^{*}, {\Psi}_m^{inc}  \Big>_{\partial \mathcal{D}_m^- }
 \end{aligned}
 \end{equation}
 
@@ -796,6 +796,33 @@ u (\vec{r}) = \text{sgn} \left(  \vec{n} (\vec{r}) \cdot  \vec{\Omega}_m \right)
 \end{aligned} .
 \end{equation}
 
+We can give compact notation to the variational form of the DGFEM transport equation in Eq. (\ref{eq::Sn_DGFEM_variational_form}) by defining the bilinear form in Eq. (\ref{eq::Sn_Spatial_Convergence_bilinear}). We have changed the sequence of the summation over directions and over the elements for the boundary terms.
+
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_bilinear}
+\begin{aligned}
+a(\Psi^{*},\Psi) = \sum\displaylimits_{m=1}^M w_m \Big[  \Big(  \Psi_m^{*}, \vec{\Omega}_m \cdot   \vec{\nabla} \Psi_{m} \Big)_{\mathcal{D}} + \Big( \sigma_t  \Psi_m^{*},  \Psi_{m} \Big)_{\mathcal{D}}  \Big]  \\
++ \sum\displaylimits_{m=1}^M w_m \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, \Psi_m^{* +}, [\![ \Psi_m]\!]  \Big>_{E_h^i} - \sum\displaylimits_{f \in \partial \mathcal{D}} \sum\displaylimits_{\vec{\Omega}_m \cdot \vec{n}} \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, \Psi_m^{*}, {\Psi}_m  \Big>_{f}  \\
++ \sum\displaylimits_{f \in \partial \mathcal{D}^r} \sum\displaylimits_{\vec{\Omega}_m \cdot \vec{n}} \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, \Psi_m^{*}, {\Psi}_{m'}  \Big>_{f} -      \sum_{p=0}^{N_P} \sum_{n=-p}^{p} \frac{2p + 1}{4 \pi}   \Big(  \sigma_{s,p} \,  \Phi_{p,n,}^{*},  \Phi_{p,n,} \Big)_{\mathcal{D}} 
+\end{aligned}
+\end{equation}
+
+\noindent This bilinear form is positive definite ($a(\Psi,\Psi) > 0$) but obviously not symmetric. It also holds Galerking orthogonality, which means that the jumps across elements for the exact solution are zero,
+
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_Galerkin_orth}
+a(\Psi^{*},\Psi - \Psi_{exact})  = 0, \qquad m=1,...,M .
+\end{equation}
+
+\noindent Because of the positive definiteness and Galerkin orthogonality of the bilinear form, we can use it to define a DG-norm,
+
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_DGnorm_bilinear}
+|| u  ||_{DG} = a(u,u).
+\end{equation}
+
+The convergence of DGFEM methods for the hyperbolic systems has been extensively studied \cite{lesaint1974finite,houston2000stabilized,houston2002discontinuous,wang2009convergence}.
+
 \begin{equation}
 \label{eq::Sn_Spatial_Convergence_DGnorm_psi}
 || \Psi - \Psi_{exact} ||_{DG} = C^{\Psi} \frac{h^q}{(p+1)^q}
@@ -811,7 +838,17 @@ u (\vec{r}) = \text{sgn} \left(  \vec{n} (\vec{r}) \cdot  \vec{\Omega}_m \right)
 \noindent where $q = \min (p+1/2, r - 1/2)$ and $r$ is the regularity index of the continuous transport solution.
 
 
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_DGform}
+|| u ||^2_{DG} = \sum_{K \in \mathbb{T}_h} \left[  || u  ||^2_{L^2 (K)} + \frac{1}{2} || u^+ - u^- ||_{L^2 (\partial K)} \right]
+\end{equation}
 
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_L2norm_phi}
+|| \Phi - \Phi_{exact} ||_{L^2} = C \frac{h^{s}}{(p+1)^s}
+\end{equation}
+
+\noindent where $s= \min (p+1, r)$
 
 \begin{figure}
 \centering
