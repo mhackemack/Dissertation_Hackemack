@@ -835,28 +835,56 @@ The convergence of DGFEM methods for the hyperbolic systems has been extensively
 
 \begin{equation}
 \label{eq::Sn_Spatial_Convergence_DGnorm_psi}
-|| \Psi - \Psi_{exact} ||_{DG} = C \frac{h^q}{(p+1)^q},
+|| \Psi - \Psi_{exact} ||_{DG} \leq C \frac{h^q}{(p+1)^q},
 \end{equation}
 
 \noindent and flux moments,
 
 \begin{equation}
 \label{eq::Sn_Spatial_Convergence_DGnorm_phi}
-|| \Phi - \Phi_{exact} ||_{DG} = C \frac{h^q}{(p+1)^q},
+|| \Phi - \Phi_{exact} ||_{DG} \leq C \frac{h^q}{(p+1)^q},
 \end{equation}
 
 \noindent respectively. In Eqs. (\ref{eq::Sn_Spatial_Convergence_DGnorm_psi}) and (\ref{eq::Sn_Spatial_Convergence_DGnorm_phi}), $q = \min (p+1/2, r - 1/2)$, $h$ is the maximum diameter of all the mesh elements, $p$ is the polynomial completeness of the finite element function space (this will be explained further in Chapter \ref{sec::BF}), $r$ is the regularity index of the transport solution, and $C$ is a constant that is independent of the mesh employed. We can also give an estimate for the transport solution error in the standard $L_2$ norm,
 
 \begin{equation}
 \label{eq::Sn_Spatial_Convergence_L2norm_phi}
-|| \Phi - \Phi_{exact} ||_{L_2} = C \frac{h^{q+1/2}}{(p+1)^q},
+|| \Phi - \Phi_{exact} ||_{L_2} \leq C \frac{h^{q+1/2}}{(p+1)^q},
 \end{equation}
 
 \noindent where $q$ has the same definition as before. We can see that for the $L_2$ norm the convergence rate is simply $1/2$ integer more than the DG norm for both the polynomial order and the regularity index.
 
 Investigating the definition of the $q$ term in Eqs. (\ref{eq::Sn_Spatial_Convergence_DGnorm_psi}), (\ref{eq::Sn_Spatial_Convergence_DGnorm_phi}), and (\ref{eq::Sn_Spatial_Convergence_L2norm_phi}) further, we can see that our DGFEM transport convergence rates are all limited by the regularity, $r$, of the solution space. The spaces to which the transport equation can reside has been investigated by others in previous works \cite{wang2009convergence,magenes1970problemes,johnson1983convergence}. If we have sufficiently smooth data, then the exact transport solution belongs, at most, in the $H^{3/2} (\mathcal{D})$ Hilbert space. For this case it is sufficient to have piecewise polynomial cross section data and incident boundary fluxes that align with our mesh. However, in the case of a pure absorber or void, the exact transport solution lives in the $H^{1/2} (\mathcal{D})$ Hilbert space. From these spaces, one would think that the transport solution regularity would impede the use of higher-order finite element spaces. We note however that these regularity indices only apply to the asymptotic convergence range, which usually only appliese to very fine meshes that are much smaller than typically employed meshes. Therefore, we expect to capture up to order $(p+1)$ convergence in preasymptotic ranges that would be employed for a wide variety of transport problems. Results capturing this irregularity behavior are presented in Chapter \ref{sec::BF}.
 
-Finally, we also seek to define the solution convergence rates in terms other than the maximum element diameter, $h$. For polytope meshes, this 
+Finally, we also seek to define the transport solution convergence rates in terms other than the maximum element diameter, $h$. For polytope meshes, this metric may not be the easiest to compute or report if there is large variability in the polygonal or polyhedral elements of the mesh. We seek to re-express the convergence rates in terms of the total number of degrees of freedom in the problem, $N_{dof}$, instead of the maximum element diameter, $h$. First, we relate the total number of elements, $N_{ele}$, to the maximum element diameter,
+
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_Nele_to_h}
+N_{ele} \propto h^{-d},
+\end{equation}
+
+\noindent where we assumed that the polytope elements are convex and reasonably regular. We then assume that the finite element functional space on each element is the Serendipity space (we go into further detail in Chapter \ref{sec::BF}) \cite{macneal1992eight,arnold2011serendipity}. This means that the number of degrees of freedom per element is proportional to the polynomial order: $N_{dof} \propto p h^{-d}$ or $h \propto \left(  \frac{N_{dof}}{p} \right)^{-1/d}$. We substitute this result into Eq. (\ref{eq::Sn_Spatial_Convergence_L2norm_phi}) to yield an $L_2$ convergence rate in terms of the problem's total number of degrees of freedom,
+
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_L2norm_phi_Ndof}
+|| \Phi - \Phi_{exact} ||_{L_2} \leq C (p) N_{dof}^{-\frac{q+1/2}{d}},
+\end{equation}
+
+\noindent where the proportionality constant, $C(p)$, now has the form,
+
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_Cconstant}
+C(p) =  \frac{p^{\frac{q+1/2}{d}}}{(p+1)^q}.
+\end{equation}
+
+\noindent For a transport problem that is not bound by the solution regularity, we can express the simplified convergence rate,
+
+\begin{equation}
+\label{eq::Sn_Spatial_Convergence_L2norm_phi_Ndof_full}
+|| \Phi - \Phi_{exact} ||_{L_2} \leq C(p) \, N_{dof}^{-\frac{p+1}{d}}, \qquad C(p) = \frac{p^{\frac{p+1}{d}}}{(p+1)^{p+1/2}}.
+\end{equation}
+
+\noindent The result of Eq. (\ref{eq::Sn_Spatial_Convergence_L2norm_phi_Ndof_full}) states that we expect convergence rates of $N_{dof}^{-1}$ and $N_{dof}^{-2/3}$ for linear ($p=1$) functional spaces in 2D and 3D, respectively. Conversely, quadratic ($p=2$) functional spaces will yield convergence rates of $N_{dof}^{-3/2}$ and $N_{dof}^{-1}$ in 2D and 3D, respectively. The proportionality constant, $C(p)$, in Eq. (\ref{eq::Sn_Spatial_Convergence_L2norm_phi_Ndof_full}) is a monotonically decreasing function for $p \geq 1$ in 2D and 3D (this does not hold for 1D problems). Finally, we show a comparison between the convergence rate estimates of Eqs. (\ref{eq::Sn_Spatial_Convergence_L2norm_phi}) and (\ref{eq::Sn_Spatial_Convergence_L2norm_phi_Ndof}) for a 2D problem not bounded by the solution regularity ($q+1/2 = p+1$) in Figure \ref{fig::Sn_Spatial_Convergence}. We also simply set $C(p)=1$ for all the curves to better show a comparison between the rates. We can get a good idea of the power of using higher-order shape functions with curves based on $N_{dof}$. If our transport problem takes about the same amount of calculation time to solve for the same number of degrees of freedom, we can see that we would yield a more accurate answer for little additional cost.
 
 \begin{figure}
 \centering
@@ -1041,7 +1069,7 @@ The fully discretized transport equation has an angular flux solution, ${\bf \Ps
 
 In theory, if we had the computer memory, we could construct a left-hand-side matrix of dimensionality $(G \text{x} M \text{x} N_{dof})$x$(G \text{x} M \text{x} N_{dof})$ with a corresponding right-hand-side vector of dimensionality $(G \text{x} M \text{x} N_{dof})$x1, we could then directly solve for the full phase-space angular flux solution at once. However, because the dimensional space of the unknowns can rapidly grow and become too large for hardware memory, transport problems have traditionally been solved iteratively. We now detail the procedures that we will employ to iteratively obtain the phase-space solution in energy and angle.
 
-Because the only coupling that arises between the set of multigroup $S_N$ equations is between the energy groups in the scattering source, our iterative procedures principally lie in the energy domain. 
+Because the only coupling that arises between the set of multigroup $S_N$ equations is between the energy groups in the scattering source, our iterative procedures principally lie in the energy domain. Figure \ref{fig::Sn_Solution_Iterative_scattmatrix} presents a pair of scattering matrices that show typical coupling between energy groups for neutronics problems. Depending on how the group boundaries are established along with a possible need for higher fidelity in energy, thermal upscattering may or may or may not be present in the problem. We can see from Figure \ref{fig::Sn_Solution_Iterative_scattmatrix} that the purely-downscattering matrix only has 1-way coupling, from high-to-low in the group energies. This means that if we progress through the energy groups from $g=1,...,G$ (in what is called an {\em outer iteration}), then we only have to do so once and we are done. 
 
 \begin{figure}
 \centering
@@ -1059,33 +1087,54 @@ Because the only coupling that arises between the set of multigroup $S_N$ equati
 \label{fig::Sn_Solution_Iterative_scattmatrix}
 \end{figure}
 
+
+
 \begin{equation}
-\label{eq::Sn_full_sol_ops}
+\label{eq::Sn_full_sol_gs_ops}
 \begin{aligned}
-{\bf L} {\bf \Psi} - {\bf M} {\bf \Sigma} {\bf \Phi}  =    {\bf Q} \\
-{\bf \Phi} =  {\bf D} {\bf \Psi}
+{\bf L}_{gs} {\bf \Psi}_{gs} &=    {\bf M}_{gs} {\bf \Sigma}_{gs} {\bf \Phi}_{gs} +  {\bf Q}_{gs}  \\
+{\bf \Phi}_{gs} &=  {\bf D}_{gs} {\bf \Psi}_{gs}
 \end{aligned}
 \end{equation}
 
-\noindent where ${\bf L}$ is the fully-discretized loss operator which consists of total interaction and streaming terms, ${\bf M}$ is the moment-to-discrete operator of the angular discretization, ${\bf D}$ is the discrete-to-moment operator of the angular discretization, ${\bf \Sigma}$ is the scattering operator of the multigroup and angular discretizations, and ${\bf Q}$ is the full phase-space distributed source. In this case, the source contains contributions from boundary and domain sources, fission sources, and scattering sources from outside the group set into the group set of interest.
+\noindent where ${\bf L}_{gs}$ is the fully-discretized loss operator which consists of total interaction and streaming terms, ${\bf M}_{gs}$ is the moment-to-discrete operator of the angular discretization, ${\bf D}_{gs}$ is the discrete-to-moment operator of the angular discretization, ${\bf \Sigma}_{gs}$ is the scattering operator of the multigroup and angular discretizations, and ${\bf Q}_{gs}$ is the full phase-space distributed source. In this case, the source contains contributions from boundary and domain sources, fission sources, and scattering sources from outside the group set into the group set of interest. We note that ${\bf M}_{gs}$ and ${\bf D}_{gs}$ are also group set dependent since we do not enforce the exact same angular discretization on all group sets. This can be useful if certain ranges of energy groups require higher angular fidelity due to increased anisotropic scattering.
 
 
 
 \begin{equation}
 \label{eq::Sn_full_sol_moments_only}
-\left( {\bf I} -{\bf T} \right) {\bf \Phi} =  {\bf D} {\bf L}^{-1}  {\bf Q} 
+\left( {\bf I} -{\bf T}_{gs} \right) {\bf \Phi}_{gs} =  {\bf D}_{gs} {\bf L}_{gs}^{-1}  {\bf Q}_{gs}
 \end{equation}
 
 \noindent where we define,
 
 \begin{equation}
 \label{eq::Sn_trans_op_T}
-{\bf T} \equiv {\bf D} {\bf L}^{-1}{\bf M} {\bf \Sigma} ,
+{\bf T}_{gs} \equiv {\bf D}_{gs} {\bf L}_{gs}^{-1}{\bf M}_{gs} {\bf \Sigma}_{gs} ,
 \end{equation}
 
 \noindent for further brevity.
 
-
+\begin{algorithm}
+\caption{Iterative Solver in Energy for the Multigroup Transport Problem}
+\label{alg::Sn_Linear_Transport_Solve}
+\begin{algorithmic}[1]
+\State Initialize: $\Phi_{g,p,n} = 0, \qquad g=1,...,G; \, p=0,...,N_p; \, n=-p,...,p$
+\For{$a=1,...,I_{ags}$}
+	\State {\bf Loop}: through group sets
+	\For{$gs=1,...,N_{gs}$}
+		\For{$k=1,...,I_{gs}$}
+			\State {\bf Perform}: residual iteration
+			\State {\bf Apply}: Acceleration for group set $gs$
+			\State {\bf Check}: convergence of group set $gs$
+		\EndFor
+	\EndFor
+	\State {\bf Perform}: residual iteration
+	\State {\bf Apply}:  Acceleration for across-group-set
+	\State {\bf Check}: across-group-set convergence
+\EndFor
+\end{algorithmic}
+\end{algorithm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - Source Iteration
@@ -1102,8 +1151,8 @@ One simple method to invert $({\bf I} - {\bf T})$ of Eq. (\ref{eq::Sn_full_sol_m
 \begin{equation}
 \label{eq::Sn_si_iter}
 \begin{aligned}
- {\bf \Psi}_{gs}^{(\ell+1)} = {\bf L}_{gs}^{-1} \left(  {\bf M}_{gs} {\bf \Sigma}_{gs} {\bf \Phi}_{gs}^{(\ell)} +  {\bf Q}_{gs} \right) \\
-{\bf \Phi}_{gs}^{(\ell+1)} =  {\bf D}_{gs} {\bf \Psi}_{gs}^{(\ell+1)}
+ {\bf \Psi}_{gs}^{(\ell+1)} &= {\bf L}_{gs}^{-1} \left(  {\bf M}_{gs} {\bf \Sigma}_{gs} {\bf \Phi}_{gs}^{(\ell)} +  {\bf Q}_{gs} \right) \\
+{\bf \Phi}_{gs}^{(\ell+1)} &=  {\bf D}_{gs} {\bf \Psi}_{gs}^{(\ell+1)}
 \end{aligned}
 \end{equation}
 
