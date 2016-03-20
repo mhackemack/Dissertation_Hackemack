@@ -1069,7 +1069,8 @@ The fully discretized transport equation has an angular flux solution, ${\bf \Ps
 
 In theory, if we had the computer memory, we could construct a left-hand-side matrix of dimensionality $(G \text{x} M \text{x} N_{dof})$x$(G \text{x} M \text{x} N_{dof})$ with a corresponding right-hand-side vector of dimensionality $(G \text{x} M \text{x} N_{dof})$x1, we could then directly solve for the full phase-space angular flux solution at once. However, because the dimensional space of the unknowns can rapidly grow and become too large for hardware memory, transport problems have traditionally been solved iteratively. We now detail the procedures that we will employ to iteratively obtain the phase-space solution in energy and angle.
 
-Because the only coupling that arises between the set of multigroup $S_N$ equations is between the energy groups in the scattering source, our iterative procedures principally lie in the energy domain. Figure \ref{fig::Sn_Solution_Iterative_scattmatrix} presents a pair of scattering matrices that show typical coupling between energy groups for neutronics problems. Depending on how the group boundaries are established along with a possible need for higher fidelity in energy, thermal upscattering may or may or may not be present in the problem. We can see from Figure \ref{fig::Sn_Solution_Iterative_scattmatrix} that the purely-downscattering matrix only has 1-way coupling, from high-to-low in the group energies. This means that if we progress through the energy groups from $g=1,...,G$ (in what is called an {\em outer iteration}), then we only have to do so once and we are done. 
+Because the only coupling that arises between the set of multigroup $S_N$ equations is between the energy groups in the scattering source, our iterative procedures principally lie in the energy domain. Figure \ref{fig::Sn_Solution_Iterative_scattmatrix} presents a pair of scattering matrices that show typical coupling between energy groups for neutronics problems. Depending on how the group boundaries are established along with a possible need for higher fidelity in energy, thermal upscattering may or may or may not be present in the problem. We can see from Figure \ref{fig::Sn_Solution_Iterative_scattmatrix} that the purely-downscattering matrix only has 1-way coupling, from high-to-low in the group energies. This means that if we progress through the energy groups from $g=1,...,G$ (in what is called an {\em outer iteration}), then we only have to do so once and we are done. However, there are many transport problems where we wish to have several energy groups in the thermal region. This leads to thermal neutron upscattering and causes the lower-right portion of the scattering matrix to be full as seen in the bottom of Figure \ref{fig::Sn_Solution_Iterative_scattmatrix}. Then, depending on how the groups are structured, multiple outer iterations may be necessary to full converge the scattering source.
+
 
 \begin{figure}
 \centering
@@ -1087,23 +1088,32 @@ Because the only coupling that arises between the set of multigroup $S_N$ equati
 \label{fig::Sn_Solution_Iterative_scattmatrix}
 \end{figure}
 
+We now describe the full iterative procedures required to converge the scattering source in detail. We begin by defining a new concept called a {\em group set}, which is simply a collection of contiguous groups. The group sets are ordered from high-to-low energy just like the groups and are non-overlapping with the adjoining sets. We demonstrate this concept with a simple example. If we have a problem with 10 groups ($G=10$), we then choose to aggregate them into 3 group sets. Group set 1 contains $g \in [1,3]$, group set 2 contains $g \in [4,7]$, and group set 3 contains $g \in [8,10]$. With these group sets defined we then choose to employ a double iteration loop to converge the scattering matrix. The outer iterations in this procedure perform residual calculations by looping through the group sets. Then, for each group set in every outer iteration, {\em inner iterations} are performed. These inner iterations perform residual calculations to solve the scattering matrix within that group set to some specified tolerance. We will sometimes refer to these inner iterations as {\em within-group-set} (WGS) {\em iterations}. Because each outer iteration performs residual calculations for every group set, we will sometimes refer to these outer iteration as {\em across-group-set} (AGS) {\em iterations}. We continue performing AGS iterations until the solution residual is below some specified tolerance. At each outer and inner iteration, we possibly perform some acceleration (or preconditioning) step, where we leave the details for this until Chapter \ref{sec::DSA}. This complete iterative procedure involving the outer and inner iteration loops is given in Algorithm \ref{alg::Sn_Linear_Transport_Solve}. In this algorithm, we solve $N_{gs}$ number of group sets by using a maximum number of AGS iterations, $I_{ags}$, as well as a maximum number of WGS iterations for each group set, $I_{gs}$.
 
+As previously stated, the residual iterations for each group set only converge the scattering source for that group set. This means that the scattering source from the other group sets are not modified during these iterations. We show this behavior by decomposing the transport equation into $N_{gs}$ separate equations where we have decomposed the scattering source into group set and across-group set components. The equations for the angular flux and flux moment solutions for each group set are given by
 
 \begin{equation}
-\label{eq::Sn_full_sol_gs_ops}
+\label{eq::Sn_full_sol_gs_ops_psi}
 \begin{aligned}
-{\bf L}_{gs} {\bf \Psi}_{gs} &=    {\bf M}_{gs} {\bf \Sigma}_{gs} {\bf \Phi}_{gs} +  {\bf Q}_{gs}  \\
-{\bf \Phi}_{gs} &=  {\bf D}_{gs} {\bf \Psi}_{gs}
-\end{aligned}
+{\bf L}_{gs} {\bf \Psi}_{gs} =    {\bf M}_{gs} {\bf \Sigma}_{gs} {\bf \Phi}_{gs} + {\bf M}_{gs} \sum\displaylimits_{ggs \neq gs}  {\bf \Sigma}_{ggs} {\bf \Phi}_{ggs}+ {\bf Q}_{gs}  \\
+gs=1,...,N_{gs}
+\end{aligned} ,
 \end{equation}
 
-\noindent where ${\bf L}_{gs}$ is the fully-discretized loss operator which consists of total interaction and streaming terms, ${\bf M}_{gs}$ is the moment-to-discrete operator of the angular discretization, ${\bf D}_{gs}$ is the discrete-to-moment operator of the angular discretization, ${\bf \Sigma}_{gs}$ is the scattering operator of the multigroup and angular discretizations, and ${\bf Q}_{gs}$ is the full phase-space distributed source. In this case, the source contains contributions from boundary and domain sources, fission sources, and scattering sources from outside the group set into the group set of interest. We note that ${\bf M}_{gs}$ and ${\bf D}_{gs}$ are also group set dependent since we do not enforce the exact same angular discretization on all group sets. This can be useful if certain ranges of energy groups require higher angular fidelity due to increased anisotropic scattering.
+\noindent and
 
+\begin{equation}
+\label{eq::Sn_full_sol_gs_ops_phi}
+{\bf \Phi}_{gs} =  {\bf D}_{gs} {\bf \Psi}_{gs} ,
+\end{equation}
 
+\noindent respectively, where ${\bf L}$ is the fully-discretized loss operator which consists of total interaction and streaming terms, ${\bf M}$ is the moment-to-discrete operator of the angular discretization, ${\bf D}$ is the discrete-to-moment operator of the angular discretization, ${\bf \Sigma}$ is the scattering operator of the multigroup and angular discretizations, and ${\bf Q}$ is the full phase-space distributed source. In this case, the source contains contributions from boundary, domain sources, and fission sources. We note that ${\bf M}$ and ${\bf D}$ are also group set dependent since we do not enforce the exact same angular discretization on all group sets. This can be useful if certain ranges of energy groups require higher angular fidelity due to increased anisotropic scattering.
+
+We can further express Eq. (\ref{eq::Sn_full_sol_gs_ops_psi}) in terms of only the flux moments. Through algebra and linear algebra techniques, we state the flux-moment-only equation as
 
 \begin{equation}
 \label{eq::Sn_full_sol_moments_only}
-\left( {\bf I} -{\bf T}_{gs} \right) {\bf \Phi}_{gs} =  {\bf D}_{gs} {\bf L}_{gs}^{-1}  {\bf Q}_{gs}
+\left( {\bf I} -{\bf T}_{gs} \right) {\bf \Phi}_{gs} = {\bf D}_{gs} {\bf L}_{gs}^{-1}  {\bf M}_{gs} \sum\displaylimits_{ggs \neq gs}  {\bf \Sigma}_{ggs} {\bf \Phi}_{ggs} +  {\bf D}_{gs} {\bf L}_{gs}^{-1}  {\bf Q}_{gs} ,
 \end{equation}
 
 \noindent where we define,
@@ -1113,7 +1123,7 @@ Because the only coupling that arises between the set of multigroup $S_N$ equati
 {\bf T}_{gs} \equiv {\bf D}_{gs} {\bf L}_{gs}^{-1}{\bf M}_{gs} {\bf \Sigma}_{gs} ,
 \end{equation}
 
-\noindent for further brevity.
+\noindent for further brevity. In Eqs. (\ref{eq::Sn_full_sol_moments_only}) and (\ref{eq::Sn_trans_op_T}), the term ${\bf L}_{gs}^{-1}$ accounts for the inversion of the loss operator. For this work, we will utilize the full-domain transport sweep, and we leave its details until Section \ref{sec::Sn_Solution_Spatial}. We now provide the details for the procedures that will be used to solve Eq. (\ref{eq::Sn_full_sol_moments_only}) in Sections \ref{sec::Sn_Solution_Iterative_SI} and \ref{sec::Sn_Solution_Iterative_GMRES}.
 
 \begin{algorithm}
 \caption{Iterative Solver in Energy for the Multigroup Transport Problem}
@@ -1141,20 +1151,58 @@ Because the only coupling that arises between the set of multigroup $S_N$ equati
 \subsubsection{Source Iteration}
 \label{sec::Sn_Solution_Iterative_SI}
 
-One simple method to invert $({\bf I} - {\bf T})$ of Eq. (\ref{eq::Sn_full_sol_moments_only}) is the {\em source iteration} technique, also known as {\em richardson iteration}. If we isolate a single group set, $gs$, then the 
+One simple method to invert the $({\bf I} - {\bf T})$ operator of Eq. (\ref{eq::Sn_full_sol_moments_only}) is the {\em source iteration} technique (SI), also known as {\em richardson iteration}. If we isolate a single group set, $gs$, then the iterative procedure for the transport equation is
 
 \begin{equation}
 \label{eq::Sn_pre_si_iter}
-{\bf L}_{gs} {\bf \Psi}_{gs}^{(\ell+1)} =    {\bf M}_{gs} {\bf \Sigma}_{gs} {\bf \Phi}_{gs}^{(\ell)} +  {\bf Q}_{gs} 
+{\bf L} {\bf \Psi}^{(k+1)} =    {\bf M} {\bf \Sigma} {\bf \Phi}^{(k)} +  {\bf Q} ,
 \end{equation}
+
+\noindent where we removed the $gs$ subscripts for brevity and note that the driving source ${\bf Q}$ contains scattering sources from all other group sets into the current group set of interest. From Eq. (\ref{eq::Sn_pre_si_iter}), we can see that the scattering source at iteration $(k+1)$ is calculated from a previous guess for the flux moments at iteration at iteration $(k)$. Then, after the application of one transport sweep, we obtain a new guess for the angular flux its moments:
 
 \begin{equation}
 \label{eq::Sn_si_iter}
 \begin{aligned}
- {\bf \Psi}_{gs}^{(\ell+1)} &= {\bf L}_{gs}^{-1} \left(  {\bf M}_{gs} {\bf \Sigma}_{gs} {\bf \Phi}_{gs}^{(\ell)} +  {\bf Q}_{gs} \right) \\
-{\bf \Phi}_{gs}^{(\ell+1)} &=  {\bf D}_{gs} {\bf \Psi}_{gs}^{(\ell+1)}
+ {\bf \Psi}^{(k+1)} &= {\bf L}^{-1} \left(  {\bf M} {\bf \Sigma} {\bf \Phi}^{(k)} +  {\bf Q} \right) \\
+{\bf \Phi}^{(k+1)} &=  {\bf D} {\bf \Psi}^{(k+1)}
 \end{aligned}
 \end{equation}
+
+We continue to perform these richardson iterations until the difference between two iterate solutions is less than some specified tolerance in a given norm. This convergence criterion for SI can be succinctly written as
+
+\begin{equation}
+\label{eq::Sn_SI_conv_crit}
+\frac{|| \Phi^{(k+1)} - \Phi^{(k)} ||}{|| \Phi^{(k+1)} ||} \leq \text{tol} ,
+\end{equation}
+
+\noindent where the estimate for the error is normalized by the norm of the most recent iteration solution. Steps are taken to ensure that a divide-by-zero does not occur. In general, SI is guaranteed to converge for a large range of transport problems (further precautions need to be taken for problems with high anisotropic scattering). We can estimate how quickly SI will converge by analyzing the spectral radius (SR) of the transport problem \cite{ref::adams_larsen_iter_methods}. This spectral radius, $\rho$, can be estimated in the asymptotic convergence region by the ratio of two successive solution differences:
+
+\begin{equation}
+\label{eq::Sn_SI_SR_est}
+\rho \approx \frac{|| \Phi^{(k+1)} - \Phi^{(k)} ||}{|| \Phi^{(k)} - \Phi^{(k-1)} ||} 
+\end{equation}
+
+\noindent We can gather a lot of information about how our transport solution will converge from Eq. (\ref{eq::Sn_SI_SR_est}). If $\rho>1$ in the asymptotic region, then the error in our residual will grow without end and our solution will diverge. However, in the preasymptotic region, Eq. (\ref{eq::Sn_SI_SR_est}) may be a bad estimate for the spectral radius and values greater than 1 may be observed for several iterations. This does not mean that the solution will diverge in the end. If we are in the asymptotic region, then we would like $\rho \ll 1$ because it means that our transport solution will quickly converge. However, if $\rho \approx 1$ (but still strictly less than 1), then our transport problem will slowly converge to our final solution. We demonstrate this behavior in Table \ref{tab::Sn_convergece_rates} by giving the average number of SI iterations required to reduce our solution error by 1 order of magnitude. We can see that as $\rho$ approaches 1, the iteration numbers become prohibitively large. For those problems with large spectral radii, we can accelerate our solution convergence by using synthetic acceleration on Preconditioned Richardson Iteration \cite{ref::adams_larsen_iter_methods}. We leave the details for this in Chapter \ref{sec::DSA}.
+
+\begin{table}
+\caption{Average number of iterations required to reduce SI error by 1 order of magnitude for different SR values.}
+\begin{center}
+\begin{tabular}{|c|c|}
+\hline
+$\rho$ & Iterations \\ \hline \hline
+0.1 & 1.0 \\ 
+0.25 & 1.6 \\ 
+0.5 & 3.3 \\  
+0.75 & 8.0 \\ 
+0.9 & 22 \\ 
+0.99 & 230 \\ 
+0.999 & 2301 \\ 
+0.9999 & 23024 \\
+\hline
+\end{tabular}
+\end{center}
+\label{tab::Sn_convergece_rates}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - Source Iteration
@@ -1186,36 +1234,47 @@ For this work, the loss operator inversion on some unstructured mesh, $\mathbb{T
 \subsubsection{Transport Sweeping}
 \label{sec::Sn_Solution_Spatial_Sweeping}
 
-The full-domain transport sweep is a beneficial matrix-free scheme because of the following:
+Recall from earlier that the continuous definition of the loss operator for an angular direction $m$ and energy group $g$ is,
+
+\begin{equation}
+\label{sec::Sn_Solution_Spatial_loss_op}
+L_{m,g} =  \vec{\Omega}_m \cdot   \vec{\nabla} + \sigma_{t,g} \,  ,
+\end{equation}
+
+\noindent where we suppress the spatial parameter for brevity. From the application of the test function, integration by parts of the streaming term, and the use of the upwind scheme as outlined in Section \ref{sec::Sn_Spatial}, we described the coupling between different mesh cells. The upwind scheme only couples the adjoining cells upwind of any given angular direction. This means that for a given mesh element, if the upwind cells have already had their angular fluxes updated for a given iteration, we then have all the information needed to solve for the new angular fluxes on the element. This means that if the task dependence graphs are well chosen for all directions, we can then invert the streaming operator by solving Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK_bmg_complete}) one cell at a time for a given group of angular directions. 
+
+This cell-by-cell inversion of the streaming operator is known as a {\em transport sweep}. If we perform this inversion for all angular directions across the entire spatial domain without lagging, then it is called a full-domain transport sweep. The full-domain transport sweep is a beneficial matrix-free scheme because of the following:
 
 \begin{itemize}
-\item The number of sweep iterations does not grow with increasing problem size or processor counts. This is in contrast with partial-domain sweeping like {\em parallel block jacobi} (PBJ) \cite{zerr2011solution}.
 \item The iterative solver does not need to build any matrices explicitly but only requires the action of ${\bf L}^{-1}$.
 \item Does not require the formation of $M$ separate matrices for each of the angular directions (for 1 energy group). This is both memory and computationaly intensive for any problems of appreciable size.
 \item The matrix-vector operations on a single element within a transport sweep can be efficiently performed depending on the group set structure and the angle aggregation as outlined in Section \ref{sec::Sn_Solution_Iterative}.
 \item The matrix-free transport sweep favors higher-order DGFEM schemes since they will yield more processor work per element with less memory caching (which is the current bottleneck with massively-parallel calculations).
+\item The number of sweep iterations does not grow with increasing problem size or processor counts. This is in contrast with partial-domain sweeping like {\em parallel block jacobi} (PBJ) \cite{zerr2011solution}.
 \end{itemize}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.75\textwidth]{figures/sec_Sn/triangle_graph_nocycle.eps}
-\caption[blah]{blah.}
+\includegraphics[width=0.70\textwidth]{figures/sec_Sn/triangle_graph_nocycle.eps}
+\caption{Task graph for the transport sweep for a given direction without cycles.}
 \label{fig::Sn_Solution_Spatial_Sweeping_sweepNOcycle}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.75\textwidth]{figures/sec_Sn/graph_with_cycling.eps}
-\caption[blah]{blah.}
+\includegraphics[width=0.70\textwidth]{figures/sec_Sn/graph_with_cycling.eps}
+\caption{Task graph for the transport sweep for a given direction with cycles present.}
 \label{fig::Sn_Solution_Spatial_Sweeping_sweepWcycle}
 \end{figure}
+
+We can gain knowledge of how our transport sweeps will perform by analyzing the streaming operator, ${\bf L}$, in space and angle. If ${\bf L}$ is strictly block-lower triangular for a given angular direction, then it is guaranteed that an ordering of the mesh cells can be represented by a Directed Acyclic Graph (DAG) \cite{gerasoulis1989static}. However, situations can arise where a cycle forms in the graph and a complete sweep for those directions becomes impossible. These situations include concave polytope elements that cause re-entrance, opposing reflecting boundary conditions, and extreme distortion of an $\mathbb{R}^3$ domain. Figure \ref{fig::Sn_Solution_Spatial_Sweeping_sweepNOcycle} shows a DAG without any cycles for the given direction. Figure \ref{fig::Sn_Solution_Spatial_Sweeping_sweepWcycle} then shows a graph with a cycle caused by a re-entrant quadrilateral mesh cell. There are methods to break these cycles and still perform transport sweeping, but we will not consider them for this work.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - Voronoi
 \subsubsection{Polytope Grids Formed from Voronoi Mesh Generation}
 \label{sec::Sn_Solution_Spatial_Voronoi}
 
-
+Since this dissertation work is on the solution of the transport equation on polytope meshes, we next describe how these grids can be generated. Traditionally, FEM calculations have been performed on simplical (triangles and tetrahedra) and tensor based meshes (quadrilaterals and hexahedra). In fact, it is still a standard practice to refer to any type of mesh as a {\em triangulation} in some communities \cite{ern2013theory}. Many different mesh generation software has been developed to build these simple grids \cite{shewchuk1996triangle,shewchuk2002delaunay,si2015tetgen,geuzaine2009gmsh}. However, multiple fields including {\em computational fluid dynamics} (CFD) and {\em solid mechanics} are now finding benefits to utilizing polygonal and polyhedral meshes for their calculations.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - AMR
