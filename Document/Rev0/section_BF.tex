@@ -1027,6 +1027,19 @@ For this example, we test the various 2D polygonal finite element basis function
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Quadratic Solutions = METHOD OF EXACT SOLUTIONS
+\subsection{Two-Dimensional Exactly-Quadratic Transport Solutions}
+\label{sec::BF_Results_Quadratic}
+
+\begin{equation}
+\label{eq::BF_Results_Quadratic_fluxsols}
+\begin{aligned}
+\Psi (x,y,\mu,\eta) &= a + bx + c y+ d xy + e x^2 + fy^2 \\
+\Phi (x,y) &= 2 \pi \left(  a + bx + c y+ d xy + e x^2 + fy^2 \right)
+\end{aligned} .
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - MMS
 \subsection{Convergence Rate Analysis by the Method of Manufactured Solutions}
 \label{sec::BF_Results_MMS}
@@ -1094,6 +1107,50 @@ C_M = \frac{100}{L_x^2 L_y^2} \qquad \gamma = \frac{L_x L_y}{100} .
 \end{equation}
 
 For this example, we choose the dimensionality of our problem to be $[0,1]^2$ which makes $L_x=L_y=1$ for both the sinusoid and gaussian solutions. For the sinusoid solution, we select the frequency parameter, $\nu$, to be 3 and for the gaussian solution we set the local maximum: $x_0=y_0 = 0.75$. With these parameters, the sinusoid solution will have local minima and maxima of $-2 \pi$ and $2 \pi$, respectively, and the gaussian solution will have a global maximum of $\frac{225}{32} \pi \approx 22.1$.
+
+
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::AMR_GQ_ME1_mesh}
+		\includegraphics[width=\textwidth]{figures/sec_BF/ME1_cart_Irr=1_cyc15_mesh.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::AMR_GQ_ME1_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/ME1_cart_Irr=1_cyc15_sol.eps}
+		\caption{}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::AMR_GQ_ME2_mesh}
+		\includegraphics[width=\textwidth]{figures/sec_BF/ME2_cart_Irr=1_cyc08_mesh.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::AMR_GQ_ME2_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/ME2_cart_Irr=1_cyc08_sol.eps}
+		\caption{}
+	\end{subfigure}
+}
+\caption{AMR meshes and solutions for the gaussian MMS problem using the maximum entropy coordinates: (top) linear basis functions at cycle 15 and (bottom) quadratic serendipity basis functions at cycle 08.}
+\label{fig::BF_Results_MMS_GQ_AMR_MeshSol}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - PA
+\subsection{Convergence Rate Analysis in a Purely-Absorbing Medium}
+\label{sec::BF_Results_PA}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Searchlight Problem
