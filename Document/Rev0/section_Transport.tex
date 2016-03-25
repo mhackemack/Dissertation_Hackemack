@@ -1225,9 +1225,7 @@ Combined with the appropriate linear algebra operations, these three small alter
 \subsection{Spatial Solution Procedures}
 \label{sec::Sn_Solution_Spatial}
 
-Section \ref{sec::Sn_Solution_Iterative} presented the methodology that we will employ to iteratively converge our transport solutions in energy and angle (flux moments). Both richardson iteration and the krylov methods were presented as methods that can invert the $({\bf I} - {\bf T})$ operator. In both of these iterative methods, the common operation of interest is the inversion of the loss operator (${\bf L}$). There are different techniques that could be used to perform this operation, including several matrix-dependent and matrix-free methodologies. 
-
-For this work, the loss operator inversion on some unstructured mesh, $\mathbb{T}_h$, will be performed by use of the full-domain transport sweep as outlined next in Section \ref{sec::Sn_Solution_Spatial_Sweeping}. We will generate our 2D and 3D polytope meshes by two different methods: 1) Voronoi mesh generation in Section \ref{sec::Sn_Solution_Spatial_Voronoi} and 2) adaptive mesh refinement in Section \ref{sec::Sn_Solution_Spatial_AMR}.
+Section \ref{sec::Sn_Solution_Iterative} presented the methodology that we will employ to iteratively converge our transport solutions in energy and angle (flux moments). Both richardson iteration and the krylov methods were presented as methods that can invert the $({\bf I} - {\bf T})$ operator. In both of these iterative methods, the common operation of interest is the inversion of the loss operator (${\bf L}$). There are different techniques that could be used to perform this operation, including several matrix-dependent and matrix-free methodologies. For this work, the loss operator inversion on some unstructured mesh, $\mathbb{T}_h$, will be performed by use of the full-domain transport sweep as outlined next in Section \ref{sec::Sn_Solution_Spatial_Sweeping}. We then conclude our discussion on spatial solution procedures by briefly describing how we can utilize adaptive mesh refinement (AMR) to generate irregular polytope meshes (without hanging nodes in this work) in Section \ref{sec::Sn_Solution_Spatial_AMR}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - Transport Sweeping
@@ -1268,15 +1266,6 @@ This cell-by-cell inversion of the streaming operator is known as a {\em transpo
 \end{figure}
 
 We can gain knowledge of how our transport sweeps will perform by analyzing the streaming operator, ${\bf L}$, in space and angle. If ${\bf L}$ is strictly block-lower triangular for a given angular direction, then it is guaranteed that an ordering of the mesh cells can be represented by a Directed Acyclic Graph (DAG) \cite{gerasoulis1989static}. However, situations can arise where a cycle forms in the graph and a complete sweep for those directions becomes impossible. These situations include concave polytope elements that cause re-entrance, opposing reflecting boundary conditions, and extreme distortion of an $\mathbb{R}^3$ domain (regular mesh of hexahedral cells with 1 dimensional end twisted). Figure \ref{fig::Sn_Solution_Spatial_Sweeping_sweepNOcycle} shows a DAG without any cycles for the given direction. Figure \ref{fig::Sn_Solution_Spatial_Sweeping_sweepWcycle} then shows a graph with a cycle caused by a re-entrant quadrilateral mesh cell. There are methods to break these cycles and still perform transport sweeping, but we will not consider them for this work.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSubSection - Voronoi
-\subsubsection{Polytope Grids Formed from Voronoi Mesh Generation}
-\label{sec::Sn_Solution_Spatial_Voronoi}
-
-Since this dissertation work is on the solution of the transport equation on polytope meshes, we next describe how these grids can be generated. Traditionally, FEM calculations have been performed on simplical (triangles and tetrahedra) and tensor based meshes (quadrilaterals and hexahedra). In fact, it is still a standard practice to refer to any type of mesh as a {\em triangulation} in some communities \cite{ern2013theory}. Many different mesh generation software has been developed to build these simple grids \cite{shewchuk1996triangle,shewchuk2002delaunay,si2015tetgen,geuzaine2009gmsh}. However, multiple fields including {\em computational fluid dynamics} (CFD) and {\em solid mechanics} are now finding benefits to utilizing polygonal and polyhedral meshes for their calculations.
-
-However, polytope mesh generation is still in its infancy. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - AMR
