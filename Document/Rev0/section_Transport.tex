@@ -1158,7 +1158,7 @@ One simple method to invert the $({\bf I} - {\bf T})$ operator of Eq. (\ref{eq::
 {\bf L} {\bf \Psi}^{(k+1)} =    {\bf M} {\bf \Sigma} {\bf \Phi}^{(k)} +  {\bf Q} ,
 \end{equation}
 
-\noindent where we removed the $gs$ subscripts for brevity and note that the driving source ${\bf Q}$ contains scattering sources from all other group sets into the current group set of interest. From Eq. (\ref{eq::Sn_pre_si_iter}), we can see that the scattering source at iteration $(k+1)$ is calculated from a previous guess for the flux moments at iteration at iteration $(k)$. Then, after the application of one transport sweep, we obtain a new guess for the angular flux its moments:
+\noindent where we removed the $gs$ subscripts for brevity and note that the driving source ${\bf Q}$ contains scattering sources from all other group sets into the current group set of interest. From Eq. (\ref{eq::Sn_pre_si_iter}), we can see that the scattering source at iteration $(k+1)$ is calculated from a previous guess for the flux moments at iteration at iteration $(k)$. Then, after the application of one transport sweep, we obtain a new guess for the angular flux moments:
 
 \begin{equation}
 \label{eq::Sn_si_iter}
@@ -1274,6 +1274,8 @@ We can gain knowledge of how our transport sweeps will perform by analyzing the 
 
 
 
+For this work, we will utilize the jump-based error estimator since it is the most straightforward to define and execute.
+
 \begin{equation}
 \label{eq::Sn_AMR_jump_err_est}
 \eta_K^r = \int\displaylimits_{\partial K} [\![ \Phi^r ]\!]^2 d \, s = \int\displaylimits_{\partial K} \left(  \sum_m w_m [\![ \Psi_m^r ]\!]  \right)^2
@@ -1307,7 +1309,7 @@ We can gain knowledge of how our transport sweeps will perform by analyzing the 
 
 \noindent From Eq. (\ref{eq::Sn_AMR_across_face_vals}), the across-face solutions for interior faces, incident boundaries and reflecting boundaries have different meanings. For an interior face $f$ ($\vec{r} \notin \partial \mathcal{D}$), the across-face solution comes from the cell $K'$ (as defined by Figure \ref{fig::Sn_two_ref_cells}). For incident boundaries ($\vec{r} \in \partial \mathcal{D}^d$), the across-face solution is a combination of integrals of the outgoing ($\Psi_m^-$) and incident boundary fluxes ($\Psi_m^{inc}$). Finally, for reflecting boundaries ($\vec{r} \in \partial \mathcal{D}^r$), the across-face solutions are simply the within-cell solutions. Therefore, the solution jump is exactly zero for all reflecting boundaries and yields no contribution to the error estimate.
 
-With the error estimates defined for all cells $K \in \mathbb{T}_h^r$ for refinement level $r$, a criterion is needed to determine which cells should be refined. For this work, we choose to employ
+With the error estimates defined for all cells $K \in \mathbb{T}_h^r$ for refinement level $r$, a criterion is needed to determine which cells should be refined. For this work, we choose to employ a refinement criterion of the following form,
 
 \begin{equation}
 \label{eq::Sn_AMR_err_crit}
@@ -1316,11 +1318,55 @@ With the error estimates defined for all cells $K \in \mathbb{T}_h^r$ for refine
 
 \noindent where $\alpha$ is a user-defined value $(0,1)$. This refinement criterion has a simple meaning. If, for example, $\alpha = 0.2$, then a cell will be refined if its error estimate is greater than 20\% of the cell with the largest error estimate. This does not necessarily mean that 80\% of the mesh cells will be refined at level $r$. Instead, the criterion simply states that any cell above a particular threshold will be refined. This means that it is theoretically possible for the extreme cases of 1 or all cells being refined at a particular refinement cycle. The first extreme case could arise with a single spatial cell having a strong solution discontinuity stemming from a strong localized source. The second extreme case could arise when the intercell solution jumps are about equivalent stemming from an incredibly smooth discretized solution at that particular refinement cycle. We could also enforce a uniform refinement of all the spatial cells by setting $\alpha=0$.
 
+Once we have determined which elements on mesh level $r$ to refine, we then form our new adapted mesh on level $r+1$ by a combination of logical refinement rules, hierarchical elements, and refinement trees. Each quadrilateral mesh cell with vertices flagged for refinement (which we denote as the parent element) is further subdivided into four smaller quadrilateral cells (which we denote as daughter elements I, II, III, and IV) that maintain the overall shape of the orginal mesh cell. If the parent element is denoted by the vertices (1), (2), (3), and (4), then the refinement rules, including the new local ordering of each daughter element's vertices are given in Figure \ref{fig::Sn_Solution_Spatial_AMR_quadrefrules}. These refinement rules are detailed as follows:
+
+\begin{enumerate}
+\item Daughter element I is placed near original vertex (1).
+\item Daughter element II is placed near original vertex (2).
+\item Daughter element III is placed near original vertex (3).
+\item Daughter element IV is placed near original vertex (4).
+\item The local numbering of the daughter element vertices is consistent with the parent element.
+\item The vertices of the daughter elements common with the original element inherit the same local numbering.
+\end{enumerate}
+
+\noindent These refinement rules guarantee that we will maintain logical consistency with our counter-clockwise ordering of the element vertices. This consistency is important for the computation of the polytope basis functions that are presented in Chapter \ref{sec::BF}.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/sec_Sn/Quad_cell_refinement_rules.eps}
+\caption{Refinement rules for a quadrilateral mesh cell.}
+\label{fig::Sn_Solution_Spatial_AMR_quadrefrules}
+\end{figure}
+
+Once a mesh element from level $r$ has been refined, we need to incorporate its daughter elements into the adapted mesh, $\mathbb{T}_h^{r+1}$. We can see from the nesting refinement process, that these AMR procedures lead to a hierarchical representation of the mesh. All of the mesh cells are obtained by subdivisions of cells from the initial mesh, $\mathbb{T}_h^0$. This hierarchical nature of the mesh can succinctly be described in a tree structure. We give an example of this tree structure in Figure \ref{fig::Sn_Solution_Spatial_AMR_tree} for the simple case of a 2-cell domain that undergoes two refinement cycles with 1 cell refined per cycle. From the tree structure in Figure \ref{fig::Sn_Solution_Spatial_AMR_tree_struct}, we introduce the concept of an individual element's {\em refinement level}, $\ell(K)$, for mesh cell $K$. The refinement level $\ell(K)$ denotes how many times a cell from the original mesh, $\mathbb{T}_h^0$, has been refined to form element $K$. By convention, the refinement level for all elements in the original are 0. We note that an element's refinement level is not necessarily the number of refinement cycles that have been performed. In Figure \ref{fig::Sn_Solution_Spatial_AMR_tree_struct}, we can see three distinct refinement levels. Element 1 has a level of 0. Elements 2, 3, 4, and 5 have a level of 2. Finally, elements 6, 7, and 8 have a level of 1. We also further define the concept of an {\em irregularity index} which is the difference in refinement levels between two adjoining mesh elements.
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_Sn/Quad_tree_domain.png}
+		\caption{Twice-refined domain}
+		\label{fig::Sn_Solution_Spatial_AMR_tree_dom}
+	\end{subfigure}
+}
+	\hfill
+{
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\includegraphics[width=0.85\textwidth]{figures/sec_Sn/Quad_tree_structure.png}
+		\caption{Refinement tree structure}
+		\label{fig::Sn_Solution_Spatial_AMR_tree_struct}
+	\end{subfigure}
+}
+\caption[Quadrilateral refinement tree]{blah.}
+\label{fig::Sn_Solution_Spatial_AMR_tree}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Conclusions
 \section{Conclusions}
 \label{sec::Sn_Conclusions}
 
-In this chapter, we have presented the tightly-coupled system of equations that comprise the DGFEM $S_N$ transport equation. We began with the fully-continuous transport equation presented in Section \ref{sec::Sn_neut} and then discretized it in energy, angle and space in Sections \ref{sec::Sn_MG}, \ref{sec::Sn_Angle}, and \ref{sec::Sn_Spatial}, respectively. Appropriate boundary conditions were presented in Section \ref{sec::Sn_BC}. For this work, we will only utilize incoming-incident and reflecting boundary conditions and not use any further albedo terms. We finished this chapter in Section \ref{sec::Sn_Solution} by describing the procedures that will be utilized to solve our system of equations.
+In this chapter, we have presented the tightly-coupled system of equations that comprise the DGFEM $S_N$ transport equation. We began with the fully-continuous transport equation presented in Section \ref{sec::Sn_neut} and then discretized it in energy, angle and space in Sections \ref{sec::Sn_MG}, \ref{sec::Sn_Angle}, and \ref{sec::Sn_Spatial}, respectively. Appropriate boundary conditions were presented in Section \ref{sec::Sn_BC}. For this work, we will only utilize incoming-incident and reflecting boundary conditions and not use any further albedo terms. We finished this chapter in Section \ref{sec::Sn_Solution} by describing the procedures that will be utilized to solve our system of equations in energy, angle, and space. We also provided the methodology that we will employ to perform AMR calculations in this work, which yields another mechanism to produce polytope meshes.
 

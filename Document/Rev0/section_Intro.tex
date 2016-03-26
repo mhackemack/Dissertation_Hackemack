@@ -46,7 +46,7 @@
 \label{sec::Intro_Past_DGFEMMGSn}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - DGFEM Sn Transport
+%%%   SubSection - DSA
 \subsection{Diffusion Synthetic Acceleration}
 \label{sec::Intro_Past_DSA}
 
@@ -58,6 +58,11 @@
 Since this dissertation work is on the solution of the transport equation on polytope meshes, we next describe how these grids can be generated. Traditionally, FEM calculations have been performed on simplical (triangles and tetrahedra) and tensor based meshes (quadrilaterals and hexahedra). In fact, it is still a standard practice to refer to any type of mesh as a {\em triangulation} in some communities \cite{ern2013theory}. Many different mesh generation software has been developed to build these simple grids \cite{shewchuk1996triangle,shewchuk2002delaunay,si2015tetgen,geuzaine2009gmsh}. However, multiple fields including {\em computational fluid dynamics} (CFD) and {\em solid mechanics} are now finding benefits to utilizing polygonal and polyhedral meshes for their calculations.
 
 However, polytope mesh generation is still in its infancy. 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - AMR
+\subsection{Spatial Adaptive Mesh Refinement for DGFEM $S_N$ Transport Equation}
+\label{sec::Intro_Past_AMR}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Organization
