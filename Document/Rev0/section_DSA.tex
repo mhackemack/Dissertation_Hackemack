@@ -341,12 +341,14 @@ Instead, we are choosing to utilize a discontinuous form of the diffusion equati
 \end{aligned}
 \end{equation}
 
-\noindent Unfortunately, we are now left with the burden of deciding what to do with element $K$'s interior and dirichlet boundary surface terms. In conforming CFEM analysis, we would enforce at least $C^0$ continuity across the elements, thus not allowing any interelement jumps in the solution. Instead, with the choice of a DG formulation, we have a wide variability in how we wish to express the discontinuous solution between two elements. 
+Unfortunately, we are now left with the burden of deciding what to do with element $K$'s interior and dirichlet boundary surface terms. In conforming CFEM analysis, we would enforce at least $C^0$ continuity across the elements, thus not allowing any interelement jumps in the solution. Instead, with the choice of a DG formulation, we have a wide variability in how we wish to weakly express the discontinuous solution between two elements. This choice is extended to the dirichlet boundary conditions as well. Instead of simply strongly-enforcing the dirichlet conditions, we choose to weakly enforce them via a penalty method. The idea of penalty methods can be traced back to \cite{lions2011problemes}, where the weakly-enfoced dirichlet conditions now have the form,
 
 \begin{equation}
 \label{eq::penalty_boundary_term}
-\Phi (\vec{r}) +\frac{1}{\kappa} D \partial_n \Phi (\vec{r}) = \Phi_0 (\vec{r}), \qquad \vec{r} \in \partial \mathcal{D}^d, \qquad \kappa \gg 1
+\Phi (\vec{r}) +\frac{1}{\kappa} D \partial_n \Phi (\vec{r}) = \Phi_0 (\vec{r}), \qquad \vec{r} \in \partial \mathcal{D}^d, 
 \end{equation}
+
+\noindent where $\kappa$ is known as the penalty coefficient and $\kappa \gg 1$. In his work \cite{ref::nitsche_IP}, Nitsche further proposed a consistent formulation with this penalty method via symmetrization. This led to the following weak formulation of the Laplacian term with dirichlet boundary conditions,
 
 \begin{equation}
 \label{eq::SIP_boundary_laplacian_term}
@@ -355,12 +357,14 @@ Instead, we are choosing to utilize a discontinuous form of the diffusion equati
 \end{aligned}
 \end{equation}
 
+\noindent where we dropped the reaction and forcing terms. Here the penalty coefficient, $\kappa$, has the form $\kappa = \alpha / h$ and $\alpha > 1$. Later, Arnold proposed extending the weak enforcement of the dirichlet boundaries by Nitsche onto all interior surfaces \cite{ref::arnold_1982_IP}. If the same symmetric consistency of Nitsche is utilized and we integrate over all mesh elements, then our weak formulation for the solution across all interior faces becomes,
+
 \begin{equation}
 \label{eq::SIP_interior_laplacian_term}
-\Big< \kappa [\![   b ]\!] , [\![  \Phi ]\!]\Big>_{E_h^i} + \Big<  [\![   b ]\!] , \{\!\{  D \partial_n \Phi \}\!\}\Big>_{E_h^i} + \Big< \{\!\{  D \partial_n  b \}\!\} , [\![  \Phi ]\!]\Big>_{E_h^i} = 0
+\Big< \kappa [\![   b ]\!] , [\![  \Phi ]\!]\Big>_{E_h^i} + \Big<  [\![   b ]\!] , \{\!\{  D \partial_n \Phi \}\!\}\Big>_{E_h^i} + \Big< \{\!\{  D \partial_n  b \}\!\} , [\![  \Phi ]\!]\Big>_{E_h^i} = 0 ,
 \end{equation}
 
-The mean value and the jump of the terms on a face are
+\noindent where $\kappa$ is again a penalizing coefficient to ensure stability. The mean value and the jump of the terms on a face from Eq. (\ref{eq::SIP_interior_laplacian_term}) are defined as
 
 \begin{equation}
 \label{eq::solution_mean_and_jump}
