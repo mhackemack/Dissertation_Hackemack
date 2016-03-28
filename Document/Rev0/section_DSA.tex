@@ -303,7 +303,45 @@ We begin our discussion of the SIP form by analyzing the standard form of the di
 \frac{1}{4}\Phi (\vec{r}) + \frac{D}{2} \partial_n \Phi (\vec{r}) = J^{inc} (\vec{r}), \qquad \vec{r} \in \partial \mathcal{D}^r .
 \end{equation}
 
+\noindent We then convert Eq. (\ref{eq::DSA_standard_diff_eq}) into its weak formulation by left-multiplying it with the test function, $b$, and apply Gauss' theorem to the Laplacian term,
 
+\begin{equation}
+\label{eq::SIP_diff_eq_weak}
+\Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{\mathcal{D}} - \Big<  b, D \partial_n \Phi \Big>_{\partial \mathcal{D}} + \Big(  \sigma   b ,  \Phi  \Big)_{\mathcal{D}}  = \Big(  b, Q  \Big)_{\mathcal{D}}
+\end{equation}
+
+\noindent If we were to use the CFEM form of Eq. (\ref{eq::SIP_diff_eq_weak}), then there would be no further formulations required except on how to properly apply the boundary term: $\Big<  b, D \partial_n \Phi \Big>_{\partial \mathcal{D}}$. For the neumann and robin boundary conditions, this is straightforward since we simply need to insert the definitions of the outgoing currents, $ D \partial_n \Phi$, of Eqs. (\ref{eq::DSA_standard_diff_eq_neumann_bound}) and (\ref{eq::DSA_standard_diff_eq_robin_bound}) into Eq. (\ref{eq::SIP_diff_eq_weak}). However, this still leaves the question of how to handle the dirichlet boundary conditions. Again, if we were to use CFEM, we could simply strongly enforce these boundary conditions \cite{akin1982application}.
+
+Instead, we are choosing to utilize a discontinuous form of the diffusion equation. This means that we can employ the same DG finite elements used in the discretization of the transport operator in Section \ref{sec::Sn_Spatial}. With this in mind, we recast Eq. (\ref{eq::SIP_diff_eq_weak}) to only contain the appropriate inner products for element K,
+
+\begin{equation}
+\label{eq::SIP_diff_eq_weak_cellK}
+\Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{K} - \Big<  b, D \partial_n \Phi \Big>_{\partial K} + \Big(  \sigma   b ,  \Phi  \Big)_{K}  = \Big(  b, Q  \Big)_{K} ,
+\end{equation}
+
+\noindent where we use the same notation for the volumetric and surface inner products as Section \ref{sec::Sn_Spatial}. We further decompose the boundary terms for element $K$ into its respective interior ($\partial K \backslash \partial \mathcal{D}$), dirichlet ($\partial	K \cap \partial \mathcal{D}^d$), neumann ($\partial	K \cap \partial \mathcal{D}^n$), and robin ($\partial	K \cap \partial \mathcal{D}^r$) components:
+
+\begin{equation}
+\label{eq::SIP_diff_eq_weak_cellK_wbounds}
+\begin{aligned}
+&\Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{K}  + \Big(  \sigma   b ,  \Phi  \Big)_{K}   - \Big<  b, D \partial_n \Phi \Big>_{\partial K \backslash \partial \mathcal{D}}   \\
+ &- \Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^d} - \Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^n}  - \Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^r} \\
+&= \Big(  b, Q  \Big)_{K} .
+\end{aligned}
+\end{equation}
+
+\noindent We can then immediately utilize the definitions of the outgoing currents from Eqs. (\ref{eq::DSA_standard_diff_eq_neumann_bound}) and (\ref{eq::DSA_standard_diff_eq_robin_bound}), and add the neumann and robin boundary contributions from element $K$:
+
+\begin{equation}
+\label{eq::SIP_diff_eq_weak_cellK_NR}
+\begin{aligned}
+\Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{K}  + \Big(  \sigma   b ,  \Phi  \Big)_{K}  \\
+- \Big<  b, D \partial_n \Phi \Big>_{\partial K \backslash \partial \mathcal{D}} - \Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^d}+ \frac{1}{2} \Big<  b, \Phi  \Big>_{\partial K \cap \partial \mathcal{D}^r} \\
+= \Big(  b, Q  \Big)_{K} - \Big<   b, J_{0}  \Big>_{\partial K \cap \partial \mathcal{D}^n} +  2 \Big<  b, J^{inc}  \Big>_{\partial	K \cap \partial \mathcal{D}^r}.
+\end{aligned}
+\end{equation}
+
+\noindent Unfortunately, we are now left with the burden of deciding what to do with element $K$'s interior and dirichlet boundary surface terms. In conforming CFEM analysis, we would enforce at least $C^0$ continuity across the elements, thus not allowing any interelement jumps in the solution. Instead, with the choice of a DG formulation, we have a wide variability in how we wish to express the discontinuous solution between two elements. 
 
 \begin{equation}
 \label{eq::penalty_boundary_term}
@@ -336,7 +374,7 @@ The mean value and the jump of the terms on a face are
 \Phi^{\pm} \equiv \lim_{s \rightarrow 0^{\pm}} \Phi (\vec{r} + s \vec{n}),
 \end{equation}
 
-\noindent where the face's unit normal direction, $\vec{n}$, has been ar
+\noindent where the face's unit normal direction, $\vec{n}$, has been arbitrarily chosen. The definition of Eq. (\ref{eq::solution_trace}) 
 
 Using Eqs. (\ref{eq::SIP_boundary_laplacian_term}) and (\ref{eq::SIP_interior_laplacian_term}), the SIP form of the diffusion equation can be succinctly written as
 
