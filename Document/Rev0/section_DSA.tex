@@ -645,14 +645,25 @@ With the acceleration methodologies and diffusion discretization scheme describe
 
 
 \begin{equation}
-\label{eq::fourier_sol}
-\begin{aligned}
-\Psi_m (\vec{r}) = \hat{\Psi}_m e^{i \vec{\lambda} \cdot \vec{r}}\\
-\Phi (\vec{r}) = \hat{\Phi} e^{i \vec{\lambda} \cdot \vec{r}}
-\end{aligned}
+\label{eq::fourier_ang_sol}
+\Psi^{(k)}  (\vec{r}, \vec{\Omega})=  \hat{\Psi}^{(k)} (\vec{\Omega}) \, e^{i \vec{\lambda} \cdot \vec{r}}
 \end{equation}
 
-\noindent where $i=\sqrt{-1}$
+\noindent or in a discretized case for angular direction $m$,
+
+\begin{equation}
+\label{eq::fourier_ang_sol_disc}
+\Psi_m^{(k)}  (\vec{r})=  \hat{\Psi}_m^{(k)}  \, e^{i \vec{\lambda} \cdot \vec{r}},
+\end{equation}
+
+\noindent where $i=\sqrt{-1}$. 
+
+\begin{equation}
+\label{eq::fourier_phi_sol}
+\Phi^{(k)} (\vec{r}) = \hat{\Phi}^{(k)} e^{i \vec{\lambda} \cdot \vec{r}}
+\end{equation}
+
+
 
 \begin{figure}
 \centering
