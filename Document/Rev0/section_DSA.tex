@@ -326,8 +326,8 @@ Instead, we are choosing to utilize a discontinuous form of the diffusion equati
 \begin{aligned}
 &\Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{K}  + \Big(  \sigma   b ,  \Phi  \Big)_{K}   - \Big<  b, D \partial_n \Phi \Big>_{\partial K \backslash \partial \mathcal{D}}   \\
  &- \Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^d} - \Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^n}  - \Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^r} \\
-&= \Big(  b, Q  \Big)_{K} .
-\end{aligned}
+&= \Big(  b, Q  \Big)_{K} 
+\end{aligned} .
 \end{equation}
 
 \noindent We can then immediately utilize the definitions of the outgoing currents from Eqs. (\ref{eq::DSA_standard_diff_eq_neumann_bound}) and (\ref{eq::DSA_standard_diff_eq_robin_bound}), and add the neumann and robin boundary contributions from element $K$:
@@ -348,7 +348,7 @@ Unfortunately, we are now left with the burden of deciding what to do with eleme
 \Phi (\vec{r}) +\frac{1}{\kappa} D \partial_n \Phi (\vec{r}) = \Phi_0 (\vec{r}), \qquad \vec{r} \in \partial \mathcal{D}^d, 
 \end{equation}
 
-\noindent where $\kappa$ is known as the penalty coefficient and $\kappa \gg 1$. In his work \cite{ref::nitsche_IP}, Nitsche further proposed a consistent formulation with this penalty method via symmetrization. This led to the following weak formulation of the Laplacian term with dirichlet boundary conditions,
+\noindent where $\kappa$ is known as the penalty coefficient and $\kappa \gg 1$. It is clear that as $\kappa$ becomes large, the solution, $\Phi$, converges to the dirichlet value, $\Phi_0$. In his work \cite{ref::nitsche_IP}, Nitsche further proposed a consistent formulation with this penalty method via symmetrization. This led to the following weak formulation of the Laplacian term with dirichlet boundary conditions,
 
 \begin{equation}
 \label{eq::SIP_boundary_laplacian_term}
@@ -357,7 +357,7 @@ Unfortunately, we are now left with the burden of deciding what to do with eleme
 \end{aligned}
 \end{equation}
 
-\noindent where we dropped the reaction and forcing terms. Here the penalty coefficient, $\kappa$, has the form $\kappa = \alpha / h$ and $\alpha > 1$. Later, Arnold proposed extending the weak enforcement of the dirichlet boundaries by Nitsche onto all interior surfaces \cite{ref::arnold_1982_IP}. If the same symmetric consistency of Nitsche is utilized and we integrate over all mesh elements, then our weak formulation for the solution across all interior faces becomes,
+\noindent where we dropped the reaction and forcing terms. Here the penalty coefficient, $\kappa$, has the form $\kappa = \alpha / h$ and $\alpha > 1$ to ensure stability. Later, Arnold proposed extending the weak enforcement of the dirichlet boundaries by Nitsche onto all interior surfaces \cite{ref::arnold_1982_IP}. If the same symmetric consistency of Nitsche is utilized and we integrate over all mesh elements, then our weak formulation for the solution across all interior faces becomes,
 
 \begin{equation}
 \label{eq::SIP_interior_laplacian_term}
@@ -378,9 +378,9 @@ Unfortunately, we are now left with the burden of deciding what to do with eleme
 \Phi^{\pm} \equiv \lim_{s \rightarrow 0^{\pm}} \Phi (\vec{r} + s \vec{n}),
 \end{equation}
 
-\noindent where the face's unit normal direction, $\vec{n}$, has been arbitrarily chosen. The definition of Eq. (\ref{eq::solution_trace}) 
+\noindent where the face's unit normal direction, $\vec{n}$, has been arbitrarily chosen.
 
-Using Eqs. (\ref{eq::SIP_boundary_laplacian_term}) and (\ref{eq::SIP_interior_laplacian_term}), the SIP form of the diffusion equation can be succinctly written as
+These weak formulations for the dirichlet boundary conditions and the interior faces can now inserted into Eq. (\ref{eq::SIP_diff_eq_weak_cellK_NR}). From there, we sum the remaining inner products besides the interior face terms across all elements. With this completed, the SIP form of the diffusion equation can be succinctly written as
 
 \begin{equation}
 a^{SIP}( b, \Phi) = b^{SIP}(b),
@@ -403,11 +403,11 @@ a^{SIP}( b, \Phi)  = \Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{\mathc
 \begin{equation}
 \label{eq::SIP_linear_form}
 \begin{aligned}
-b^{SIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  - \Big<   b, J_{0}  \Big>_{\partial \mathcal{D}^n} +  2 \Big<  b, J^{inc}  \Big>_{\partial	\mathcal{D}^r} \\ + \Big< \kappa_e^{SIP}  b, \Phi_0  \Big>_{\partial \mathcal{D}^d} - \Big<    D \partial_n b ,\Phi_0 \Big>_{\partial	\mathcal{D}^d} 
+b^{SIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  - \Big<   b, J_{0}  \Big>_{\partial \mathcal{D}^n} +  2 \Big<  b, J^{inc}  \Big>_{\partial \mathcal{D}^r} \\ + \Big< \kappa_e^{SIP}  b, \Phi_0  \Big>_{\partial \mathcal{D}^d} - \Big<    D \partial_n b ,\Phi_0 \Big>_{\partial \mathcal{D}^d} 
 \end{aligned} .
 \end{equation}
 
-\noindent As previously stated, the general penalty term, $\kappa$ of Eqs. (\ref{eq::penalty_boundary_term} - \ref{eq::SIP_interior_laplacian_term}) needs to have sufficient positive measure to ensure stability. From previous investigations \cite{ref::DSA_wang_ragusa,wang2009adaptive,turcksin2014discontinuous}, we choose the penalty coefficient to be face dependent:
+\noindent As previously stated, the general penalty term, $\kappa$ needs to have sufficient positive measure to ensure stability. From previous investigations \cite{ref::DSA_wang_ragusa,wang2009adaptive,turcksin2014discontinuous}, we choose the SIP penalty coefficient to be face dependent with the following form,
 
 \begin{equation}
 \kappa_e^{SIP} = 
@@ -554,12 +554,21 @@ N_{i,j,f,K} =  \int_f \vec{n} \cdot  \vec{\nabla} b_i \, b_j .
 \section{Modified Interior Penalty Form of the Diffusion Equation used for Diffusion Synthetic Acceleration Applications}
 \label{sec::DSA_MIP}
 
+In Section \ref{sec::DSA_SIP}, we presented the SIP form of the diffusion equation that uses discontinuous Galerkin finite elements. This form can be used as a general solver for the diffusion equation that contains boundary conditions of the first three kinds: dirichlet, neumann, and robin. From the SIP form, we simply need to make some modifications to account for the boundary conditions that arise from the transport solution error as detailed in Section \ref{sec::DSA_DSA}. The two types of transport conditions that we have considered in this work are dirichlet type conditions (incoming incident and vacuum) and neumann type conditions (reflecting). Since there is no iteration error associated with the incident boundary conditions, we can express the corresponding diffusion boundary condition as a zero dirichlet condition ($\delta \Phi_0 = 0$). Conversely, reflecting transport boundary conditions yield neumann diffusion boundary conditions. However, depending on the mesh and sweep ordering employed, we are not guaranteed to have this reflecting boundary condition error, $\delta J^{inc}$, be strictly zero. If we seek to accelerate the $k$ iterate, then the error in the incoming current, $\delta J^{inc}$, is given by
+
+\begin{equation}
+\label{eq::MIP_inc_curr_error}
+\delta J^{inc} = \sum\displaylimits_{\vec{\Omega}_m \cdot \vec{n} > 0} w_m \left(\vec{\Omega}_m \cdot \vec{n} \right) \delta \Psi_m^{(k)}
+\end{equation}
+
+ \noindent Using these modifications to the SIP diffusion form with the appropriate boundary conditions required to express the transport solution error, we write the MIP diffusion form as
+
 \begin{equation}
 a^{MIP}( b, \delta \Phi) = b^{MIP}(b),
 \label{eq::MIP_weak_form}
 \end{equation}
 
-\noindent with the following bilinear matrix:
+\noindent with the following bilinear matrix,
 
 \begin{equation}
 \label{eq::MIP_bilinear_form}
@@ -570,18 +579,21 @@ a^{MIP}(b, \delta \Phi)  = \Big(  D \vec{\nabla} b , \vec{\nabla} \delta \Phi  \
 \end{aligned} ,
 \end{equation}
 
-\noindent and with the following linear right-hand-side:
+\noindent and with the following linear right-hand-side,
 
 \begin{equation}
 \label{eq::MIP_linear_form}
-b^{MIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  + \Big< b, \delta  J^{inc}  \Big>_{\partial \mathcal{D}^r} .
+b^{MIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  + \Big< b, \delta  J^{inc}  \Big>_{\partial \mathcal{D}^{ref}} .
 \end{equation}
 
+\noindent The MIP penalty coefficient also needs to be of a different form than the one used for SIP. From Eq. (\ref{eq::SIP_penalty_term}), we can see that as the orthogonal projection, $h$, grows large compared to the diffusion coefficient, $D$, the SIP penalty coefficient can become arbitrarily small. Wang and Ragusa demonstrated in \cite{ragusa2010two} that if the penalty coefficient becomes too small, then MIP used as a DSA diffusion form becomes unstable. Instead, they limited $\kappa^{MIP}$ to the maximum of either $\kappa^{SIP}$ or $1/4$. The value of $1/4$ arises as the constant in the terms $\Big<  [\![   b ]\!] , [\![  \delta \Phi ]\!]\Big>_{E_h^i} $ and $\Big<  b , \delta  \Phi \Big>_{\partial \mathcal{D}^d}$ when the {\em diffusion conforming form} (DCF) of the diffusion equation is consistently derived from the DGFEM transport equation \cite{ref::DSA_wang_ragusa}. This new definition of $\kappa_e^{MIP}$ can be succinctly written as
 
 \begin{equation}
 \label{eq::MIP_penalty_term}
-\kappa_e^{MIP} = \text{max} \left( \kappa_e^{SIP}, \frac{1}{4} \right)
+\kappa_e^{MIP} = \text{max} \left( \kappa_e^{SIP}, \frac{1}{4} \right).
 \end{equation}
+
+\noindent Just like the SIP penalty coefficient, this definition of $\kappa_e^{MIP}$ ensures that the MIP bilinear form of Eq. (\ref{eq::MIP_bilinear_form}) is SPD. We next describe the procedures used to efficiently invert the MIP system matrix for our work.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
