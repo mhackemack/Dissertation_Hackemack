@@ -38,6 +38,7 @@
 .DS_Store
 *.txt
 *.pdf
+!Copies
 !Defense/examples/phd_defense_till.pdf
 !Defense/examples/prelim_presentation_till_full.pdf
 !Prelims/TST_2015/cert_overview_1_slide.pdf
