@@ -200,6 +200,20 @@ The first topical area of research that this dissertation work will focus on is 
 \caption{Contour plots of the different linear basis functions on the unit square located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
 \end{figure}
 
+
+
+The functional interpolation requirements for the linear basis functions are
+
+\begin{equation}
+\label{eq::poly_completeness}
+\begin{aligned}
+\sum_{i=1}^{N_K} \,&b_i(\vec{x}) = 1 \\
+\sum_{i=1}^{N_K}\, & b_i(\vec{x})  \vec{x}_i  =\vec{x}
+\end{aligned}
+\end{equation}
+
+\noindent 
+
 \begin{table}[hbt]
 \label{tab::lin_poly_summary}
 \caption{Summary of the properties of the linear polygonal basis functions used in this work.}
@@ -215,30 +229,10 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 \end{tabular}
 \end{table}
 
-The functional interpolation requirements for the linear and quadratic serendipity basis functions for a point $\vec{p}$ are
-\iffalse
-\begin{equation}
-\label{eq::poly_completeness}
-\begin{aligned}
-\sum_{i=1}^{N}& b_i(\vec{p}) =1 \\
-\sum_{i=1}^{N}&  b_i(\vec{p}) \left(  \vec{x}_i - \vec{p}  \right) = \vec{0}
-\end{aligned}
-\qquad \text{and} \qquad
-\begin{aligned}
-\sum_{i=1}^{N}& b_i(\vec{p}) =1 \\
-\sum_{i=1}^{N}&  b_i(\vec{p}) \left(  \vec{x}_i - \vec{p}  \right) = \vec{0} \\
-\sum_{i=1}^{N}&  b_i(\vec{p}) \left(  \vec{x}_i - \vec{p}  \right) \otimes \left(  \vec{x}_i - \vec{p}  \right) = \vec{0}
-\end{aligned}
-\end{equation}
-\fi
-
-\noindent respectively, where $\vec{x}_i$ corresponds to the location of the $i$th basis function. For the linear basis functions this corresponds to vertex $i$. For the quadratic serendipity basis, the interpolation functions lie on the vertices and the midpoint of each face.
-
-
 \begin{figure}[hbt]
 \centering
 \includegraphics[width=\textwidth]{figures/linear_to_quad_process.png}
-\caption{Overview of the process to construct the quadratic serendipity basis functions on polygons. The filled dots correspond to basis functions that maintain the Lagrange property will emply dots do not.}
+\caption{Overview of the process to construct the quadratic serendipity basis functions on polygons. The filled dots correspond to basis functions that maintain the Lagrange property while empty dots do not.}
 \label{fig::lin_to_quad_process}
 \end{figure}
 
