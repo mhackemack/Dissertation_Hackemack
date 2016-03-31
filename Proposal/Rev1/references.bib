@@ -456,6 +456,22 @@ Supercomputing, Reactor Physics and Biological Applications},
   pages={1-22},
   year={2003}
 }
+% DGFEM transport on triangles
+@article{reed1973triangularmesh,
+  title={Triangular mesh methods for the neutron transport equation},
+  author={Reed, Wm H and Hill, TR},
+  journal={Los Alamos Report LA-UR-73-479},
+  year={1973}
+}
+% DGFEM for transport 
+@article{lesaint1974finite,
+  title={On a finite element method for solving the neutron transport equation},
+  author={Lesaint, P and Raviart, Pierre-Arnaud},
+  journal={Mathematical aspects of finite elements in partial differential equations},
+  number={33},
+  pages={89--123},
+  year={1974}
+}
 % Ridiculous and all encompassing Iterative methods paper from Adams and Larsen
 @article{ref::adams_larsen_iter_methods,
   title={Fast iterative methods for discrete-ordinates particle transport calculations},
@@ -624,8 +640,15 @@ pages={212-236}
   institution={Los Alamos Scientific Lab., N. Mex.(USA)}
 }
 % TRIDENT
+@techreport{seed1977trident,
+  title={TRIDENT: a two-dimensional, multigroup, triangular mesh discrete ordinates, explicit neutron transport code},
+  author={Seed, TJ and Miller Jr, WF and Brinkley Jr, FW},
+  year={1977},
+  institution={Los Alamos Scientific Lab., NM (USA)}
+}
+% TRIDENT
 @inproceedings{seed1978trident,
-  title={TRIDENT. A new triangular mesh discrete ordinates code},
+  title={TRIDENT: A new triangular mesh discrete ordinates code},
   author={Seed, TJ and Miller, WF and Bosler, GE},
   booktitle={ANS Meeting},
   pages={157--167},
@@ -781,7 +804,7 @@ PAGES={198-199}
   year={1997},
   publisher={Elsevier}
 }
-
+% DGFEM transport on tets
 @article{wareing2001discontinuous,
   title={Discontinuous finite element S n methods on three-dimensional unstructured grids},
   author={Wareing, Todd A and McGhee, John M and Morel, Jim E and Pautz, Shawn D},
@@ -792,7 +815,18 @@ PAGES={198-199}
   year={2001},
   publisher={American Nuclear Society}
 }
-
+% DGFEM transport on tets
+@article{morel2005s,
+  title={An S n spatial discretization scheme for tetrahedral meshes},
+  author={Morel, Jim E and Warsa, James S},
+  journal={Nuclear science and engineering},
+  volume={151},
+  number={2},
+  pages={157--166},
+  year={2005},
+  publisher={American Nuclear Society}
+}
+% Sweeping on unstructured grids
 @article{pautz2002algorithm,
   title={An algorithm for parallel $S_N$ sweeps on unstructured meshes},
   author={Pautz, Shawn D},
@@ -1421,12 +1455,49 @@ language={English}
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% General AMR book
 @book{plewa2005adaptive,
-  title={Adaptive Mesh Refinement-Theory and Applications},
+  title={Adaptive Mesh Refinement - Theory and Applications},
   author={Plewa, Tomasz and Linde, Timur and Weirs, V Gregory},
   year={2005},
   publisher={Springer Science \& Business Media}
 }
+% General AMR Book
+@book{carey1997computational,
+  title={Computational Grids: Generations, Adaptation \& Solution Strategies},
+  author={Carey, Graham F},
+  year={1997},
+  publisher={CRC Press}
+}
+% AMR in solid mechanics
+@book{ramm2003error,
+  title={Error-controlled adaptive finite elements in solid mechanics},
+  author={Ramm, Ekkehard and Rank, Ernst and Rannacher, Rolf and Schweizerhof, Karl and Stein, E and Wendland, Wolfgang and Wittum, Gabriel and Wriggers, Peter and Wunderlich, Walter},
+  year={2003},
+  publisher={John Wiley \& Sons}
+}
+% AMR for CFD
+@book{karniadakis2013spectral,
+  title={Spectral/hp element methods for computational fluid dynamics},
+  author={Karniadakis, George and Sherwin, Spencer},
+  year={2013},
+  publisher={Oxford University Press}
+}
+% p and hp AMR
+@book{schwab1998p,
+  title={p-and hp-finite element methods: Theory and applications in solid and fluid mechanics},
+  author={Schwab, Christoph},
+  year={1998},
+  publisher={Oxford University Press}
+}
+% h and hp AMR for higher-order elements
+@book{solin2003higher,
+  title={Higher-order finite element methods},
+  author={Solin, Pavel and Segeth, Karel and Dolezel, Ivo},
+  year={2003},
+  publisher={CRC Press}
+}
+% AMR for hyprebolic problems
 @article{berger1984adaptive,
   title={Adaptive mesh refinement for hyperbolic partial differential equations},
   author={Berger, Marsha J and Oliger, Joseph},
@@ -1464,6 +1535,17 @@ language={English}
   year={2013},
   publisher={Springer Basel AG}
 }
+% Another really good FEM AMR
+@article{ainsworth1997posteriori,
+  title={A posteriori error estimation in finite element analysis},
+  author={Ainsworth, Mark and Oden, J Tinsley},
+  journal={Computer Methods in Applied Mechanics and Engineering},
+  volume={142},
+  number={1},
+  pages={1--88},
+  year={1997},
+  publisher={Elsevier}
+}
 % Original Searchlight
 @article{dedner2002adaptive,
   title={An adaptive higher order method for solving the radiation transport equation on unstructured grids},
@@ -1489,7 +1571,7 @@ language={English}
 % Wang/Ragusa - homogeneous and ironwater
 @article{ragusa2010two,
   title={A two-mesh adaptive mesh refinement technique for SN neutral-particle transport using a higher-order DGFEM},
-  author={Ragusa, Jean C and Wang, Yaqi},
+  author={Wang, Yaqi and Ragusa, Jean C},
   journal={Journal of computational and applied mathematics},
   volume={233},
   number={12},
@@ -1497,6 +1579,88 @@ language={English}
   year={2010},
   publisher={Elsevier}
 }
+% Wang/Ragusa - hp adaptivity for MG diffusion equations
+@article{wang2009application,
+  title={Application of hp adaptivity to the multigroup diffusion equations},
+  author={Wang, Yaqi and Ragusa, Jean},
+  journal={Nuclear Science and Engineering},
+  volume={161},
+  number={1},
+  pages={22--48},
+  year={2009},
+  publisher={American Nuclear Society}
+}
+% Ragusa - conforming FEM AMR
+@inproceedings{ragusa2004adaptive,
+  title={Adaptive solution of the multigroup diffusion equation on irregular structured grids using a conforming Finite Element Method formulation},
+  booktitle={PHYSOR 2004 - The Physics of Fuel Cycles and Advanced Nuclear Systems: Global Developments},
+  venue={Lagrange Park, IL},
+  author={Ragusa, Jean C},
+  year={2004}
+}
+% Ragusa - Hessian-based AMR
+@article{ragusa2008simple,
+  title={A simple Hessian-based 3D mesh adaptation technique with applications to the multigroup diffusion equations},
+  author={Ragusa, Jean C},
+  journal={Annals of Nuclear Energy},
+  volume={35},
+  number={11},
+  pages={2006--2018},
+  year={2008},
+  publisher={Elsevier}
+}
+% Good posteriori reference
+@book{verfurth1996review,
+  title={A review of a posteriori error estimation and adaptive mesh-refinement techniques},
+  author={Verf{\"u}rth, R{\"u}diger},
+  year={1996},
+  publisher={John Wiley \& Sons Inc}
+}
+% Another good posteriori reference
+@book{ainsworth2011posteriori,
+  title={A posteriori error estimation in finite element analysis},
+  author={Ainsworth, Mark and Oden, J Tinsley},
+  volume={37},
+  year={2011},
+  publisher={John Wiley \& Sons}
+}
+% AMR for euler equations - adjoint based
+@phdthesis{hartmann2002adaptive,
+  title={Adaptive finite element methods for the compressible euler equations},
+  author={Hartmann, Ralf},
+  school={University of Heidelberg},
+  year={2002}
+}
+% posteriori error control for transport - adjoint based
+@article{fuhrer1997posteriori,
+  title={A posteriori error control in radiative transfer},
+  author={F{\"u}hrer, Christian and Kanschat, Guido},
+  journal={Computing},
+  volume={58},
+  number={4},
+  pages={317--334},
+  year={1997},
+  publisher={Springer}
+}
+% AMR for hyperbolic - adjoint based
+@article{hartmann2003adaptive,
+  title={Adaptive discontinuous Galerkin finite element methods for nonlinear hyperbolic conservation laws},
+  author={Hartmann, Ralf and Houston, Paul},
+  journal={SIAM Journal on Scientific Computing},
+  volume={24},
+  number={3},
+  pages={979--1004},
+  year={2003},
+  publisher={SIAM}
+}
+% Projection-based estimator
+@book{demkowicz2006computing,
+  title={Computing with hp-Adaptive Finite Elements: Volume 1 One and Two Dimensional Elliptic and Maxwell problems},
+  author={Demkowicz, Leszek},
+  year={2006},
+  publisher={CRC Press}
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %

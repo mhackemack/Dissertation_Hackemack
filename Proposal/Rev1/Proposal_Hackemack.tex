@@ -169,7 +169,23 @@ We have just defined the current state of the art for DGFEM transport calculatio
 \subsection{DGFEM Transport Calculations on Polygonal Meshes}
 \label{sec::CW_poly}
 
-The first topical area of research that this dissertation work will focus on is the use of higher-order polygonal basis functions to solve the DGFEM $S_N$ transport equation. 
+The first topical area of research that this dissertation work will focus on is the use of higher-order polygonal basis functions to solve the DGFEM $S_N$ transport equation. Previous solution of the transport equation on polygons has been performed with limited capacity and restricted to linear basis functions \cite{davidson2008finite,ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}. Recently, the applied mathematics community has made great
+
+The functional interpolation requirements for the linear basis functions are
+
+\begin{equation}
+\label{eq::Lin_constant_constraint}
+\sum_{i=1}^{N_K} \, b_i(\vec{x}) = 1 ,
+\end{equation}
+
+\noindent for the constant constraint, and 
+
+\begin{equation}
+\label{eq::Lin_linear_constraint}
+\sum_{i=1}^{N_K} \,  b_i(\vec{x}) \, \vec{x}_i  =\vec{x} ,
+\end{equation}
+
+\noindent for the linear constraint.
 
 \begin{figure}
 \label{fig::2D_Linear_Summary_unit_square_basis_functions}
@@ -199,20 +215,6 @@ The first topical area of research that this dissertation work will focus on is 
 	\end{subfigure}
 \caption{Contour plots of the different linear basis functions on the unit square located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
 \end{figure}
-
-
-
-The functional interpolation requirements for the linear basis functions are
-
-\begin{equation}
-\label{eq::poly_completeness}
-\begin{aligned}
-\sum_{i=1}^{N_K} \,&b_i(\vec{x}) = 1 \\
-\sum_{i=1}^{N_K}\, & b_i(\vec{x})  \vec{x}_i  =\vec{x}
-\end{aligned}
-\end{equation}
-
-\noindent 
 
 \begin{table}[hbt]
 \label{tab::lin_poly_summary}
@@ -327,7 +329,7 @@ Having identified the 2D linear polygonal finite element basis functions of inte
 		\includegraphics[width=\textwidth]{figures/shes_quad_PWLD_k1.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Exactly linear transport solutions using the PWL coordinates on (a) a sinusoidal polygonal mesh and (b) a highly-distorted quadrilateral shestakov mesh.}
+\caption{Exactly-linear transport solutions using the linear PWL coordinates on (a) a sinusoidal polygonal mesh and (b) a highly-distorted quadrilateral shestakov mesh.}
 \label{fig::lin_sol}
 \end{figure}
 \vspace{2mm}
