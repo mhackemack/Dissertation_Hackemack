@@ -169,26 +169,32 @@ We have just defined the current state of the art for DGFEM transport calculatio
 \subsection{DGFEM Transport Calculations on Polygonal Meshes}
 \label{sec::CW_poly}
 
-The first topical area of research that this dissertation work will focus on is the use of higher-order polygonal basis functions to solve the DGFEM $S_N$ transport equation. Previous solution of the transport equation on polygons has been performed with limited capacity and restricted to linear basis functions \cite{davidson2008finite,ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}. Recently, the applied mathematics community has made great
+The first topical area of research that this dissertation work will focus on is the use of higher-order polygonal basis functions to solve the DGFEM $S_N$ transport equation. Previous solution of the transport equation on polygons has been performed with limited capacity and restricted to linear basis functions \cite{davidson2008finite,ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}. In the last decade, the applied mathematics community has made great strides in developing greater functionality of polygonal interpolants for use in FEM calculations \cite{sukumar2006recent,manzini2014new}. In this research we will analyze the Wachspress coordinates \cite{wachspress1975rational}, the piecewise linear (PWL) coordinates \cite{ref::PWLD_stone_adams}, the mean value (MV) coordinates \cite{floater2003mean,hormann2006mean}, and the maximum entropy (ME) coordinates \cite{sukumar2004construction,sukumar2005maximum,hormann2008maximum} as basis functions for the DGFEM transport equation. These interpolation functions are linearly-complete and hold the properties of generalized barycentric coordinates. We will then analyze the extension of these linear polygonal basis functions to the quadratic serendipity space of functions based on the work of Rand \cite{rand2013interpolation}.
 
-The functional interpolation requirements for the linear basis functions are
+For the generalized barycentric coordinates, we consider a polygon $K \in \mathbb{R}^2$ with $N_K$ vertices. The basis function corresponding to vertex $i$, $\lambda_i$, is strictly non-negative for any point $\vec{x}$ on the polygon $K$: $\lambda_i \geq 0$. The basis functions also satisfy the {\em Kronecker} property at the nodal points, 
 
 \begin{equation}
 \label{eq::Lin_constant_constraint}
-\sum_{i=1}^{N_K} \, b_i(\vec{x}) = 1 ,
+\lambda_i(\vec{x}_j) = \delta_{ij} .
+\end{equation}
+
+\noindent The functional interpolation space of the generalized barycentric coordinates is such that the basis functions satisfy,
+
+\begin{equation}
+\label{eq::Lin_constant_constraint}
+\sum_{i=1}^{N_K} \, \lambda_i(\vec{x}) = 1 ,
 \end{equation}
 
 \noindent for the constant constraint, and 
 
 \begin{equation}
 \label{eq::Lin_linear_constraint}
-\sum_{i=1}^{N_K} \,  b_i(\vec{x}) \, \vec{x}_i  =\vec{x} ,
+\sum_{i=1}^{N_K} \,  \lambda_i(\vec{x}) \, \vec{x}_i  =\vec{x} ,
 \end{equation}
 
-\noindent for the linear constraint.
+\noindent for the linear constraint. We do not provide the functional form for all of the basis functions here for brevity. However, we will give a general description of their properties along with their restrictions. The Wachspress coordinates 
 
 \begin{figure}
-\label{fig::2D_Linear_Summary_unit_square_basis_functions}
 \centering
 	\begin{subfigure}[b]{0.225\textwidth}
 		\centering
@@ -214,6 +220,7 @@ The functional interpolation requirements for the linear basis functions are
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the different linear basis functions on the unit square located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
+\label{fig::2D_Linear_Summary_unit_square_basis_functions}
 \end{figure}
 
 \begin{table}[hbt]
