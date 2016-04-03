@@ -171,14 +171,14 @@ We have just defined the current state of the art for DGFEM transport calculatio
 
 The first topical area of research that this dissertation work will focus on is the use of higher-order polygonal basis functions to solve the DGFEM $S_N$ transport equation. Previous solution of the transport equation on polygons has been performed with limited capacity and restricted to linear basis functions \cite{davidson2008finite,ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}. In the last decade, the applied mathematics community has made great strides in developing greater functionality of polygonal interpolants for use in FEM calculations \cite{sukumar2006recent,manzini2014new}. In this research we will analyze the Wachspress coordinates \cite{wachspress1975rational}, the piecewise linear (PWL) coordinates \cite{ref::PWLD_stone_adams}, the mean value (MV) coordinates \cite{floater2003mean,hormann2006mean}, and the maximum entropy (ME) coordinates \cite{sukumar2004construction,sukumar2005maximum,hormann2008maximum} as basis functions for the DGFEM transport equation. These interpolation functions are linearly-complete and hold the properties of generalized barycentric coordinates. We will then analyze the extension of these linear polygonal basis functions to the quadratic serendipity space of functions based on the work of Rand \cite{rand2013interpolation}.
 
-For the generalized barycentric coordinates, we consider a polygon $K \in \mathbb{R}^2$ with $N_K$ vertices. The basis function corresponding to vertex $i$, $\lambda_i$, is strictly non-negative for any point $\vec{x}$ on the polygon $K$: $\lambda_i \geq 0$. The basis functions also satisfy the {\em Kronecker} property at the nodal points, 
+For the generalized barycentric coordinates, we consider a closed polygon $K \in \mathbb{R}^2$ with $N_K$ vertices. The basis function corresponding to vertex $i$, $\lambda_i$, is strictly non-negative for any point $\vec{x}$ on the polygon $K$: $\lambda_i \geq 0$. The basis functions also satisfy the {\em Kronecker} property at the nodal points, 
 
 \begin{equation}
 \label{eq::Lin_constant_constraint}
-\lambda_i(\vec{x}_j) = \delta_{ij} .
+\lambda_i(\vec{x}_j) = \delta_{ij} ,
 \end{equation}
 
-\noindent The functional interpolation space of the generalized barycentric coordinates is such that the basis functions satisfy,
+\noindent which is also reffered to as the {\em Lagrange property}. The functional interpolation space of the generalized barycentric coordinates is such that the basis functions satisfy,
 
 \begin{equation}
 \label{eq::Lin_constant_constraint}
@@ -192,7 +192,7 @@ For the generalized barycentric coordinates, we consider a polygon $K \in \mathb
 \sum_{i=1}^{N_K} \,  \lambda_i(\vec{x}) \, \vec{x}_i  =\vec{x} ,
 \end{equation}
 
-\noindent for the linear constraint. We do not provide the functional form for all of the basis functions here for brevity. However, we will give a general description of their properties along with their restrictions. The Wachspress coordinates 
+\noindent for the linear constraint. We do not provide the functional form for all of the basis functions here for brevity. However, we will give a general description of their properties along with their restrictions. Table \ref{tab::lin_poly_summary} gives a summary of the properties for these different polytope coordinates. The table states if each of the coordinates has analogous 1D/2D/3D forms and if they can be used on convex or concave elements. The table also states whether the coordinates can be integrated numerically or analytically and if each $\lambda_i$ can be computed in a direct fashion (as opposed to requiring some iterative procedure). We note that of the four basis functions that we are considering, only the PWL coordinates can be integrated analytically. Also, the maximum entropy coordinates require an iterative process (typically a Newton's method) to determine the basis functions and gradients. We then provide the contour plots for one of the vertex functions for each of the coordinates on the unit square in Figure \ref{fig::2D_Linear_Summary_unit_square_basis_functions}.
 
 \begin{figure}
 \centering
@@ -223,30 +223,61 @@ For the generalized barycentric coordinates, we consider a polygon $K \in \mathb
 \label{fig::2D_Linear_Summary_unit_square_basis_functions}
 \end{figure}
 
-\begin{table}[hbt]
-\label{tab::lin_poly_summary}
+\begin{table}
 \caption{Summary of the properties of the linear polygonal basis functions used in this work.}
 \centering
 \begin{tabular}{|c|c|c|c|c|}
 \hline
 Basis Function & Dimension & Polytope Types & Integration & Direct/Iterative \\
 \hline \hline
-Wachspress	&2D/3D&	Convex&	Numerical	&Direct\\ \hline
-PWL&	1D/2D/3D&	Convex/Concave&	Analytical	&Direct\\ \hline
-Mean Value&	2D&	Convex/Concave&	Numerical	&Direct\\ \hline
-Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
+Wachspress	&2D/3D& Convex&	Numerical &Direct\\ \hline
+PWL&	1D/2D/3D& Convex/Concave& Analytical &Direct\\ \hline
+Mean Value&	2D& Convex/Concave& Numerical &Direct\\ \hline
+Max Entropy& 1D/2D/3D &Convex/Concave& Numerical& Iterative\\ \hline
 \end{tabular}
+\label{tab::lin_poly_summary}
 \end{table}
 
-\begin{figure}[hbt]
+\begin{figure}
 \centering
 \includegraphics[width=\textwidth]{figures/linear_to_quad_process.png}
 \caption{Overview of the process to construct the quadratic serendipity basis functions on polygons. The filled dots correspond to basis functions that maintain the Lagrange property while empty dots do not.}
 \label{fig::lin_to_quad_process}
 \end{figure}
 
+Now that we have detailed the linear polygonal basis functions that we will employ for analysis with the transport equaiton, we next describe the procedure to convert these generalized barycentric coordinates into the quadratic serendipity space: $\text{span} \{   1,x,y,xy,x^2,y^2 \}$. Figure \ref{fig::lin_to_quad_process} provides an overview of the process developed by Rand \cite{rand2013interpolation}. We begin with the conversion to the quadratic space by taking non-repeating pairwise-products of the linear basis functions to form,
+
+\begin{equation}
+\label{eq::quad_funcs}
+\mu_{a b} (\vec{x}) = \lambda_{a} (\vec{x}) \, \lambda_{ b} (\vec{x}) ,
+\end{equation}
+
+\noindent that hold the following constraints,
+
+\begin{equation}
+\label{eq::quad_constraints}
+\begin{aligned}
+\sum_{a=1}^{N_K} \sum_{b=1}^{N_K} \, \mu_{a b} (\vec{x}) &= 1 \\
+\sum_{a=1}^{N_K} \sum_{b=1}^{N_K} \, \mu_{a b} (\vec{x}) \left( \frac{\vec{x}_{a} + \vec{x}_{b}}{2} \right)&= \vec{x} \\
+\sum_{a=1}^{N_K} \sum_{b=1}^{N_K} \, \mu_{a b} (\vec{x}) \left(  \vec{x}_{a} \otimes \vec{x}_{b} \right)&= \vec{x} \otimes \vec{x}
+\end{aligned}
+\end{equation}
+
+\noindent Some of these pairwise-product functions are located on the interior of $K$ and are exactly zero on the boundary, $\partial K$. With this observation, we then have recourse to convert the quadratic functions into the serendipity space by eliminating the interior nodes. We do this by keeping the quadratic functions located at the vertices and face midpoints and adding linear combinations of the interior functions. These serendipity functions, $\xi_j$, also must maintain quadratic precision by being beholden to the following constraints,
+
+\begin{equation}
+\label{eq::serendipity_constraints}
+\centering
+\begin{aligned}
+\sum_{j=1}^{ 2N_K}  \, \xi_{j} (\vec{x}) &= 1 \\
+\sum_{j=1}^{ 2N_K}  \, \xi_{j} (\vec{x}) \, \vec{x}_{j} &= \vec{x} \\
+\sum_{j=1}^{2 N_K}  \, \xi_{j} (\vec{x}) \, \vec{x}_j \otimes \vec{x}_j &= \vec{x} \otimes \vec{x}
+\end{aligned} .
+\end{equation}
+
+\noindent We provide contour plots of the quadratic serendipity version of the four linear basis functions in Figures \ref{fig::2D_Quadratic_Summary_unit_square_basis_functions_b4} and \ref{fig::2D_Quadratic_Summary_unit_square_basis_functions_b8}. Figure \ref{fig::2D_Quadratic_Summary_unit_square_basis_functions_b4} gives the nodal functions located at a vertex, and Figure \ref{fig::2D_Quadratic_Summary_unit_square_basis_functions_b8} gives the nodal functions located at a face midpiont.
+
 \begin{figure}
-\label{fig::2D_Quadratic_Summary_unit_square_basis_functions_b4}
 \centering
 	\begin{subfigure}[b]{0.25\textwidth}
 		\centering
@@ -272,10 +303,10 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the different quadratic serendipity basis functions on the unit square located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
+\label{fig::2D_Quadratic_Summary_unit_square_basis_functions_b4}
 \end{figure}
 
 \begin{figure}
-\label{fig::2D_Quadratic_Summary_unit_square_basis_functions_b8}
 \centering
 	\begin{subfigure}[b]{0.25\textwidth}
 		\centering
@@ -301,6 +332,7 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the different quadratic serendipity basis functions on the unit square located at vertex (0,1/2): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
+\label{fig::2D_Quadratic_Summary_unit_square_basis_functions_b8}
 \end{figure}
 
 Having identified the 2D linear polygonal finite element basis functions of interest along with the means to convert them to the quadratic serendipity space, we now wish to analyze their numerical characteristics. First, we wish to verify that all the basis functions can capture an exactly-linear solution on polygonal meshes. We do this by considering the simplified 1-group transport equation,
@@ -425,7 +457,7 @@ C_M = \frac{100}{L_x^2 L_y^2} \qquad \text{and} \qquad \gamma = \frac{L_x L_y}{1
 \subsection{Diffusion Synthetic Acceleration for Massively-Parallel Problems}
 \label{sec::CW_DSA}
 
-The second topical area of research for this dissertation work will focus on the use of DSA schemes to precondition the transport operators for massively-parallel problems.
+The second topical area of research for this dissertation work will focus on the use of DSA schemes to precondition the transport operators for optically-thick massively-parallel problems. We will analyze the linear and quadratic serendipity basis functions presented in Section \ref{sec::CW_poly} with the MIP DSA diffusion form \cite{ref::DSA_wang_ragusa,wang2009adaptive,turcksin2014discontinuous}. We will also extend the analysis of MIP DSA to 3D polyhedra. Our problems of interest will consist of the standard 1-group DSA preconditioning along with different methodologies to accelerate thermal neutron upscattering. We will conclude the work by analyzing real-world transport problems with large processor counts.
 
 As it was previously stated, efficient methods for inverting the streaming operator do not guarantee efficiency in solving the transport problem for optically thick configurations. We recast the discretized transport equation from Eq. (\ref{eq::trans_eq}):
 
