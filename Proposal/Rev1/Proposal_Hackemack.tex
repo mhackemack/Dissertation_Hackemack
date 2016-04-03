@@ -100,14 +100,14 @@ At this point we note that we have not specified a mesh or basis function type. 
 || u - u_h ||_{L_2} = C h^{p+1}
 \end{equation}
 
-\noindent where $h$ is the maximum diameter of a mesh element, $p$ is the polynomial order of the basis functions, and $C$ is a constant independent of the mesh \cite{bramble1970estimation}. If $h$ is difficult to estimate for a particular mesh type, we can proportionally relate it to the number of spatial degrees of freedom in the problem: $N_{dof} \propto h^{-d}$, where $d$ is the dimensionality of the problem (1,2,3). Using this relation, Eq. (\ref{eq::bf_conv_rate_h}) can be rewritten to be dependent on the number of spatial degrees of freedom,
+\noindent where $h$ is the maximum diameter of a mesh element, $p$ is the polynomial order of the basis functions, and $C$ is a constant independent of the mesh \cite{bramble1970estimation}. If $h$ is difficult to estimate for a particular mesh type, we can proportionally relate it to the number of spatial degrees of freedom in the problem: $N_{dof} \propto p h^{-d}$, where $d$ is the dimensionality of the problem (1,2,3). Using this relation, Eq. (\ref{eq::bf_conv_rate_h}) can be rewritten to be dependent on the number of spatial degrees of freedom,
 
 \begin{equation}
 \label{eq::bf_conv_rate_DOF}
-|| u - u_h ||_{L_2} = C N_{dof}^{- \frac{p+1}{d}},
+|| u - u_h ||_{L_2} = C(p) N_{dof}^{- \frac{p+1}{d}},
 \end{equation}
 
-\noindent where we note that the constants, $C$, in Eqs. (\ref{eq::bf_conv_rate_h}) and (\ref{eq::bf_conv_rate_DOF}) are not the same. We plot the relations of Eqs. (\ref{eq::bf_conv_rate_h}) and (\ref{eq::bf_conv_rate_DOF}) in Figure \ref{fig::conv_rates} for different polynomial orders. We can see from the relationship of mesh cell size and number of spatial degrees of freedom to the error, that using basis functions with higher-order polynomial interpolations leads to improved convergence rates. As long as the number of spatial degrees of freedom does not grow proportionally to the polynomial order, we expect to achieve more accurate solution estimates in relation to the work required to solve the problem with higher-order interpolants.
+\noindent where $C(p)$ is now a functions of the polynomial order, $p$. We plot the relations of Eqs. (\ref{eq::bf_conv_rate_h}) and (\ref{eq::bf_conv_rate_DOF}) in Figure \ref{fig::conv_rates} for different polynomial orders. We choose to set $C(p)=1$ for comparison. We can see from the relationship of mesh cell size and number of spatial degrees of freedom to the error, that using basis functions with higher-order polynomial interpolations leads to improved convergence rates. As long as the number of spatial degrees of freedom does not grow proportionally to the polynomial order, we expect to achieve more accurate solution estimates in relation to the work required to solve the problem with higher-order interpolants.
 
 \begin{figure}[hbt]
 \centering
@@ -148,6 +148,7 @@ The rest of this proposal is organized as follows. In Section \ref{sec::PS}, we 
 \section{Existing Methodology}
 \label{sec::PS}
 % Transport and FEM Portion
+Accurate solutions of the neutral particle transport equation are important for multiple fields, including medical imaging, radiotherapy, nuclear power, food and equipment sterilization, and other industrial applications. The transport equation has a high-dimensional phase space, consisting of 3 spatial variables, 1 energy variable, and 2 angular variables. Extensive research has been performed over the years to more accurately and efficiently 
 
 % DSA Portion
 The ability to efficiently invert the transport (streaming and collision) operator does not necessarily mean that transport solutions can be easily obtained. In general, radiation transport solutions are obtained iteratively. The simplest and widely-used method is a fixed-point scheme ({\em i.e.} richardson iteration) ubiquitously called source iteration (SI) in the transport community. Unfortunately, the iteration process of SI can converge arbitrarily slowly if the problem is optically thick \cite{ref::adams_larsen_iter_methods}. This corresponds to long mean free paths for neutronics problems. This also corresponds to time steps and material heat capacities tending to infinity and zero, respectively, for thermal radiative transport (TRT) problems.
