@@ -59,17 +59,17 @@ We next restrict our problem to a single energy group and simplify the right-han
 
 \begin{equation}
 \label{eq::disc_trans_eq_cellK}
-- \left( \vec{\Omega}_m \cdot  \vec{\nabla} b_m, \Psi_{m} \right)_{K} + \sum_{f=1}^{N_f^K} \Big< ( \vec{\Omega}_m \cdot \vec{n}_f ) \, b_m, \tilde{\Psi}_m  \Big>_{f}  + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K} = \left(  b_m ,   Q_m \right)_{K}
+- \left( \vec{\Omega}_m \cdot  \vec{\nabla} b_m, \Psi_{m} \right)_{K} + \sum_{f=1}^{N_f^K} \Big< ( \vec{\Omega}_m \cdot \vec{n}_f ) \, b_m, \tilde{\Psi}_m  \Big>_{f}  + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K} = \Big(  b_m ,   Q_m \Big)_{K} ,
 \end{equation}
 
 \noindent where $\vec{n}_f$ is the outward normal direction for face $f$ on the cell $K$ boundary and $N_f^K$ is the number of faces on cell $K$. The volume and surface inner products have the form,
 
 \begin{equation}
 \label{eq::inner_prod}
-\Big( u,v \Big)_K \equiv \int_K u \, v \, d \vec{r} \qquad \text{and} \qquad \Big< u,v \Big>_f \equiv \int_f u \, v \, d s ,
+\Big( u,v \Big)_K \equiv \int_K u \, v \, d r \qquad \text{and} \qquad \Big< u,v \Big>_f \equiv \int_f u \, v \, d s ,
 \end{equation}
 
-\noindent respectively. The across-cell boundary flux, $\tilde{\Psi}_m$, is boundary dependent. We apply the ubiquitous {\em upwind scheme} 
+\noindent respectively. The across-cell boundary flux, $\tilde{\Psi}_m$, is dependent on the inflow/outflow nature of the boundary. We apply the {\em upwind scheme}:
 
 \begin{equation}
 \label{eq::upwind_eqs}
@@ -77,8 +77,7 @@ We next restrict our problem to a single energy group and simplify the right-han
 \begin{cases}
 \Psi_m^{-} , & \partial K^+ \\
 \Psi_m^{+}, & \partial K^- \backslash \partial \mathcal{D} \\
-\Psi_m^{inc}, & \partial K^- \cap \partial \mathcal{D}^d \\
-\Psi_{m'}^{-}, & \partial K^- \cap \partial \mathcal{D}^r
+\Psi_m^{inc}, & \partial K^- \cap \partial \mathcal{D}
 \end{cases}
 \end{equation}
 
@@ -87,13 +86,13 @@ We next restrict our problem to a single energy group and simplify the right-han
 \begin{equation}
 \label{eq::full_cellK_disc}
 \begin{aligned}
--  \Big( \vec{\Omega}_m \cdot  & \vec{\nabla} b_m, \Psi_{m} \Big)_{K}   + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K} +  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{-}  \Big>_{\partial K^+}  \\
-  + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{+}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}^{-}_{m'}  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
-= & \left(  b_m ,   Q_m \right)_{K} - \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}^d} 
+-  &\Big( \vec{\Omega}_m \cdot   \vec{\nabla} b_m, \Psi_{m} \Big)_{K}   + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K}  \\
+  + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{+}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  +  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{-}  \Big>_{\partial K^+}  \\
+= & \Big(  b_m ,   Q_m \Big)_{K} - \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}} 
 \end{aligned} \, .
 \end{equation}
 
-At this point we note that we have not specified a mesh or basis function type. We have simply left them as an unspecified dual. In base finite element theory, the basis functions are collections of polynomial functions with measure on local elements within the domain \cite{ern2013theory}. A particular application of the Bramble-Hilbert lemma states that we can achieve error convergence rates between the true solution,$u$, and the discretized solution, $u_h$, by,
+At this point we note that we have not specified a mesh or basis function type. We have simply left them as an unspecified dual. In finite element theory, the basis functions are collections of polynomial functions with measure on local elements within the domain \cite{ern2013theory}. A particular application of the Bramble-Hilbert lemma states that we can achieve error convergence rates between the true solution,$u$, and the discretized solution, $u_h$, by,
 
 \begin{equation}
 \label{eq::bf_conv_rate_h}
@@ -126,16 +125,16 @@ At this point we note that we have not specified a mesh or basis function type. 
 \label{fig::conv_rates}
 \end{figure}
 
-For the finite element method, analysis has typically been performed on simple element types: triangles and quadrilaterals in 2D and tetrahedra and hexahedra in 3D \cite{akin1982application}. However, in more recent years there has been a growing interest in different research communities to apply the finite element method to polytope mehes (polygons and polyhedra). Some of the main benefits for using arbitrary polygonal/polyhedral meshes are the following:
+For the finite element method, analysis has typically been performed on simple element types: triangles and quadrilaterals in 2D and tetrahedra and hexahedra in 3D \cite{akin1982application}. However, in more recent years there has been a growing interest in different research communities to apply the finite element method to polytope mehes (arbitrary polygons and polyhedra). Some of the main benefits for using arbitrary polygonal/polyhedral meshes are the following:
 
 \vspace{4mm}
 \begin{enumerate}
 	\item Polytope mesh cells are now being employed in other physics communities - most notably computational fluid dynamics (CFD)\cite{ref::star_CCM};
 	\item They are believed to reduce the number of unknowns to solve with equivalent accuracy;
 	\item They can reduce cell/face counts which can reduce algorithm wallclock times depending on the solution method;
-	\item They can allow for transition elements between different portions of the domain (e.g., tetrahedral elements bordering hexahedral elements at the border of the boundary layer);
+	\item They can allow for transition elements between different portions of the domain (e.g., tetrahedral elements juxtaposing hexahedral elements at the border of the boundary layer);
 	\item They can easily be split along cut planes - allowing the mesh to be partitioned into regular or irregular divisions as well as be generated by simplical meshing techniques across processor sets in parallel;
-	\item Hanging nodes from non-conforming meshes, like those that naturally arise from locally refined/adapted meshes, are no longer necessary. 
+	\item Hanging-node treatments from non-conforming meshes, like those that naturally arise from locally refined/adapted meshes, are no longer necessary. 
 \end{enumerate}
 \vspace{4mm}
 
@@ -148,7 +147,7 @@ The rest of this proposal is organized as follows. In Section \ref{sec::PS}, we 
 \section{Existing Methodology}
 \label{sec::PS}
 % Transport and MG
-Accurate solutions of the neutral particle transport equation are important for multiple fields, including medical imaging, radiotherapy, nuclear power, food and equipment sterilization, and other industrial applications. The transport equation has a high-dimensional phase space, consisting of 3 spatial variables, 1 energy variable, and 2 angular variables. Extensive research has been performed over the years to more accurately and efficiently discretize and solve each of these variables. In energy, we will utilize the multigroup method since it is the only wide used energy discretization scheme in determinstic transport \cite{duderstadt1976nuclear,bell1979nuclear}. With the multigroup approximation, the energy domain is broken up into intervals (groups) and then averaged over these intervals with an approximation of the spectral transport solution as the weighting spectrum. This process requires a combination of highly accurate nuclear data libraries such as the Evaluated Nuclear Data File (ENDF) \cite{chadwick2006endf,chadwick2011endf}, the Japanese Evaluated Nuclear Data Library (JENDL) \cite{shibata2002japanese}, and the Joint Evaluated Fission and Fusion Project (JEFF) \cite{koning2006jeff}, as well as high fidelity processing software such as NJOY \cite{macfarlane2002njoy,kahler2012njoy}, AMPX \cite{dunn2002ampx}, and SCALE \cite{bucholz1982scale} to form the multigroup cross sections. Work is continuously being performed to quantify uncertainties in these cross sections and their effects to solution accuracy \cite{aliberti2006nuclear,jessee2008cross}.
+Accurate solutions of the neutral particle transport equation are important for multiple fields, including medical imaging, radiotherapy, nuclear power, and other industrial applications. The transport equation has a high-dimensional phase space, consisting of 3 spatial variables, 1 energy variable, and 2 angular variables. Extensive research has been performed over the years to more efficiently discretize these variables to obtain more accurate numerical solutions. In energy, we will utilize the multigroup method since it is the only wide used energy discretization scheme in determinstic transport \cite{duderstadt1976nuclear,bell1979nuclear}. With the multigroup approximation, the energy domain is broken up into intervals (groups) and then averaged over these intervals with an approximation of the spectral transport solution as the weighting spectrum. This process requires a combination of highly accurate nuclear data libraries such as the Evaluated Nuclear Data File (ENDF) \cite{chadwick2006endf,chadwick2011endf}, the Japanese Evaluated Nuclear Data Library (JENDL) \cite{shibata2002japanese}, and the Joint Evaluated Fission and Fusion Project (JEFF) \cite{koning2006jeff}, as well as high fidelity processing software such as NJOY \cite{macfarlane2002njoy,kahler2012njoy}, AMPX \cite{dunn2002ampx}, and SCALE \cite{bucholz1982scale} to form the multigroup cross sections. Work is continuously being performed to quantify uncertainties in these cross sections and their effects to solution accuracy \cite{aliberti2006nuclear,jessee2008cross}.
 
 % Sn 
 For the angle variable in the transport equation, there are multiple discretization methods we could employ. For this work, we choose to use discrete ordinates ($S_N$) scheme \cite{carlson1968computing,lewis1984computational}. The $S_N$ method is a collocation discretization scheme where the transport equation is solved along predetermined directions of an angular quadrature set. This method differs strongly from modal expansion schemes such as the $P_N$ or Simplified $P_N$ ($SP_N$) methods \cite{bell1979nuclear,gelbard1960application}. $S_N$ methods are widely used for a variety of applications, but they can suffer from ray effects arising from streaming paths in a heterogeneous problem \cite{lathrop1968ray}. First-collision source approaches are currently used to mitigate these ray effects \cite{lathrop1971remedies,morel_rayeffects}.
@@ -159,11 +158,11 @@ This just leaves the choice for spatial discretization remaining. There have bee
 In general, the DGFEM $S_N$ transport equation has been solved on simplical (triangles and tetrahedra) or cartesian meshes (quadrilaterals and hexahedra) using linear basis functions. Very recently, there have been advances made to solve these equations on polygonal and polyhedral grids \cite{davidson2008finite,ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured,bailey2008phd}. However, this has been relegated to only linear basis functions since the use of polytope finite elements is still in its infancy. Within the past 10 years, the applied mathematics communities have made great strides in the fields of interpolatory functions on arbitrary polytopes \cite{sukumar2006recent}. Even more recently, work has begun on higher-order interpolation schemes \cite{rand2013interpolation}. This means that the capacity to use higher-order basis functions for the DGFEM transport equation on polytope meshes is now realizable. 
 
 % DSA Portion
-With the combination of the $S_N$ discretization in angle and DGFEM in space, we can utilize the matrix-free {\em transport sweep} to efficiently invert the loss operator (streaming + collision). Transport sweeps have recently been shown to be efficient and scalable to massively-parallel architectures \cite{ref::eff_sweeps,adams2013provably}. However, this ability to efficiently invert the loss operator does not necessarily mean that transport solutions can be easily obtained. In general, radiation transport solutions are obtained iteratively. The simplest and widely-used method is a fixed-point scheme ({\em i.e.,} richardson iteration) ubiquitously called source iteration (SI) in the transport community. Unfortunately, the iteration process of SI can converge arbitrarily slowly if the problem is optically thick \cite{ref::adams_larsen_iter_methods}. This corresponds to long mean free paths for neutronics problems. This also corresponds to time steps and material heat capacities tending to infinity and zero, respectively, for thermal radiative transport (TRT) problems.
+With the combination of the $S_N$ discretization in angle and DGFEM in space, we can utilize the matrix-free {\em transport sweep} to efficiently invert the loss operator (streaming + collision). Transport sweeps have recently been shown to be efficient and scalable to massively-parallel architectures \cite{ref::eff_sweeps,adams2013provably}. However, this ability to efficiently invert the loss operator does not necessarily mean that transport solutions can be easily obtained. In general, radiation transport solutions are obtained iteratively. The simplest and widely-used method is a fixed-point scheme ({\em i.e.,} Richardson iteration) ubiquitously called source iteration (SI) in the transport community. Unfortunately, the iteration process of SI can converge arbitrarily slowly if the problem is optically thick \cite{ref::adams_larsen_iter_methods}. This corresponds to long mean free paths for neutronics problems. This also corresponds to time steps and material heat capacities tending to infinity and zero, respectively, for thermal radiative transport (TRT) problems.
 
 For these problem regimes in which solution convergence is prohibitively slow, additional steps should be taken to speed up, or accelerate, solution convergence \cite{ref::adams_larsen_iter_methods}. The most used methods to assist in solution convergence are often called synthetic acceleration techniques. These techniques were first introduced by Kopp  \cite{kopp1963synthetic} and Lebedev \cite{lebedevI} in the 1960's. From Kopp's and Lebedev's work, Gelbard and Hageman then introduced two synthetic acceleration options for the low-order operator: diffusion and $S_2$ \cite{gelbard1969synthetic}. Their diffusion preconditioning led to efficient convergence properties on fine spatial meshes. Reed then showed that Gelbard and Hageman's diffusion preconditioning would yield a diverging system for coarse meshes \cite{reed1971effectiveness}. At this point in time, no one knew if an unconditionally efficient acceleration method could be derived.
 
-Then in 1976, Alcouffe proposed a remedy to Gelbard and Reed that he called diffusion synthetic acceleration (DSA) \cite{alcouffe1976stable,alcouffe1977DSA,alcouffe1977diffusion}. He showed that if you derived the diffusion operator consistently with the discretized transport operator, then SI could be accelerated with DSA in an efficient and robust manner. Larsen and McCoy then demonstrated that unconditional stability required that consistency be maintained in both spatial and angular discretization in their four-step procedure \cite{larsen1982unconditionally_I,larsen1982unconditionally_II}. However, Adams and Martin then showed that partially-consistent diffusion discretizations could effectively accelerate DFEM discretizations of the neutron transport equation \cite{ref::dsa_DFEM_adams_martin}. Their modified-four-step procedure (M4S), based on Larsen and McCoy's work, was shown to be unconditionally stable for regular geometries, but divergent for unstructured multi-dimensional meshes \cite{warsa2002fully}. In more recent years, alternate discretizations for the diffusion operator have been applied to unstructured multi-dimensional grids. These include the partially consistent Wareing-Larsen-Adams (WLA) DSA \cite{ref::WLA_DSA}, the fully consistent DSA (FCDSA) \cite{warsa2002fully}, and the partially consistent MIP DSA \cite{ref::DSA_wang_ragusa,wang2009adaptive,turcksin2014discontinuous}.
+Then in 1976, Alcouffe proposed a remedy to Gelbard and Reed that he called diffusion synthetic acceleration (DSA) \cite{alcouffe1976stable,alcouffe1977DSA,alcouffe1977diffusion}. He showed that if you derived the diffusion operator consistently with the discretized transport operator, then SI could be accelerated with DSA in an efficient and robust manner. Larsen and McCoy then demonstrated that unconditional stability required that consistency be maintained in both spatial and angular discretization in their four-step procedure \cite{larsen1982unconditionally_I,larsen1982unconditionally_II}. However, Adams and Martin then showed that partially-consistent diffusion discretizations could effectively accelerate DFEM discretizations of the neutron transport equation \cite{ref::dsa_DFEM_adams_martin}. Their modified-four-step procedure (M4S), based on Larsen and McCoy's work, was shown to be unconditionally stable for regular geometries, but divergent for unstructured multi-dimensional meshes \cite{warsa2002fully}. In more recent years, alternate discretizations for the diffusion operator have been applied to unstructured multi-dimensional grids. These include the partially consistent Wareing-Larsen-Adams (WLA) DSA \cite{ref::WLA_DSA}, the fully consistent DSA (FCDSA) \cite{warsa2002fully}, and the partially consistent Modified Interior Penalty (MIP) DSA \cite{ref::DSA_wang_ragusa,wang2009adaptive,turcksin2014discontinuous}.
 
 Most recently, the partially consistent MIP DSA method has been shown to be an unconditionally stable acceleration method for the 2D DFEM transport equation on unstructured meshes. Wang showed that it acted as an effective preconditioner for higher-order DFEM discretizations on triangles \cite{ref::DSA_wang_ragusa,wang2009adaptive}. Turcksin and Ragusa then extended the work to arbitrary polygonal meshes \cite{turcksin2014discontinuous}. The MIP diffusion operator is symmetric positive definite (SPD) and was shown to be efficiently invertible with preconditioned conjugate gradient (PCG) and advanced preconditioners such as algebraic multi-grid (AMG) \cite{turcksin2014discontinuous}.
 
@@ -194,7 +193,7 @@ For the generalized barycentric coordinates, we consider a closed polygon $K \in
 \sum_{i=1}^{N_K} \, \lambda_i(\vec{x}) = 1 ,
 \end{equation}
 
-\noindent for the constant constraint, and 
+\noindent for the constant constraint (also called the partition of unity), and 
 
 \begin{equation}
 \label{eq::Lin_linear_constraint}
@@ -205,27 +204,27 @@ For the generalized barycentric coordinates, we consider a closed polygon $K \in
 
 \begin{figure}
 \centering
-	\begin{subfigure}[b]{0.225\textwidth}
+	\begin{subfigure}[b]{0.30\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/square_WACHSPRESS1_contour_b4.eps}
+		\includegraphics[width=\textwidth]{figures/square_WACHSPRESS1_contour_b4.png}
 		\caption{}
 	\end{subfigure}
 	\hspace{1cm}
-	\begin{subfigure}[b]{0.225\textwidth}
+	\begin{subfigure}[b]{0.30\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/square_PWLD1_contour_b4.eps}
+		\includegraphics[width=\textwidth]{figures/square_PWLD1_contour_b4.png}
 		\caption{}
 	\end{subfigure}
 	\vfill
-	\begin{subfigure}[b]{0.225\textwidth}
+	\begin{subfigure}[b]{0.30\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/square_MV1_contour_b4.eps}
+		\includegraphics[width=\textwidth]{figures/square_MV1_contour_b4.png}
 		\caption{}
 	\end{subfigure}
 	\hspace{1cm}
-	\begin{subfigure}[b]{0.225\textwidth}
+	\begin{subfigure}[b]{0.30\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/square_MAXENT1_contour_b4.eps}
+		\includegraphics[width=\textwidth]{figures/square_MAXENT1_contour_b4.png}
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the different linear basis functions on the unit square located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
@@ -288,27 +287,27 @@ Now that we have detailed the linear polygonal basis functions that we will empl
 
 \begin{figure}
 \centering
-	\begin{subfigure}[b]{0.25\textwidth}
+	\begin{subfigure}[b]{0.240\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/square_WACHSPRESS2_contour_b4.eps}
+		\includegraphics[width=\textwidth]{figures/square_WACHSPRESS2_contour_b4.png}
 		\caption{}
 	\end{subfigure}
 	\hspace{1cm}
-	\begin{subfigure}[b]{0.25\textwidth}
+	\begin{subfigure}[b]{0.240\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/square_PWLD2_contour_b4.eps}
+		\includegraphics[width=\textwidth]{figures/square_PWLD2_contour_b4.png}
 		\caption{}
 	\end{subfigure}
 	\vfill
-	\begin{subfigure}[b]{0.25\textwidth}
+	\begin{subfigure}[b]{0.240\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/square_MV2_contour_b4.eps}
+		\includegraphics[width=\textwidth]{figures/square_MV2_contour_b4.png}
 		\caption{}
 	\end{subfigure}
 	\hspace{1cm}
-	\begin{subfigure}[b]{0.25\textwidth}
+	\begin{subfigure}[b]{0.240\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/square_MAXENT2_contour_b4.eps}
+		\includegraphics[width=\textwidth]{figures/square_MAXENT2_contour_b4.png}
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the different quadratic serendipity basis functions on the unit square located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
@@ -317,27 +316,27 @@ Now that we have detailed the linear polygonal basis functions that we will empl
 
 \begin{figure}
 \centering
-	\begin{subfigure}[b]{0.25\textwidth}
+	\begin{subfigure}[b]{0.240\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/square_WACHSPRESS2_contour_b8.eps}
+		\includegraphics[width=\textwidth]{figures/square_WACHSPRESS2_contour_b8.png}
 		\caption{}
 	\end{subfigure}
 	\hspace{1cm}
-	\begin{subfigure}[b]{0.25\textwidth}
+	\begin{subfigure}[b]{0.240\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/square_PWLD2_contour_b8.eps}
+		\includegraphics[width=\textwidth]{figures/square_PWLD2_contour_b8.png}
 		\caption{}
 	\end{subfigure}
 	\vfill
-	\begin{subfigure}[b]{0.25\textwidth}
+	\begin{subfigure}[b]{0.240\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/square_MV2_contour_b8.eps}
+		\includegraphics[width=\textwidth]{figures/square_MV2_contour_b8.png}
 		\caption{}
 	\end{subfigure}
 	\hspace{1cm}
-	\begin{subfigure}[b]{0.25\textwidth}
+	\begin{subfigure}[b]{0.240\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/square_MAXENT2_contour_b8.eps}
+		\includegraphics[width=\textwidth]{figures/square_MAXENT2_contour_b8.png}
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the different quadratic serendipity basis functions on the unit square located at vertex (0,1/2): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
@@ -415,15 +414,15 @@ C_M = \frac{100}{L_x^2 L_y^2} \qquad \text{and} \qquad \gamma = \frac{L_x L_y}{1
 
 \begin{figure}[hbt]
 \centering
-	\begin{subfigure}[b]{0.485\textwidth}
+	\begin{subfigure}[b]{0.495\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/cart_err_rev1.eps}
+		\includegraphics[width=\textwidth]{figures/TransMMS_Sine_cart_err.eps}
 		\caption{}
 	\end{subfigure}
 	\hfill
-	\begin{subfigure}[b]{0.49\textwidth}
+	\begin{subfigure}[b]{0.495\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/poly_err_rev1.eps}
+		\includegraphics[width=\textwidth]{figures/TransMMS_Sine_poly_err.eps}
 		\caption{}
 	\end{subfigure}
 \caption{$L_2$ error norm for the sinusoidal MMS problem using the various 2D polygonal basis functions on (a) orthogonal quadrilateral meshes and (b) random polygonal meshes.}
@@ -473,23 +472,23 @@ As it was previously stated, efficient methods for inverting the streaming opera
 \begin{equation}
 \label{eq::CW_trans_eq}
 \begin{aligned}
-{\bf A} \Psi &= {\bf B} \Phi +  {\bf C} \Phi + {\bf Q} \\
+{\bf A} \Psi &= {\bf B} \Phi + {\bf Q} \\
 \Phi &= {\bf D} \Psi
 \end{aligned} ,
 \end{equation}
 
-\noindent where ${\bf A}$, ${\bf B}$, ${\bf C}$, and ${\bf Q}$ are different operators of the transport problem. We then define an iterative procedure of the form,
+\noindent where ${\bf A}$, ${\bf B}$, and ${\bf Q}$ are different operators of the transport problem. We then define an iterative procedure of the form,
 
 \begin{equation}
 \label{eq::CW_trans_eq_it}
-{\bf A} \Psi^{(k+1/2)} = {\bf B} \Phi^{(k+1/2)} + {\bf C} \Phi^{(k)} + {\bf Q},
+{\bf A} \Psi^{(k+1/2)} = {\bf B} \Phi^{(k+1/2)}+ {\bf Q},
 \end{equation}
 
-\noindent where ${\bf B}$ operates on the current solution iterate and ${\bf C}$ operates on the previous solution iterate. We then subtract Eq. (\ref{eq::CW_trans_eq_it}) from Eq. (\ref{eq::CW_trans_eq}) to yield the following formulation of the solution error at iterate $(k+1/2)$,
+\noindent where ${\bf A}$ operates on the current angular fluxes and ${\bf B}$ operates on the angular moments. We then subtract Eq. (\ref{eq::CW_trans_eq_it}) from Eq. (\ref{eq::CW_trans_eq}) to yield the following formulation of the solution error at iterate $(k+1/2)$,
 
 \begin{equation}
 \label{eq::CW_trans_eq_it_diff}
-{\bf A} \delta \Psi^{(k+1/2)} - {\bf B}' \delta \Phi^{(k+1/2)} = {\bf R}^{(k+1/2)}, 
+{\bf A} \delta \Psi^{(k+1/2)} - {\bf B} \delta \Phi^{(k+1/2)} = {\bf R}^{(k+1/2)}, 
 \end{equation}
 
 \noindent where
@@ -501,7 +500,7 @@ As it was previously stated, efficient methods for inverting the streaming opera
 \end{aligned} \, ,
 \end{equation}
 
-\noindent are the errors in the angular fluxes and flux moments, ${\bf R}^{(k+1/2)}$ is some residual in the error, and the operators ${\bf B}$ and ${\bf B'}$ are not necessarily the same. If we could exactly solve for the error in Eqs. (\ref{eq::CW_trans_eq_it_diff} - \ref{eq::CW_delta_fluxes}), then the exact solution could be calculated by: $\Phi =  \Phi^{(k+1/2)} + \delta \Phi^{(k+1/2)}$. Unfortunately, Eq. (\ref{eq::CW_trans_eq_it_diff}) is just as difficult to solve as Eq. (\ref{eq::CW_trans_eq}). Therefore, we estimate Eq. (\ref{eq::CW_trans_eq_it_diff}) with a low-order operator that is easy to solve. We will next briefly described the low-order operator that we will utilize in Section \ref{sec::CW_DSA_MIP}.
+\noindent are the errors in the angular fluxes and flux moments, ${\bf R}^{(k+1/2)}$ is some residual in the error. If we could exactly solve for the error in Eqs. (\ref{eq::CW_trans_eq_it_diff} - \ref{eq::CW_delta_fluxes}), then the exact solution could be calculated by: $\Phi =  \Phi^{(k+1/2)} + \delta \Phi^{(k+1/2)}$. Unfortunately, Eq. (\ref{eq::CW_trans_eq_it_diff}) is just as difficult to solve as Eq. (\ref{eq::CW_trans_eq}). Therefore, we estimate Eq. (\ref{eq::CW_trans_eq_it_diff}) with a low-order operator that is easy to solve. We will next briefly described the low-order operator that we will utilize in Section \ref{sec::CW_DSA_MIP}.
 
 
 %%%%%%%%%%%%%%%%%%%
@@ -589,13 +588,13 @@ Much work has also been performed to utilize the MIP DSA scheme to accelerate la
 \subsubsection{Thermal Upscatter Acceleration}
 \label{sec::CW_DSA_Upscatter}
 
-For this dissertation work, we will also analyze the benefits and scalability of DSA preconditioning to real-world problems. This can require the ability to efficiently converge the scattering source for a large multigroup problem. However, if there is appreciable up-scattering from the thermal energy groups, then the system can act optically thick which leads to arbitrarily-slow convergence. In particular, systems that are dominated by the thermal scattering off graphite or heavy-water behave in this manner. In this work, we will analyze three different thermal neutron upscattering acceleration techniques. The first method we will analyze is a multigroup richardson acceleration in Section \ref{sec::CW_DSA_Upscatter_Rich}. We will then analyze the Two-Grid acceleration method and a variant in Section \ref{sec::CW_DSA_Upscatter_TG}.
+For this dissertation work, we will also analyze the benefits and scalability of DSA preconditioning to real-world problems. This can require the ability to efficiently converge the scattering source for a large multigroup problem. However, if there is appreciable up-scattering from the thermal energy groups, then the system can act optically thick which leads to arbitrarily-slow convergence of the thermal iterations. In particular, systems that are dominated by the thermal scattering off graphite or heavy-water behave in this manner. In this work, we will analyze three different thermal neutron upscattering acceleration techniques. The first method we will analyze is a multigroup Richardson acceleration in Section \ref{sec::CW_DSA_Upscatter_Rich}. We will then analyze the Two-Grid acceleration method and a variant in Section \ref{sec::CW_DSA_Upscatter_TG}.
 
 %%%%%%%%%%%%%%%%%%%
 \paragraph{Multigroup Richardson Acceleration}
 \label{sec::CW_DSA_Upscatter_Rich}
 
-The first thermal neutron upscattering acceleration method we will consider is a multigroup richardson acceleration technique. If we lump all the $G$ thermal groups into a single set and solve simultaneously, then the transport iterations will look like the following:
+The first thermal neutron upscattering acceleration method we will consider is a multigroup Richardson acceleration technique. If we lump all the $G$ thermal groups into a single set and solve simultaneously, then the transport iterations will look like the following:
 
 \begin{equation}
 \label{eq::MG_full_eq_it}
@@ -659,7 +658,7 @@ R_g^{(k+1/2)} =  \sum_{g'=1}^G {\bf S}_{g, g',0} \left(  \Phi_{g',0}^{(k+1/2)} -
 \paragraph{Two-Grid Acceleration and a Variant}
 \label{sec::CW_DSA_Upscatter_TG}
 
-The second thermal neutron upscattering acceleration method we will analyze is the Two-Grid (TG) acceleration technique \cite{adams1993two}. The TG method has some similarities to the multigroup richardson acceleration of Section \ref{sec::CW_DSA_Upscatter_Rich}, but some key differences as well. First, instead of solving all $G$ thermal groups simultaneously in a transport sweep, we employ a Gauss-Seidel procedure in energy. This means that we march through the thermal groups in an outer iteration 1 at a time and converge the inner iterations as we go. This leads to a different set of transport iterations:
+The second thermal neutron upscattering acceleration method we will analyze is the Two-Grid (TG) acceleration technique \cite{adams1993two}. The TG method has some similarities to the multigroup Richardson acceleration of Section \ref{sec::CW_DSA_Upscatter_Rich}, but some key differences as well. First, instead of solving all $G$ thermal groups simultaneously in a transport sweep, we employ a Gauss-Seidel procedure in energy. This means that we march through the thermal groups in an outer iteration 1 at a time and converge the inner iterations as we go. This leads to a different set of transport iterations:
 
 \begin{equation}
 \label{eq::GS_it}
@@ -767,8 +766,7 @@ For the DSA work in PDT, there are three items left to investigate. First, we ne
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
-\section{Expected Results and Summary}
+\section{Goals of the Dissertation}
 \label{sec::ER}
 
 We have presented the dissertation work that has been completed to date as well as the outline for all remaining work. We now quickly summarize the main topical areas of the dissertation project:
@@ -783,8 +781,8 @@ We have presented the dissertation work that has been completed to date as well 
 	\item Implement MIP DSA in PDT using HYPRE
 	\begin{itemize}
 		\item Analyze the scalability of the method to high processor counts.
-		\item Perform parametric studies on aggregation/partitioning factors to generate a performance model.
-		\item Implement and perform analysis of richardson and two-grid acceleration at scale for thermal neutron upscattering problems.
+		\item Study the convergence properties of the presented upscatter acceleration methods.
+		\item Implement and perform analysis of MG Richardson and Two-Grid accelerations at scale for thermal neutron upscattering problems.
 		\item Conclude with real-world numerical experiments on high-fidelity meshes (CERT IM1 problem).
 	\end{itemize}
 \end{enumerate}
