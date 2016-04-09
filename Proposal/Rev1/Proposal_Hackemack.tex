@@ -1,10 +1,10 @@
 \documentclass[11pt]{article}
 
-\hoffset        2mm 
+\hoffset        -6.00mm 
 \voffset        -15mm
 \oddsidemargin  0mm
-\topmargin      0.30in
-\textwidth      6.25in
+\topmargin      0.10in
+\textwidth      7.00in
 \textheight     9in
 
 \usepackage[parfill]{parskip}
@@ -41,6 +41,19 @@
 {\em mike\_hack@tamu.edu} \\[6mm]
 \end{center}
 
+\vspace{-1.5mm}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\noindent\rule{7.00in}{0.4pt}
+
+{\Large \bf Abstract}
+\vspace{2mm}
+
+Solutions of the neutral particle transport equation have many applications across the medical, energy, and industrial fields. The Discontinuous Galerkin Finite Element Method (DGFEM) is a common spatial discretization method to solve the multigroup discrete ordinates ($S_N$) equations. Traditionally, the DGFEM $S_N$ equations have been solved using linear trial spaces on simple meshes (triangles and quadrilaterals in 2D and tetrahedra and hexahedra in 3D), with recent extensions to higher-order trial spaces on triangular grids. There is two-fold benefit in realizing higher-order FEM trial spaces on aribtrary polytope (polygons and polyhedra) grids. Higher-order FEM basis functions are beneficial because they achieve enhanced convergence rates, while simultaneously improving parallel efficiency with a decrease in memory-access bottlenecks by giving the CPUs more data to compute per solve. Polytope meshes are beneficial because they remove limitations of simple mesh types and simultaneously bring us up-to-date with other physics and engineering communities.
+
+This dissertation work seeks to marry the tasks of calculating higher-order transport solutions on arbitrary polytope meshes for use on massively parallel computer architectures. We will investigate different 2D linear polygonal basis functions for use with the transport equation. We then extend the analysis to the quadratic serendipity space of polygonal basis functions based on recent work by the applied mathematics community. We finish the dissertation work by analyzing the Modified Interior Penalty (MIP) diffusion form for use with diffusion synthetic acceleration (DSA) for massively-parallel transport problems on arbitrary grids. MIP DSA's scalability and efficacy for use as a preconditioner for thermal neutron upscattering problems will be investigated.
+
+\noindent\rule{7.00in}{0.4pt}
+%\vspace{-1.5mm}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
@@ -81,7 +94,7 @@ We next restrict our problem to a single energy group and simplify the right-han
 \end{cases}
 \end{equation}
 
-\noindent where the trace is defined as: $\Psi_m^{\pm} (\vec{r}) \equiv \lim_{s \rightarrow 0^{\pm}} \Psi_m \Big( \vec{r} + s (\vec{\Omega}_m \cdot \vec{n}) \vec{n} \Big)$. We then insert the upwind notation of Eq. (\ref{eq::upwind_eqs}) into Eq. (\ref{eq::disc_trans_eq_cellK}) to yield the full set of spatially discretized equations for cell $K$,
+\noindent where the trace is defined as: $\Psi_m^{\pm} (\vec{r}) \equiv \lim_{s \rightarrow 0^{\pm}} \Psi_m \Big( \vec{r} + s  \vec{\Omega}_m  \Big)$. The trace value $s$ is negative within cell $K$ and positive outside cell $K$. We then insert the upwind notation of Eq. (\ref{eq::upwind_eqs}) into Eq. (\ref{eq::disc_trans_eq_cellK}) to yield the full set of spatially discretized equations for cell $K$,
 
 \begin{equation}
 \label{eq::full_cellK_disc}
@@ -92,42 +105,25 @@ We next restrict our problem to a single energy group and simplify the right-han
 \end{aligned} \, .
 \end{equation}
 
-At this point we note that we have not specified a mesh or basis function type. We have simply left them as an unspecified dual. In finite element theory, the basis functions are collections of polynomial functions with measure on local elements within the domain \cite{ern2013theory}. A particular application of the Bramble-Hilbert lemma states that we can achieve error convergence rates between the true solution,$u$, and the discretized solution, $u_h$, by,
+At this point we note that we have not specified a mesh or basis function type. In finite element theory, the basis functions are typically collections of polynomial functions with measure on local elements within the domain \cite{ern2013theory}. A particular application of the Bramble-Hilbert lemma states that we can achieve error convergence rates between the true solution, $u$, and the discretized solution, $u_h$, by,
 
 \begin{equation}
 \label{eq::bf_conv_rate_h}
-|| u - u_h ||_{L_2} = C h^{p+1}
+|| u - u_h ||_{L_2} = C h^{q}, \qquad q = \min(p+1, r)
 \end{equation}
 
-\noindent where $h$ is the maximum diameter of a mesh element, $p$ is the polynomial order of the basis functions, and $C$ is a constant independent of the mesh \cite{bramble1970estimation}. If $h$ is difficult to estimate for a particular mesh type, we can proportionally relate it to the number of spatial degrees of freedom in the problem: $N_{dof} \propto p h^{-d}$, where $d$ is the dimensionality of the problem (1,2,3). Using this relation, Eq. (\ref{eq::bf_conv_rate_h}) can be rewritten to be dependent on the number of spatial degrees of freedom,
+\noindent where $h$ is the maximum diameter of a mesh element, $p$ is the polynomial order of the basis functions, $C$ is a constant independent of the mesh, and $r$ is the regularity of the transport solution \cite{bramble1970estimation}. We can clearly see that if there is sufficient irregularity in the transport solution, we cannot achieve convergence rates greater than $r$. If $h$ is difficult to estimate for a particular mesh type, we can proportionally relate it to the number of spatial degrees of freedom in the problem: $N_{dof} \propto p h^{-d}$, where $d$ is the dimensionality of the problem (1,2,3). Using this relation, Eq. (\ref{eq::bf_conv_rate_h}) can be rewritten to be dependent on the number of spatial degrees of freedom,
 
 \begin{equation}
 \label{eq::bf_conv_rate_DOF}
-|| u - u_h ||_{L_2} = C(p) N_{dof}^{- \frac{p+1}{d}},
+|| u - u_h ||_{L_2} = C(p) N_{dof}^{- \frac{q}{d}},
 \end{equation}
 
-\noindent where $C(p)$ is now a functions of the polynomial order, $p$. We plot the relations of Eqs. (\ref{eq::bf_conv_rate_h}) and (\ref{eq::bf_conv_rate_DOF}) in Figure \ref{fig::conv_rates} for different polynomial orders. We choose to set $C(p)=1$ for comparison. We can see from the relationship of mesh cell size and number of spatial degrees of freedom to the error, that using basis functions with higher-order polynomial interpolations leads to improved convergence rates. As long as the number of spatial degrees of freedom does not grow proportionally to the polynomial order, we expect to achieve more accurate solution estimates in relation to the work required to solve the problem with higher-order interpolants.
-
-\begin{figure}[hbt]
-\centering
-	\begin{subfigure}[b]{0.475\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/hconv_larger.eps}
-		\caption{}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.475\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/Nconv_larger.eps}
-		\caption{}
-	\end{subfigure}
-\caption{Theoretical convergence rates of transport solutions with no irregularity based on (a) mesh cell measure and (b) number of spatial degrees of freedom.}
-\label{fig::conv_rates}
-\end{figure}
+\noindent where $C(p)$ is now a functions of the polynomial order, $p$. As long as the number of spatial degrees of freedom does not grow proportionally to the polynomial order, we expect to achieve more accurate solution estimates in relation to the work required to solve the problem with higher-order interpolants.
 
 For the finite element method, analysis has typically been performed on simple element types: triangles and quadrilaterals in 2D and tetrahedra and hexahedra in 3D \cite{akin1982application}. However, in more recent years there has been a growing interest in different research communities to apply the finite element method to polytope mehes (arbitrary polygons and polyhedra). Some of the main benefits for using arbitrary polygonal/polyhedral meshes are the following:
 
-\vspace{4mm}
+\vspace{6mm}
 \begin{enumerate}
 	\item Polytope mesh cells are now being employed in other physics communities - most notably computational fluid dynamics (CFD)\cite{ref::star_CCM};
 	\item They are believed to reduce the number of unknowns to solve with equivalent accuracy;
@@ -136,7 +132,7 @@ For the finite element method, analysis has typically been performed on simple e
 	\item They can easily be split along cut planes - allowing the mesh to be partitioned into regular or irregular divisions as well as be generated by simplical meshing techniques across processor sets in parallel;
 	\item Hanging-node treatments from non-conforming meshes, like those that naturally arise from locally refined/adapted meshes, are no longer necessary. 
 \end{enumerate}
-\vspace{4mm}
+\vspace{6mm}
 
 It is because of both these benefits (higher-order FEM basis functions and polytope meshes) which have governed the work going into this dissertation. We seek to analyze and compare different linear polygonal basis functions  for use in DGFEM transport calculations. We then continue this analysis with a quadratic serendipity extension to these linear polygonal basis functions \cite{rand2014quadratic}. We then wish to take the knowledge gained from this polytope DGFEM transport calculation analysis to drive further research into the preconditioning of the DGFEM transport equation for use in massively-parallel computer architectures.
 
@@ -144,6 +140,7 @@ The rest of this proposal is organized as follows. In Section \ref{sec::PS}, we 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \section{Existing Methodology}
 \label{sec::PS}
 % Transport and MG
@@ -168,7 +165,8 @@ Most recently, the partially consistent MIP DSA method has been shown to be an u
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Current Work}
+\newpage
+\section{Currently-Completed Work}
 \label{sec::CW}
 
 We have just defined the current state of the art for DGFEM transport calculations on arbitrary meshes for massively-parallel problems. We also presented appropriate DSA preconditioners. Next, we define the work to be performed for this dissertation as well as some preliminary results. Section \ref{sec::CW_poly} details higher-order transport calculations on 2D polygons. Section \ref{sec::CW_DSA} details extending MIP DSA preconditioning for 3D massively parallel problems including accelerating problems dominated by thermal neutron upscattering.
@@ -200,29 +198,29 @@ For the generalized barycentric coordinates, we consider a closed polygon $K \in
 \sum_{i=1}^{N_K} \,  \lambda_i(\vec{x}) \, \vec{x}_i  =\vec{x} ,
 \end{equation}
 
-\noindent for the linear constraint. We do not provide the functional form for all of the basis functions here for brevity. However, we will give a general description of their properties along with their restrictions. Table \ref{tab::lin_poly_summary} gives a summary of the properties for these different polytope coordinates. The table states if each of the coordinates has analogous 1D/2D/3D forms and if they can be used on convex or concave elements. The table also states whether the coordinates can be integrated numerically or analytically and if each $\lambda_i$ can be computed in a direct fashion (as opposed to requiring some iterative procedure). We note that of the four basis functions that we are considering, only the PWL coordinates can be integrated analytically. Also, the maximum entropy coordinates require an iterative process (typically a Newton's method) to determine the basis functions and gradients. We then provide the contour plots for one of the vertex functions for each of the coordinates on the unit square in Figure \ref{fig::2D_Linear_Summary_unit_square_basis_functions}.
+\noindent for the linear constraint. We do not provide the functional form for all of the basis functions here for brevity. However, we will give a general description of their properties along with their restrictions. Table \ref{tab::lin_poly_summary} gives a summary of the properties for these different polytope coordinates. The table states if each of the coordinates has analogous 1D/2D/3D forms and if they can be used on convex or concave elements. The table also states whether the basis function integrals can be computed numerically or analytically and if each $\lambda_i$ can be computed in a direct fashion (as opposed to requiring some iterative procedure). We note that of the four basis functions that we are considering, only the PWL coordinates can be integrated analytically. Also, the maximum entropy coordinates require an iterative process (typically a Newton's method) to determine the basis functions and gradients. We then provide the contour plots for one of the vertex functions for each of the coordinates on the unit square in Figure \ref{fig::2D_Linear_Summary_unit_square_basis_functions}.
 
 \begin{figure}
 \centering
-	\begin{subfigure}[b]{0.30\textwidth}
+	\begin{subfigure}[b]{0.25\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/square_WACHSPRESS1_contour_b4.png}
 		\caption{}
 	\end{subfigure}
 	\hspace{1cm}
-	\begin{subfigure}[b]{0.30\textwidth}
+	\begin{subfigure}[b]{0.25\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/square_PWLD1_contour_b4.png}
 		\caption{}
 	\end{subfigure}
 	\vfill
-	\begin{subfigure}[b]{0.30\textwidth}
+	\begin{subfigure}[b]{0.25\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/square_MV1_contour_b4.png}
 		\caption{}
 	\end{subfigure}
 	\hspace{1cm}
-	\begin{subfigure}[b]{0.30\textwidth}
+	\begin{subfigure}[b]{0.25\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/square_MAXENT1_contour_b4.png}
 		\caption{}
@@ -376,7 +374,7 @@ Having identified the 2D linear polygonal finite element basis functions of inte
 		\includegraphics[width=\textwidth]{figures/shes_quad_PWLD_k1.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Exactly-linear transport solutions using the linear PWL coordinates on (a) a sinusoidal polygonal mesh and (b) a highly-distorted quadrilateral shestakov mesh.}
+\caption{Exactly-linear transport solutions using the linear PWL coordinates on (a) a sinusoidal polygonal mesh and (b) a highly-distorted quadrilateral Shestakov mesh.}
 \label{fig::lin_sol}
 \end{figure}
 \vspace{2mm}
@@ -762,29 +760,37 @@ Thus far, we have presented the overall objectives of the dissertation work and 
 
 For the analysis of the polygonal basis functions, there are a couple of items left to investigate. First, we need to analyze the convergence rates of the transport equation in a purely-absorbing medium with and without mesh alignment. If the mesh is aligned with the solution discontinuity, then the convergence rates of Eqs. (\ref{eq::bf_conv_rate_h}) and (\ref{eq::bf_conv_rate_DOF}) should be captured. However, if the mesh is not aligned with the analytical discontinuities, then the resulting numerical solutions will only live in either the $H^{1/2}$ or $H^{3/2}$ Sobolev spaces, due to the irregularity of the transport solutions. The final polygonal basis function analysis to perform is to confirm that the quadratic basis functions can exactly capture solutions that are in $\text{span}\left\{  1,x,y,xy,x^2,y^2  \right\}$.
 
-For the DSA work in PDT, there are three items left to investigate. First, we need to complete the last of the numerical experiments to verify the theoretical results of the DSA fourier analysis. This is mostly restricted to the numerical verification of the PHI problem. Second, we will finish our analysis of the effects of partitioning and aggregation on the HYPRE setup and solve times. The raw data for this step has already been collected; it just needs to be properly analyzed and tabulated. Finally, we need to conclude the remaining numerical experiments for the IM1 problem.
+For the DSA work in PDT, there are three items left to investigate. First, we need to complete the last of the numerical experiments to verify the theoretical results of the DSA fourier analysis. This is mostly restricted to the numerical verification of the PHI problem. Second, we are running additional scaling suites to better characterize MIP DSA timing in comparison to transport sweeps involving variable numbers of angles and energy groups. Finally, we need to conclude the remaining numerical experiments for the IM1 problem. At this point in time, these numerical experiments are now restricted to simply rerunning the IM1 problems with prismatic polyhedral grids.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \section{Goals of the Dissertation}
 \label{sec::ER}
 
 We have presented the dissertation work that has been completed to date as well as the outline for all remaining work. We now quickly summarize the main topical areas of the dissertation project:
 
 \begin{enumerate}
-	\item Analyze the 2D linear polygonal basis functions for use in DGFEM transport calculations
-	\item Perform the same analysis with the quadratic serendipity basis functions
-	\item Perform analysis on benchmark cases using polygonal meshes (including AMR)
-	\item Analyze the 2D polygonal basis functions with DSA preconditioning through Fourier/numerical analysis
-	\item Analyze the effects of AMR with polygonal basis functions on the MIP DSA PCG iteration counts (with and without bootstrapping)
-	\item Extend the analysis of MIP DSA to arbitrary convex 3D polyhedra
-	\item Implement MIP DSA in PDT using HYPRE
-	\begin{itemize}
-		\item Analyze the scalability of the method to high processor counts.
-		\item Study the convergence properties of the presented upscatter acceleration methods.
-		\item Implement and perform analysis of MG Richardson and Two-Grid accelerations at scale for thermal neutron upscattering problems.
-		\item Conclude with real-world numerical experiments on high-fidelity meshes (CERT IM1 problem).
-	\end{itemize}
+	\item 2D polygonal transport calculations
+	\begin{enumerate}
+		\item Analyze the Wachspress, PWL, mean value, and maximum entropy 2D linear polygonal basis functions for use in DGFEM transport calculations
+		\item Perform the same analysis with the quadratic serendipity extension of the 2D linear polygonal basis functions
+		\item Perform convergence rate analysis on benchmark and analytical cases using polygonal meshes and AMR (we include cases where we are restricted by the irregularity in the transport solution)
+	\end{enumerate}
+	\item MIP DSA calculations on polytopees
+	\begin{enumerate}
+		\item Analyze the 2D linear and quadratic basis functions through Fourier and numerical analysis
+		\item Extend the analysis of MIP DSA to arbitrary convex 3D polyhedra
+		\item Analyze the effects of AMR with polygonal basis functions on the MIP DSA PCG iteration counts (with and without bootstrapping)
+		\item Analyze the scalability of MIP in PDT to high processor counts
+	\end{enumerate}
+	\item Thermal neutron upscatter acceleration
+	\begin{enumerate}
+		\item Study the convergence properties of the presented upscatter acceleration methods
+		\item Analyze the effects of strongly heterogeneous configurations
+		\item Analyze the effects of parallel concurrency between the methods at scale
+		\item Conclude with real-world numerical experiments on high-fidelity meshes (CERT IM1 problem)
+	\end{enumerate}
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
