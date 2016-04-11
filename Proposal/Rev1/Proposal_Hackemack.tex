@@ -89,18 +89,18 @@ We next restrict our problem to a single energy group and simplify the right-han
 \tilde{\Psi}_m (\vec{r})  = 
 \begin{cases}
 \Psi_m^{-} , & \partial K^+ \\
-\Psi_m^{+}, & \partial K^- \backslash \partial \mathcal{D} \\
+\Psi_m^{-}, & \partial K^- \backslash \partial \mathcal{D} \\
 \Psi_m^{inc}, & \partial K^- \cap \partial \mathcal{D}
 \end{cases}
 \end{equation}
 
-\noindent where the trace is defined as: $\Psi_m^{\pm} (\vec{r}) \equiv \lim_{s \rightarrow 0^{\pm}} \Psi_m \Big( \vec{r} + s  \vec{\Omega}_m  \Big)$. The trace value $s$ is negative within cell $K$ and positive outside cell $K$. We then insert the upwind notation of Eq. (\ref{eq::upwind_eqs}) into Eq. (\ref{eq::disc_trans_eq_cellK}) to yield the full set of spatially discretized equations for cell $K$,
+\noindent where the trace is defined as: $\Psi_m^{\pm} (\vec{r}) \equiv \lim_{s \rightarrow 0^{\pm}} \Psi_m \Big( \vec{r} + s (\vec{\Omega} \cdot \vec{n})  \vec{n}  \Big)$. We then insert the upwind notation of Eq. (\ref{eq::upwind_eqs}) into Eq. (\ref{eq::disc_trans_eq_cellK}) to yield the full set of spatially discretized equations for cell $K$,
 
 \begin{equation}
 \label{eq::full_cellK_disc}
 \begin{aligned}
 -  &\Big( \vec{\Omega}_m \cdot   \vec{\nabla} b_m, \Psi_{m} \Big)_{K}   + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K}  \\
-  + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{+}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  +  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{-}  \Big>_{\partial K^+}  \\
+  + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{-}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  +  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{-}  \Big>_{\partial K^+}  \\
 = & \Big(  b_m ,   Q_m \Big)_{K} - \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}} 
 \end{aligned} \, .
 \end{equation}
@@ -780,8 +780,8 @@ We have presented the dissertation work that has been completed to date as well 
 	\item MIP DSA calculations on polytopees
 	\begin{enumerate}
 		\item Analyze the 2D linear and quadratic basis functions through Fourier and numerical analysis
-		\item Extend the analysis of MIP DSA to arbitrary convex 3D polyhedra
-		\item Analyze the performance of MIP DSA on AMR problems for polygonal grids without hanging nodes
+		\item Extend the analysis of MIP DSA to 3D polyhedra through Fourier and numerical analysis
+		\item Analyze the performance of MIP DSA on AMR problems using polygonal grids without hanging-node treatment
 		\item Analyze the scalability of MIP in PDT to high processor counts
 	\end{enumerate}
 	\item Thermal neutron upscatter acceleration
