@@ -208,24 +208,14 @@ D_{p,n} \equiv \sum_{m=1}^M w_m Y_{p,n} (\vec{\Omega}_m)  \Psi(\vec{\Omega_m}) ,
 \subsection{DSA Acceleration Strategies for Thermal Neutron Upscattering}
 \label{sec::DSA_DSA_MG}
 
-%%%%%%%%%%%%%
-%%%   SubSubSection - Richardson acceleration
-\subsubsection{Multigroup Richardson Acceleration}
-\label{sec:DSA_DSA_MG_WGS}
-
-\begin{equation}
-\label{eq::DSA_WG_trans_it_eq}
-{\bf L_{gg}} \psi_g^{(k+1/2)} =  {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
-\end{equation}
-
 
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Two-Grid
-\subsubsection{Two-Grid Acceleration and a Variant}
+\subsubsection{Standard Two-Grid Acceleration}
 \label{sec:DSA_DSA_MG_TG}
 
-The second acceleration methodology that we will investigate is the two-grid acceleration scheme devised by Adams and Morel \cite{adams1993two}. They originally derived the scheme to accelerate 1D multigroup transport problems that are dominated by thermal neutron upscattering. 
+The first thermal neutron upscatter acceleration methodology that we will investigate is the standard two-grid acceleration scheme devised by Adams and Morel \cite{adams1993two}. They originally derived the scheme to accelerate 1D multigroup transport problems that are dominated by thermal neutron upscattering. 
 
 \begin{equation}
 \label{eq::DSA_TG_trans_it_eq}
@@ -257,13 +247,41 @@ The second acceleration methodology that we will investigate is the two-grid acc
 
 \begin{equation}
 \label{eq::DSA_TG_half_it_sol}
-\begin{aligned}
-\Phi^{(k+1/2)} &= \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} {\bf S_D} \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} \Phi^{(k)} + {\bf b}  \\
-{\bf b} &= \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} {\bf S_D} \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf Q}
-\end{aligned} ,
+\Phi^{(k+1/2)} = \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} {\bf S_D} \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} \Phi^{(k)} + {\bf b} ,
 \end{equation}
 
-\noindent where we reduced the driving function to ${\bf b}$ for brevity.
+\noindent where the distributed source term, ${\bf b}$, is now defined for further clarity:
+
+\begin{equation}
+\label{eq::DSA_TG_half_it_forcingfunc}
+{\bf b} = \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} {\bf S_D} \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf Q} .
+\end{equation}
+
+%%%%%%%%%%%%%
+%%%   SubSubSection - Modified Two-Grid
+\subsubsection{Modified Two-Grid Acceleration}
+\label{sec:DSA_DSA_MG_MTG}
+
+The second thermal upscattering acceleration method that we will investigate is a simple modification to the standard TG method of Section \ref{sec:DSA_DSA_MG_TG}. 
+
+\begin{equation}
+\label{eq::DSA_MTG_trans_it_eq}
+{\bf L_{gg}} \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^{g-1} {\bf \Sigma}_{g g'} \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
+\end{equation}
+
+%%%%%%%%%%%%%
+%%%   SubSubSection - Richardson acceleration
+\subsubsection{Multigroup Richardson Acceleration}
+\label{sec:DSA_DSA_MG_WGS}
+
+The third and final thermal upscattering acceleration method that we will investigate 
+
+\begin{equation}
+\label{eq::DSA_WGS_trans_it_eq}
+{\bf L_{gg}} \psi_g^{(k+1/2)} =  {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
+\end{equation}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -607,7 +625,7 @@ Equations (\ref{eq::MIP_bilinear_form}) and (\ref{eq::MIP_linear_form}) form the
 
 There are several choices of preconditioners that can be employed with PCG \cite{saad2003iterative}. Depending on the structure and conditioning of the matrix to be inverted, some simple preconditioners can be effective. We can decompose the MIP system matrix, ${\bf A} = {\bf L} + {\bf D} + {\bf L}^T$, into its strictly lower-triangular portion, ${\bf L}$, its strictly diagonal portion, ${\bf D}$, and its strictly lower-triangular portion, ${\bf L}^T$. The simplest preconditioner we could employ is Jacobi preconditioning, which is just the strictly diagonal portion of the system matrix: ${\bf M} = {\bf D}$. This preconditioner is effective for diagonally-dominant matrices. The next preconditioner would be a simple Symmetric Successive Over-Relaxation (SSOR) method: ${\bf M} (\omega) = \frac{\omega}{2-\omega} \left( \frac{1}{\omega}{\bf D} + {\bf L}  \right)  {\bf D}^{-1}  \left( \frac{1}{\omega}{\bf D} + {\bf L}  \right)^T$. The PCG algorithm can be simplified with this preconditioner choice by the Eisenstat trick \cite{eisenstat1981efficient}. The final simple preconditioner that we will consider is Incomplete LU Factorization (ILU). Instead of simply decomposing the system matrix, we factorize it into a unit-lower triangular portion, $\tilde{{\bf L}}$, and an upper triangular portion, $\tilde{{\bf U}}$. These factorized matrices then form our preconditioner: ${\bf M} =\tilde{{\bf L}}\tilde{{\bf U}}$. From this factorization, the preconditioning step to solve ${\bf M} {\bf z}= {\bf r}$ is accomplished by first solving $\tilde{{\bf L}} {\bf y}= {\bf r} $, followed by $\tilde{{\bf U}} {\bf z}= {\bf y} $. While this leads to a second preconditioning step, the factorized matrices are easy to invert since they are triangular.
 
-Besides Jacobi, SSOR and ILU preconditioning, we also seek to investigate multigrid (MG) methods to invert the MIP system matrix. 
+Besides Jacobi, SSOR and ILU preconditioning, we also seek to investigate multigrid methods to invert the MIP system matrix. 
 
 \begin{algorithm}
 \caption{PCG Algorithm}
