@@ -233,7 +233,7 @@ The first step in the TG method is to perform a Gauss-Seidel procedure in energy
 {\bf L_{gg}} \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^g {\bf \Sigma}_{g g'} \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g ,
 \end{equation}
 
-\noindent where the scattering terms still contain some arbitrary number of moments. In operator form, the full solution and half-iterate equations are given by
+\noindent where the scattering terms still contain some arbitrary number of moments. In operator form, the exact solution and half-iterate equations are given by
 
 \begin{equation}
 \label{eq::DSA_TG_trans_eq_ops}
@@ -289,10 +289,10 @@ At this point, Eq. (\ref{eq::DSA_TG_half_it_sol}) provides a formulation for the
 
 \begin{equation}
 \label{eq::DSA_TG_trans_err_wres}
-{\bf L_{gg}} \delta \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'}\delta \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \left( \phi_{g'}^{(k+1/2)} - \phi_{g'}^{(k)} \right),
+{\bf L_{gg}} \delta \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'}\delta \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \left( \phi_{g'}^{(k+1/2)} - \phi_{g'}^{(k)} \right).
 \end{equation}
 
-Eq. (\ref{eq::DSA_TG_trans_err_wres}) can be recast into its appropriate operator notation,
+\noindent Eq. (\ref{eq::DSA_TG_trans_err_wres}) can be recast into its appropriate operator notation,
 
 \begin{equation}
 \label{eq::DSA_TG_trans_err_wres_op}
@@ -1639,17 +1639,24 @@ We conclude the results of this chapter by presenting analysis on the ability to
 \centering
 	\begin{subfigure}[b]{0.775\textwidth}
 		\centering
-		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IM1_EC_Jac.eps}
-		\caption{Richardson}
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IM1_EC_TG.eps}
+		\caption{Two-Grid}
 	\end{subfigure}
 	
 	\begin{subfigure}[b]{0.775\textwidth}
 		\centering
-		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IM1_EC_GS.eps}
-		\caption{}
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IM1_EC_MTG.eps}
+		\caption{Modified Two-Grid}
 	\end{subfigure}
 \caption{Spectral shape of the infinite medium iteration matrices for the IM1 problem materials.}
-\label{fig::IM1_mats_EC}
+\label{fig::IM1_mats_EC_TGandMTG}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth]{figures/sec_DSA/IM1_EC_Rich.eps}
+\caption{Spectral shape of the infinite medium iteration matrices for the Multigroup Richardson Acceleration Method for the IM1 problem materials.}
+\label{fig::IM1_mats_EC_Rich}
 \end{figure}
 
 \begin{figure}
