@@ -134,7 +134,7 @@ The new iterative procedure begins by simply taking the half-iterate of Eq. (\re
 \Psi^{(k+1)} =\Psi^{(k+1/2)} + {\bf W}^{-1} {\bf B}  r^{(k+1/2)},
 \end{equation}
 
-\noindent where $r^{(k+1/2)} = \Psi^{(k+1/2)} - \Psi^{(k)}$. We can also express Eq. (\ref{eq::DSA_synthetic_eq_half_it_correction}) in terms of just the previous iterate ,$\Psi^{(k)}$, and a new operator:
+\noindent where $r^{(k+1/2)} = \Psi^{(k+1/2)} - \Psi^{(k)}$. We can also express Eq. (\ref{eq::DSA_synthetic_eq_half_it_correction}) in terms of just the previous iterate, $\Psi^{(k)}$, and a new operator:
 
 \begin{equation}
 \label{eq::DSA_synthetic_eq_new_algo}
@@ -212,62 +212,108 @@ D_{p,n} \equiv \sum_{m=1}^M w_m Y_{p,n} (\vec{\Omega}_m)  \Psi(\vec{\Omega_m}) ,
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Two-Grid
-\subsubsection{Standard Two-Grid Acceleration}
+\subsubsection{Standard Two-Grid (TG) Acceleration}
 \label{sec:DSA_DSA_MG_TG}
 
-The first thermal neutron upscatter acceleration methodology that we will investigate is the standard two-grid acceleration scheme devised by Adams and Morel \cite{adams1993two}. They originally derived the scheme to accelerate 1D multigroup transport problems that are dominated by thermal neutron upscattering. 
+The first thermal neutron upscatter acceleration methodology that we will investigate is the standard two-grid acceleration scheme devised by Adams and Morel \cite{adams1993two}. They originally derived the scheme to accelerate 1D multigroup transport problems that are dominated by thermal neutron upscattering. The method can be quickly summarized as the following:
+
+\begin{enumerate}
+\item Perform a Gauss-Seidel procedure in energy for the thermal groups and converge the inner iterations;
+\item Perform a spectral collapse of the transport iteration error into a 1-group diffusion equation;
+\item Solve the 1-group diffusion equation for the spatial variation of the transport iteration error;
+\item Interpolate the diffusive multigroup error back onto the transport solution.
+\end{enumerate}
+
+\noindent We now provide fulls details for each of steps of the TG method.
+
+The first step in the TG method is to perform a Gauss-Seidel procedure in energy across the thermal groups. This means that for every outer iteration (we can also think of these as thermal iterations), we sequentially proceed through the thermal energy groups. Based on the notation of a group set introduced in Section \ref{sec::Sn_Solution}, we can achieve this Gauss-Seidel iteration scheme by having each thermal group be in its own group set. The TG method then requires full convergence of the within-group inner iterations for each of the group sets. If we have $G$ number of thermal groups, this Gauss-Seidel iteration scheme (with convergence of the inner iterations) leads to the following iteration equation,
 
 \begin{equation}
 \label{eq::DSA_TG_trans_it_eq}
-{\bf L_{gg}} \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^g {\bf \Sigma}_{g g'} \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
+{\bf L_{gg}} \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^g {\bf \Sigma}_{g g'} \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g ,
 \end{equation}
 
-\noindent In operator form, the full solution and half-iterate equations are given by
+\noindent where the scattering terms still contain some arbitrary number of moments. In operator form, the full solution and half-iterate equations are given by
 
 \begin{equation}
 \label{eq::DSA_TG_trans_eq_ops}
-{\bf L} \Psi = {\bf M} {\bf S_D} \Phi + {\bf M} {\bf S_U} \Phi + {\bf Q} ,
+{\bf L} \Psi = {\bf M} \left( {\bf S_L} +  {\bf S_D} + {\bf S_U} \right) \Phi + {\bf Q} ,
 \end{equation}
 
 \noindent and
 
 \begin{equation}
 \label{eq::DSA_TG_trans_it_eq_ops}
-{\bf L} \Psi^{(k+1/2)} = {\bf M} {\bf S_D} \Phi^{(k+1/2)} + {\bf M} {\bf S_U} \Phi^{(k)} + {\bf Q} ,
+{\bf L} \Psi^{(k+1/2)} = {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \Phi^{(k+1/2)} + {\bf M} {\bf S_U} \Phi^{(k)} + {\bf Q} ,
 \end{equation}
 
-\noindent respectively. ${\bf S_D}$ and ${\bf S_U}$ are the downscatter and upscatter portions of the scattering matrix, respectively. These matrices still contain all of the scattering moments; they are simply restricted in energy. By moving the downscattering portion to the left side of the equation, inverting the ${\bf L}$ operator, and applying the discrete-to-moment operator, ${\bf D}$, we can rewrite the iteration equation of Eq. (\ref{eq::DSA_TG_trans_it_eq_ops}) in terms of only the flux moments:
+\noindent respectively. ${\bf S_L}$, ${\bf S_D}$, and ${\bf S_U}$ are the strictly-downscattering, diagonal within-group scattering, and strictly upscattering portions of the scattering matrix, respectively. By moving the downscattering and diagonal portions of the scattering operator to the left side of the equation, inverting the ${\bf L}$ operator, and applying the discrete-to-moment operator, ${\bf D}$, we can rewrite the iteration equation of Eq. (\ref{eq::DSA_TG_trans_it_eq_ops}) in terms of only the flux moments:
 
 \begin{equation}
 \label{eq::DSA_TG_half_it}
-\left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} {\bf S_D} \right]\Phi^{(k+1/2)} = {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} \Phi^{(k)} + {\bf D}{\bf L}^{-1}  {\bf Q}
+\left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \right]\Phi^{(k+1/2)} = {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} \Phi^{(k)} + {\bf D}{\bf L}^{-1}  {\bf Q} .
 \end{equation}
 
 \noindent By inverting the left-side operator, we directly solve for the half-iterate flux moments,
 
 \begin{equation}
 \label{eq::DSA_TG_half_it_sol}
-\Phi^{(k+1/2)} = \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} {\bf S_D} \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} \Phi^{(k)} + {\bf b} ,
+\Phi^{(k+1/2)} = \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} \Phi^{(k)} + {\bf b} ,
 \end{equation}
 
-\noindent where the distributed source term, ${\bf b}$, is now defined for further clarity:
+\noindent where the simplified distributed source term, ${\bf b}$, is now defined for further clarity:
 
 \begin{equation}
 \label{eq::DSA_TG_half_it_forcingfunc}
-{\bf b} = \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} {\bf S_D} \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf Q} .
+{\bf b} = \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf Q} .
 \end{equation}
+
+At this point, Eq. (\ref{eq::DSA_TG_half_it_sol}) provides a formulation for the transport solution at iteration ($k+1/2$) based on the solution at iteration ($k$). We now require a formulation for the accompanying error at this iteration step. We subtract Eq. (\ref{eq::DSA_TG_trans_it_eq}) from the exact transport solution to form an equation specifying the exact error at iteration ($k+1/2$),
+
+\begin{equation}
+\label{eq::DSA_TG_trans_err}
+{\bf L_{gg}} \delta \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^g {\bf \Sigma}_{g g'}\delta \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \delta \phi_{g'}^{(k)},
+\end{equation}
+
+\noindent where the angular flux and flux moment error terms have an analogous multigroup form,
+
+\begin{equation}
+\label{eq::DSA_TG_error_terms}
+\begin{aligned}
+\delta \psi_g^{(k+1/2)} &= \psi_g - \psi_g^{(k+1/2)} \\
+\delta \phi_g^{(k+1/2)} &= {\bf D} \delta \psi_g^{(k+1/2)}
+\end{aligned} .
+\end{equation}
+
+\noindent Next, we add and subtract ${\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k+1/2)}$ to Eq. (\ref{eq::DSA_TG_trans_err}) to form,
+
+\begin{equation}
+\label{eq::DSA_TG_trans_err_wres}
+{\bf L_{gg}} \delta \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'}\delta \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \left( \phi_{g'}^{(k+1/2)} - \phi_{g'}^{(k)} \right),
+\end{equation}
+
+Eq. (\ref{eq::DSA_TG_trans_err_wres}) can be recast into its appropriate operator notation,
+
+\begin{equation}
+\label{eq::DSA_TG_trans_err_wres_op}
+{\bf L} \delta \Psi^{(k+1/2)} - {\bf M}   {\bf S} \delta \Phi^{(k+1/2)} = {\bf M} {\bf S_U}  \left( \Phi^{(k+1/2)} - \Phi^{(k)} \right),
+\end{equation}
+
+\noindent where ${\bf S} = {\bf S_L} + {\bf S_D} +{\bf S_U} $ is the full scattering operator. Equation (\ref{eq::DSA_TG_trans_err_wres}) and the corresponding operator form in Eq. (\ref{eq::DSA_TG_trans_err_wres_op}) provide the complete formulation of the multrigroup iteration error. Just like it was previously mentioned for the 1-group scenario, these error equations are just as difficult to solve as the full transport equation. 
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Modified Two-Grid
-\subsubsection{Modified Two-Grid Acceleration}
+\subsubsection{Modified Two-Grid (MTG) Acceleration}
 \label{sec:DSA_DSA_MG_MTG}
 
-The second thermal upscattering acceleration method that we will investigate is a simple modification to the standard TG method of Section \ref{sec:DSA_DSA_MG_TG}. At the end of their work involving a TSA variant of the TG method \cite{evans2010transport}, Evans, Clarno, and Morel proposed a modified form for the TG method. They proposed to not fully converge the inner iterations for each group in the Gauss-Seidel process. Instead, one simply 
+The second thermal upscattering acceleration method that we will investigate is a simple modification to the standard TG method of Section \ref{sec:DSA_DSA_MG_TG}. At the end of their work involving a TSA variant of the TG method \cite{evans2010transport}, Evans, Clarno, and Morel proposed a modified form for the TG method, which they labeled the Modified Transport Two-Grid (MTTG) method. We wish to adopt their iterative strategy, but use the diffusion equation as our low-order operator. We choose to call this method the Modified Two-Grid (MTG) method. In their work, they proposed to not fully converge the inner iterations for each group in the Gauss-Seidel process. Instead, we again sequentially proceed through the thermal groups in a Gauss-Seidel manner but only perform 1 transport sweep for each group. This process yields the following iteration scheme,
 
 \begin{equation}
 \label{eq::DSA_MTG_trans_it_eq}
-{\bf L_{gg}} \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^{g-1} {\bf \Sigma}_{g g'} \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
+{\bf L_{gg}} \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^{g-1} {\bf \Sigma}_{g g'} \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g, 
 \end{equation}
+
+\noindent where it differs with Eq. (\ref{eq::DSA_TG_trans_it_eq}) in the ending and beginning energy indices for the $(k+1/2)$ and $(k)$ iterations, respectively.
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Richardson acceleration
@@ -281,7 +327,10 @@ The third and final thermal upscattering acceleration method that we will invest
 {\bf L_{gg}} \psi_g^{(k+1/2)} =  {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
 \end{equation}
 
-
+%%%%%%%%%%%%%
+%%%   SubSubSection - Richardson acceleration
+\subsubsection{Summary of the Thermal Neutron Upscattering Acceleration Methods}
+\label{sec:DSA_DSA_MG_Summary}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
