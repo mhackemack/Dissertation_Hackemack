@@ -224,7 +224,7 @@ The first thermal neutron upscatter acceleration methodology that we will invest
 \item Interpolate the diffusive multigroup error back onto the transport solution.
 \end{enumerate}
 
-\noindent We now provide fulls details for each of steps of the TG method.
+\noindent We now provide fulls details for each of these steps of the TG method.
 
 The first step in the TG method is to perform a Gauss-Seidel procedure in energy across the thermal groups. This means that for every outer iteration (we can also think of these as thermal iterations), we sequentially proceed through the thermal energy groups. Based on the notation of a group set introduced in Section \ref{sec::Sn_Solution}, we can achieve this Gauss-Seidel iteration scheme by having each thermal group be in its own group set. The TG method then requires full convergence of the within-group inner iterations for each of the group sets. If we have $G$ number of thermal groups, this Gauss-Seidel iteration scheme (with convergence of the inner iterations) leads to the following iteration equation,
 
@@ -289,7 +289,14 @@ At this point, Eq. (\ref{eq::DSA_TG_half_it_sol}) provides a formulation for the
 
 \begin{equation}
 \label{eq::DSA_TG_trans_err_wres}
-{\bf L_{gg}} \delta \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'}\delta \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \left( \phi_{g'}^{(k+1/2)} - \phi_{g'}^{(k)} \right).
+{\bf L_{gg}} \delta \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'}\delta \phi_{g'}^{(k+1/2)} + R_g^{(k+1/2)}, 
+\end{equation}
+
+\noindent where the multigroup residual term is
+
+\begin{equation}
+\label{eq::DSA_TG_trans_err_wres_resterm}
+R_g^{(k+1/2)} =  {\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \left( \phi_{g'}^{(k+1/2)} - \phi_{g'}^{(k)} \right) .
 \end{equation}
 
 \noindent Eq. (\ref{eq::DSA_TG_trans_err_wres}) can be recast into its appropriate operator notation,
@@ -300,6 +307,62 @@ At this point, Eq. (\ref{eq::DSA_TG_half_it_sol}) provides a formulation for the
 \end{equation}
 
 \noindent where ${\bf S} = {\bf S_L} + {\bf S_D} +{\bf S_U} $ is the full scattering operator. Equation (\ref{eq::DSA_TG_trans_err_wres}) and the corresponding operator form in Eq. (\ref{eq::DSA_TG_trans_err_wres_op}) provide the complete formulation of the multrigroup iteration error. Just like it was previously mentioned for the 1-group scenario, these error equations are just as difficult to solve as the full transport equation. 
+
+We again choose to utilize the diffusion operator as the low-order operator for the iteration error. Taking the 0th and 1st angular moments of Eq. (\ref{eq::DSA_TG_trans_err_wres}) and applying Fick's Law, we arrive at the standard multigroup diffusion equation for the error,
+
+\begin{equation}
+\label{eq::DSA_TG_diff_err_full}
+\vec{\nabla} \cdot D_g \vec{\nabla} \delta \phi_{g}^{(k+1/2)} + \sigma_{t,g} \delta \phi_{g}^{(k+1/2)} - \sum\displaylimits_{g'=1}^{G} \sigma_{s,0}^{g g'} \delta \phi_{g}^{(k+1/2)} = R_g^{(k+1/2)} ,
+\end{equation}
+
+\noindent where the resdiual, $R_g$, is only in terms of the 0th moment. We could solve these coupled multigroup diffusion equations of Eq. (\ref{eq::DSA_TG_diff_err_full}) for the iteration error. However, if the number of thermal groups becomes large, then these coupled equations would be become burdensome to solve. Instead, the TG method opts to perform a spectral collapse of the multigroup diffusion error. First, we factorize the multigroup error,
+
+\begin{equation}
+\label{eq::DSA_TG_fact_err}
+\delta \phi_{g}^{(k+1/2)} = \xi_g \epsilon^{(k+1/2)} (\vec{r}), \qquad \sum_{g=1}^G \xi_g = 1,
+\end{equation}
+
+\noindent into a spatial component, $\epsilon^{(k+1/2)} (\vec{r})$, and an energy component, $\xi_g$. The spectral shape, $\xi_g$, is the eigenfunction corresponding to the largest eigenvalue of the infinite medium iteration matrix of Eq. (\ref{eq::DSA_TG_trans_it_eq_ops}) with no driving source term. This eigenvalue problem can be succinctly written as,
+
+\begin{equation}
+\label{eq::DSA_TG_eigenpprob}
+\left(  {\bf T} - {\bf S_{L,0}} - {\bf S_{D,0}} \right)^{-1} {\bf S_{U,0}} \xi = \rho \xi ,
+\end{equation}
+
+\noindent where ${\bf T}$ is the diagonal matrix of total cross sections and ${\bf S_{L,0}}$, ${\bf S_{D,0}}$, and ${\bf S_{U,0}}$ are restricted to the 0th moments of the scattering cross sections. Inserting the factorized error of Eq. (\ref{eq::DSA_TG_diff_err_full}) into Eq. (\ref{eq::DSA_TG_diff_err_full}) and summing over energy groups gives
+
+\begin{equation}
+\label{eq::DSA_TG_1G_err_eq_wdrift}
+\vec{\nabla} \cdot \big< D \big> \vec{\nabla} \epsilon^{(k+1/2)} + \vec{\nabla} \cdot \vec{\big< D \big>} \epsilon^{(k+1/2)} + \big< \sigma \big> \epsilon^{(k+1/2)}  = \big< R^{(k+1/2)} \big> ,
+\end{equation}
+
+\noindent where the energy-averaged terms are 
+
+\begin{equation}
+\label{eq::DSA_TG_1G_ave_terms}
+\begin{aligned}
+\big< D \big> &= \sum_{g=1}^G D_g \xi_g, \\
+\vec{\big< D \big>} &= \sum_{g=1}^G D_g \vec{\nabla} \xi_g ,\\
+\big< \sigma \big> &= \sum_{g=1}^G \left( \sigma_{t,g} \xi_g -  \sum_{g'=1}^G \sigma_{s,0}^{g g'}  \xi_{g'} \right), \\
+\big< R^{(k+1/2)} \big> &= \sum_{g=1}^G R_g^{(k+1/2)}.
+\end{aligned}
+\end{equation}
+
+\noindent Equation (\ref{eq::DSA_TG_1G_err_eq_wdrift}) is not the standard diffusion equation because of the drift term containing the gradient of the spectral shape. This term is an artifact of the error factorization and it is identically zero in homogeneous regions but undefined at material interfaces. The TG method simply neglects this term, which leads to the final form for our coarse-grid error equation,
+
+\begin{equation}
+\label{eq::DSA_TG_1G_err_eq}
+\vec{\nabla} \cdot \big< D \big> \vec{\nabla} \epsilon^{(k+1/2)}  + \big< \sigma \big> \epsilon^{(k+1/2)}  = \big< R^{(k+1/2)} \big> 
+\end{equation}
+
+Solving Eq. (\ref{eq::DSA_TG_1G_err_eq}) gives the spatial distribution of the iteration error. We can then update the error for the 0th moment flux with the following:
+
+\begin{equation}
+\label{eq::DSA_TG_1G_err_update}
+ \Phi_g^{(k+1)} =  \Phi_g^{(k+1/2)}  + \xi_g \epsilon^{(k+1/2)} .
+\end{equation}
+
+
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Modified Two-Grid
