@@ -876,6 +876,7 @@ Now that we have presented several linear polygonal finite element basis sets al
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Linear Solutions = METHOD OF EXACT SOLUTIONS
+\newpage
 \subsection{Two-Dimensional Exactly-Linear Transport Solutions}
 \label{sec::BF_Results_Linear}
 
@@ -1186,6 +1187,7 @@ For this example, we test the various 2D polygonal finite element basis function
 % end false
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Quadratic Solutions = METHOD OF EXACT SOLUTIONS
+\newpage
 \subsection{Two-Dimensional Exactly-Quadratic Transport Solutions}
 \label{sec::BF_Results_Quadratic}
 
@@ -1197,8 +1199,245 @@ For this example, we test the various 2D polygonal finite element basis function
 \end{aligned} .
 \end{equation}
 
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::cart_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_sol_cart.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::tri_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_sol_tri.png}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::shes_quad_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_sol_shesquad.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::smooth_poly_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_sol_sinepoly.png}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_quad_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_sol_zquad.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_poly_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_sol_zpoly.png}
+		\caption{}
+	\end{subfigure}
+\caption{Plots of the exactly-quadratic solution with the quadratic serendipity maximum entropy basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\label{fig::BF_Results_quad_sol}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::cart_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_cart_ME2.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::tri_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_tri_ME2.png}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::shes_quad_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_shesquad_ME2.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::smooth_poly_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_sinepoly_ME2.png}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_quad_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_zquad_ME2.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_poly_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_zpoly_ME2.png}
+		\caption{}
+	\end{subfigure}
+\caption{Plots of the error of the exactly-quadratic solution with the quadratic serendipity Wachspress basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\label{fig::BF_Results_quad_err_Wach2}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::cart_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_cart_PWL2.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::tri_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_tri_PWL2.png}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::shes_quad_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_shesquad_PWL2.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::smooth_poly_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_sinepoly_PWL2.png}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_quad_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_zquad_PWL2.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_poly_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_zpoly_PWL2.png}
+		\caption{}
+	\end{subfigure}
+\caption{Plots of the error of the exactly-quadratic solution with the quadratic serendipity PWL basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\label{fig::BF_Results_quad_err_PWL2}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::cart_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_cart_MV2.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::tri_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_tri_MV2.png}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::shes_quad_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_shesquad_MV2.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::smooth_poly_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_sinepoly_MV2.png}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_quad_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_zquad_MV2.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_poly_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_zpoly_MV2.png}
+		\caption{}
+	\end{subfigure}
+\caption{Plots of the error of the exactly-quadratic solution with the quadratic serendipity mean value basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\label{fig::BF_Results_quad_err_MV2}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::cart_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_cart_ME2.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::tri_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_tri_ME2.png}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::shes_quad_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_shesquad_ME2.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::smooth_poly_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_sinepoly_ME2.png}
+		\caption{}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_quad_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_zquad_ME2.png}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_poly_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/quad_err_zpoly_ME2.png}
+		\caption{}
+	\end{subfigure}
+\caption{Plots of the error of the exactly-quadratic solution with the quadratic serendipity maximum entropy basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\label{fig::BF_Results_quad_err_ME2}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - MMS
+\newpage
 \subsection{Convergence Rate Analysis by the Method of Manufactured Solutions}
 \label{sec::BF_Results_MMS}
 
@@ -1303,8 +1542,16 @@ For this example, we choose the dimensionality of our problem to be $[0,1]^2$ wh
 \label{fig::BF_Results_MMS_GQ_AMR_MeshSol}
 \end{figure}
 
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/sec_BF/Transport_Gauss_2D_AMR_Error_Plot.eps}
+\caption{$L_2$ error norm for the gaussian MMS problem using the various 2D polygonal basis functions }
+\label{fig::Gauss_AMR_err}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - PA
+\newpage
 \subsection{Convergence Rate Analysis in a Purely-Absorbing Medium}
 \label{sec::BF_Results_PA}
 
@@ -1312,6 +1559,7 @@ For this example, we choose the dimensionality of our problem to be $[0,1]^2$ wh
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Searchlight Problem
+\newpage
 \subsection{Searchlight Problem}
 \label{sec::BF_Results_SL}
 
