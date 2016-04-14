@@ -32,7 +32,7 @@ In this chapter, we analyze the Modified Interior Penalty (MIP) form of the diff
 
 cleanup the beginning here later...
 
-The ability to efficiently invert the transport (streaming and collision) operator does not necessarily mean that transport solutions can be easily obtained. In general, radiation transport solutions are obtained iteratively. The simplest and widely-used method is a fixed-point scheme ({\em i.e.} richardson iteration) ubiquitously called source iteration (SI) in the transport community. Unfortunately, the iteration process of SI can converge arbitrarily slowly if the problem is optically thick \cite{ref::adams_larsen_iter_methods}. This corresponds to long mean free paths for neutronics problems. This also corresponds to time steps and material heat capacities tending to infinity and zero, respectively, for thermal radiative transport (TRT) problems.
+The ability to efficiently invert the transport (streaming and collision) operator does not necessarily mean that transport solutions can be easily obtained. In general, radiation transport solutions are obtained iteratively. The simplest and widely-used method is a fixed-point scheme ({\em i.e.} Richardson iteration) ubiquitously called source iteration (SI) in the transport community. Unfortunately, the iteration process of SI can converge arbitrarily slowly if the problem is optically thick \cite{ref::adams_larsen_iter_methods}. This corresponds to long mean free paths for neutronics problems. This also corresponds to time steps and material heat capacities tending to infinity and zero, respectively, for thermal radiative transport (TRT) problems.
 
 For these problem regimes in which solution is prohibitively slow, additional steps should be taken to speed up, or accelerate, solution convergence \cite{ref::adams_larsen_iter_methods}. The most used methods to assist in solution convergence are often called synthetic acceleration techniques. These techniques were first introduced by Kopp \cite{kopp1963synthetic} and Lebedev \cite{lebedevI,lebedevII,lebedevIII,lebedevIV,lebedevV,lebedevVI,lebedevVII} in the 1960's. From Kopp's and Lebedev's work, Gelbard and Hageman then introduced two synthetic acceleration options for the low-order operator: diffusion and $S_2$ \cite{gelbard1969synthetic}. Their diffusion preconditioning led to efficient convergence properties on fine spatial meshes. Reed then showed that Gelbard and Hageman's diffusion preconditioning would yield a diverging system for coarse meshes \cite{reed1971effectiveness}. At this point in time, no one knew if an unconditionally efficient acceleration method could be derived.
 
@@ -66,7 +66,7 @@ To compute $\Psi$, the following iterative system of equations is usually employ
 
 \begin{equation}
 \label{eq::DSA_simple_trans_eq_w_ops_iterates}
- {\bf A} \Psi^{(k+1)} - {\bf B}  \Psi^{(k)} = {\bf Q} ,
+ {\bf A} \Psi^{(k+1)} ={\bf B}  \Psi^{(k)} + {\bf Q} ,
 \end{equation}
 
 \noindent where directly solving for $\Psi^{(k+1)}$ yields the following:
@@ -87,7 +87,7 @@ r^{(k)} = \Psi^{(k)} - \Psi^{(k-1)} ,
 
 \begin{equation}
 \label{eq::DSA_synthetic_eq_residual_op}
-r^{(k)} = {\bf C}\Psi^{(k-1)} .
+r^{(k)} = {\bf C}r^{(k-1)} .
 \end{equation}
 
 With the iteration operator, ${\bf C}$, and the residual for iterate $k$ , $r^{(k)}$, defined, we can then write the true, converged solution in terms of the solution at iteration $k$ and an infinite series of residuals:
@@ -141,7 +141,7 @@ The new iterative procedure begins by simply taking the half-iterate of Eq. (\re
 \Psi^{(k+1)} = \left[  {\bf I} - {\bf W}^{-1} \left(  {\bf A} - {\bf B}  \right)  \right] {\bf C} \Psi^{(k)} + \left({\bf I} + {\bf W}^{-1} {\bf B} \right) {\bf A}^{-1} {\bf Q} .
 \end{equation}
 
-\noindent Observe that as ${\bf W}$ more closely approximates $\left(  {\bf A} - {\bf B}  \right)$, the operator ${\bf W}^{-1} \left(  {\bf A} - {\bf B}  \right)$ converges to the identity matrix, ${\bf I}$. This means that the spectral radius of this new iteration matrix will approach zero as ${\bf W}$ gets closer to $\left(  {\bf A} - {\bf B}  \right)$ and therefore more quickly and efficiently converge to the true solution.
+\noindent Observe in Eq. (\ref{eq::DSA_synthetic_eq_new_algo}) that as ${\bf W}$ more closely approximates $\left(  {\bf A} - {\bf B}  \right)$, the operator ${\bf W}^{-1} \left(  {\bf A} - {\bf B}  \right)$ converges to the identity matrix, ${\bf I}$. This means that the spectral radius of this new iteration matrix will approach zero as ${\bf W}$ gets closer to $\left(  {\bf A} - {\bf B}  \right)$ and therefore more quickly and efficiently converge to the true solution. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -285,21 +285,14 @@ At this point, Eq. (\ref{eq::DSA_TG_half_it_sol}) provides a formulation for the
 \end{aligned} .
 \end{equation}
 
-\noindent Next, we add and subtract ${\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k+1/2)}$ to Eq. (\ref{eq::DSA_TG_trans_err}) to form,
+\noindent Next, we add and subtract ${\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k+1/2)}$ to Eq. (\ref{eq::DSA_TG_trans_err}) to form
 
 \begin{equation}
 \label{eq::DSA_TG_trans_err_wres}
-{\bf L_{gg}} \delta \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'}\delta \phi_{g'}^{(k+1/2)} + R_g^{(k+1/2)}, 
+{\bf L_{gg}} \delta \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'}\delta \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \left( \phi_{g'}^{(k+1/2)} - \phi_{g'}^{(k)} \right) .
 \end{equation}
 
-\noindent where the multigroup residual term is
-
-\begin{equation}
-\label{eq::DSA_TG_trans_err_wres_resterm}
-R_g^{(k+1/2)} =  {\bf M} \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \left( \phi_{g'}^{(k+1/2)} - \phi_{g'}^{(k)} \right) .
-\end{equation}
-
-\noindent Eq. (\ref{eq::DSA_TG_trans_err_wres}) can be recast into its appropriate operator notation,
+\noindent Equation (\ref{eq::DSA_TG_trans_err_wres}) can be recast into its appropriate operator notation,
 
 \begin{equation}
 \label{eq::DSA_TG_trans_err_wres_op}
@@ -312,10 +305,17 @@ We again choose to utilize the diffusion operator as the low-order operator for 
 
 \begin{equation}
 \label{eq::DSA_TG_diff_err_full}
-\vec{\nabla} \cdot D_g \vec{\nabla} \delta \phi_{g}^{(k+1/2)} + \sigma_{t,g} \delta \phi_{g}^{(k+1/2)} - \sum\displaylimits_{g'=1}^{G} \sigma_{s,0}^{g g'} \delta \phi_{g}^{(k+1/2)} = R_g^{(k+1/2)} ,
+\vec{\nabla} \cdot D_g \vec{\nabla} \delta \phi_{g}^{(k+1/2)} + \sigma_{t,g} \delta \phi_{g}^{(k+1/2)} - \sum\displaylimits_{g'=1}^{G} \sigma_{s,0}^{g g'} \delta \phi_{g'}^{(k+1/2)} = R_g^{(k+1/2)} ,
 \end{equation}
 
-\noindent where the resdiual, $R_g$, is only in terms of the 0th moment. We could solve these coupled multigroup diffusion equations of Eq. (\ref{eq::DSA_TG_diff_err_full}) for the iteration error. However, if the number of thermal groups becomes large, then these coupled equations would be become burdensome to solve. Instead, the TG method opts to perform a spectral collapse of the multigroup diffusion error. First, we factorize the multigroup error,
+\noindent where the residual, $R_g$, is only in terms of the 0th-order scattering moment and has the following form:
+
+\begin{equation}
+\label{eq::DSA_TG_diff_residual}
+R_g^{(k+1/2)} = \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \left( \phi_{g'}^{(k+1/2)} - \phi_{g'}^{(k)} \right) .
+\end{equation}
+
+\noindent We could solve these $G$ coupled multigroup diffusion equations of Eq. (\ref{eq::DSA_TG_diff_err_full}) for the iteration error. However, if the number of thermal groups becomes large, then these coupled equations could be become burdensome to solve. Instead, the TG method opts to perform a spectral collapse of the multigroup diffusion error. First, we factorize the multigroup error,
 
 \begin{equation}
 \label{eq::DSA_TG_fact_err}
@@ -329,7 +329,7 @@ We again choose to utilize the diffusion operator as the low-order operator for 
 \left(  {\bf T} - {\bf S_{L,0}} - {\bf S_{D,0}} \right)^{-1} {\bf S_{U,0}} \xi = \rho \xi ,
 \end{equation}
 
-\noindent where ${\bf T}$ is the diagonal matrix of total cross sections and ${\bf S_{L,0}}$, ${\bf S_{D,0}}$, and ${\bf S_{U,0}}$ are restricted to the 0th moments of the scattering cross sections. Inserting the factorized error of Eq. (\ref{eq::DSA_TG_diff_err_full}) into Eq. (\ref{eq::DSA_TG_diff_err_full}) and summing over energy groups gives
+\noindent where ${\bf T}$ is the diagonal matrix of total cross sections and ${\bf S_{L,0}}$, ${\bf S_{D,0}}$, and ${\bf S_{U,0}}$ are restricted to the 0th-order moments of the scattering cross sections. Inserting the factorized error of Eq. (\ref{eq::DSA_TG_diff_err_full}) into Eq. (\ref{eq::DSA_TG_diff_err_full}) and summing over energy groups gives
 
 \begin{equation}
 \label{eq::DSA_TG_1G_err_eq_wdrift}
@@ -348,20 +348,64 @@ We again choose to utilize the diffusion operator as the low-order operator for 
 \end{aligned}
 \end{equation}
 
-\noindent Equation (\ref{eq::DSA_TG_1G_err_eq_wdrift}) is not the standard diffusion equation because of the drift term containing the gradient of the spectral shape. This term is an artifact of the error factorization and it is identically zero in homogeneous regions but undefined at material interfaces. The TG method simply neglects this term, which leads to the final form for our coarse-grid error equation,
+\noindent Equation (\ref{eq::DSA_TG_1G_err_eq_wdrift}) is not the standard diffusion equation because of the drift term containing the gradient of the spectral shape. This term is an artifact of the factorization of the error and it is identically zero in homogeneous regions but undefined at material interfaces. The TG method simply neglects this term, which leads to the final form for our coarse-grid error equation,
 
 \begin{equation}
 \label{eq::DSA_TG_1G_err_eq}
-\vec{\nabla} \cdot \big< D \big> \vec{\nabla} \epsilon^{(k+1/2)}  + \big< \sigma \big> \epsilon^{(k+1/2)}  = \big< R^{(k+1/2)} \big> 
+\vec{\nabla} \cdot \big< D \big> \vec{\nabla} \epsilon^{(k+1/2)}  + \big< \sigma \big> \epsilon^{(k+1/2)}  = \big< R^{(k+1/2)} \big> .
 \end{equation}
 
-Solving Eq. (\ref{eq::DSA_TG_1G_err_eq}) gives the spatial distribution of the iteration error. We can then update the error for the 0th moment flux with the following:
+\noindent If we define the left-hand-side matrix operator of Eq. (\ref{eq::DSA_TG_1G_err_eq}) as ${\bf A}$, then the operator form of this coarse-grid error equation is 
 
 \begin{equation}
-\label{eq::DSA_TG_1G_err_update}
- \Phi_g^{(k+1)} =  \Phi_g^{(k+1/2)}  + \xi_g \epsilon^{(k+1/2)} .
+\label{eq::DSA_TG_1G_err_eq_op}
+{\bf A} \epsilon^{(k+1/2)}  =  {\bf X} {\bf S_{U}} \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right),
 \end{equation}
 
+\noindent where ${\bf X}$ is the restriction operator that confines the diffusion problem to the 0th-order moment and performs the sum from Eq. (\ref{eq::DSA_TG_1G_ave_terms}). Solving Eq. (\ref{eq::DSA_TG_1G_err_eq}) gives the spatial distribution of the iteration error. We can then update the error for the 0th moment flux with the following:
+
+\begin{equation}
+\label{eq::DSA_TG_err_update}
+ \phi_{g,0}^{(k+1)} =  \phi_{g,0}^{(k+1/2)}  + \xi_g \epsilon^{(k+1/2)}, \qquad g=1,...,G .
+\end{equation}
+
+Up to this point, we have provided the full details of the TG methodology including the Gauss-Seidel iteration equations, the process to spectrally-collapse the diffusive error, and the addiditve interpolation of the diffusive error. We now go through these steps using compact operator notation to arive at a single matrix form for the TG accelerated transport iterations. First, we express the full phase-space update equation as 
+
+\begin{equation}
+\label{eq::DSA_TG_update_op}
+ \Phi^{(k+1)} =  \Phi^{(k+1/2)}  + \delta \Phi^{(k+1/2)} .
+\end{equation}
+
+\noindent The half-iterate solution, $\Phi^{(k+1/2)}$, is given by Eqs. (\ref{eq::DSA_TG_half_it_sol}) and (\ref{eq::DSA_TG_half_it_forcingfunc}), and the iteration error, $\delta \Phi^{(k+1/2)}$, is 
+
+\begin{equation}
+\label{eq::DSA_TG_proj_err}
+\delta \Phi^{(k+1/2)} =  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right),
+\end{equation}
+
+\noindent where ${\bf P}$ is the prolongation operator which interpolates the error back into the full phase-space of the transport equation. For the TG method, this prolongation operator acts on only the 0th-order flux moments (the higher moments are characteristically zero) and appropriately adds the error correction for thermal group $g$ with the appropriate spectral weight, $\xi_g$. Inserting these definitions into Eq. (\ref{eq::DSA_TG_update_op}) gives
+
+\begin{equation}
+\label{eq::DSA_TG_op_update_w_fullterms}
+\begin{aligned}
+ \Phi^{(k+1)} &=  \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} \Phi^{(k)} \\
+  &+  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right) + {\bf b}
+\end{aligned} .
+\end{equation}
+
+\noindent We further define the term ${\bf F} \equiv \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \right]^{-1} {\bf D}{\bf L}^{-1}$, and use it to re-express Eq. (\ref{eq::DSA_TG_op_update_w_fullterms}) into a singular equation for the full-iterate solution,
+
+\begin{equation}
+\label{eq::DSA_TG_op_update_simple}
+\begin{aligned}
+ \Phi^{(k+1)} &=  {\bf F}  {\bf M} {\bf S_U} \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right) + {\bf b} \\
+&= {\bf F}  {\bf M} {\bf S_U} \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \ {\bf F}  {\bf M} {\bf S_U} \Phi^{(k)} + {\bf b} - \Phi^{(k)}  \right) + {\bf b} \\
+&= {\bf F}  {\bf M} {\bf S_U} \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \ {\bf F}  {\bf M} {\bf S_U}  -  {\bf I} \right)\Phi^{(k)} + \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}}  + {\bf I} \right) {\bf b} \\
+&= \left[ {\bf F}  {\bf M} {\bf S_U} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \ {\bf F}  {\bf M} {\bf S_U}  -  {\bf I} \right) \right] \Phi^{(k)} + \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}}  + {\bf I} \right) {\bf b}
+\end{aligned} ,
+\end{equation}
+
+\noindent where we note that ${\bf b}={\bf F} {\bf D}{\bf L}^{-1}  {\bf Q}$. From Eq. (\ref{eq::DSA_TG_op_update_simple}), the iteration matrix for the TG scheme is given by $\left[ {\bf F}  {\bf M} {\bf S_U} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \ {\bf F}  {\bf M} {\bf S_U}  -  {\bf I} \right) \right]$. The eigenvalues of this iteration matrix will give insight into the convergence properties of the TG method in the asymptotic region.
 
 
 %%%%%%%%%%%%%
@@ -369,14 +413,37 @@ Solving Eq. (\ref{eq::DSA_TG_1G_err_eq}) gives the spatial distribution of the i
 \subsubsection{Modified Two-Grid (MTG) Acceleration}
 \label{sec:DSA_DSA_MG_MTG}
 
-The second thermal upscattering acceleration method that we will investigate is a simple modification to the standard TG method of Section \ref{sec:DSA_DSA_MG_TG}. At the end of their work involving a TSA variant of the TG method \cite{evans2010transport}, Evans, Clarno, and Morel proposed a modified form for the TG method, which they labeled the Modified Transport Two-Grid (MTTG) method. We wish to adopt their iterative strategy, but use the diffusion equation as our low-order operator. We choose to call this method the Modified Two-Grid (MTG) method. In their work, they proposed to not fully converge the inner iterations for each group in the Gauss-Seidel process. Instead, we again sequentially proceed through the thermal groups in a Gauss-Seidel manner but only perform 1 transport sweep for each group. This process yields the following iteration scheme,
+The second thermal upscattering acceleration method that we will investigate is a simple modification to the standard TG method of Section \ref{sec:DSA_DSA_MG_TG}. At the end of their work involving a TSA variant of the TG method \cite{evans2010transport}, Evans, Clarno, and Morel proposed a modified form for the TG method, which they labeled the Modified Transport Two-Grid (MTTG) method. We wish to adopt their iterative strategy, but use the diffusion equation as our low-order operator. We choose to call this method the Modified Two-Grid (MTG) method. In their work, they proposed to not fully converge the inner iterations for each group in the Gauss-Seidel process. Just like the TG method, we again sequentially proceed through the thermal groups in a Gauss-Seidel manner but only perform 1 transport sweep for each group. This process yields the following iteration scheme,
 
 \begin{equation}
 \label{eq::DSA_MTG_trans_it_eq}
 {\bf L_{gg}} \psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^{g-1} {\bf \Sigma}_{g g'} \phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g, 
 \end{equation}
 
-\noindent where it differs with Eq. (\ref{eq::DSA_TG_trans_it_eq}) in the ending and beginning energy indices for the $(k+1/2)$ and $(k)$ iterations, respectively.
+\noindent where it differs with Eq. (\ref{eq::DSA_TG_trans_it_eq}) in the ending and beginning energy indices for the $(k+1/2)$ and $(k)$ iterations, respectively. In operator notation, the iteration equation of the MTG method is the following:
+
+\begin{equation}
+\label{eq::DSA_MTG_trans_it_eq_ops}
+{\bf L} \Psi^{(k+1/2)} = {\bf M} {\bf S_L} \Phi^{(k+1/2)} + {\bf M}\left(  {\bf S_D} + {\bf S_U} \right)  \Phi^{(k)} + {\bf Q} .
+\end{equation}
+
+\noindent This operator equation for the MTG differs from Eq. (\ref{eq::DSA_TG_trans_it_eq_ops}) of the TG method by the locations of the different scattering operators. Solving for the flux moments, we can give the half-iterate and external source equations as,
+
+\begin{equation}
+\label{eq::DSA_MTG_half_it_sol}
+\Phi^{(k+1/2)} = \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M}{\bf S_L}\right]^{-1} {\bf D}{\bf L}^{-1}  {\bf M} \left(  {\bf S_D} + {\bf S_U} \right) \Phi^{(k)} + {\bf b} ,
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::DSA_MTG_half_it_forcingfunc}
+{\bf b} = \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} {\bf S_L} \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf Q} .
+\end{equation}
+
+\noindent respectively. 
+
+The generation of the spectrally-collapsed diffusion equation for the MTG iteration error is almost identical to the TG method.
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Richardson acceleration
@@ -391,9 +458,19 @@ The third and final thermal upscattering acceleration method that we will invest
 \end{equation}
 
 %%%%%%%%%%%%%
-%%%   SubSubSection - Richardson acceleration
+%%%   SubSubSection - Upscatter Summary
 \subsubsection{Summary of the Thermal Neutron Upscattering Acceleration Methods}
 \label{sec:DSA_DSA_MG_Summary}
+
+In this work, we have defined three different methodologies to accelerate thermal neutron upscattering: the Two-Grid method, the Modified Two-Grid method, and the Multigroup Richardson Acceleration method. These methods are similar in that we perform a single coarsening step for each iteration where a spectrally-collapsed, 1-group diffusion equation is the low-order error operator.
+
+\begin{equation}
+\label{eq::DSA_MG_Summary_form}
+\begin{aligned}
+\Phi^{(k+1)} &= \left[ {\bf F} {\bf M} {\bf \Sigma} + {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma} \left(  {\bf F} {\bf M} {\bf \Sigma} - {\bf I} \right)  \right]   \Phi^{(k)} \\
+&+ \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}  + {\bf I} \right) {\bf D}{\bf L}^{-1}  {\bf Q}
+\end{aligned}
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1638,7 +1715,7 @@ We have implemented the 1-group and thermal upscattering DSA methodologies of Se
 \subsubsection{Weak Scaling with a Homogeneous Zerr Problem}
 \label{sec::DSA_Results_Scaling_Zerr}
 
-We first test MIP's scaling with HYPRE in PDT by analyzing a simple homogenized version of the Zerr scaling problem \cite{zerr2011solution}. The problem configuration is a 3D cube that spans $[0,16]^3$ in dimension and uses strictly orthogonal hexahedral mesh cells. The total cross section is set to $\sigma_t=10$ with a scattering ratio of $c=0.9999$ and a distributed source of 1 $\frac{n}{cm^3 \, s}$ . LS8 quadrature is employed and vacuum boundary conditions are used for all boundaries. A residual tolerance of $10^{-8}$ is used for the richardson transport iterations, and a residual tolerance of $10^{-3}$ is used for the HYPRE PCG iterations.
+We first test MIP's scaling with HYPRE in PDT by analyzing a simple homogenized version of the Zerr scaling problem \cite{zerr2011solution}. The problem configuration is a 3D cube that spans $[0,16]^3$ in dimension and uses strictly orthogonal hexahedral mesh cells. The total cross section is set to $\sigma_t=10$ with a scattering ratio of $c=0.9999$ and a distributed source of 1 $\frac{n}{cm^3 \, s}$ . LS8 quadrature is employed and vacuum boundary conditions are used for all boundaries. A residual tolerance of $10^{-8}$ is used for the Richardson transport iterations, and a residual tolerance of $10^{-3}$ is used for the HYPRE PCG iterations.
 
 Our weak scaling study is performed with a fixed 4096 spatial cells per processor as we increase the number of processors. We do not change the physical dimensions of the problem. Instead, we simply increase the number of cells in a given coordinate direction whenever we allocate more processors in that dimension. The partitioning of the processor layout ($P_x$, $P_y$, and $P_z$), the task aggregation ($A_x$, $A_y$, and $A_z$), and the number of mesh cells per dimension ($N_x$, $N_y$, and $N_z$) are selected to minimize the time per sweep in PDT. These parallel parameters are given for the full scaling suite in Table \ref{tab::DSA_Vulcan_agg_part}.
 
