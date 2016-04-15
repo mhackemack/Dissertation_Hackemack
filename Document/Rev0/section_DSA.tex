@@ -312,7 +312,7 @@ We again choose to utilize the diffusion operator as the low-order operator for 
 
 \begin{equation}
 \label{eq::DSA_TG_diff_residual}
-R_g^{(k+1/2)} = \sum_{g'=g+1}^G {\bf \Sigma}_{g g'} \left( \phi_{g'}^{(k+1/2)} - \phi_{g'}^{(k)} \right) .
+R_g^{(k+1/2)} = \sum_{g'=g+1}^G \sigma_{s,0}^{g g'} \left( \phi_{g'}^{(k+1/2)} - \phi_{g'}^{(k)} \right) .
 \end{equation}
 
 \noindent We could solve these $G$ coupled multigroup diffusion equations of Eq. (\ref{eq::DSA_TG_diff_err_full}) for the iteration error. However, if the number of thermal groups becomes large, then these coupled equations could be become burdensome to solve. Instead, the TG method opts to perform a spectral collapse of the multigroup diffusion error. First, we factorize the multigroup error,
@@ -443,7 +443,35 @@ The second thermal upscattering acceleration method that we will investigate is 
 
 \noindent respectively. 
 
-The generation of the spectrally-collapsed diffusion equation for the MTG iteration error is almost identical to the TG method.
+The generation of the spectrally-collapsed diffusion equation for the MTG iteration error is almost identical to the TG method. The only differences lie with generating the spectral shape functions and the residual. Like the TG method, the spectral shape function for each material is the eigenfunction corresponding to the largest eigenvalue of the infinite medium iteration matrix of Eq. (\ref{eq::DSA_MTG_trans_it_eq}). This eigenproblem is given by,
+
+\begin{equation}
+\label{eq::DSA_MTG_eigenpprob}
+\left(  {\bf T} - {\bf S_{L,0}}  \right)^{-1} \left( {\bf S_{D,0}}+ {\bf S_{U,0}} \right)\xi = \rho \xi ,
+\end{equation}
+
+\noindent where the matrix operators remain from before. With this spectral shape, the average diffusion coefficient and average absorption cross section can again be calculated by Eq. (\ref{eq::DSA_TG_1G_ave_terms}), while the error residual is given by
+
+\begin{equation}
+\label{eq::DSA_MTG_diff_residual}
+R_g^{(k+1/2)} = \sum_{g'=g}^G \sigma_{s,0}^{g g'} \left( \phi_{g'}^{(k+1/2)} - \phi_{g'}^{(k)} \right) .
+\end{equation}
+
+\noindent Again, the coarse-grid error equation is given by Eq. (\ref{eq::DSA_TG_1G_err_eq}), with a corresponding operator form of 
+
+\begin{equation}
+\label{eq::DSA_TG_1G_err_eq_op}
+{\bf A} \epsilon^{(k+1/2)}  =  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right).
+\end{equation}
+
+We now provide the full phase-space update equation in a like manner to TG. Again,the update equation can be expressed as 
+
+\begin{equation}
+\label{eq::DSA_MTG_update_op}
+ \Phi^{(k+1)} =  \Phi^{(k+1/2)}  + \delta \Phi^{(k+1/2)} ,
+\end{equation}
+
+\noindent where we insert the 
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Richardson acceleration
@@ -455,6 +483,12 @@ The third and final thermal upscattering acceleration method that we will invest
 \begin{equation}
 \label{eq::DSA_WGS_trans_it_eq}
 {\bf L_{gg}} \psi_g^{(k+1/2)} =  {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
+\end{equation}
+
+
+\begin{equation}
+\label{eq::DSA_WGS_eigenpprob}
+{\bf T}^{-1} \left( {\bf S_{L,0}} + {\bf S_{D,0}}+ {\bf S_{U,0}} \right)\xi = \rho \xi ,
 \end{equation}
 
 %%%%%%%%%%%%%
