@@ -464,21 +464,34 @@ R_g^{(k+1/2)} = \sum_{g'=g}^G \sigma_{s,0}^{g g'} \left( \phi_{g'}^{(k+1/2)} - \
 {\bf A} \epsilon^{(k+1/2)}  =  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right).
 \end{equation}
 
-We now provide the full phase-space update equation in a like manner to TG. Again,the update equation can be expressed as 
+We now provide the full phase-space update equation in a like manner to TG. Again, the update equation can be expressed as 
 
 \begin{equation}
 \label{eq::DSA_MTG_update_op}
  \Phi^{(k+1)} =  \Phi^{(k+1/2)}  + \delta \Phi^{(k+1/2)} ,
 \end{equation}
 
-\noindent where we insert the 
+\noindent where we insert the half-iterate and coarse-grid error terms from Eqs. (\ref{eq::DSA_MTG_half_it_sol}) and (\ref{eq::DSA_TG_1G_err_eq_op}), respectively. Defining ${\bf F} \equiv \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M}{\bf S_L}\right]^{-1} {\bf D}{\bf L}^{-1} $ for brevity, we can give the singular equation for the MTG method,
+
+\begin{equation}
+\label{eq::DSA_MTG_op_update_simple}
+\begin{aligned}
+ \Phi^{(k+1)} =  &{\bf F}  {\bf M} \left( {\bf S_{D}} + {\bf S_{U}} \right) \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right) + {\bf b} \\
+= &{\bf F}  {\bf M}\left( {\bf S_{D}} + {\bf S_{U}} \right) \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  \ {\bf F}  {\bf M}\left( {\bf S_{D}} + {\bf S_{U}} \right)  -  {\bf I} \right)\Phi^{(k)} \\
+&+ \left(  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right)  + {\bf I} \right) {\bf b} \\
+= &\left[ {\bf F}  {\bf M} \left( {\bf S_{D}} + {\bf S_{U}} \right) +  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  \ {\bf F}  {\bf M} \left( {\bf S_{D}} + {\bf S_{U}} \right)  -  {\bf I} \right) \right] \Phi^{(k)} \\
+&+ \left(  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right)  + {\bf I} \right) {\bf b}
+\end{aligned} ,
+\end{equation}
+
+\noindent where we note that ${\bf b}={\bf F} {\bf D}{\bf L}^{-1}  {\bf Q}$ and is unchanged from the TG method (${\bf F}$ jsut simply has a different definition). Equation (\ref{eq::DSA_MTG_op_update_simple}) gives the iteration matrix for the MTG scheme, which can be used to understand the convergence properties of the method in the asymptotic region. 
 
 %%%%%%%%%%%%%
-%%%   SubSubSection - Richardson acceleration
-\subsubsection{Multigroup Richardson Acceleration}
+%%%   SubSubSection - Jacobi acceleration
+\subsubsection{Multigroup Jacobi Acceleration}
 \label{sec:DSA_DSA_MG_WGS}
 
-The third and final thermal upscattering acceleration method that we will investigate 
+The third and final thermal neutron upscattering acceleration method that we will investigate is markedly different than the TG and MTG methods. With the increasing expansion of parallel computing resources, the sequential Gauss-Seidel approach for the thermal energy groups necessarily becomes a limiting bottleneck. Therefore, we have natural recourse to develop an alternate thermal upscattering acceleration method that can more effectively make use of parallel algorithms and architectures.
 
 \begin{equation}
 \label{eq::DSA_WGS_trans_it_eq}
@@ -496,15 +509,32 @@ The third and final thermal upscattering acceleration method that we will invest
 \subsubsection{Summary of the Thermal Neutron Upscattering Acceleration Methods}
 \label{sec:DSA_DSA_MG_Summary}
 
-In this work, we have defined three different methodologies to accelerate thermal neutron upscattering: the Two-Grid method, the Modified Two-Grid method, and the Multigroup Richardson Acceleration method. These methods are similar in that we perform a single coarsening step for each iteration where a spectrally-collapsed, 1-group diffusion equation is the low-order error operator.
+In this work, we have defined three different methodologies to accelerate thermal neutron upscattering: the Two-Grid method, the Modified Two-Grid method, and the Multigroup Jacobi method. These methods are similar in that we perform a single coarsening step for each iteration where a spectrally-collapsed, 1-group diffusion equation is the low-order error operator. However, there are key differences in the iterative procedures of the three methods. Both the TG and MTG methods perform a Gauss-Seidel procedure in energy where the thermal energy groups are solved sequentially. However, the inner iterations are not converged for any of the thermal groups with the MTG method. The Multigroup Jacobi method is different from the other two in that the thermal groups are iterated upon simultaneously. 
+
+For all three methods, we can define a general expression for the full phase-space solution at each iteration by the following,
 
 \begin{equation}
 \label{eq::DSA_MG_Summary_form}
 \begin{aligned}
 \Phi^{(k+1)} &= \left[ {\bf F} {\bf M} {\bf \Sigma} + {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma} \left(  {\bf F} {\bf M} {\bf \Sigma} - {\bf I} \right)  \right]   \Phi^{(k)} \\
-&+ \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}  + {\bf I} \right) {\bf D}{\bf L}^{-1}  {\bf Q}
-\end{aligned}
+&+ \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}  + {\bf I} \right) {\bf F} {\bf D}{\bf L}^{-1}  {\bf Q}
+\end{aligned} ,
 \end{equation}
+
+\noindent where the differences lie in the ${\bf F}$ and  ${\bf \Sigma}$ terms. These terms are given in Table \ref{tab::DSA_DSA_MG_Summary_diffterms}, and we can clearly see that the differences in the schemes arise from the ordering of the scattering operators.
+
+\begin{table}[hbt]
+\centering
+\caption{Iteration terms for the different thermal upscatter acceleration methods.}
+\def\arraystretch{1.4}
+\begin{tabular}{|c||c|c|} \hline
+Method & ${\bf F}$ & ${\bf \Sigma}$ \\ \hline \hline
+Two-Grid & $\left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \right]^{-1} {\bf D}{\bf L}^{-1}$ & ${\bf S_{U}}$ \\ \hline
+Modified Two-Grid & $\left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M}{\bf S_L}\right]^{-1} {\bf D}{\bf L}^{-1}$ & ${\bf S_{D}} + {\bf S_{U}}$ \\ \hline
+Multigroup Jacobi & ${\bf D}{\bf L}^{-1}$ & ${\bf S_{L}} + {\bf S_{D}} + {\bf S_{U}}$ \\ \hline
+\end{tabular}
+\label{tab::DSA_DSA_MG_Summary_diffterms}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -514,7 +544,7 @@ In this work, we have defined three different methodologies to accelerate therma
 \section{Symmetric Interior Penalty Form of the Diffusion Equation}
 \label{sec::DSA_SIP}
 
-So far, we have presented several strategies in Section \ref{sec::DSA_DSA} in which DSA can be used to accelerate both within-group scattering and upscattering. We have also simply stated that our low-order operator will be the diffusion equation. However, we have not presented the exact form of the diffusion equation that we will utilize. In Section \ref{sec::DSA_MIP}, we present the full form of the modified interior penalty (MIP) form of the diffusion equation that we will use as our low-order operator for DSA calculations. However, we first present in this Section a more generalized version of the interior penalty form that we could use as a stand-alone solver for the standard diffusion equation: the symmetric interior penalty (SIP) form \cite{arnold2002unified,ragusa2015discontinuous,ref::SIP_3D}.
+So far, we have presented several strategies in Section \ref{sec::DSA_DSA} in which DSA can be used to accelerate both within-group scattering and thermal neutron upscattering. We have also simply stated that our low-order operator will be the diffusion equation. However, we have not presented the exact form of the diffusion equation that we will utilize. In Section \ref{sec::DSA_MIP}, we present the full form of the modified interior penalty (MIP) form of the diffusion equation that we will use as our low-order operator for DSA calculations. However, we first present in this Section a more generalized version of the interior penalty form that we could use as a stand-alone solver for the standard diffusion equation: the symmetric interior penalty (SIP) form \cite{arnold2002unified,ragusa2015discontinuous,ref::SIP_3D}.
 
 We begin our discussion of the SIP form by analyzing the standard form of the diffusion equation,
 
@@ -1829,7 +1859,7 @@ We conclude the results of this chapter by presenting analysis on the ability to
 \begin{figure}
 \centering
 \includegraphics[width=0.75\textwidth]{figures/sec_DSA/IM1_EC_Rich.eps}
-\caption{Spectral shape of the infinite medium iteration matrices for the Multigroup Richardson Acceleration Method for the IM1 problem materials.}
+\caption{Spectral shape of the infinite medium iteration matrices for the Multigroup Jacobi Acceleration Method for the IM1 problem materials.}
 \label{fig::IM1_mats_EC_Rich}
 \end{figure}
 
