@@ -491,13 +491,26 @@ We now provide the full phase-space update equation in a like manner to TG. Agai
 \subsubsection{Multigroup Jacobi Acceleration}
 \label{sec:DSA_DSA_MG_WGS}
 
-The third and final thermal neutron upscattering acceleration method that we will investigate is markedly different than the TG and MTG methods. With the increasing expansion of parallel computing resources, the sequential Gauss-Seidel approach for the thermal energy groups necessarily becomes a limiting bottleneck. Therefore, we have natural recourse to develop an alternate thermal upscattering acceleration method that can more effectively make use of parallel algorithms and architectures.
+The third and final thermal neutron upscattering acceleration method that we will investigate is markedly different than the TG and MTG methods. With the increasing expansion of parallel computing resources, the sequential Gauss-Seidel approach for the thermal energy groups necessarily becomes a limiting bottleneck. Therefore, we have natural recourse to develop an alternate thermal upscattering acceleration method that can more effectively make use of parallel algorithms and architectures. Therefore, instead of sequentially marching through the thermal energy groups in a Gauss-Seidel, we solve them simultaneously at each outer iteration. This is achieved by placing all the thermal energy groups into a single group set. Then, each outer iteration performs one transport sweep where the thermal scattering source was generated from the sweep of the previous outer iteration. This procedure is identical to a block Jacobi iteration where a single inner iteration is performed for each thermal group. 
 
 \begin{equation}
 \label{eq::DSA_WGS_trans_it_eq}
 {\bf L_{gg}} \psi_g^{(k+1/2)} =  {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
 \end{equation}
 
+\begin{equation}
+\label{eq::DSA_MGJac_half_it_sol}
+\Phi^{(k+1/2)} = {\bf D}{\bf L}^{-1}  {\bf M} {\bf S} \Phi^{(k)} + {\bf b} ,
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::DSA_MGJac_half_it_forcingfunc}
+{\bf b} = {\bf D}{\bf L}^{-1}  {\bf Q} .
+\end{equation}
+
+\noindent respectively. 
 
 \begin{equation}
 \label{eq::DSA_WGS_eigenpprob}
