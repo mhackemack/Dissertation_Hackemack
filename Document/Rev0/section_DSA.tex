@@ -312,7 +312,7 @@ We again choose to utilize the diffusion operator as the low-order operator for 
 
 \begin{equation}
 \label{eq::DSA_TG_diff_residual}
-R_g^{(k+1/2)} = \sum_{g'=g+1}^G \sigma_{s,0}^{g g'} \left( \phi_{g'}^{(k+1/2)} - \phi_{g'}^{(k)} \right) .
+R_g^{(k+1/2)} = \sum_{g'=g+1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)} - \phi_{g',0}^{(k)} \right) .
 \end{equation}
 
 \noindent We could solve these $G$ coupled multigroup diffusion equations of Eq. (\ref{eq::DSA_TG_diff_err_full}) for the iteration error. However, if the number of thermal groups becomes large, then these coupled equations could be become burdensome to solve. Instead, the TG method opts to perform a spectral collapse of the multigroup diffusion error. First, we factorize the multigroup error,
@@ -454,24 +454,24 @@ The generation of the spectrally-collapsed diffusion equation for the MTG iterat
 
 \begin{equation}
 \label{eq::DSA_MTG_diff_residual}
-R_g^{(k+1/2)} = \sum_{g'=g}^G \sigma_{s,0}^{g g'} \left( \phi_{g'}^{(k+1/2)} - \phi_{g'}^{(k)} \right) .
+R_g^{(k+1/2)} = \sum_{g'=g}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)} - \phi_{g',0}^{(k)} \right) .
 \end{equation}
 
 \noindent Again, the coarse-grid error equation is given by Eq. (\ref{eq::DSA_TG_1G_err_eq}), with a corresponding operator form of 
 
 \begin{equation}
-\label{eq::DSA_TG_1G_err_eq_op}
+\label{eq::DSA_MTG_1G_err_eq_op}
 {\bf A} \epsilon^{(k+1/2)}  =  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right).
 \end{equation}
 
-We now provide the full phase-space update equation in a like manner to TG. Again, the update equation can be expressed as 
+We now provide the full phase-space update equation in a like manner to TG. Just like the TG method, the update equation can be expressed as 
 
 \begin{equation}
 \label{eq::DSA_MTG_update_op}
  \Phi^{(k+1)} =  \Phi^{(k+1/2)}  + \delta \Phi^{(k+1/2)} ,
 \end{equation}
 
-\noindent where we insert the half-iterate and coarse-grid error terms from Eqs. (\ref{eq::DSA_MTG_half_it_sol}) and (\ref{eq::DSA_TG_1G_err_eq_op}), respectively. Defining ${\bf F} \equiv \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M}{\bf S_L}\right]^{-1} {\bf D}{\bf L}^{-1} $ for brevity, we can give the singular equation for the MTG method,
+\noindent where we insert the half-iterate and coarse-grid error terms from Eqs. (\ref{eq::DSA_MTG_half_it_sol}) and (\ref{eq::DSA_MTG_1G_err_eq_op}), respectively. Defining ${\bf F} \equiv \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M}{\bf S_L}\right]^{-1} {\bf D}{\bf L}^{-1} $ for brevity, we can give the singular equation for the MTG method,
 
 \begin{equation}
 \label{eq::DSA_MTG_op_update_simple}
@@ -484,19 +484,28 @@ We now provide the full phase-space update equation in a like manner to TG. Agai
 \end{aligned} ,
 \end{equation}
 
-\noindent where we note that ${\bf b}={\bf F} {\bf D}{\bf L}^{-1}  {\bf Q}$ and is unchanged from the TG method (${\bf F}$ jsut simply has a different definition). Equation (\ref{eq::DSA_MTG_op_update_simple}) gives the iteration matrix for the MTG scheme, which can be used to understand the convergence properties of the method in the asymptotic region. 
+\noindent where we note that ${\bf b}={\bf F} {\bf D}{\bf L}^{-1}  {\bf Q}$ and is unchanged from the TG method (${\bf F}$ just simply has a different definition). Equation (\ref{eq::DSA_MTG_op_update_simple}) gives the iteration matrix for the MTG scheme, which can be used to understand the convergence properties of the method in the asymptotic region. 
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Jacobi acceleration
 \subsubsection{Multigroup Jacobi Acceleration}
 \label{sec:DSA_DSA_MG_WGS}
 
-The third and final thermal neutron upscattering acceleration method that we will investigate is markedly different than the TG and MTG methods. With the increasing expansion of parallel computing resources, the sequential Gauss-Seidel approach for the thermal energy groups necessarily becomes a limiting bottleneck. Therefore, we have natural recourse to develop an alternate thermal upscattering acceleration method that can more effectively make use of parallel algorithms and architectures. Therefore, instead of sequentially marching through the thermal energy groups in a Gauss-Seidel, we solve them simultaneously at each outer iteration. This is achieved by placing all the thermal energy groups into a single group set. Then, each outer iteration performs one transport sweep where the thermal scattering source was generated from the sweep of the previous outer iteration. This procedure is identical to a block Jacobi iteration where a single inner iteration is performed for each thermal group. After each sweep where all thermal groups perform 1 inner iteration, an energy collapsed 
+The third and final thermal neutron upscattering acceleration method that we will investigate is markedly different than the TG and MTG methods. With the increasing expansion of parallel computing resources, the sequential Gauss-Seidel approach for the thermal energy groups necessarily becomes a limiting bottleneck. Therefore, we have natural recourse to develop an alternate thermal upscattering acceleration method that can more effectively make use of parallel algorithms and architectures. Therefore, instead of sequentially marching through the thermal energy groups in a Gauss-Seidel, we solve them simultaneously at each outer iteration. This is achieved by placing all the thermal energy groups into a single group set. Then, each outer iteration performs one transport sweep where the thermal scattering source was generated from the sweep of the previous outer iteration. This procedure is identical to a block Jacobi iteration where a single inner iteration is performed for each thermal group. Therefore, we choose to call this methodology the Multigroup Jacobi Acceleration (MJA) method. This process of simultaneously solving all the thermal groups in a transport sweep yields the following iteration scheme:
 
 \begin{equation}
 \label{eq::DSA_WGS_trans_it_eq}
-{\bf L_{gg}} \psi_g^{(k+1/2)} =  {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
+{\bf L_{gg}} \psi_g^{(k+1/2)} =  {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g .
 \end{equation}
+
+\noindent Just like the TG and MTG methods, we can express Eq. (\ref{eq::DSA_WGS_trans_it_eq}) in compact operator notation,
+
+\begin{equation}
+\label{eq::DSA_WGS_trans_it_eq_ops}
+{\bf L} \Psi^{(k+1/2)} = {\bf M} {\bf S}  \Phi^{(k)} + {\bf Q} ,
+\end{equation}
+
+\noindent where ${\bf S} = {\bf S_{L}} + {\bf S_{D}} + {\bf S_{U}}$ is the full scattering operator that we utilize for brevity. Again, solving for the flux moments yields the half-iterate and external source equations of
 
 \begin{equation}
 \label{eq::DSA_MGJac_half_it_sol}
@@ -507,15 +516,46 @@ The third and final thermal neutron upscattering acceleration method that we wil
 
 \begin{equation}
 \label{eq::DSA_MGJac_half_it_forcingfunc}
-{\bf b} = {\bf D}{\bf L}^{-1}  {\bf Q} .
+{\bf b} = {\bf D}{\bf L}^{-1}  {\bf Q} ,
 \end{equation}
 
-\noindent respectively. 
+\noindent respectively. We note that Eq. (\ref{eq::DSA_MGJac_half_it_sol}) has an identical functional form as the half-iterate equation for the 1-group, isotropic scattering iteration operator of Eq. (\ref{eq::DSA_1G_trans_eq_ops_mom}). Therefore, we can view Eq. (\ref{eq::DSA_MGJac_half_it_sol}) as the generalized iterative form for this Jacobi iterative procedure with an arbitrary number of energy groups and scattering moments, with Eq. (\ref{eq::DSA_1G_trans_eq_ops_mom}) being a specialized case.
+
+After each transport sweep, where all thermal groups perform 1 inner iteration, an energy collapsed, 1-group, diffusion acceleration step that is identical to TG and MTG is performed. The diffusion equation is still described by Eq. (\ref{eq::DSA_TG_1G_err_eq}), with the only differences again arising with the spectral functions and residual. The spectral shape functions are calculated for each material by the following eigenproblem,
 
 \begin{equation}
 \label{eq::DSA_WGS_eigenpprob}
 {\bf T}^{-1} \left( {\bf S_{L,0}} + {\bf S_{D,0}}+ {\bf S_{U,0}} \right)\xi = \rho \xi ,
 \end{equation}
+
+\noindent which corresponds to the infinite medium iteration matrix of Eq. (\ref{eq::DSA_WGS_trans_it_eq_ops}). For this MJA method, the residual corresponds to the full 0th moment scattering residual,
+
+
+\begin{equation}
+\label{eq::DSA_WGS_diff_residual}
+R_g^{(k+1/2)} = \sum_{g'=1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)} - \phi_{g',0}^{(k)} \right) .
+\end{equation}
+
+\noindent With this definition for the residual, the operator form for the coarse-grid error equation is given by,
+
+\begin{equation}
+\label{eq::DSA_MTG_1G_err_eq_op}
+{\bf A} \epsilon^{(k+1/2)}  =  {\bf X} {\bf S} \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right),
+\end{equation}
+
+\noindent where the ${\bf A}$ and ${\bf X}$ operators are the same from the TG and MTG methods. Finally, using the half-iterate and coarse-grid error equations of Eqs. (\ref{eq::DSA_MGJac_half_it_sol}) and (\ref{eq::DSA_MTG_1G_err_eq_op}), respectively, the full-iterate equation becomes 
+
+\begin{equation}
+\label{eq::DSA_WGS_op_update_simple}
+\begin{aligned}
+ \Phi^{(k+1)} &=  {\bf F}  {\bf M} {\bf S} \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S} \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right) + {\bf b} \\
+&= {\bf F}  {\bf M} {\bf S} \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S} \left(  \ {\bf F}  {\bf M} {\bf S} \Phi^{(k)} + {\bf b} - \Phi^{(k)}  \right) + {\bf b} \\
+&= {\bf F}  {\bf M} {\bf S} \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S} \left(  \ {\bf F}  {\bf M} {\bf S}  -  {\bf I} \right)\Phi^{(k)} + \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S}  + {\bf I} \right) {\bf b} \\
+&= \left[ {\bf F}  {\bf M} {\bf S} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S} \left(  \ {\bf F}  {\bf M} {\bf S}  -  {\bf I} \right) \right] \Phi^{(k)} + \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S}  + {\bf I} \right) {\bf b}
+\end{aligned} ,
+\end{equation}
+
+\noindent where ${\bf F} \equiv {\bf D}{\bf L}^{-1} $ and we recall that ${\bf b} = {\bf D}{\bf L}^{-1}  {\bf Q}$.
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Upscatter Summary
@@ -838,11 +878,11 @@ N_{i,j,f,K} =  \int_f \vec{n} \cdot  \vec{\nabla} b_i \, b_j .
 \section{Modified Interior Penalty Form of the Diffusion Equation used for Diffusion Synthetic Acceleration Applications}
 \label{sec::DSA_MIP}
 
-In Section \ref{sec::DSA_SIP}, we presented the SIP form of the diffusion equation that uses discontinuous Galerkin finite elements. This form can be used as a general solver for the diffusion equation that contains boundary conditions of the first three kinds: dirichlet, neumann, and robin. From the SIP form, we simply need to make some modifications to account for the boundary conditions that arise from the transport solution error as detailed in Section \ref{sec::DSA_DSA}. The two types of transport conditions that we have considered in this work are dirichlet type conditions (incoming incident and vacuum) and neumann type conditions (reflecting). Since there is no iteration error associated with the incident boundary conditions, we can express the corresponding diffusion boundary condition as a zero dirichlet condition ($\delta \Phi_0 = 0$). Conversely, reflecting transport boundary conditions yield neumann diffusion boundary conditions. However, depending on the mesh and sweep ordering employed, we are not guaranteed to have this reflecting boundary condition error, $\delta J^{inc}$, be strictly zero. If we seek to accelerate the $k$ iterate, then the error in the incoming current, $\delta J^{inc}$, is given by
+In Section \ref{sec::DSA_SIP}, we presented the SIP form of the diffusion equation that uses discontinuous Galerkin finite elements. This form can be used as a general solver for the diffusion equation that contains boundary conditions of the first three kinds: dirichlet, neumann, and robin. From the SIP form, we simply need to make some modifications to account for the boundary conditions that arise from the transport solution error as detailed in Section \ref{sec::DSA_DSA}. The two types of transport conditions that we have considered in this work are dirichlet type conditions (incoming incident and vacuum) and neumann type conditions (reflecting). Since there is no iteration error associated with the incident boundary conditions, we can express the corresponding diffusion boundary condition as a zero dirichlet condition ($\delta \Phi_0 = 0$). Conversely, reflecting transport boundary conditions yield neumann diffusion boundary conditions that we express as $\delta J^{inc}$. However, depending on the mesh and sweep ordering employed, we are not guaranteed to have this reflecting boundary condition error be strictly zero. If we seek to accelerate the $k$ iterate, then the error in the incoming current, $\delta J^{inc}$, is given by
 
 \begin{equation}
 \label{eq::MIP_inc_curr_error}
-\delta J^{inc} = \sum\displaylimits_{\vec{\Omega}_m \cdot \vec{n} > 0} w_m \left(\vec{\Omega}_m \cdot \vec{n} \right) \delta \Psi_m^{(k)}
+\delta J^{inc} = \sum\displaylimits_{\vec{\Omega}_m \cdot \vec{n} > 0} w_m \left(\vec{\Omega}_m \cdot \vec{n} \right) \delta \Psi_m^{(k)}.
 \end{equation}
 
  \noindent Using these modifications to the SIP diffusion form with the appropriate boundary conditions required to express the transport solution error, we write the MIP diffusion form as
@@ -887,7 +927,7 @@ b^{MIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  + \Big< b, \delta  J^{inc}  \Big
 \section{Solving the MIP Diffusion Problem}
 \label{sec::DSA_Solving}
 
-Equations (\ref{eq::MIP_bilinear_form}) and (\ref{eq::MIP_linear_form}) form the system matrix and right-hand-side, respectively, that we need to solve for a given DSA step. Just like the system of equations for the transport problem is too large to solve in a direct manner, we again employ an iterative scheme. Because the MIP bilinear form is SPD, we have natural recourse to use the simple Preconditioned Conjugate Gradient (PCG) method \cite{saad2003iterative}. If the system of equations you are trying to solve for is SPD, then Conjugate Gradient (CG) is the most light-weight iterative method possible. It has a low memory footprint and is guaranteed to converge in ($N_{dof}/2$) iterations, even if it is ill-conditioned. With a good preconditioner, then the iteration counts with PCG can be reduced substantially further. If we define ${\bf A}$ as the MIP system matrix to be inverted and ${\bf b}$ as the right-hand-side vector, then the CG algorithm acts by minimizing the residual ${\bf r} = {\bf b} - {\bf A} {\bf x}$. This is accomplished by taking successive operations of matrix-vector multiplications on conjugate krylov vectors, ${\bf p}_k$. The PCG algorithm performs one additional step by solving the equation ${\bf M} {\bf z_k} = {\bf r_k}$ at each CG iteration, where ${\bf M}$ is some preconditioner. We provide the simple pseudocode for PCG in algorithm \ref{alg::DSA_PCG}.
+Equations (\ref{eq::MIP_bilinear_form}) and (\ref{eq::MIP_linear_form}) form the system matrix and right-hand-side, respectively, that we need to solve for a given DSA step. Just like the system of equations for the transport problem is too large to solve in a direct manner, we again employ an iterative scheme. Because the MIP bilinear form is SPD, we have natural recourse to use the simple Preconditioned Conjugate Gradient (PCG) method \cite{saad2003iterative}. If the system of equations you are trying to solve for is SPD, then Conjugate Gradient (CG) is the most light-weight iterative method possible. It has a low memory footprint and is guaranteed to converge in ($N_{dof}/2$) iterations, even if it is ill-conditioned. With a good preconditioner, the iteration counts with PCG can be reduced substantially further. If we define ${\bf A}$ as the MIP system matrix to be inverted and ${\bf b}$ as the right-hand-side vector, then the CG algorithm acts by minimizing the residual ${\bf r} = {\bf b} - {\bf A} {\bf x}$. This is accomplished by taking successive operations of matrix-vector multiplications on conjugate krylov vectors, ${\bf p}_k$. The PCG algorithm performs one additional step by solving the equation ${\bf M} {\bf z_k} = {\bf r_k}$ at each CG iteration, where ${\bf M}$ is some preconditioner. We provide the simple pseudocode for PCG in algorithm \ref{alg::DSA_PCG}.
 
 There are several choices of preconditioners that can be employed with PCG \cite{saad2003iterative}. Depending on the structure and conditioning of the matrix to be inverted, some simple preconditioners can be effective. We can decompose the MIP system matrix, ${\bf A} = {\bf L} + {\bf D} + {\bf L}^T$, into its strictly lower-triangular portion, ${\bf L}$, its strictly diagonal portion, ${\bf D}$, and its strictly lower-triangular portion, ${\bf L}^T$. The simplest preconditioner we could employ is Jacobi preconditioning, which is just the strictly diagonal portion of the system matrix: ${\bf M} = {\bf D}$. This preconditioner is effective for diagonally-dominant matrices. The next preconditioner would be a simple Symmetric Successive Over-Relaxation (SSOR) method: ${\bf M} (\omega) = \frac{\omega}{2-\omega} \left( \frac{1}{\omega}{\bf D} + {\bf L}  \right)  {\bf D}^{-1}  \left( \frac{1}{\omega}{\bf D} + {\bf L}  \right)^T$. The PCG algorithm can be simplified with this preconditioner choice by the Eisenstat trick \cite{eisenstat1981efficient}. The final simple preconditioner that we will consider is Incomplete LU Factorization (ILU). Instead of simply decomposing the system matrix, we factorize it into a unit-lower triangular portion, $\tilde{{\bf L}}$, and an upper triangular portion, $\tilde{{\bf U}}$. These factorized matrices then form our preconditioner: ${\bf M} =\tilde{{\bf L}}\tilde{{\bf U}}$. From this factorization, the preconditioning step to solve ${\bf M} {\bf z}= {\bf r}$ is accomplished by first solving $\tilde{{\bf L}} {\bf y}= {\bf r} $, followed by $\tilde{{\bf U}} {\bf z}= {\bf y} $. While this leads to a second preconditioning step, the factorized matrices are easy to invert since they are triangular.
 
