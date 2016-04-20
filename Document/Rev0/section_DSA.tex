@@ -156,13 +156,83 @@ The procedures outlined in Section \ref{sec::DSA_Introduction_SA} define a gener
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - 1-group
-\subsection{Simple 1-group DSA Strategy}
+\subsection{Simple 1-Group, Isotropic DSA Strategy}
 \label{sec::DSA_DSA_1G}
+
+Section \ref{sec::DSA_Introduction_SA} details the general methodology behind synthetic acceleration strategies. We now present a detailed derivation of DSA for a 1-group transport problem with isotropic scattering. This simple transport problem can be described by the following equation,
 
 \begin{equation}
 \label{eq::DSA_1G_simple_trans}
-\vec{\Omega}_m \cdot \vec{\nabla} \psi_m + \sigma_t \psi_m =  c \frac{ \sigma_t}{4 \pi} \phi + \frac{Q}{4 \pi}
+\vec{\Omega} \cdot \vec{\nabla} \psi + \sigma_t \psi =  \frac{ \sigma_s}{4 \pi} \phi + \frac{Q}{4 \pi}
 \end{equation}
+
+\noindent where we do not include the spatial parameter for clarity. If $\mathbb{D}$ is the diameter of the problem domain, then Eq. (\ref{eq::DSA_1G_simple_trans}) can slowly converge if the problem is optically thick ($ \sigma_t \, \mathbb{D} \gg 1$) and there is little absorption in the problem ($\sigma_s \approx \sigma_t$). Next, we define the scattering ratio, $c$, as the ratio between scattering and total cross sections: $c =\frac{\sigma_s}{\sigma_t}$. We insert this definition into Eq. (\ref{eq::DSA_1G_simple_trans}) to yield a simplified transport equation,
+
+\begin{equation}
+\label{eq::DSA_1G_simple_trans_withc}
+\vec{\Omega} \cdot \vec{\nabla} \psi + \sigma_t \psi =  c \frac{ \sigma_t}{4 \pi} \phi + \frac{Q}{4 \pi}. 
+\end{equation}
+
+\noindent The Richardson method then calls for the following iterative approach where we use the half-iterate index, ${(k+1/2)}$,
+
+\begin{equation}
+\label{eq::DSA_1G_SI}
+\vec{\Omega} \cdot \vec{\nabla} \psi^{(k+1/2)} + \sigma_t \psi^{(k+1/2)} =  c \frac{ \sigma_t}{4 \pi} \phi^{(k)} + \frac{Q}{4 \pi}. 
+\end{equation}
+
+\noindent We could iterate on Eq. (\ref{eq::DSA_1G_SI}) continuously until we arrive at a converged solution. Each iteration simply adds the contribution of the scattering source from the previous iteration into the total source term. However, as it was stated previously, this process can be prohibitively slow if the problem is optically thick with little absorption. 
+
+Following the methodology of synthetic acceleration from Section \ref{sec::DSA_Introduction_SA}, we now need to determine a formulation for the iteration error of this transport problem so that we can employ the correction procedure of Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}). An exact definition for the iteration error can be obtained by taking the difference of Eq. (\ref{eq::DSA_1G_SI}) from Eq. (\ref{eq::DSA_1G_simple_trans_withc}). This forms the following error equation,
+
+\begin{equation}
+\label{eq::DSA_1G_SI_err}
+\vec{\Omega} \cdot \vec{\nabla} \left( \psi - \psi^{(k+1/2)} \right) + \sigma_t \left( \psi -  \psi^{(k+1/2)}\right) =  c \frac{ \sigma_t}{4 \pi} \left( \phi -  \phi^{(k)}\right)  ,
+\end{equation}
+
+\noindent where we note that the distributed source, $Q$, vanishes. We can then add and subtract the term $c \frac{ \sigma_t}{4 \pi} \phi^{(k+1/2)}$ into the right-hand-side of Eq. (\ref{eq::DSA_1G_SI_err}) to form 
+
+\begin{equation}
+\label{eq::DSA_1G_SI_err_corrected}
+\vec{\Omega} \cdot \vec{\nabla} \left( \psi - \psi^{(k+1/2)} \right) + \sigma_t \left( \psi -  \psi^{(k+1/2)}\right) =  c \frac{ \sigma_t}{4 \pi} \left( \phi -  \phi^{(k+1/2)}\right) + c \frac{ \sigma_t}{4 \pi} \left( \phi^{(k+1/2)} -  \phi^{(k)}\right)  
+\end{equation}
+
+\noindent For brevity, we can define succinct terms for the error in the angular and scalar fluxes as
+
+\begin{equation}
+\label{eq::DSA_1G_psierr_term}
+\delta \psi^{(k+1/2)} \equiv  \psi - \psi^{(k+1/2)}  ,
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::DSA_1G_phierr_term}
+ \delta \phi^{(k+1/2)} \equiv \int\displaylimits_{4 \pi} \delta \psi^{(k+1/2)} ,
+\end{equation}
+
+\noindent respectively. Inserting these error terms into Eq. (\ref{eq::DSA_1G_SI_err_corrected}) leads to the final, compact form for the continuous transport error:
+
+\begin{equation}
+\label{eq::DSA_1G_SI_simple}
+\vec{\Omega} \cdot \vec{\nabla} \delta \psi^{(k+1/2)} + \sigma_t \delta \psi^{(k+1/2)} =  c \frac{ \sigma_t}{4 \pi} \delta \phi^{(k+1/2)}+ c \frac{ \sigma_t}{4 \pi} \left( \phi^{(k+1/2)} -  \phi^{(k)}\right)   .
+\end{equation}
+
+\noindent If we could efficiently solve for Eq. (\ref{eq::DSA_1G_SI_simple}), then we would have the exact distribution of the transport error and could obtain the exact transport solution with 
+
+\begin{equation}
+\label{eq::DSA_1G_exact_update}
+\psi = \psi^{(k+1/2)} + \delta \psi^{(k+1/2)} .
+\end{equation}
+
+\noindent However, as stated in Section \ref{sec::DSA_Introduction_SA}, solving Eq. (\ref{eq::DSA_1G_SI_simple}) is just as difficult as the original transport equation. Therefore, we will form an approximate, low-order equation to Eq. (\ref{eq::DSA_1G_SI_simple}) that is easier to compute.
+
+For this optically thick transport problem that is dominated by scattering, the diffusive error modes dominate \cite{ref::adams_larsen_iter_methods}. Therefore, our low-order approximation to Eq. (\ref{eq::DSA_1G_SI_simple}) needs to attenuate these diffusive modes. 
+
+
+
+
+\subsection{THIS IS A DELIMITER!!!}
+\label{sec::blah}
 
 Recall the operator form of the fully discretized transport equation as defined in Section \ref{sec::Sn_Solution_Iterative},
 
@@ -202,13 +272,20 @@ D_{p,n} \equiv \sum_{m=1}^M w_m Y_{p,n} (\vec{\Omega}_m)  \Psi(\vec{\Omega_m}) ,
  {\bf \Phi}^{(k+1/2)}  =  {\bf D} {\bf L}^{-1} {\bf M} {\bf \Sigma}  {\bf \Phi}^{(k)} +  {\bf D} {\bf L}^{-1}   {\bf Q} .
 \end{equation}
 
+\noindent We define the operators ${\bf T} \equiv {\bf D} {\bf L}^{-1} {\bf M} {\bf \Sigma}$ and ${\bf b} \equiv {\bf D} {\bf L}^{-1}   {\bf Q}$ and insert them into Eq. (\ref{eq::DSA_1G_trans_eq_ops_mom}) to form
+
+\begin{equation}
+\label{eq::DSA_1G_trans_eq_ops_mom_simple}
+ {\bf \Phi}^{(k+1/2)}  = {\bf T}  {\bf \Phi}^{(k)} +  {\bf b} .
+\end{equation}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - MG
 \subsection{DSA Acceleration Strategies for Thermal Neutron Upscattering}
 \label{sec::DSA_DSA_MG}
 
-
+We have just provided a detailed description of the DSA methodology for a simple, 1-group, isotropic scattering transport problem.
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Two-Grid
@@ -555,7 +632,7 @@ R_g^{(k+1/2)} = \sum_{g'=1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)} -
 \end{aligned} ,
 \end{equation}
 
-\noindent where ${\bf F} \equiv {\bf D}{\bf L}^{-1} $ and we recall that ${\bf b} = {\bf D}{\bf L}^{-1}  {\bf Q}$.
+\noindent where ${\bf F} \equiv {\bf D}{\bf L}^{-1} $ and we recall that ${\bf b} = {\bf D}{\bf L}^{-1}  {\bf Q}$. Equation (\ref{eq::DSA_WGS_op_update_simple}) provides the iteration matrix for the MJA method and its eigenspectrum can be analyzed to provide insight into the method.
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Upscatter Summary
@@ -704,7 +781,7 @@ Unfortunately, we are now left with the burden of deciding what to do with eleme
 
 \noindent where the face's unit normal direction, $\vec{n}$, has been arbitrarily chosen.
 
-These weak formulations for the dirichlet boundary conditions and the interior faces can now inserted into Eq. (\ref{eq::SIP_diff_eq_weak_cellK_NR}). From there, we sum the remaining inner products besides the interior face terms across all elements. With this completed, the SIP form of the diffusion equation can be succinctly written as
+These weak formulations for the dirichlet boundary conditions and the interior faces can now be inserted into Eq. (\ref{eq::SIP_diff_eq_weak_cellK_NR}). From there, we sum the remaining inner products besides the interior face terms across all elements. With this completed, the SIP form of the diffusion equation can be succinctly written as
 
 \begin{equation}
 a^{SIP}( b, \Phi) = b^{SIP}(b),
@@ -734,27 +811,27 @@ b^{SIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  - \Big<   b, J_{0}  \Big>_{\part
 \noindent As previously stated, the general penalty term, $\kappa$ needs to have sufficient positive measure to ensure stability. From previous investigations \cite{ref::DSA_wang_ragusa,wang2009adaptive,turcksin2014discontinuous}, we choose the SIP penalty coefficient to be face dependent with the following form,
 
 \begin{equation}
-\kappa_e^{SIP} = 
+\kappa_f^{SIP} = 
 \begin{cases}
-	\frac{c}{2} \left(  \frac{D^+}{h^+} + \frac{D^-}{h^-} \right) & e \in E_h^i\\ 
-	c \frac{D^-}{h^-}& e \in \partial \mathcal{D}
+	\frac{c}{2} \left(  \frac{D^+}{h^+} + \frac{D^-}{h^-} \right) & f \in E_h^i\\ 
+	c \frac{D^-}{h^-}& f \in \partial \mathcal{D}
 \end{cases},
 \label{eq::SIP_penalty_term}
 \end{equation}
 
-\noindent for interior, $E_h^i$, and boundary, $\partial \mathcal{D}$, faces respectively. In Eq. (\ref{eq::SIP_penalty_term}), $h^\pm$ is the orthogonal projection of the face, $e$, into the cells defined by the trace in Eq. (\ref{eq::solution_trace}). Turcksin and Ragusa, \cite{turcksin2014discontinuous}, defined $h^\pm$ for 2D polygons, whose definitions can be seen in Table \ref{tab::orth_proj_2D}. The orthogonal projection for both triangles and quadrilaterals can be explicitly defined from simple geometric relationships. However, for polygons with $>4$ faces, there is no explicit geometric relationship to define the orthogonal projection. Instead, the polygon is approximated as regular, and the orthogonal projection is no longer face-dependent. For polygons with an even number of faces greater than 4, the orthogonal projection is twice the apothem, which is the line segment between the polygon's center and the midpoint of each polygon's side. For odd number of faces greater than 4, the polygon's orthogonal projection becomes the sum of the apothem and the circumradius.
+\noindent for interior, $E_h^i$, and boundary, $\partial \mathcal{D}$, faces respectively. In Eq. (\ref{eq::SIP_penalty_term}), $h^\pm$ is the orthogonal projection of the face, $f$, into the cells defined by the trace in Eq. (\ref{eq::solution_trace}). Turcksin and Ragusa, \cite{turcksin2014discontinuous}, defined $h^\pm$ for 2D polygons, whose definitions can be seen in Table \ref{tab::orth_proj_2D}. The orthogonal projection for both triangles and quadrilaterals can be explicitly defined from simple geometric relationships. However, for polygons with $>4$ faces, there is no explicit geometric relationship to define the orthogonal projection. Instead, the polygon is approximated as regular, and the orthogonal projection is no longer face-dependent. For polygons with an even number of faces greater than 4, the orthogonal projection is twice the apothem, which is the line segment between the polygon's center and the midpoint of each polygon's side. For odd number of faces greater than 4, the polygon's orthogonal projection becomes the sum of the apothem and the circumradius.
 
- In a similar manner to the 2D orthogonal projections defined in Table \ref{tab::orth_proj_2D}, we define our choice for the extension of the orthogonal projections to 3D in Table \ref{tab::orth_proj_3D}. Like triangles and quadrilaterals in 2D, the orthogonal projections for tetrahedra and hexahedra can be explicitly defined from the volume equations for pyramids and parallelepipeds, respectively. For cells that are not tetrahedra or hexahedra, we introduce an approximation similar to 2D where we treat the cell as a regular polyhedron. In 3D there is no compact formula that can be given, unlike the definitions of the apothem and circumradius for 2D. Instead, we take the geometric limit of a polyhedra as the number of faces tends to infinity (a sphere). In this limiting case, the orthogonal projection simply becomes the sphere's diameter. We can then define the sphere's diameter with geometric information that would also be available to polyhedra by dividing a sphere's volume (the polyhedral volume) by its surface area (the sum of the areas of the polyhedral faces). While this leads to a gross approximation of the orthogonal projection for polyhedra that are not tetrahedra or hexahedra, it will provide appropriate geometric measure, especially for strictly convex polyhedra.
+ In a similar manner to the 2D orthogonal projections defined in Table \ref{tab::orth_proj_2D}, we define our choice for the extension of the orthogonal projections to 3D in Table \ref{tab::orth_proj_3D}. Like triangles and quadrilaterals in 2D, the orthogonal projections for tetrahedra and hexahedra can be explicitly defined from the volume equations for pyramids and parallelepipeds, respectively. For cells that are not tetrahedra or hexahedra, we introduce an approximation similar to 2D where we treat the cell as a regular polyhedron. In 3D there is no compact formula that can be given, unlike the definitions of the apothem and circumradius for 2D. Instead, we take the geometric limit of a polyhedra as the number of faces tends to infinity (a sphere). In this limiting case, the orthogonal projection simply becomes the sphere's diameter. We can then define the sphere's diameter with geometric information that would also be available to polyhedra by dividing a sphere's volume (the polyhedral volume) by its surface area (the sum of the areas of the polyhedral faces). While this leads to an approximation of the orthogonal projection for polyhedra that are not tetrahedra or hexahedra, it will provide appropriate geometric measure, especially for strictly convex polyhedra.
 
 \begin{table}[h]
 \centering
-\caption{Orthogonal projection, $h$, for different polygonal types: $A_K$ is the area of cell $K$, $L_e$ is the length of face $e$, and $P_K$ is the perimeter of cell $K$.}
+\caption{Orthogonal projection, $h$, for different polygonal types: $A_K$ is the area of cell $K$, $L_f$ is the length of face $f$, and $P_K$ is the perimeter of cell $K$.}
 \def\arraystretch{1.4}
 \begin{tabular}{|c|c|c|c|c|}
 	\hline
 	Number of Vertices & 3 & 4 & $>4$ and even& $>4$ and odd \\
 	\hline
-	$h$ & $2 \frac{A_K}{L_e}$ & $\frac{A_K}{L_e}$ & $4 \frac{A_K}{P_K}$ & $2 \frac{A_K}{P_K} + \sqrt{\frac{2 A_K}{N_K \sin(\frac{2 \pi}{N_K})}}$ \\
+	$h$ & $2 \frac{A_K}{L_f}$ & $\frac{A_K}{L_f}$ & $4 \frac{A_K}{P_K}$ & $2 \frac{A_K}{P_K} + \sqrt{\frac{2 A_K}{N_K \sin(\frac{2 \pi}{N_K})}}$ \\
 	\hline
 \end{tabular}
 \label{tab::orth_proj_2D}
@@ -762,13 +839,13 @@ b^{SIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  - \Big<   b, J_{0}  \Big>_{\part
 
 \begin{table}[h]
 \centering
-\caption{Orthogonal projection, $h$, for different polyhedral types: $V_K$ is the volume of cell $K$, $A_e$ is the area of face $e$, and $SA_K$ is the surface area of cell $K$.}
+\caption{Orthogonal projection, $h$, for different polyhedral types: $V_K$ is the volume of cell $K$, $A_f$ is the area of face $f$, and $SA_K$ is the surface area of cell $K$.}
 \def\arraystretch{1.4}
 \begin{tabular}{|c|c|c|c|}
 	\hline
 	Number of Faces & 4 & 6 & otherwise \\
 	\hline
-	$h$ & $3 \frac{V_K}{A_e}$ & $\frac{V_K}{A_e}$ & $6 \frac{V_K}{SA_K}$  \\ [1ex]
+	$h$ & $3 \frac{V_K}{A_f}$ & $\frac{V_K}{A_f}$ & $6 \frac{V_K}{SA_K}$  \\ [1ex]
 	\hline
 \end{tabular}
 \label{tab::orth_proj_3D}
