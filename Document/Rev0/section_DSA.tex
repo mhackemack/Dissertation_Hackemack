@@ -151,7 +151,7 @@ The new iterative procedure begins by simply taking the half-iterate of Eq. (\re
 \section{Diffusion Synthetic Acceleration Methodologies}
 \label{sec::DSA_DSA}
 
-The procedures outlined in Section \ref{sec::DSA_Introduction_SA} define a general methodology to perform synthetic acceleration on the transport equation. We could utilize any of the acceleration strategies that have been developed over the years including DSA, TSA, BPA, etc. The only difference arises in what form the low-order operator, ${\bf W}$, will take. We obviously are focusing on DSA for this dissertation work, and we do so by first describing in Section \ref{sec::DSA_DSA_1G} a simple 1-group specification of the synthetic acceleration methodology just presented. We then present a pair of strategies that can be employed to accelerate thermal neutron upscattering in Section \ref{sec::DSA_DSA_MG}.
+The procedures outlined in Section \ref{sec::DSA_Introduction_SA} define a general methodology to perform synthetic acceleration on the transport equation. We could utilize any of the acceleration strategies that have been developed over the years including DSA, TSA, BPA, etc. The only difference arises in what form the low-order operator, ${\bf W}$, will take. We obviously are focusing on DSA for this dissertation work, and we do so by first describing in Section \ref{sec::DSA_DSA_1G} a simple 1-group, continuous specification of the synthetic acceleration methodology just presented. Then, we present a generalized description of the 1-group DSA strategy for the discretized transport equation in Section \ref{sec::DSA_DSA_Operator}. We also show how DSA acts a preconditioner for the iterative transport methods. We conclude this section on DSA methodologies by presenting different strategies that can be employed to accelerate thermal neutron upscattering in Section \ref{sec::DSA_DSA_MG}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -166,34 +166,27 @@ Section \ref{sec::DSA_Introduction_SA} details the general methodology behind sy
 \vec{\Omega} \cdot \vec{\nabla} \psi + \sigma_t \psi =  \frac{ \sigma_s}{4 \pi} \phi + \frac{Q}{4 \pi}
 \end{equation}
 
-\noindent where we do not include the spatial parameter for clarity. If $\mathbb{D}$ is the diameter of the problem domain, then Eq. (\ref{eq::DSA_1G_simple_trans}) can slowly converge if the problem is optically thick ($ \sigma_t \, \mathbb{D} \gg 1$) and there is little absorption in the problem ($\sigma_s \approx \sigma_t$). Next, we define the scattering ratio, $c$, as the ratio between scattering and total cross sections: $c =\frac{\sigma_s}{\sigma_t}$. We insert this definition into Eq. (\ref{eq::DSA_1G_simple_trans}) to yield a simplified transport equation,
-
-\begin{equation}
-\label{eq::DSA_1G_simple_trans_withc}
-\vec{\Omega} \cdot \vec{\nabla} \psi + \sigma_t \psi =  c \frac{ \sigma_t}{4 \pi} \phi + \frac{Q}{4 \pi}. 
-\end{equation}
-
-\noindent The Richardson method then calls for the following iterative approach where we use the half-iterate index, ${(k+1/2)}$,
+\noindent where we do not include the spatial parameter for clarity. If $\mathbb{D}$ is the diameter of the problem domain, then Eq. (\ref{eq::DSA_1G_simple_trans}) can slowly converge if the problem is optically thick ($ \sigma_t \, \mathbb{D} \gg 1$) and there is little absorption in the problem ($\sigma_s \approx \sigma_t$). The Richardson method then calls for the following iterative approach where we use the half-iterate index, ${(k+1/2)}$,
 
 \begin{equation}
 \label{eq::DSA_1G_SI}
-\vec{\Omega} \cdot \vec{\nabla} \psi^{(k+1/2)} + \sigma_t \psi^{(k+1/2)} =  c \frac{ \sigma_t}{4 \pi} \phi^{(k)} + \frac{Q}{4 \pi}. 
+\vec{\Omega} \cdot \vec{\nabla} \psi^{(k+1/2)} + \sigma_t \psi^{(k+1/2)} =   \frac{ \sigma_s}{4 \pi} \phi^{(k)} + \frac{Q}{4 \pi}. 
 \end{equation}
 
-\noindent We could iterate on Eq. (\ref{eq::DSA_1G_SI}) continuously until we arrive at a converged solution. Each iteration simply adds the contribution of the scattering source from the previous iteration into the total source term. However, as it was stated previously, this process can be prohibitively slow if the problem is optically thick with little absorption. 
+\noindent We could iterate on Eq. (\ref{eq::DSA_1G_SI}) continuously until we arrive at a converged solution. Each iteration simply adds the contribution of the scattering source from the previous iteration into the total source term. However, this process can be prohibitively slow if the problem is optically thick with little absorption. 
 
 Following the methodology of synthetic acceleration from Section \ref{sec::DSA_Introduction_SA}, we now need to determine a formulation for the iteration error of this transport problem so that we can employ the correction procedure of Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}). An exact definition for the iteration error can be obtained by taking the difference of Eq. (\ref{eq::DSA_1G_SI}) from Eq. (\ref{eq::DSA_1G_simple_trans_withc}). This forms the following error equation,
 
 \begin{equation}
 \label{eq::DSA_1G_SI_err}
-\vec{\Omega} \cdot \vec{\nabla} \left( \psi - \psi^{(k+1/2)} \right) + \sigma_t \left( \psi -  \psi^{(k+1/2)}\right) =  c \frac{ \sigma_t}{4 \pi} \left( \phi -  \phi^{(k)}\right)  ,
+\vec{\Omega} \cdot \vec{\nabla} \left( \psi - \psi^{(k+1/2)} \right) + \sigma_t \left( \psi -  \psi^{(k+1/2)}\right) =   \frac{ \sigma_s}{4 \pi} \left( \phi -  \phi^{(k)}\right)  ,
 \end{equation}
 
-\noindent where we note that the distributed source, $Q$, vanishes. We can then add and subtract the term $c \frac{ \sigma_t}{4 \pi} \phi^{(k+1/2)}$ into the right-hand-side of Eq. (\ref{eq::DSA_1G_SI_err}) to form 
+\noindent where we note that the distributed source, $Q$, vanishes. We can then add and subtract the term $ \frac{ \sigma_s}{4 \pi} \phi^{(k+1/2)}$ into the right-hand-side of Eq. (\ref{eq::DSA_1G_SI_err}) to form 
 
 \begin{equation}
 \label{eq::DSA_1G_SI_err_corrected}
-\vec{\Omega} \cdot \vec{\nabla} \left( \psi - \psi^{(k+1/2)} \right) + \sigma_t \left( \psi -  \psi^{(k+1/2)}\right) =  c \frac{ \sigma_t}{4 \pi} \left( \phi -  \phi^{(k+1/2)}\right) + c \frac{ \sigma_t}{4 \pi} \left( \phi^{(k+1/2)} -  \phi^{(k)}\right)  
+\vec{\Omega} \cdot \vec{\nabla} \left( \psi - \psi^{(k+1/2)} \right) + \sigma_t \left( \psi -  \psi^{(k+1/2)}\right) =  \frac{ \sigma_s}{4 \pi} \left( \phi -  \phi^{(k+1/2)}\right) +  \frac{ \sigma_s}{4 \pi} \left( \phi^{(k+1/2)} -  \phi^{(k)}\right)  
 \end{equation}
 
 \noindent For brevity, we can define succinct terms for the error in the angular and scalar fluxes as
@@ -214,7 +207,7 @@ Following the methodology of synthetic acceleration from Section \ref{sec::DSA_I
 
 \begin{equation}
 \label{eq::DSA_1G_SI_simple}
-\vec{\Omega} \cdot \vec{\nabla} \delta \psi^{(k+1/2)} + \sigma_t \delta \psi^{(k+1/2)} =  c \frac{ \sigma_t}{4 \pi} \delta \phi^{(k+1/2)}+ c \frac{ \sigma_t}{4 \pi} \left( \phi^{(k+1/2)} -  \phi^{(k)}\right)   .
+\vec{\Omega} \cdot \vec{\nabla} \delta \psi^{(k+1/2)} + \sigma_t \delta \psi^{(k+1/2)} =   \frac{ \sigma_s}{4 \pi} \delta \phi^{(k+1/2)}+  \frac{ \sigma_s}{4 \pi} \left( \phi^{(k+1/2)} -  \phi^{(k)}\right)   .
 \end{equation}
 
 \noindent If we could efficiently solve for Eq. (\ref{eq::DSA_1G_SI_simple}), then we would have the exact distribution of the transport error and could obtain the exact transport solution with 
@@ -224,15 +217,109 @@ Following the methodology of synthetic acceleration from Section \ref{sec::DSA_I
 \psi = \psi^{(k+1/2)} + \delta \psi^{(k+1/2)} .
 \end{equation}
 
-\noindent However, as stated in Section \ref{sec::DSA_Introduction_SA}, solving Eq. (\ref{eq::DSA_1G_SI_simple}) is just as difficult as the original transport equation. Therefore, we will form an approximate, low-order equation to Eq. (\ref{eq::DSA_1G_SI_simple}) that is easier to compute.
+\noindent However, solving Eq. (\ref{eq::DSA_1G_SI_simple}) is just as difficult as the original transport equation. Therefore, we will form an approximate, low-order equation to Eq. (\ref{eq::DSA_1G_SI_simple}) that is easier to compute.
 
-For this optically thick transport problem that is dominated by scattering, the diffusive error modes dominate \cite{ref::adams_larsen_iter_methods}. Therefore, our low-order approximation to Eq. (\ref{eq::DSA_1G_SI_simple}) needs to attenuate these diffusive modes. 
+For this optically thick transport problem that is dominated by scattering, the diffusive error modes that are not attenuated by the transport sweep dominate \cite{ref::adams_larsen_iter_methods}. Our low-order approximation to Eq. (\ref{eq::DSA_1G_SI_simple}) then needs to attenuate these diffusive modes. DSA schemes attenuate the low frequency error modes and underestimate the high frequency modes that are efficiently handled by transport sweeps. Therefore, we will approximate Eq. (\ref{eq::DSA_1G_SI_simple}) with a diffusion equation. We form the standard diffusion equation by taking the continuous transport equation of Eq. (\ref{eq::DSA_1G_simple_trans}) and performing the following steps:
 
+\begin{enumerate}
+\item Compute the 0th angular moment of Eq. (\ref{eq::DSA_1G_simple_trans}).
+\item Compute the 1st angular moment of Eq. (\ref{eq::DSA_1G_simple_trans}).
+\item Use the $P_1$ approximation to evaluate the pressure tensor in the 1st angular moment equation.
+\item Represent the error equation from the derived standard diffusion equation.
+\end{enumerate}
 
+We first take the 0th angular moment of the continuous transport equation which is simply done by integrating Eq. (\ref{eq::DSA_1G_simple_trans}) over all angle. This yields
 
+\begin{equation}
+\label{eq::DSA_1G_0mom}
+\vec{\nabla} \cdot \vec{J} + \sigma_a \phi =  Q,
+\end{equation}
 
-\subsection{THIS IS A DELIMITER!!!}
-\label{sec::blah}
+\noindent where we make use of the fact that $\sigma_t = \sigma_a + \sigma_s $ and that the angular current, $\vec{J}$, is defined as
+
+\begin{equation}
+\label{eq::DSA_1G_current}
+\vec{J} = \int\displaylimits_{4 \pi}  d \Omega \, \vec{\Omega}\, \psi (\vec{\Omega})   .
+\end{equation}
+
+\noindent Next, we take the 1st angular moment of Eq. (\ref{eq::DSA_1G_simple_trans}) by multiplying the equation by $\vec{\Omega}$ and then integrating over all angles. This then yields 
+
+\begin{equation}
+\label{eq::DSA_1G_1mom}
+\vec{\nabla} \cdot  \int\displaylimits_{4 \pi}  d \Omega \, \vec{\Omega}\, \vec{\Omega} \, \psi (\vec{\Omega}) + \sigma_t \vec{J} = \vec{0},
+\end{equation}
+
+\noindent where the first term is a pressure term defined by the tensor product, $ \vec{\Omega} \, \vec{\Omega}$, which has the form,
+
+\begin{equation}
+\label{eq::DSA_1G_TP}
+\vec{\Omega}\, \vec{\Omega}  =    \left[
+\begin{array}{ccc}
+\Omega_x \Omega_x & \Omega_x \Omega_y & \Omega_x \Omega_z \\
+\Omega_y \Omega_x & \Omega_y \Omega_y & \Omega_y \Omega_z \\
+\Omega_z \Omega_x & \Omega_z \Omega_y & \Omega_z \Omega_z 
+\end{array}
+\right] .
+\end{equation}
+
+\noindent We then evaluate this pressure tensor by using the $P_1$ approximation on the angular flux. The $P_1$ expansion of the angular flux is linearly anisotropic and has the form
+
+\begin{equation}
+\label{eq::DSA_1G_P1approx}
+\psi = \frac{1}{4 \pi} \left[ \phi + 3 \vec{\Omega} \cdot \vec{J}  \right].
+\end{equation}
+
+\noindent Inserting this $P_1$ approximation into the pressure term and performing the angular integration leads to the following,
+
+\begin{equation}
+\label{eq::DSA_1G_P1eval}
+\begin{aligned}
+\vec{\nabla} \cdot  \int\displaylimits_{4 \pi}  d \Omega \, \vec{\Omega}\, \vec{\Omega} \, \psi (\vec{\Omega}) &\approx \frac{1}{4 \pi} \vec{\nabla} \cdot \int\displaylimits_{4 \pi}  d \Omega \, \vec{\Omega}\, \vec{\Omega} \, \left[ \phi + 3 \vec{\Omega} \cdot \vec{J} \right] \\
+&= \frac{1}{4 \pi} \vec{\nabla} \cdot \left[  \phi  \int\displaylimits_{4 \pi}  d \Omega \, \vec{\Omega}\, \vec{\Omega}    + 3 \vec{J}  \int\displaylimits_{4 \pi}  d \Omega \, \vec{\Omega}\, \vec{\Omega} \, \vec{\Omega}   \right] \\
+&= \frac{1}{4 \pi} \vec{\nabla} \cdot \left[ \phi  \frac{4 \pi}{3} \mathbb{I} + \vec{0} \right] \\
+&= \frac{1}{3} \vec{\nabla} \phi
+\end{aligned} ,
+\end{equation}
+
+\noindent where $\mathbb{I}$ is the identity tensor. Inserting the result of Eq. (\ref{eq::DSA_1G_P1eval}) into Eq. (\ref{eq::DSA_1G_1mom}) yields the approximate form for the 1st angular moment equation:
+
+\begin{equation}
+\label{eq::DSA_1G_1mom_approx}
+\frac{1}{3} \vec{\nabla} \phi+ \sigma_t \vec{J} = \vec{0} .
+\end{equation}
+
+\noindent Finally, we solve for the current, $\vec{J}$, in Eq. (\ref{eq::DSA_1G_1mom_approx}) and insert it into the 0th angular moment equation of Eq. (\ref{eq::DSA_1G_0mom}). This leads to the standard reaction-diffusion equation,
+
+\begin{equation}
+\label{eq::DSA_1G_diffeq_FINAL}
+\vec{\nabla} \cdot D \vec{\nabla} \phi + \sigma_a \phi =  Q ,
+\end{equation}
+
+\noindent where the diffusion coefficient, $D$, has the form: $D = \frac{1}{3 \sigma_t}$. 
+
+Equation (\ref{eq::DSA_1G_diffeq_FINAL}) can then be represented as the low-order operator by properly inserting the error terms and the source residual. The final form for our low-order diffusion operator is the following:
+
+\begin{equation}
+\label{eq::DSA_1G_erreq_FINAL}
+\vec{\nabla} \cdot D \vec{\nabla} \delta \phi^{(k+1/2)} + \sigma_a \delta \phi^{(k+1/2)} = \sigma_s \left( \phi^{(k+1/2)} -  \phi^{(k)}\right)  .
+\end{equation}
+
+\noindent Equation (\ref{eq::DSA_1G_erreq_FINAL}) represents the continuous form for the error operator which has not been spatially discretized. There are many such discretization schemes that could be employed as outlined in Section \ref{sec::DSA_Introduction_History}. We leave the details of the discretization scheme that we will employ in this work until Section \ref{sec::DSA_SIP}. Once this approximate error distribution, $\delta \phi^{(k+1/2)}$, is computed by any solution algorithm of choice, the full-iterate correction of the scalar flux is given by:
+
+\begin{equation}
+\label{eq::DSA_1G_update}
+ \phi^{(k+1)} =  \phi^{(k+1/2)} + \delta \phi^{(k+1/2)} .
+\end{equation}
+
+\noindent Thus far, we have presented a DSA scheme to accelerate the continuous 1-group, isotropic transport equation. We did not prescribe an angular or spatial discretization scheme for the transport and derived low-order diffusion equation. Next in Section \ref{sec::DSA_DSA_Operator}, we detail a generalized DSA strategy for the discretized 1-group transport problem using operator notation. We then show how these DSA schemes form preconditioned operators for our Richardson and Krylov iterative methods.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - 1G Operator
+\subsection{Generalized 1-Group DSA Operators}
+\label{sec::DSA_DSA_Operator}
+
+Section \ref{sec::DSA_DSA_1G} defined the DSA strategy for the simple case of the continuous, 1-group, isotropic transport equation. We now provide a detailed description of the DSA strategy for a generally-dscretized, 1-group transport problem using operator notation. We do this by again detailing how the error equation is formed from the discretized iterative equations. Then, we detail how the transport error equation can be restricted and prolongated from the coarse-grid, low-order diffusion operator. Finally, we combine all the operators into the appropriate correction equation, that is the discretized analogue to Eq. (\ref{eq::DSA_1G_update}).
 
 Recall the operator form of the fully discretized transport equation as defined in Section \ref{sec::Sn_Solution_Iterative},
 
@@ -244,25 +331,25 @@ Recall the operator form of the fully discretized transport equation as defined 
 \end{aligned},
 \end{equation}
 
-\noindent where ${\bf L}$ is the total interaction and streaming operator, ${\bf M}$ is the moment-to-discrete operator, ${\bf D}$ is the discrete-to-moment operator, ${\bf \Sigma}$ is the scattering operator, and ${\bf Q}$ is the forcing function. In this case, we simply treat this discretized problem as only having 1 energy group. The functional form of the discretized moment-to-discrete and discrete-to-moment operators are
+\noindent where ${\bf L}$ is the total interaction and streaming operator, ${\bf M}$ is the moment-to-discrete operator, ${\bf D}$ is the discrete-to-moment operator, ${\bf \Sigma}$ is the scattering operator, and ${\bf Q}$ is the forcing function. In this case, we simply treat this discretized problem as only having 1 energy group, but no restriction on the order of the Spherical Harmonic expansion, $N_p$. The functional form of the discretized moment-to-discrete and discrete-to-moment operators are
 
 \begin{equation}
 \label{eq::DSA_1G_M}
-M_m \equiv \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi}   \sum_{n=-p}^{p}  Y_{p,n} (  \vec{\Omega}_m )   ,
+M_{m} \equiv \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi}   \sum_{n=-p}^{p}  Y_{p,n} (  \vec{\Omega}_m )   ,
 \end{equation}
 
 \noindent and 
 
 \begin{equation}
 \label{eq::DSA_1G_D}
-D_{p,n} \equiv \sum_{m=1}^M w_m Y_{p,n} (\vec{\Omega}_m)  \Psi(\vec{\Omega_m}) ,
+D_{p,n} \equiv \sum_{m=1}^M w_m Y_{p,n} (\vec{\Omega}_m) ,
 \end{equation}
 
-\noindent respectively. This means that the operation ${\bf D} {\bf L}^{-1}$ corresponds to a full-domain transport sweep followed by the computation of the flux moments from the angular flux. We next apply our half-iterate and previous iterate indices on Eq. (\ref{eq::DSA_1G_trans_eq_ops}) to form the iteration procedure for our transport equation
+\noindent respectively. This means that the operation ${\bf D} {\bf L}^{-1}$ corresponds to a full-domain transport sweep followed by the computation of the flux moments from the angular flux. We next apply our half-iterate and previous iterate indices on Eq. (\ref{eq::DSA_1G_trans_eq_ops}) to form the Richardson iteration procedure for our transport equation:
 
 \begin{equation}
 \label{eq::DSA_1G_trans_eq_ops_its}
-{\bf L} {\bf \Psi}^{(k+1/2)}= {\bf M} {\bf \Sigma} {\bf \Phi}^{(k)}  +    {\bf Q} 
+{\bf L} {\bf \Psi}^{(k+1/2)}= {\bf M} {\bf \Sigma} {\bf \Phi}^{(k)}  +    {\bf Q} .
 \end{equation}
 
 \noindent We can then use the ${\bf D} {\bf L}^{-1}$ operator to present our transport equation of Eq. (\ref{eq::DSA_1G_trans_eq_ops_its}) in terms of just the half-iterate flux moments,
@@ -279,20 +366,76 @@ D_{p,n} \equiv \sum_{m=1}^M w_m Y_{p,n} (\vec{\Omega}_m)  \Psi(\vec{\Omega_m}) ,
  {\bf \Phi}^{(k+1/2)}  = {\bf T}  {\bf \Phi}^{(k)} +  {\bf b} .
 \end{equation}
 
+\noindent Next, the functional form for the iteration error equation is formed by taking the difference of Eq. (\ref{eq::DSA_1G_trans_eq_ops_its}) from the first line of Eq. (\ref{eq::DSA_1G_trans_eq_ops}). This yields the following discretized iteration error equation,
+
+\begin{equation}
+\label{eq::DSA_ops_trans_err}
+{\bf L} \delta {\bf \Psi}^{(k+1/2)} - {\bf M} {\bf \Sigma} \delta {\bf \Phi}^{(k+1/2)}  =   {\bf M} {\bf \Sigma} \left( {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)}  \right) .
+\end{equation}
+
+\noindent In a similar manner as outlined in Section \ref{sec::DSA_DSA_1G}, the low-order diffusion operator for the transport error of Eq. (\ref{eq::DSA_ops_trans_err}) can be formed by taking its 0th and 1st angular moments. The left-hand-side of this error equation, which contains the reaction and diffusion terms, is now given by the single operator ${\bf A}$. The diffusion correction to the transport solution after the $(k+1/2)$ Richardson iteration is given by
+
+\begin{equation}
+\label{eq::DSA_ops_corr}
+ \delta {\bf \Phi}^{(k+1/2)}  = {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left( {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)}  \right) ,
+\end{equation}
+
+\noindent where {\bf P} and {\bf X} are the prolongation and restriction operators, respectively. The restriction operator acts by limiting the contributions to the low-order residual to the 0th (and maybe 1st) moments. Then once the diffusion correction, $\delta {\bf \Phi}^{(k+1/2)}$, is calculated, the prolongation operator manipulates the error corrections onto the appropriate flux moments. With the definitions of the half-iterate solution and the diffusion correction given in Eqs. (\ref{eq::DSA_1G_trans_eq_ops_mom}) and (\ref{eq::DSA_ops_corr}), respectively, we can form the full-iterate operator:
+
+\begin{equation}
+\label{eq::DSA_ops_update}
+\begin{aligned}
+{\bf \Phi}^{(k+1)} &= {\bf \Phi}^{(k+1/2)} + \delta {\bf \Phi}^{(k+1/2)} \\
+&= {\bf T}  {\bf \Phi}^{(k)}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left( {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)}  \right)  +  {\bf b} \\
+&= {\bf T}  {\bf \Phi}^{(k)}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right)  {\bf \Phi}^{(k)} + \left( {\bf I}+ {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}   \right) {\bf b} \\
+&= \left[ {\bf T}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) \right] {\bf \Phi}^{(k)}  + \left({\bf I}+  {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}  \right) {\bf b}
+\end{aligned} .
+\end{equation}
+
+\noindent Equation (\ref{eq::DSA_ops_update}) provides the accelerated iteration scheme where the matrix operator $\left[ {\bf T}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) \right]$ is the corresponding iteration matrix for the DSA method. This matrix is in contrast to the unaccelerated iteration matrix, ${\bf T}$, given in Eq. (\ref{eq::DSA_1G_trans_eq_ops_mom_simple}). These accelerated and unaccelerated iteration matrices can be analyzed to obtain knowldege of how the transport solutions will converge.
+
+We now quickly show how the DSA iterative procedure given by Eq. (\ref{eq::DSA_ops_update}) is exactly a preconditioned Richardson iteration. We do this by first adding and subtracting ${\bf \Phi}^{(k)}$ to the final line of Eq. (\ref{eq::DSA_ops_update}) to form the following equivalent iteration scheme,
+
+\begin{equation}
+\label{eq::DSA_ops_update_new}
+\begin{aligned}
+{\bf \Phi}^{(k+1)} &= \left[ {\bf T}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) \right] {\bf \Phi}^{(k)}  + \left( {\bf I}+ {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}   \right) {\bf b} \\ 
+&= {\bf \Phi}^{(k)}  + \left( {\bf T}-  {\bf I} \right){\bf \Phi}^{(k)}   + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) {\bf \Phi}^{(k)}  + \left( {\bf I} + {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma} \right) {\bf b} \\
+&= {\bf \Phi}^{(k)} + \left( {\bf I} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right) \left(  {\bf T}    - {\bf I} \right) {\bf \Phi}^{(k)}  + \left( {\bf I}+ {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}   \right) {\bf b} \\
+&= {\bf \Phi}^{(k)} - \left( {\bf I} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right) \left(  {\bf I}    - {\bf T} \right) {\bf \Phi}^{(k)}  + \left({\bf I}+  {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}   \right) {\bf b}
+\end{aligned} .
+\end{equation}
+
+\noindent Next, we replace the iteration terms of ${\bf \Phi}^{(k)}$ and ${\bf \Phi}^{(k+1)}$ with ${\bf \Phi}$  in Eq. (\ref{eq::DSA_ops_update_new}) and move the solution terms to the left-hand-side of the equation. This gives the following equation with no iteration indices,
+
+\begin{equation}
+\label{eq::DSA_ops_prec_rich}
+\left( {\bf I} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right) \left(  {\bf I}    - {\bf T} \right) {\bf \Phi} =  \left({\bf I}+  {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}   \right) {\bf b} .
+\end{equation}
+
+\noindent Recall from Section \ref{sec::Sn_Solution} that the moment-only form of the discretized transport equation is given by 
+
+\begin{equation}
+\label{eq::DSA_ops_rich}
+ \left(  {\bf I}    - {\bf T} \right) {\bf \Phi} =   {\bf b} .
+\end{equation}
+
+\noindent This means that the DSA scheme acts as a preconditioned Richardson iterative scheme where the operator $\left( {\bf I} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right)$ is a left-preconditioner. When Krylov schemes are used in place of Richardson iteration, Eq. (\ref{eq::DSA_ops_prec_rich}) will still describe our preconditioned transport equation. 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - MG
 \subsection{DSA Acceleration Strategies for Thermal Neutron Upscattering}
 \label{sec::DSA_DSA_MG}
 
-We have just provided a detailed description of the DSA methodology for a simple, 1-group, isotropic scattering transport problem.
+We have just provided a detailed description of the DSA methodology for a 1-group transport problem. The transport and low-order diffusion operators were discretized, but left as an arbitrary discretization. 
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Two-Grid
 \subsubsection{Standard Two-Grid (TG) Acceleration}
 \label{sec:DSA_DSA_MG_TG}
 
-The first thermal neutron upscatter acceleration methodology that we will investigate is the standard two-grid acceleration scheme devised by Adams and Morel \cite{adams1993two}. They originally derived the scheme to accelerate 1D multigroup transport problems that are dominated by thermal neutron upscattering. The method can be quickly summarized as the following:
+The first thermal neutron upscatter acceleration methodology that we will investigate is the standard Two-Grid (TG) acceleration scheme devised by Adams and Morel \cite{adams1993two}. They originally derived the scheme to accelerate 1D multigroup transport problems that are dominated by thermal neutron upscattering (physical systems containing a lot of graphite or heavy water). The method can be quickly summarized as the following:
 
 \begin{enumerate}
 \item Perform a Gauss-Seidel procedure in energy for the thermal groups and converge the inner iterations;
@@ -314,28 +457,28 @@ The first step in the TG method is to perform a Gauss-Seidel procedure in energy
 
 \begin{equation}
 \label{eq::DSA_TG_trans_eq_ops}
-{\bf L} \Psi = {\bf M} \left( {\bf S_L} +  {\bf S_D} + {\bf S_U} \right) \Phi + {\bf Q} ,
+{\bf L} {\bf \Psi} = {\bf M} \left( {\bf S_L} +  {\bf S_D} + {\bf S_U} \right) {\bf \Phi} + {\bf Q} ,
 \end{equation}
 
 \noindent and
 
 \begin{equation}
 \label{eq::DSA_TG_trans_it_eq_ops}
-{\bf L} \Psi^{(k+1/2)} = {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \Phi^{(k+1/2)} + {\bf M} {\bf S_U} \Phi^{(k)} + {\bf Q} ,
+{\bf L} {\bf \Psi}^{(k+1/2)} = {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) {\bf \Phi}^{(k+1/2)} + {\bf M} {\bf S_U} {\bf \Phi}^{(k)} + {\bf Q} ,
 \end{equation}
 
 \noindent respectively. ${\bf S_L}$, ${\bf S_D}$, and ${\bf S_U}$ are the strictly-downscattering, diagonal within-group scattering, and strictly upscattering portions of the scattering matrix, respectively. By moving the downscattering and diagonal portions of the scattering operator to the left side of the equation, inverting the ${\bf L}$ operator, and applying the discrete-to-moment operator, ${\bf D}$, we can rewrite the iteration equation of Eq. (\ref{eq::DSA_TG_trans_it_eq_ops}) in terms of only the flux moments:
 
 \begin{equation}
 \label{eq::DSA_TG_half_it}
-\left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \right]\Phi^{(k+1/2)} = {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} \Phi^{(k)} + {\bf D}{\bf L}^{-1}  {\bf Q} .
+\left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \right]{\bf \Phi}^{(k+1/2)} = {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} {\bf \Phi}^{(k)} + {\bf D}{\bf L}^{-1}  {\bf Q} .
 \end{equation}
 
 \noindent By inverting the left-side operator, we directly solve for the half-iterate flux moments,
 
 \begin{equation}
 \label{eq::DSA_TG_half_it_sol}
-\Phi^{(k+1/2)} = \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} \Phi^{(k)} + {\bf b} ,
+{\bf \Phi}^{(k+1/2)} = \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} {\bf \Phi}^{(k)} + {\bf b} ,
 \end{equation}
 
 \noindent where the simplified distributed source term, ${\bf b}$, is now defined for further clarity:
@@ -373,7 +516,7 @@ At this point, Eq. (\ref{eq::DSA_TG_half_it_sol}) provides a formulation for the
 
 \begin{equation}
 \label{eq::DSA_TG_trans_err_wres_op}
-{\bf L} \delta \Psi^{(k+1/2)} - {\bf M}   {\bf S} \delta \Phi^{(k+1/2)} = {\bf M} {\bf S_U}  \left( \Phi^{(k+1/2)} - \Phi^{(k)} \right),
+{\bf L} \delta {\bf \Psi}^{(k+1/2)} - {\bf M}   {\bf S} \delta {\bf \Phi}^{(k+1/2)} = {\bf M} {\bf S_U}  \left( {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)} \right),
 \end{equation}
 
 \noindent where ${\bf S} = {\bf S_L} + {\bf S_D} +{\bf S_U} $ is the full scattering operator. Equation (\ref{eq::DSA_TG_trans_err_wres}) and the corresponding operator form in Eq. (\ref{eq::DSA_TG_trans_err_wres_op}) provide the complete formulation of the multrigroup iteration error. Just like it was previously mentioned for the 1-group scenario, these error equations are just as difficult to solve as the full transport equation. 
@@ -392,11 +535,11 @@ We again choose to utilize the diffusion operator as the low-order operator for 
 R_g^{(k+1/2)} = \sum_{g'=g+1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)} - \phi_{g',0}^{(k)} \right) .
 \end{equation}
 
-\noindent We could solve these $G$ coupled multigroup diffusion equations of Eq. (\ref{eq::DSA_TG_diff_err_full}) for the iteration error. However, if the number of thermal groups becomes large, then these coupled equations could be become burdensome to solve. Instead, the TG method opts to perform a spectral collapse of the multigroup diffusion error. First, we factorize the multigroup error,
+\noindent We could solve these $G$ coupled multigroup diffusion equations of Eq. (\ref{eq::DSA_TG_diff_err_full}) for the iteration error. However, if the number of thermal groups becomes large, then these coupled equations could be become burdensome to solve. Instead, the TG method opts to perform a spectral collapse of the multigroup diffusion error. First, we factorize the 0th moment of the multigroup error,
 
 \begin{equation}
 \label{eq::DSA_TG_fact_err}
-\delta \phi_{g}^{(k+1/2)} = \xi_g \epsilon^{(k+1/2)} (\vec{r}), \qquad \sum_{g=1}^G \xi_g = 1,
+\delta \phi_{g,0}^{(k+1/2)} = \xi_g \epsilon^{(k+1/2)} (\vec{r}), \qquad \sum_{g=1}^G \xi_g = 1,
 \end{equation}
 
 \noindent into a spatial component, $\epsilon^{(k+1/2)} (\vec{r})$, and an energy component, $\xi_g$. The spectral shape, $\xi_g$, is the eigenfunction corresponding to the largest eigenvalue of the infinite medium iteration matrix of Eq. (\ref{eq::DSA_TG_trans_it_eq_ops}) with no driving source term. This eigenvalue problem can be succinctly written as,
@@ -436,7 +579,7 @@ R_g^{(k+1/2)} = \sum_{g'=g+1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)}
 
 \begin{equation}
 \label{eq::DSA_TG_1G_err_eq_op}
-{\bf A} \epsilon^{(k+1/2)}  =  {\bf X} {\bf S_{U}} \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right),
+{\bf A} \epsilon^{(k+1/2)}  =  {\bf X} {\bf S_{U}} \left(  {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)}  \right),
 \end{equation}
 
 \noindent where ${\bf X}$ is the restriction operator that confines the diffusion problem to the 0th-order moment and performs the sum from Eq. (\ref{eq::DSA_TG_1G_ave_terms}). Solving Eq. (\ref{eq::DSA_TG_1G_err_eq}) gives the spatial distribution of the iteration error. We can then update the error for the 0th moment flux with the following:
@@ -450,14 +593,14 @@ Up to this point, we have provided the full details of the TG methodology includ
 
 \begin{equation}
 \label{eq::DSA_TG_update_op}
- \Phi^{(k+1)} =  \Phi^{(k+1/2)}  + \delta \Phi^{(k+1/2)} .
+ {\bf \Phi}^{(k+1)} =  {\bf \Phi}^{(k+1/2)}  + \delta {\bf \Phi}^{(k+1/2)} .
 \end{equation}
 
-\noindent The half-iterate solution, $\Phi^{(k+1/2)}$, is given by Eqs. (\ref{eq::DSA_TG_half_it_sol}) and (\ref{eq::DSA_TG_half_it_forcingfunc}), and the iteration error, $\delta \Phi^{(k+1/2)}$, is 
+\noindent The half-iterate solution, ${\bf \Phi}^{(k+1/2)}$, is given by Eqs. (\ref{eq::DSA_TG_half_it_sol}) and (\ref{eq::DSA_TG_half_it_forcingfunc}), and the iteration error, $\delta {\bf \Phi}^{(k+1/2)}$, is 
 
 \begin{equation}
 \label{eq::DSA_TG_proj_err}
-\delta \Phi^{(k+1/2)} =  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right),
+\delta {\bf \Phi}^{(k+1/2)} =  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)}  \right),
 \end{equation}
 
 \noindent where ${\bf P}$ is the prolongation operator which interpolates the error back into the full phase-space of the transport equation. For the TG method, this prolongation operator acts on only the 0th-order flux moments (the higher moments are characteristically zero) and appropriately adds the error correction for thermal group $g$ with the appropriate spectral weight, $\xi_g$. Inserting these definitions into Eq. (\ref{eq::DSA_TG_update_op}) gives
@@ -465,8 +608,8 @@ Up to this point, we have provided the full details of the TG methodology includ
 \begin{equation}
 \label{eq::DSA_TG_op_update_w_fullterms}
 \begin{aligned}
- \Phi^{(k+1)} &=  \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} \Phi^{(k)} \\
-  &+  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right) + {\bf b}
+ {\bf \Phi}^{(k+1)} &=  \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \right]^{-1} {\bf D}{\bf L}^{-1}  {\bf M} {\bf S_U} {\bf \Phi}^{(k)} \\
+  &+  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)}  \right) + {\bf b}
 \end{aligned} .
 \end{equation}
 
@@ -475,10 +618,10 @@ Up to this point, we have provided the full details of the TG methodology includ
 \begin{equation}
 \label{eq::DSA_TG_op_update_simple}
 \begin{aligned}
- \Phi^{(k+1)} &=  {\bf F}  {\bf M} {\bf S_U} \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right) + {\bf b} \\
-&= {\bf F}  {\bf M} {\bf S_U} \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \ {\bf F}  {\bf M} {\bf S_U} \Phi^{(k)} + {\bf b} - \Phi^{(k)}  \right) + {\bf b} \\
-&= {\bf F}  {\bf M} {\bf S_U} \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \ {\bf F}  {\bf M} {\bf S_U}  -  {\bf I} \right)\Phi^{(k)} + \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}}  + {\bf I} \right) {\bf b} \\
-&= \left[ {\bf F}  {\bf M} {\bf S_U} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \ {\bf F}  {\bf M} {\bf S_U}  -  {\bf I} \right) \right] \Phi^{(k)} + \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}}  + {\bf I} \right) {\bf b}
+ {\bf \Phi}^{(k+1)} &=  {\bf F}  {\bf M} {\bf S_U} {\bf \Phi}^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)}  \right) + {\bf b} \\
+&= {\bf F}  {\bf M} {\bf S_U} {\bf \Phi}^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \ {\bf F}  {\bf M} {\bf S_U} {\bf \Phi}^{(k)} + {\bf b} - {\bf \Phi}^{(k)}  \right) + {\bf b} \\
+&= {\bf F}  {\bf M} {\bf S_U} {\bf \Phi}^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \ {\bf F}  {\bf M} {\bf S_U}  -  {\bf I} \right){\bf \Phi}^{(k)} + \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}}  + {\bf I} \right) {\bf b} \\
+&= \left[ {\bf F}  {\bf M} {\bf S_U} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \ {\bf F}  {\bf M} {\bf S_U}  -  {\bf I} \right) \right] {\bf \Phi}^{(k)} + \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}}  + {\bf I} \right) {\bf b}
 \end{aligned} ,
 \end{equation}
 
@@ -501,14 +644,14 @@ The second thermal upscattering acceleration method that we will investigate is 
 
 \begin{equation}
 \label{eq::DSA_MTG_trans_it_eq_ops}
-{\bf L} \Psi^{(k+1/2)} = {\bf M} {\bf S_L} \Phi^{(k+1/2)} + {\bf M}\left(  {\bf S_D} + {\bf S_U} \right)  \Phi^{(k)} + {\bf Q} .
+{\bf L} {\bf \Psi}^{(k+1/2)} = {\bf M} {\bf S_L} {\bf \Phi}^{(k+1/2)} + {\bf M}\left(  {\bf S_D} + {\bf S_U} \right)  {\bf \Phi}^{(k)} + {\bf Q} .
 \end{equation}
 
 \noindent This operator equation for the MTG differs from Eq. (\ref{eq::DSA_TG_trans_it_eq_ops}) of the TG method by the locations of the different scattering operators. Solving for the flux moments, we can give the half-iterate and external source equations as,
 
 \begin{equation}
 \label{eq::DSA_MTG_half_it_sol}
-\Phi^{(k+1/2)} = \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M}{\bf S_L}\right]^{-1} {\bf D}{\bf L}^{-1}  {\bf M} \left(  {\bf S_D} + {\bf S_U} \right) \Phi^{(k)} + {\bf b} ,
+{\bf \Phi}^{(k+1/2)} = \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M}{\bf S_L}\right]^{-1} {\bf D}{\bf L}^{-1}  {\bf M} \left(  {\bf S_D} + {\bf S_U} \right) {\bf \Phi}^{(k)} + {\bf b} ,
 \end{equation}
 
 \noindent and
@@ -538,14 +681,14 @@ R_g^{(k+1/2)} = \sum_{g'=g}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)} -
 
 \begin{equation}
 \label{eq::DSA_MTG_1G_err_eq_op}
-{\bf A} \epsilon^{(k+1/2)}  =  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right).
+{\bf A} \epsilon^{(k+1/2)}  =  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)}  \right).
 \end{equation}
 
 We now provide the full phase-space update equation in a like manner to TG. Just like the TG method, the update equation can be expressed as 
 
 \begin{equation}
 \label{eq::DSA_MTG_update_op}
- \Phi^{(k+1)} =  \Phi^{(k+1/2)}  + \delta \Phi^{(k+1/2)} ,
+ {\bf \Phi}^{(k+1)} =  {\bf \Phi}^{(k+1/2)}  + \delta {\bf \Phi}^{(k+1/2)} ,
 \end{equation}
 
 \noindent where we insert the half-iterate and coarse-grid error terms from Eqs. (\ref{eq::DSA_MTG_half_it_sol}) and (\ref{eq::DSA_MTG_1G_err_eq_op}), respectively. Defining ${\bf F} \equiv \left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M}{\bf S_L}\right]^{-1} {\bf D}{\bf L}^{-1} $ for brevity, we can give the singular equation for the MTG method,
@@ -553,10 +696,10 @@ We now provide the full phase-space update equation in a like manner to TG. Just
 \begin{equation}
 \label{eq::DSA_MTG_op_update_simple}
 \begin{aligned}
- \Phi^{(k+1)} =  &{\bf F}  {\bf M} \left( {\bf S_{D}} + {\bf S_{U}} \right) \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right) + {\bf b} \\
-= &{\bf F}  {\bf M}\left( {\bf S_{D}} + {\bf S_{U}} \right) \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  \ {\bf F}  {\bf M}\left( {\bf S_{D}} + {\bf S_{U}} \right)  -  {\bf I} \right)\Phi^{(k)} \\
+ {\bf \Phi}^{(k+1)} =  &{\bf F}  {\bf M} \left( {\bf S_{D}} + {\bf S_{U}} \right) {\bf \Phi}^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)}  \right) + {\bf b} \\
+= &{\bf F}  {\bf M}\left( {\bf S_{D}} + {\bf S_{U}} \right) {\bf \Phi}^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  \ {\bf F}  {\bf M}\left( {\bf S_{D}} + {\bf S_{U}} \right)  -  {\bf I} \right){\bf \Phi}^{(k)} \\
 &+ \left(  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right)  + {\bf I} \right) {\bf b} \\
-= &\left[ {\bf F}  {\bf M} \left( {\bf S_{D}} + {\bf S_{U}} \right) +  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  \ {\bf F}  {\bf M} \left( {\bf S_{D}} + {\bf S_{U}} \right)  -  {\bf I} \right) \right] \Phi^{(k)} \\
+= &\left[ {\bf F}  {\bf M} \left( {\bf S_{D}} + {\bf S_{U}} \right) +  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  \ {\bf F}  {\bf M} \left( {\bf S_{D}} + {\bf S_{U}} \right)  -  {\bf I} \right) \right] {\bf \Phi}^{(k)} \\
 &+ \left(  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right)  + {\bf I} \right) {\bf b}
 \end{aligned} ,
 \end{equation}
@@ -579,14 +722,14 @@ The third and final thermal neutron upscattering acceleration method that we wil
 
 \begin{equation}
 \label{eq::DSA_WGS_trans_it_eq_ops}
-{\bf L} \Psi^{(k+1/2)} = {\bf M} {\bf S}  \Phi^{(k)} + {\bf Q} ,
+{\bf L} {\bf \Psi}^{(k+1/2)} = {\bf M} {\bf S}  {\bf \Phi}^{(k)} + {\bf Q} ,
 \end{equation}
 
 \noindent where ${\bf S} = {\bf S_{L}} + {\bf S_{D}} + {\bf S_{U}}$ is the full scattering operator that we utilize for brevity. Again, solving for the flux moments yields the half-iterate and external source equations of
 
 \begin{equation}
 \label{eq::DSA_MGJac_half_it_sol}
-\Phi^{(k+1/2)} = {\bf D}{\bf L}^{-1}  {\bf M} {\bf S} \Phi^{(k)} + {\bf b} ,
+{\bf \Phi}^{(k+1/2)} = {\bf D}{\bf L}^{-1}  {\bf M} {\bf S} {\bf \Phi}^{(k)} + {\bf b} ,
 \end{equation}
 
 \noindent and
@@ -617,7 +760,7 @@ R_g^{(k+1/2)} = \sum_{g'=1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)} -
 
 \begin{equation}
 \label{eq::DSA_MTG_1G_err_eq_op}
-{\bf A} \epsilon^{(k+1/2)}  =  {\bf X} {\bf S} \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right),
+{\bf A} \epsilon^{(k+1/2)}  =  {\bf X} {\bf S} \left(  {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)}  \right),
 \end{equation}
 
 \noindent where the ${\bf A}$ and ${\bf X}$ operators are the same from the TG and MTG methods. Finally, using the half-iterate and coarse-grid error equations of Eqs. (\ref{eq::DSA_MGJac_half_it_sol}) and (\ref{eq::DSA_MTG_1G_err_eq_op}), respectively, the full-iterate equation becomes 
@@ -625,10 +768,10 @@ R_g^{(k+1/2)} = \sum_{g'=1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)} -
 \begin{equation}
 \label{eq::DSA_WGS_op_update_simple}
 \begin{aligned}
- \Phi^{(k+1)} &=  {\bf F}  {\bf M} {\bf S} \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S} \left(  \Phi^{(k+1/2)} - \Phi^{(k)}  \right) + {\bf b} \\
-&= {\bf F}  {\bf M} {\bf S} \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S} \left(  \ {\bf F}  {\bf M} {\bf S} \Phi^{(k)} + {\bf b} - \Phi^{(k)}  \right) + {\bf b} \\
-&= {\bf F}  {\bf M} {\bf S} \Phi^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S} \left(  \ {\bf F}  {\bf M} {\bf S}  -  {\bf I} \right)\Phi^{(k)} + \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S}  + {\bf I} \right) {\bf b} \\
-&= \left[ {\bf F}  {\bf M} {\bf S} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S} \left(  \ {\bf F}  {\bf M} {\bf S}  -  {\bf I} \right) \right] \Phi^{(k)} + \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S}  + {\bf I} \right) {\bf b}
+ {\bf \Phi}^{(k+1)} &=  {\bf F}  {\bf M} {\bf S} {\bf \Phi}^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S} \left(  {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)}  \right) + {\bf b} \\
+&= {\bf F}  {\bf M} {\bf S} {\bf \Phi}^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S} \left(  \ {\bf F}  {\bf M} {\bf S} {\bf \Phi}^{(k)} + {\bf b} - {\bf \Phi}^{(k)}  \right) + {\bf b} \\
+&= {\bf F}  {\bf M} {\bf S} {\bf \Phi}^{(k)} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S} \left(  \ {\bf F}  {\bf M} {\bf S}  -  {\bf I} \right){\bf \Phi}^{(k)} + \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S}  + {\bf I} \right) {\bf b} \\
+&= \left[ {\bf F}  {\bf M} {\bf S} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S} \left(  \ {\bf F}  {\bf M} {\bf S}  -  {\bf I} \right) \right] {\bf \Phi}^{(k)} + \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S}  + {\bf I} \right) {\bf b}
 \end{aligned} ,
 \end{equation}
 
@@ -646,7 +789,7 @@ For all three methods, we can define a general expression for the full phase-spa
 \begin{equation}
 \label{eq::DSA_MG_Summary_form}
 \begin{aligned}
-\Phi^{(k+1)} &= \left[ {\bf F} {\bf M} {\bf \Sigma} + {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma} \left(  {\bf F} {\bf M} {\bf \Sigma} - {\bf I} \right)  \right]   \Phi^{(k)} \\
+{\bf \Phi}^{(k+1)} &= \left[ {\bf F} {\bf M} {\bf \Sigma} + {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma} \left(  {\bf F} {\bf M} {\bf \Sigma} - {\bf I} \right)  \right]   {\bf \Phi}^{(k)} \\
 &+ \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}  + {\bf I} \right) {\bf F} {\bf D}{\bf L}^{-1}  {\bf Q}
 \end{aligned} ,
 \end{equation}
