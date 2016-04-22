@@ -420,7 +420,8 @@ We now quickly show how the DSA iterative procedure given by Eq. (\ref{eq::DSA_o
  \left(  {\bf I}    - {\bf T} \right) {\bf \Phi} =   {\bf b} .
 \end{equation}
 
-\noindent This means that the DSA scheme acts as a preconditioned Richardson iterative scheme where the operator $\left( {\bf I} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right)$ is a left-preconditioner. When Krylov schemes are used in place of Richardson iteration, Eq. (\ref{eq::DSA_ops_prec_rich}) will still describe our preconditioned transport equation. 
+\noindent This means that the DSA scheme acts as a preconditioned Richardson iterative scheme where the operator $\left( {\bf I} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right)$ acts as a left-preconditioner. When Krylov schemes are used in place of Richardson iteration, Eq. (\ref{eq::DSA_ops_prec_rich}) will still describe our preconditioned transport equation. When the transport sweep is performed to build the right-hand-side, ${\bf b}$, 
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
