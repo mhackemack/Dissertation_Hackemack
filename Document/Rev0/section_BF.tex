@@ -1514,6 +1514,7 @@ C_M = \frac{100}{L_x^2 L_y^2} \qquad \gamma = \frac{L_x L_y}{100} .
 
 For this example, we choose the dimensionality of our problem to be $[0,1]^2$ which makes $L_x=L_y=1$ for both the sinusoid and gaussian solutions. For the sinusoid solution, we select the frequency parameter, $\nu$, to be 3 and for the gaussian solution we set the local maximum: $x_0=y_0 = 0.75$. With these parameters, the sinusoid solution will have local minima and maxima of $-2 \pi$ and $2 \pi$, respectively, and the gaussian solution will have a global maximum of $\frac{225}{32} \pi \approx 22.1$.
 
+% Sine Error Plots
 \begin{figure}
 \centering
 \includegraphics[width=0.775\textwidth]{figures/sec_BF/TransMMS_Sine_cart_err.eps}
@@ -1535,6 +1536,28 @@ For this example, we choose the dimensionality of our problem to be $[0,1]^2$ wh
 \label{fig::BF_Results_MMS_Sine_poly}
 \end{figure}
 
+% Gauss2D Error Plots
+\begin{figure}
+\centering
+\includegraphics[width=0.85\textwidth]{figures/sec_BF/TransportMMS_Gauss2D_PWL_Err.eps}
+\caption{Convergence rates for the 2D Gaussian MMS problem using the PWL basis functions.}
+\label{fig::BF_Results_MMS_Gauss2D_cart}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.85\textwidth]{figures/sec_BF/TransportMMS_Gauss2D_MV_Err.eps}
+\caption{Convergence rates for the 2D Gaussian MMS problem using the mean value basis functions.}
+\label{fig::BF_Results_MMS_Gauss2D_tri}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.85\textwidth]{figures/sec_BF/TransportMMS_Gauss2D_MAXENT_Err.eps}
+\caption{Convergence rates for the 2D Gaussian MMS problem using the maximum entropy basis functions.}
+\label{fig::BF_Results_MMS_Gauss2D_poly}
+\end{figure}
+
 \begin{figure}
 \centering
 {
@@ -1542,14 +1565,12 @@ For this example, we choose the dimensionality of our problem to be $[0,1]^2$ wh
 		\centering
 		\label{subfig::AMR_GQ_ME1_mesh}
 		\includegraphics[width=\textwidth]{figures/sec_BF/ME1_cart_Irr=1_cyc15_mesh.eps}
-		\caption{}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\label{subfig::AMR_GQ_ME1_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/ME1_cart_Irr=1_cyc15_sol.eps}
-		\caption{}
 	\end{subfigure}
 }
 \vspace{1cm}
@@ -1558,25 +1579,16 @@ For this example, we choose the dimensionality of our problem to be $[0,1]^2$ wh
 		\centering
 		\label{subfig::AMR_GQ_ME2_mesh}
 		\includegraphics[width=\textwidth]{figures/sec_BF/ME2_cart_Irr=1_cyc08_mesh.eps}
-		\caption{}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\label{subfig::AMR_GQ_ME2_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/ME2_cart_Irr=1_cyc08_sol.eps}
-		\caption{}
 	\end{subfigure}
 }
 \caption{AMR meshes and solutions for the gaussian MMS problem using the maximum entropy coordinates: (top) linear basis functions at cycle 15 and (bottom) quadratic serendipity basis functions at cycle 08.}
 \label{fig::BF_Results_MMS_GQ_AMR_MeshSol}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{figures/sec_BF/Transport_Gauss_2D_AMR_Error_Plot.eps}
-\caption{$L_2$ error norm for the gaussian MMS problem using the various 2D polygonal basis functions }
-\label{fig::Gauss_AMR_err}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1618,6 +1630,13 @@ We investigated this problem using several of the 2D polygonal basis functions a
 \includegraphics[width=0.85\textwidth]{figures/sec_BF/SL_MV_Err.eps}
 \caption{blah.}
 \label{fig::BF_Results_SL_MV_err}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.85\textwidth]{figures/sec_BF/SL_MAXENT_Err.eps}
+\caption{blah.}
+\label{fig::BF_Results_SL_MAXENT_err}
 \end{figure}
 
 \begin{figure}
