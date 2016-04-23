@@ -1159,7 +1159,7 @@ We can further express Eq. (\ref{eq::Sn_full_sol_gs_ops_psi}) in terms of only t
 \subsubsection{Source Iteration}
 \label{sec::Sn_Solution_Iterative_SI}
 
-One simple method to invert the $({\bf I} - {\bf T})$ operator of Eq. (\ref{eq::Sn_full_sol_moments_only}) is the {\em source iteration} technique (SI), also known as {\em richardson iteration}. If we isolate a single group set, $gs$, then the iterative procedure for the transport equation is
+One simple method to invert the $({\bf I} - {\bf T})$ operator of Eq. (\ref{eq::Sn_full_sol_moments_only}) is the {\em source iteration} technique (SI), also known as {\em Richardson iteration}. If we isolate a single group set, $gs$, then the iterative procedure for the transport equation is
 
 \begin{equation}
 \label{eq::Sn_pre_si_iter}
@@ -1176,7 +1176,7 @@ One simple method to invert the $({\bf I} - {\bf T})$ operator of Eq. (\ref{eq::
 \end{aligned}
 \end{equation}
 
-We continue to perform these richardson iterations until the difference between two iterate solutions is less than some specified tolerance in a given norm. This convergence criterion for SI can be succinctly written as
+We continue to perform these Richardson iterations until the difference between two iterate solutions is less than some specified tolerance in a given norm. This convergence criterion for SI can be succinctly written as
 
 \begin{equation}
 \label{eq::Sn_SI_conv_crit}
@@ -1217,23 +1217,23 @@ $\rho$ & Iterations \\ \hline \hline
 \subsubsection{Krylov Subspace Methods}
 \label{sec::Sn_Solution_Iterative_GMRES}
 
-Source iteration is not the only iterative technique that can be employed to invert $({\bf I} - {\bf T})$ for a given group set. In the last 20 years, krylov subspace methods have been applied to the discretized transport equation \cite{oliveira1998preconditioned,guthrie1999gmres,patton2002application}. Because $({\bf I} - {\bf T})$ is not symmetric, we want to only use krylov methods that can solve non-symmetric matrices. The two krylov subspace methods that we would naturally want to employ are GMRES and BiCGSTAB \cite{saad1986gmres,saad2003iterative}. We will not describe the implementations of these methods here for brevity. However, we will state that most of the computational machinery required to perform richardson iterations can also be used for these krylov methods. The only modifications/extensions that are needed are summarized in the following list.
+Source iteration is not the only iterative technique that can be employed to invert $({\bf I} - {\bf T})$ for a given group set. In the last 20 years, Krylov subspace methods have been applied to the discretized transport equation \cite{oliveira1998preconditioned,guthrie1999gmres,patton2002application}. Because $({\bf I} - {\bf T})$ is not symmetric, we want to only use Krylov methods that can solve non-symmetric matrices. The two Krylov subspace methods that we would naturally want to employ are GMRES and BiCGSTAB \cite{saad1986gmres,saad2003iterative}. We will not describe the implementations of these methods here for brevity. However, we will state that most of the computational machinery required to perform Richardson iterations can also be used for these Krylov methods. The only modifications/extensions that are needed are summarized in the following list.
 
 \begin{enumerate}
 \item Construction of the right-hand-side: ${\bf b} = {\bf D} {\bf L}^{-1} {\bf Q}$. From this equation, it is obvious that we need just one initial transport sweep to properly build this right-hand-side.
-\item The operation of the matrix $({\bf I} - {\bf T})$ on a krylov vector, $\nu$. This can easily be accomplished with the same machinery as richardson iteration by simply subtracting the original flux moment vector by the updated moments after one transport sweep.
+\item The operation of the matrix $({\bf I} - {\bf T})$ on a Krylov vector, $\nu$. This can easily be accomplished with the same machinery as Richardson iteration by simply subtracting the original flux moment vector by the updated moments after one transport sweep.
 \item Modify the calculation of the convergence criterion so that the norm of the iteration residual, normalized by the right-hand-side, is smaller than some prescribed tolerance:
 $\frac{||{\bf b} - ({\bf I} - {\bf T}) {\bf x} ||_2}{||{\bf b}||_2} < \text{tol}$.
 \end{enumerate}
 
-Combined with the appropriate linear algebra operations, these three small alterations are all that are required to properly utilize the krylov solver for the transport equation. It is not immediately obvious how one would precondition the krylov iterations in the context of transport sweeping. However, just like the richardson iteration scheme, we will provide the implementation of DSA preconditioning for krylov in Chapter \ref{sec::DSA}.
+Combined with the appropriate linear algebra operations, these three small alterations are all that are required to properly utilize the Krylov solver for the transport equation. It is not immediately obvious how one would precondition the Krylov iterations in the context of transport sweeping. However, just like the Richardson iteration scheme, we will provide the implementation of DSA preconditioning for Krylov in Chapter \ref{sec::DSA}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Spatial Solution Procedures
 \subsection{Spatial Solution Procedures}
 \label{sec::Sn_Solution_Spatial}
 
-Section \ref{sec::Sn_Solution_Iterative} presented the methodology that we will employ to iteratively converge our transport solutions in energy and angle (flux moments). Both richardson iteration and the krylov methods were presented as methods that can invert the $({\bf I} - {\bf T})$ operator. In both of these iterative methods, the common operation of interest is the inversion of the loss operator (${\bf L}$). There are different techniques that could be used to perform this operation, including several matrix-dependent and matrix-free methodologies. For this work, the loss operator inversion on some unstructured mesh, $\mathbb{T}_h$, will be performed by use of the full-domain transport sweep as outlined next in Section \ref{sec::Sn_Solution_Spatial_Sweeping}. We then conclude our discussion on spatial solution procedures by briefly describing how we can utilize adaptive mesh refinement (AMR) to generate irregular polytope meshes (without hanging nodes in this work) in Section \ref{sec::Sn_Solution_Spatial_AMR}.
+Section \ref{sec::Sn_Solution_Iterative} presented the methodology that we will employ to iteratively converge our transport solutions in energy and angle (flux moments). Both Richardson iteration and the Krylov methods were presented as methods that can invert the $({\bf I} - {\bf T})$ operator. In both of these iterative methods, the common operation of interest is the inversion of the loss operator (${\bf L}$). There are different techniques that could be used to perform this operation, including several matrix-dependent and matrix-free methodologies. For this work, the loss operator inversion on some unstructured mesh, $\mathbb{T}_h$, will be performed by use of the full-domain transport sweep as outlined next in Section \ref{sec::Sn_Solution_Spatial_Sweeping}. We then conclude our discussion on spatial solution procedures by briefly describing how we can utilize adaptive mesh refinement (AMR) to generate irregular polytope meshes (without hanging nodes in this work) in Section \ref{sec::Sn_Solution_Spatial_AMR}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - Transport Sweeping

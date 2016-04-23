@@ -387,6 +387,7 @@ D_{p,n} \equiv \sum_{m=1}^M w_m Y_{p,n} (\vec{\Omega}_m) ,
 \begin{aligned}
 {\bf \Phi}^{(k+1)} &= {\bf \Phi}^{(k+1/2)} + \delta {\bf \Phi}^{(k+1/2)} \\
 &= {\bf T}  {\bf \Phi}^{(k)}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left( {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)}  \right)  +  {\bf b} \\
+&= {\bf T}  {\bf \Phi}^{(k)}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}  {\bf \Phi}^{(k)} +  {\bf b} - {\bf \Phi}^{(k)}  \right)  +  {\bf b}  \\
 &= {\bf T}  {\bf \Phi}^{(k)}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right)  {\bf \Phi}^{(k)} + \left( {\bf I}+ {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}   \right) {\bf b} \\
 &= \left[ {\bf T}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) \right] {\bf \Phi}^{(k)}  + \left({\bf I}+  {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}  \right) {\bf b}
 \end{aligned} .
@@ -420,7 +421,18 @@ We now quickly show how the DSA iterative procedure given by Eq. (\ref{eq::DSA_o
  \left(  {\bf I}    - {\bf T} \right) {\bf \Phi} =   {\bf b} .
 \end{equation}
 
-\noindent This means that the DSA scheme acts as a preconditioned Richardson iterative scheme where the operator $\left( {\bf I} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right)$ acts as a left-preconditioner. When Krylov schemes are used in place of Richardson iteration, Eq. (\ref{eq::DSA_ops_prec_rich}) will still describe our preconditioned transport equation. When the transport sweep is performed to build the right-hand-side, ${\bf b}$, 
+\noindent This means that the DSA scheme is exactly a preconditioned Richardson iterative scheme where the operator $\left( {\bf I} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right)$ acts as a left-preconditioner. When Krylov schemes are used in place of Richardson iteration, Eq. (\ref{eq::DSA_ops_prec_rich}) will still describe our preconditioned transport equation. Recall from Section \ref{sec::Sn_Solution_Iterative_GMRES} that only minor changes need to made to existing source iteration routines to enable Krylov solvers to properly solve the transport equation. In particular, the subtle differences lie in building the right-hand-side vector and applying the matrix-free transport sweep operator on some Krylov vector, ${\bf x}$. 
+
+\begin{equation}
+\label{eq::DSA_krylov_sweep_op}
+\begin{aligned}
+{\bf Z} {\bf x} &=  {\bf I} {\bf x} -  \left[ {\bf T}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) \right] {\bf x}\\
+&= \left(  {\bf I} - {\bf T} \right){\bf x} - {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) {\bf x} \\
+&=\left(  {\bf I} - {\bf T} \right){\bf x} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf I}    - {\bf T} \right) {\bf x} \\
+&=\left(  {\bf I} +  {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right)  \left(  {\bf I}    - {\bf T} \right)  {\bf x}
+\end{aligned} .
+\end{equation}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
