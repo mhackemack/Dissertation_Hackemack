@@ -421,19 +421,19 @@ We now quickly show how the DSA iterative procedure given by Eq. (\ref{eq::DSA_o
  \left(  {\bf I}    - {\bf T} \right) {\bf \Phi} =   {\bf b} .
 \end{equation}
 
-\noindent This means that the DSA scheme is exactly a preconditioned Richardson iterative scheme where the operator $\left( {\bf I} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right)$ acts as a left-preconditioner. When Krylov schemes are used in place of Richardson iteration, Eq. (\ref{eq::DSA_ops_prec_rich}) will still describe our preconditioned transport equation. Recall from Section \ref{sec::Sn_Solution_Iterative_GMRES} that only minor changes need to made to existing source iteration routines to enable Krylov solvers to properly solve the transport equation. In particular, the subtle differences lie in building the right-hand-side vector and applying the matrix-free transport sweep operator on some Krylov vector, ${\bf x}$. 
+\noindent This means that the DSA scheme is exactly a preconditioned Richardson iterative scheme where the operator $\left( {\bf I} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right)$ acts as a left-preconditioner. When Krylov schemes are used in place of Richardson iteration, Eq. (\ref{eq::DSA_ops_prec_rich}) will still describe our preconditioned transport equation. Recall from Section \ref{sec::Sn_Solution_Iterative_GMRES} that only minor changes need to made to existing source iteration routines to enable Krylov solvers to properly solve the transport equation. In particular, the subtle differences lie in applying the matrix-free transport sweep operator on some Krylov vector, ${\bf x}$ and in building the right-hand-side vector. We can show that we form the appropriate action of the matrix operator, which we denote as ${\bf Z}$, in an identical manner to unaccelerated Richardson iteration. Recall, that the unaccelerated matrix operator is computed by differencing the original Krylov vector by the vector following a transport sweep. Therefore, we compute this same difference with the results from our DSA accelerated transport sweep to form:
 
 \begin{equation}
 \label{eq::DSA_krylov_sweep_op}
 \begin{aligned}
 {\bf Z} {\bf x} &=  {\bf I} {\bf x} -  \left[ {\bf T}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) \right] {\bf x}\\
-&= \left(  {\bf I} - {\bf T} \right){\bf x} - {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) {\bf x} \\
-&=\left(  {\bf I} - {\bf T} \right){\bf x} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf I}    - {\bf T} \right) {\bf x} \\
+%&= \left(  {\bf I} - {\bf T} \right){\bf x} - {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) {\bf x} \\
+%&=\left(  {\bf I} - {\bf T} \right){\bf x} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf I}    - {\bf T} \right) {\bf x} \\
 &=\left(  {\bf I} +  {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right)  \left(  {\bf I}    - {\bf T} \right)  {\bf x}
-\end{aligned} .
+\end{aligned} \, .
 \end{equation}
 
-
+\noindent In Eq. (\ref{eq::DSA_krylov_sweep_op}), we see that we identically recover the left-preconditioned transport operator from Eq. (\ref{eq::DSA_ops_prec_rich}). Finally, it is easy to show that we can compute the right-hand-side source of Eq. (\ref{eq::DSA_ops_prec_rich}). Recall that ${\bf b} = {\bf D}{\bf L}^{-1}{\bf Q}$
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

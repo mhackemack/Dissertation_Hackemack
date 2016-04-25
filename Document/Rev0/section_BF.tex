@@ -673,44 +673,48 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 for the constant constraint,
 
 \begin{equation}
-\sum_{i=1}^{2 N_K}  b_i (\vec{x})  = 1 ,
 \label{eq::BF_quad_interp_req_constant}
+\sum_{i=1}^{2 N_K}  b_i (\vec{x})  = 1 ,
 \end{equation}
 
 \noindent for the linear constraint,
 
 \begin{equation}
-\sum_{i=1}^{2 N_K}  b_i (\vec{x}) \left( \vec{x}_i -\vec{x}  \right)= \vec{0} ,
 \label{eq::BF_quad_interp_req_linear}
+\sum_{i=1}^{2 N_K}  b_i (\vec{x}) \left( \vec{x}_i -\vec{x}  \right)= \vec{0} ,
 \end{equation}
 
 \noindent and for the quadratic constraint,
 
 \begin{equation}
-\sum_{i=1}^{2 N_K}  b_i (\vec{x}) \left[  \left( \vec{x}_i -\vec{x}  \right) \otimes \left( \vec{x}_i -\vec{x}  \right) - \vec{d}_i   \right] =  \vec{0} .
 \label{eq::BF_quad_interp_req_quadratic}
+\sum_{i=1}^{2 N_K}  b_i (\vec{x}) \left[  \left( \vec{x}_i -\vec{x}  \right) \otimes \left( \vec{x}_i -\vec{x}  \right) - \vec{d}_i   \right] =  \vec{0} .
 \end{equation}
 
 \noindent In Eq. (\ref{eq::BF_quad_interp_req_quadratic}), the nodal coefficients, $\vec{d}_i$, have the interpretation of being the nodal gap functions \cite{rosolen2013second}. This ensures the reproduction of our second-order convex approximation scheme. These nodal gap functions have the form for the vertex functions of,
 
 \begin{equation}
-\vec{d}_i = \vec{0}, \qquad i \in (1,N_K) ,
 \label{eq::BF_quad_nodal gaps_verts}
+\vec{d}_i = \vec{0}, \qquad i \in (1,N_K) ,
 \end{equation}
 
 \noindent and the form on the face midpoints of,
 
 \begin{equation}
-\vec{d}_{a+N_K} = \frac{ \left( \vec{x}_{a+1} -\vec{x}_a  \right) \otimes \left( \vec{x}_{a+1} -\vec{x}_a   \right) }{4}, \qquad   1 \leq a \leq N_K.
 \label{eq::BF_quad_nodal gaps_edges}
+\vec{d}_{a+N_K} = \frac{ \left( \vec{x}_{a+1} -\vec{x}_a  \right) \otimes \left( \vec{x}_{a+1} -\vec{x}_a   \right) }{4}, \qquad   1 \leq a \leq N_K.
 \end{equation}
 
 \begin{equation}
-\sum_{i=1}^{N_K}  b_i (\vec{x}) \vec{c}_{i,2}(\vec{x}) = \vec{q}_2 ,
 \label{eq::BF_quad_interp_req_vector}
+\sum_{i=1}^{N_K}  b_i (\vec{x}) \vec{c}_{i,2}(\vec{x}) = \vec{q}_2 ,
 \end{equation}
 
 
+\begin{equation}
+\label{eq::BF_quad_MP_inverse}
+B^* = B^T (B B^T)^{-1}
+\end{equation}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
