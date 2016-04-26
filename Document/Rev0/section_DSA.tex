@@ -30,9 +30,7 @@ In this chapter, we analyze the Modified Interior Penalty (MIP) form of the diff
 \subsection{Review of Diffusion Synthetic Accleration Schemes}
 \label{sec::DSA_Introduction_History}
 
-cleanup the beginning here later...
-
-The ability to efficiently invert the transport (streaming and collision) operator does not necessarily mean that transport solutions can be easily obtained. In general, radiation transport solutions are obtained iteratively. The simplest and widely-used method is a fixed-point scheme ({\em i.e.} Richardson iteration) ubiquitously called source iteration (SI) in the transport community. Unfortunately, the iteration process of SI can converge arbitrarily slowly if the problem is optically thick \cite{ref::adams_larsen_iter_methods}. This corresponds to long mean free paths for neutronics problems. This also corresponds to time steps and material heat capacities tending to infinity and zero, respectively, for thermal radiative transport (TRT) problems.
+In Section \ref{sec::Sn_Solution_Spatial}, we described the full-domain transport sweep, and how it can efficiently invert the loss operator. We also provided the parallel implementation details that allow these full-domain transport sweeps to scale out to $O(10^6)$ processors. However, the ability to efficiently invert the transport (streaming and collision) operator does not necessarily mean that transport solutions can be easily obtained. In general, radiation transport solutions are obtained iteratively. The simplest and widely-used method is a fixed-point scheme ({\em i.e.} Richardson iteration) ubiquitously called Source Iteration (SI) in the transport community. Unfortunately, the iteration process of SI can converge arbitrarily slowly if the problem is optically thick \cite{ref::adams_larsen_iter_methods}. This corresponds to long mean free paths for neutronics problems. This also corresponds to time steps and material heat capacities tending to infinity and zero, respectively, for thermal radiative transport (TRT) problems.
 
 For these problem regimes in which solution is prohibitively slow, additional steps should be taken to speed up, or accelerate, solution convergence \cite{ref::adams_larsen_iter_methods}. The most used methods to assist in solution convergence are often called synthetic acceleration techniques. These techniques were first introduced by Kopp \cite{kopp1963synthetic} and Lebedev \cite{lebedevI,lebedevII,lebedevIII,lebedevIV,lebedevV,lebedevVI,lebedevVII} in the 1960's. From Kopp's and Lebedev's work, Gelbard and Hageman then introduced two synthetic acceleration options for the low-order operator: diffusion and $S_2$ \cite{gelbard1969synthetic}. Their diffusion preconditioning led to efficient convergence properties on fine spatial meshes. Reed then showed that Gelbard and Hageman's diffusion preconditioning would yield a diverging system for coarse meshes \cite{reed1971effectiveness}. At this point in time, no one knew if an unconditionally efficient acceleration method could be derived.
 
@@ -1164,7 +1162,7 @@ Equations (\ref{eq::MIP_bilinear_form}) and (\ref{eq::MIP_linear_form}) form the
 
 There are several choices of preconditioners that can be employed with PCG \cite{saad2003iterative}. Depending on the structure and conditioning of the matrix to be inverted, some simple preconditioners can be effective. We can decompose the MIP system matrix, ${\bf A} = {\bf L} + {\bf D} + {\bf L}^T$, into its strictly lower-triangular portion, ${\bf L}$, its strictly diagonal portion, ${\bf D}$, and its strictly lower-triangular portion, ${\bf L}^T$. The simplest preconditioner we could employ is Jacobi preconditioning, which is just the strictly diagonal portion of the system matrix: ${\bf M} = {\bf D}$. This preconditioner is effective for diagonally-dominant matrices. The next preconditioner would be a simple Symmetric Successive Over-Relaxation (SSOR) method: ${\bf M} (\omega) = \frac{\omega}{2-\omega} \left( \frac{1}{\omega}{\bf D} + {\bf L}  \right)  {\bf D}^{-1}  \left( \frac{1}{\omega}{\bf D} + {\bf L}  \right)^T$. The PCG algorithm can be simplified with this preconditioner choice by the Eisenstat trick \cite{eisenstat1981efficient}. The final simple preconditioner that we will consider is Incomplete LU Factorization (ILU). Instead of simply decomposing the system matrix, we factorize it into a unit-lower triangular portion, $\tilde{{\bf L}}$, and an upper triangular portion, $\tilde{{\bf U}}$. These factorized matrices then form our preconditioner: ${\bf M} =\tilde{{\bf L}}\tilde{{\bf U}}$. From this factorization, the preconditioning step to solve ${\bf M} {\bf z}= {\bf r}$ is accomplished by first solving $\tilde{{\bf L}} {\bf y}= {\bf r} $, followed by $\tilde{{\bf U}} {\bf z}= {\bf y} $. While this leads to a second preconditioning step, the factorized matrices are easy to invert since they are triangular.
 
-Besides Jacobi, SSOR and ILU preconditioning, we also seek to investigate multigrid methods to invert the MIP system matrix. 
+Besides Jacobi, SSOR and ILU preconditioning, we also seek to investigate multigrid methods to invert the MIP system matrix. Turcksin and Ragusa demonstrated in \cite{turcksin2014discontinuous} that multigrid preconditioning methods can efficiently invert the MIP operator. Both Algebraic MultiGrid (AMG) \cite{ruge1987algebraic,briggs2000multigrid} and AGgregation-based algebraic MultiGrid (AGMG) \cite{notay2010user,notay2010aggregation,napov2012algebraic,notay2012aggregation} were shown to be effective. We leave the general details of multigrid methods to the previously defined references.
 
 \begin{algorithm}
 \caption{PCG Algorithm}
@@ -1198,29 +1196,9 @@ Besides Jacobi, SSOR and ILU preconditioning, we also seek to investigate multig
 \section{Fourier Analysis}
 \label{sec::DSA_Fourier}
 
-With the acceleration methodologies and diffusion discretization scheme described in detail, we now present the Fourier Analysis tool. Fourier Analysis is commonly used to analyze the performance characteristics of acceleration schemes for the transport equation. It is a powerful tool because it allows us to express the iteration error in terms of a fourier series. Then, because of the orthogonality of the terms in the series, each fourier mode can be analyzed independently. If these modes were not independent, then we would have no ability to simultaneously solve the infinite spectrum of fourier modes.
+With the acceleration methodologies and diffusion discretization scheme described in detail, we now present the Fourier Analysis (FA) tool. Fourier Analysis is commonly used to analyze the performance characteristics of acceleration schemes for the transport equation. It is a powerful tool because it allows us to express the iteration error in terms of a Fourier series. Then, because of the orthogonality of the terms in the series, each Fourier mode can be analyzed independently. If these modes were not independent, then we would have no ability to simultaneously solve the infinite spectrum of Fourier modes except for an extremely small set of idealized problems where analytical analysis can be performed.
 
-
-\begin{equation}
-\label{eq::fourier_ang_sol}
-\Psi^{(k)}  (\vec{r}, \vec{\Omega})=  \hat{\Psi}^{(k)} (\vec{\Omega}) \, e^{i \vec{\lambda} \cdot \vec{r}}
-\end{equation}
-
-\noindent or in a discretized case for angular direction $m$,
-
-\begin{equation}
-\label{eq::fourier_ang_sol_disc}
-\Psi_m^{(k)}  (\vec{r})=  \hat{\Psi}_m^{(k)}  \, e^{i \vec{\lambda} \cdot \vec{r}},
-\end{equation}
-
-\noindent where $i=\sqrt{-1}$. 
-
-\begin{equation}
-\label{eq::fourier_phi_sol}
-\Phi^{(k)} (\vec{r}) = \hat{\Phi}^{(k)} e^{i \vec{\lambda} \cdot \vec{r}}
-\end{equation}
-
-
+For the Fourier Analysis of this work, we will only investigate geometries with tensor-based mesh cells (quadrilaterals and hexahedra). For completeness, some examples of 1D FA is provided in Appendix \ref{{sec::appendix_DSA}}. The FA domains are composed of regular Cartesian geometries defined by the global domain size and cell widths in each dimension. The domain size is given by ($X,Y$) in 2D and ($X,Y,Z$) in 3D. The cell layout is described by its $N_x$ cell widths ($\Delta x_{1}, \Delta x_{2}, ..., \Delta x_{N_x}$) in the $x$-dimension, its $N_y$ cell widths ($\Delta y_{1}, \Delta y_{2}, ..., \Delta y_{N_y}$) in the $y$-dimension, and its $N_z$ cell widths ($\Delta z_{1}, \Delta z_{2}, ..., \Delta z_{N_z}$) in the $z$-dimension. This simple, yet structured, geometric layout is shown in Figure \ref{fig::DSA_fourier_grid_layout} for a 2D domain. The analogous 3D geometric layout can be formed by extruding this 2D grid. For FA, periodic boundary conditions are applied on the domain boundary. A graphical depiction of periodic boundary conditions is given for a 2D, 2-cell domain in Figure \ref{fig::DSA_fourier_periodic_BC}. The periodic boundary conditions work by actually representing boundary faces as extensions to the interior faces. In other words, boundary faces are simply additional ``interior'' faces. Figure \ref{fig::DSA_fourier_periodic_BC} shows this with the translocations of the neighboring cells to the exterior. For example, the periodic condition for the left face of cell 1 states that the degrees of freedom that we employ actually come from cell 2 (which we denote as 2'). Likewise, the periodic condition for the right face of cell 2 states that the degrees of freedom that we employ actually come from cell 1 (which we denote as 1'). The cells 1' and 2' can be viewed as virtual cells for use as an implementation detail.
 
 \begin{figure}
 \centering
@@ -1229,13 +1207,78 @@ With the acceleration methodologies and diffusion discretization scheme describe
 \label{fig::DSA_fourier_grid_layout}
 \end{figure}
 
-iteration matrices here...
+\begin{figure}
+\centering
+\includegraphics[width=0.65\textwidth]{figures/sec_DSA/Fourier_periodic_BC.png}
+\caption[Fourier periodic boundary conditions]{Representation of the periodic boundary conditions used for Fourier analysis for a 2-cell geometric layout.}
+\label{fig::DSA_fourier_periodic_BC}
+\end{figure}
 
-spectral radius = largest eigenvalue here...
+Once the geometric domain is specified, we can then expand the solution vectors in terms of the domain's Fourier modes. The wave numbers of the Fourier modes, $\vec{\lambda}$, span the interval $[0,\frac{2 \pi}{X}) \otimes [0,\frac{2 \pi}{Y})$ in 2D and $[0,\frac{2 \pi}{X}) \otimes [0,\frac{2 \pi}{Y})\otimes [0,\frac{2 \pi}{Z})$ in 3D. The wave numbers have the definition of $\vec{\lambda} = [\lambda_x, \lambda_y]$ in 2D and $\vec{\lambda} = [\lambda_x, \lambda_y, \lambda_z]$ in 3D. Given a particular wave number, $\vec{\lambda}$, the error modes for the angular flux can be given by the following Fourier ansatz,
+
+\begin{equation}
+\label{eq::fourier_ang_sol}
+\Psi^{(k)}  (\vec{r}, \vec{\Omega})=  \hat{\Psi}^{(k)} (\vec{\Omega}) \, e^{i \vec{\lambda} \cdot \vec{r}},
+\end{equation}
+
+\noindent where $i=\sqrt{-1}$.  Also, the error modes for the discretized angular flux along direction $m$ and the flux moments can be given by
+
+\begin{equation}
+\label{eq::fourier_ang_sol_disc}
+\Psi_m^{(k)}  (\vec{r})=  \hat{\Psi}_m^{(k)}  \, e^{i \vec{\lambda} \cdot \vec{r}},
+\end{equation}
+
+and
+
+\begin{equation}
+\label{eq::fourier_phi_sol}
+\Phi^{(k)} (\vec{r}) = \hat{\Phi}^{(k)} e^{i \vec{\lambda} \cdot \vec{r}},
+\end{equation}
+
+\noindent respectively. In Eqs. (\ref{eq::fourier_ang_sol}) - (\ref{eq::fourier_phi_sol}), we see that the term $e^{i \vec{\lambda} \cdot \vec{r}}$ acts to transform the spatial parameter into the complex space. For a collection of error modes ({\em e.g.,} the degrees of freedom of a mesh cell) corresponding to the spatial locations ($\vec{r}_1,\vec{r}_2,\vec{r}_3,\vec{r}_4$), we can express Eq. (\ref{eq::fourier_phi_sol}) by
+
+\begin{equation}
+\label{eq::fourier_phi_apply_phase}
+\Phi^{(k)} (\vec{r}) = \mathbb{P} (\vec{\lambda})   \hat{\Phi}^{(k)} ,
+\end{equation}
+
+\noindent where the diagonal phase matrix has the form:
+
+\begin{equation}
+\label{eq::fourier_phase_matrix}
+\mathbb{P} (\vec{\lambda}) = \left[
+\begin{array}{cccc}
+e^{i \vec{\lambda} \cdot \vec{r}_1} & 0 & 0 & 0\\
+0 & e^{i \vec{\lambda} \cdot \vec{r}_2} & 0 & 0 \\
+0 & 0 & e^{i \vec{\lambda} \cdot \vec{r}_3} & 0 \\
+0 & 0 & 0 & e^{i \vec{\lambda} \cdot \vec{r}_4} 
+\end{array}
+\right] \, .
+\end{equation}
+
+\noindent One can also utilize an alternative version of Eq. (\ref{eq::fourier_phase_matrix}) by using exponent laws and physical offsets ($\Delta x, \Delta y$) from some starting base point.
+
+Now that we have defined our periodic heterogeneous domain configuration and expressed the expansion of the flux solutions in terms of their Fourier modes, we can now detail how to compile the FA iteration matrix. Recall from Section \ref{sec::DSA_DSA} the different iteration matrices expressing our accelerated transport iterations. Equations (\ref{eq::DSA_ops_update_new}), (\ref{eq::DSA_TG_op_update_simple}), (\ref{eq::DSA_MTG_op_update_simple}), and (\ref{eq::DSA_WGS_op_update_simple}) give the accelerated transport iteration matrices for the 1-group DSA scheme, the Two-Grid scheme, the Modified Two-Grid scheme, and Multigroup Jacobi Acceleration scheme, respectively. Each of these matrices can be expressed in the Fourier phase space by appropriate application of the phase matrices, $\mathbb{P} (\vec{\lambda}) $. For example, let's consider the simple case of the 1-group DSA scheme. The FA iteration matrices for unaccelerated and accelerated Richardson iterations are given by
+
+\begin{equation}
+\label{eq::fourier_SI_iter}
+{\bf D} \tilde{{\bf L}}^{-1} {\bf M} \tilde{{\bf \Sigma}} ,
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::fourier_SIDSA_iter}
+{\bf D} \tilde{{\bf L}}^{-1} {\bf M} \tilde{{\bf \Sigma}} + {\bf P } \tilde{{\bf A }}^{-1} {\bf X } \tilde{{\bf \Sigma }} \left( {\bf D} \tilde{{\bf L}}^{-1} {\bf M} \tilde{{\bf \Sigma}}  - {\bf I }  \right),
+\end{equation}
+
+\noindent respectively. In Eqs. (\ref{eq::fourier_SI_iter}) and (\ref{eq::fourier_SIDSA_iter}), the $\tilde{{\bf L}}$, $\tilde{{\bf \Sigma}}$, and $\tilde{{\bf A}}$ operators have had phase transformations applied, which we denote with the overhead tilde, $\tilde{}$. During the assembly of the transport and diffusion operators, the phase transformations can be applied with the right-multiplication of the appropriate phase matrix on the corresponding elementary matrices. We note that when assembling the face coupling terms on the domain boundary, the base phase of the cell on the other side of the periodic boundary is not used. Instead, the phase corresponding to the virtual cell is used. For example, let us analyze the left face of cell 1 in Figure \ref{fig::DSA_fourier_periodic_BC}. When applying the periodic condition, we use the degrees of freedom corresponding to cell 2, but use the phase matrix corresponding to cell 2'. Finally, we note that the FA iteration matrices for the thermal neutron upscattering acceleration methods are computed in an identical manner.
+
+Once the FA iteration matrix is assembled for a given wave number, $\vec{\lambda}$, we compute all of its corresponding eigenvalues. The largest of these eigenvalues is the spectral radius for the given wave number. If we compute the spectral radii for all the possible wave numbers ({\em e.g.,} $[0,\frac{2 \pi}{X}) \otimes [0,\frac{2 \pi}{Y})$ in 2D) for a given problem configuration, then the maximum corresponds to the global spectral radius for the problem. For Richardson iteration in the asymptotic regime, we will converge to our transport solution more rapidly with a smaller spectral radius that is strictly less than 1. Likewise, our scheme would be unstable if the spectral radius is larger than 1. 
 
 For this work, all fourier analysis was performed in MATLAB. All the eigenmodes corresponding to a fourier wave number for a given iteration matrix can be easily computed with MATLAB's built-in {\em eig} function. The maximum eigenvalue is found over the wave number space by use of the Nelder-Mead simplex algorithm \cite{nelder1965simplex}. We stress that some sort of minimization algorithm must be employed because some problem configurations can have extremely narrow local maxima. These difficult to find local maxima can correspond to the global maximum which is our desired spectral radius that we wish to compute. 
 
-We illustrate the necessity for a minimization algorithm in Figure \ref{fig::DSA_fourier_modes_showing_search_need}. We have modeled a single 2D square mesh cell with dimensions $X=1$ and $Y=1$. The total cross section, $\sigma_t$, is set to $10^{-2}$ and the scattering ratio, $c$, set to 0.9999. We use the $S4$ level-symmetric quadrature set. The left image of Figure \ref{fig::DSA_fourier_modes_showing_search_need} has the 2D fourier wave number span the full domain space of $[\lambda_x,\lambda_y]=[0,2 \pi]^2$. The right image zooms in on the wave number ranging: $[\lambda_x,\lambda_y]=[0,1/4]^2$. From the right image, we can see two extremely narrow local maxima. We can qualitatively ascertain that these local maxima would be difficult to find if we had simply laid a grid of wave number points over $[0,2 \pi]^2$. Chang and Adams presented an even more extreme example of a difficult to find global maximum using transport synthetic acceleration \cite{chang2003analysis}.
+We illustrate the necessity for a minimization algorithm in Figure \ref{fig::DSA_fourier_modes_showing_search_need}. We have modeled a single 2D square mesh cell with dimensions $X=1$ and $Y=1$. The total cross section, $\sigma_t$, is set to $10^{-2}$ and the scattering ratio, $c$, set to 0.9999. We use the $S4$ level-symmetric quadrature set. The left image of Figure \ref{fig::DSA_fourier_modes_showing_search_need} has the 2D fourier wave number span the full domain space of $[\lambda_x,\lambda_y]=[0,2 \pi]^2$. The right image zooms in on the wave number ranging: $[\lambda_x,\lambda_y]=[0,1/4]^2$. From the right image, we can see two extremely narrow local maxima. We can qualitatively ascertain that these local maxima would be difficult to find if we had simply laid a grid of wave number points over $[0,2 \pi]^2$. It would require a very fine wave number grid that is both expensive to compute and not guaranteed to locate the maximum. Chang and Adams presented an even more extreme example of a difficult to find global maximum using transport synthetic acceleration \cite{chang2003analysis}.
 
 \begin{figure}
 \centering
@@ -1262,7 +1305,7 @@ We illustrate the necessity for a minimization algorithm in Figure \ref{fig::DSA
 \section{Numerical Results}
 \label{sec::DSA_Results}
 
-We now present all results 
+We now present all theoretical and applied results pertaining to the described DSA schemes. First, we demonstrate that the 2D linear and quadratic basis functions defined in Chapter \ref{sec::BF} can capture the thick diffusion limit in Section \ref{sec::DSA_Results_TDL}. Next, we provide results in Section \ref{sec::DSA_Results_SIP} on the efficacy of the SIP form as a diffusion solver. Section \ref{sec::DSA_Results_1G} provides all theoretical and numerical results pertaining the 1-group DSA scheme. Then, Section \ref{sec::DSA_Results_Scaling} demonstrates the scalability of the MIP diffusion form on massively-parallel computer architectures. Finally, Section \ref{sec::DSA_Results_IM1} gives the results pertaining to the analysis performed for the thermal neutron upscattering acceleration methods.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

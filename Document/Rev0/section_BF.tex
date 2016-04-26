@@ -717,12 +717,6 @@ B^* = B^T (B B^T)^{-1}
 \end{equation}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection -Analytical PWQ
-\subsection{Analytical Form of the Quadratic Serendipity Extension of the PWL Functions}
-\label{sec::BF_2DQuadratic_PWQ}
-
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - 2D quadratic summary
@@ -792,6 +786,91 @@ B^* = B^T (B B^T)^{-1}
 \section{Integrating the Arbitrary 2D Polygonal Elements}
 \label{sec::BF_2DIntegration}
 
+Sections \ref{sec::BF_2DLinear} and \ref{sec::BF_2DQuadratic} detail how the basis functions and their gradients can be computed at different points on a 2D polygonal element. These basis functions and gradients can then be used to calculate the integrals of the elementary matrices for a given element $K$ as described in Section \ref{sec::Sn_Spatial}. Because the elementary matrix integrals using the Wachspress, mean value, and maximum entropy coordinates cannot be integrated analytically, we need to define a numerical quadrature scheme. For this work, we choose to use a simple triangulation-based scheme. The global polygonal element $K$ with $N_K$ vertices is sub-divided into $N_K$ separate triangles. Each of these triangles is formed 
+
+\begin{equation}
+\label{eq::BF_2DIntegration_cellK}
+\int\displaylimits_{K} f = \sum_{i=1}^{N_K} \sum_{q=1}^{N_q} w_q f_q
+\end{equation}
+
+\begin{equation}
+\label{eq::BF_2DIntegration_domain}
+\int\displaylimits_{\mathbb{T}_h} f = \sum_{K \in \mathbb{T}_h} \sum_{i=1}^{N_K} \sum_{q=1}^{N_q} w_q f_q
+\end{equation}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.475\textwidth}
+		\centering
+		\label{subfig::2DInt_V5_Q1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/V5_Q1.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.475\textwidth}
+		\centering
+		\label{subfig::2DInt_V5_Q2}
+		\includegraphics[width=\textwidth]{figures/sec_BF/V5_Q2.eps}
+		\caption{}
+	\end{subfigure}
+}
+\vspace{3mm}
+{
+	\begin{subfigure}[b]{0.475\textwidth}
+		\centering
+		\label{subfig::2DInt_V5_Q3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/V5_Q3.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.475\textwidth}
+		\centering
+		\label{subfig::2DInt_V5_Q4}
+		\includegraphics[width=\textwidth]{figures/sec_BF/V5_Q4.eps}
+		\caption{}
+	\end{subfigure}
+}
+\caption{blah}
+\label{fig::BF_2DIntegration_Pentagon}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.475\textwidth}
+		\centering
+		\label{subfig::2DInt_V6_Q1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/V6_Q1.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.475\textwidth}
+		\centering
+		\label{subfig::2DInt_V6_Q2}
+		\includegraphics[width=\textwidth]{figures/sec_BF/V6_Q2.eps}
+		\caption{}
+	\end{subfigure}
+}
+\vspace{3mm}
+{
+	\begin{subfigure}[b]{0.475\textwidth}
+		\centering
+		\label{subfig::2DInt_V6_Q3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/V6_Q3.eps}
+		\caption{}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.475\textwidth}
+		\centering
+		\label{subfig::2DInt_V6_Q4}
+		\includegraphics[width=\textwidth]{figures/sec_BF/V6_Q4.eps}
+		\caption{}
+	\end{subfigure}
+}
+\caption{blah}
+\label{fig::BF_2DIntegration_Hexagon}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - 3D
@@ -827,10 +906,10 @@ B^* = B^T (B B^T)^{-1}
 \begin{equation}
 \label{eq::3D_lin_basis_functions}
 \begin{aligned}
-	b_1(r,s) & = 1-r-s-t \\
-	b_2(r,s) & = r \\
-	b_3(r,s) & = s \\
-	b_4(r,s) & = t
+	b_1(r,s,t) & = 1-r-s-t \\
+	b_2(r,s,t) & = r \\
+	b_3(r,s,t) & = s \\
+	b_4(r,s,t) & = t
 \end{aligned}
 \end{equation}
 
