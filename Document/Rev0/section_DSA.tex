@@ -311,7 +311,7 @@ Equation (\ref{eq::DSA_1G_diffeq_FINAL}) can then be represented as the low-orde
  \phi^{(k+1)} =  \phi^{(k+1/2)} + \delta \phi^{(k+1/2)} .
 \end{equation}
 
-\noindent Thus far, we have presented a DSA scheme to accelerate the continuous 1-group, isotropic transport equation. We did not prescribe an angular or spatial discretization scheme for the transport and derived low-order diffusion equation. Next in Section \ref{sec::DSA_DSA_Operator}, we detail a generalized DSA strategy for the discretized 1-group transport problem using operator notation. We then show how these DSA schemes form preconditioned operators for our Richardson and Krylov iterative methods.
+\noindent Thus far, we have presented a DSA scheme to accelerate the continuous 1-group, isotropic transport equation. We did not prescribe an angular or spatial discretization scheme for the transport and derived low-order diffusion equations. Next in Section \ref{sec::DSA_DSA_Operator}, we detail a generalized DSA strategy for the discretized 1-group transport problem using operator notation. We then show how these DSA schemes form preconditioned operators for our Richardson and Krylov iterative methods.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -426,14 +426,14 @@ We now quickly show how the DSA iterative procedure given by Eq. (\ref{eq::DSA_o
 \begin{equation}
 \label{eq::DSA_krylov_sweep_op}
 \begin{aligned}
-{\bf Z} {\bf x} &=  {\bf I} {\bf x} -  \left[ {\bf T}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) \right] {\bf x}\\
+{\bf Z} {\bf x} &=  {\bf x} -  \left[ {\bf T}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) \right] {\bf x}\\
 %&= \left(  {\bf I} - {\bf T} \right){\bf x} - {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) {\bf x} \\
-%&=\left(  {\bf I} - {\bf T} \right){\bf x} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf I}    - {\bf T} \right) {\bf x} \\
+&=\left(  {\bf I} - {\bf T} \right){\bf x} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf I}    - {\bf T} \right) {\bf x} \\
 &=\left(  {\bf I} +  {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right)  \left(  {\bf I}    - {\bf T} \right)  {\bf x}
 \end{aligned} \, .
 \end{equation}
 
-\noindent In Eq. (\ref{eq::DSA_krylov_sweep_op}), we see that we identically recover the left-preconditioned transport operator from Eq. (\ref{eq::DSA_ops_prec_rich}). Finally, it is easy to show that we can compute the right-hand-side source of Eq. (\ref{eq::DSA_ops_prec_rich}). Recall that ${\bf b} = {\bf D}{\bf L}^{-1}{\bf Q}$
+\noindent In Eq. (\ref{eq::DSA_krylov_sweep_op}), we see that we identically recover the left-preconditioned transport operator from Eq. (\ref{eq::DSA_ops_prec_rich}). Finally, it is easy to show that we can compute the right-hand-side source of Eq. (\ref{eq::DSA_ops_prec_rich}). Recall that ${\bf b} = {\bf D}{\bf L}^{-1}{\bf Q}$, which is computed by performing a single transport sweep on ${\bf Q}$. This means that the accelerated Krylov right-hand-side vector, ${\bf b} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}    {\bf b}$, can be formed by the same correction operation of Eq. (\ref{eq::DSA_ops_update}). The only differences lie in the use of ${\bf Q}$ instead of the Krylov vector, ${\bf x}$, and the use of ${\bf b}$ instead of $\left( {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)}  \right)$ when computing the residual for the diffusion equation.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -441,7 +441,7 @@ We now quickly show how the DSA iterative procedure given by Eq. (\ref{eq::DSA_o
 \subsection{DSA Acceleration Strategies for Thermal Neutron Upscattering}
 \label{sec::DSA_DSA_MG}
 
-We have just provided a detailed description of the DSA methodology for a 1-group transport problem. The transport and low-order diffusion operators were discretized, but left as an arbitrary discretization. 
+We have just provided a detailed description of the DSA methodology for a 1-group transport problem. The transport and low-order diffusion operators were discretized, but left as arbitrary. If desired, this 1-group acceleration methodology could be utilized to precondition transport sweeps for a single group in a multigroup problem (if an energy group has a high scattering ratio). However, for a transport problem with many energy groups that need acceleration, there may be more efficient acceleration strategies. In particular, it is difficult to converge the scattering source for transport problems that are dominated by thermal neutron upscattering. We next present three different DSA strategies to accelerate the neutron upscattering that we will analyze for this work.
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Two-Grid
@@ -1270,14 +1270,14 @@ We now present all results
 \subsection{Transport Solutions in the Thick Diffusive Limit}
 \label{sec::DSA_Results_TDL}
 
-We present our first numerical example by demonstrating that the various polygonal finite element basis sets satisfy the thick diffusion limit. 
+We present our first numerical example by demonstrating that the various 2D polygonal finite element basis functions provided in Chapter \ref{sec::BF} satisfy the thick diffusion limit. We investigate the transport problem with isotropic scattering and an isotropic distributed source given by the following:
 
 \begin{equation}
 \label{eq::BF_Results_TDL_trans_eq}
-\vec{\Omega} \cdot \vec{\nabla} \Psi + \sigma_t \Psi =   \frac{\sigma_s}{4 \pi} \sigma_t +  \frac{Q_0}{4 \pi}
+\vec{\Omega} \cdot \vec{\nabla} \Psi + \sigma_t \Psi =   \frac{\sigma_s}{4 \pi} \Phi +  \frac{Q_0}{4 \pi}.
 \end{equation}
 
-\noindent As the transport problem becomes more optically thick, the total mean free paths of the neutroncs increases. In the thick diffusion limit, the domain mean free path approaches infinity. If we fix the physical dimensions of the problem to some finite value, then we can scale the cross sections and the source term to reflect the properties of the thick diffusion limit. In the limit the total and scattering cross sections tend to infinity whilc the absorption cross section and the source term tend to zero. If we introduce a scaling parameter, $\epsilon$, 
+\noindent As the transport problem becomes more optically thick, the total mean free paths of the neutroncs increases. In the thick diffusion limit, the domain mean free path approaches infinity. If we fix the physical dimensions of the problem to some finite value, then we can scale the cross sections and the source term to reflect the properties of the thick diffusion limit. In the thick diffusion limit the total and scattering cross sections tend to infinity while the absorption cross section and the source term tend to zero. If we introduce a scaling parameter, $\epsilon$, then we can write the scaled terms as,
 
 \begin{equation}
 \label{eq::BF_Results_TDL_scaling}
@@ -1286,17 +1286,17 @@ We present our first numerical example by demonstrating that the various polygon
 	\sigma_a &\rightarrow \epsilon \sigma_t\\
 	\sigma_s &\rightarrow \left( \frac{1}{\epsilon} - \epsilon   \right) \sigma_t \\
 	\frac{Q_0}{4 \pi} &\rightarrow \epsilon \frac{Q_0}{4 \pi}
-\end{aligned}
+\end{aligned} \, .
 \end{equation}
 
-\noindent Inserting these scaled cross sections and source term into Eq. (\ref{eq::BF_Results_TDL_trans_eq}) leads to following scaled transport equation:
+\noindent Inserting these scaled cross sections and source term into Eq. (\ref{eq::BF_Results_TDL_trans_eq}) leads to the following scaled transport equation:
 
 \begin{equation}
 \label{eq::BF_Results_TDL_scaled_trans_eq}
 \vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{\sigma_t}{\epsilon} \Psi = \sigma_t \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} + \epsilon \frac{Q_0}{4 \pi} .
 \end{equation}
 
-\noindent We can also use the scaled terms of Eq. (\ref{eq::BF_Results_TDL_scaling}) to give the corresponding scaled diffusion equation. If we take the 0th and 1st moments of Eq. (\ref{eq::BF_Results_TDL_scaled_trans_eq}) in the usual way and assume that the P1 terms obey Fick's Law, then the scaled diffusion equation is
+\noindent We can also use the scaled terms of Eq. (\ref{eq::BF_Results_TDL_scaling}) to give the corresponding scaled diffusion equation. If we take the 0th and 1st moments of Eq. (\ref{eq::BF_Results_TDL_scaled_trans_eq}) and assume that the P1 terms obey Fick's Law, then the scaled diffusion equation is
 
 \begin{equation}
 \label{eq::BF_Results_TDL_scaled_diff_eq}
@@ -1305,7 +1305,7 @@ We present our first numerical example by demonstrating that the various polygon
 
 \noindent One can immediately see that Eq. (\ref{eq::BF_Results_TDL_scaled_diff_eq}) does not truly scale because there is an $\epsilon$ for each term. This is the desired behavior we want to see from the diffusion equation because, as $\epsilon \rightarrow 0$, the transport equation will converge to its diffusive limit and satisfy a diffusion equation.
 
-For the sake of analysis, we seek to 
+For the sake of analysis, we seek to simplify Eqs. (\ref{eq::BF_Results_TDL_scaled_trans_eq}) and (\ref{eq::BF_Results_TDL_scaled_diff_eq}) by normalization. We choose to set $\sigma_t$ and $Q_0$ to unity which gives the final transport and diffusion equations as  
 
 \begin{equation}
 \label{eq::BF_Results_TDL_normalized_trans_eq}
@@ -1340,7 +1340,7 @@ The polyhedral mesh types that we employ for this analysis are presented in Sect
 \subsubsection{Geometry Specification for the SIP Problems}
 \label{sec::DSA_Results_SIP_Geometry}
 
-To analyze the SIP diffusion form on 3D polyhedral grids, we will utilize many of the 2D polygonal grids that were used in Section \ref{sec::BF_Results_Linear}. For this analysis we will resuse the cartesian, ordered-triangular, polygonal sinusoidal, and polygonal-z meshes. We will also use purely-randomized polygonal grids formed from Voronoi mesh generation as outlined in Section \ref{sec::Sn_Solution_Spatial_Voronoi}. To form the needed 3D polyhedral grids, we will take these 2D grids and simply extrude the meshes in the z-dimension. 
+To analyze the SIP diffusion form on 3D polyhedral grids, we will utilize many of the 2D polygonal grids that were used for previous analysis in Chapter \ref{sec::BF}. For this analysis we will resuse the cartesian, ordered-triangular, polygonal sinusoidal, and polygonal-z meshes. We will also use purely-randomized polygonal grids formed from Voronoi mesh generation as outlined in Section \ref{sec::Sn_Solution_Spatial_Voronoi}. To form the needed 3D polyhedral grids, we will take these 2D grids and simply extrude the meshes in the z-dimension. 
 
 Figure \ref{fig::SIP_mesh_slices} provides the 2D mesh types that will be utilized in this analysis. Figure \ref{fig::SIP_mesh_extruded} then provides the same meshes after they have been extruded in the z-dimension. We note that it will not simply be these exact grids that are employed. For the MMS analysis in Section \ref{sec::DSA_Results_SIP_MMS}, various refinements of these meshes will be utilized.
 
