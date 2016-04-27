@@ -82,41 +82,13 @@ y_i - y
 
 \noindent respectively. Equation (\ref{eq::BF_linear_interp_req_vector}) states that our interpolation functions (the basis functions) can exactly reproduce polynomial functions up to order 1. This is why we state that our basis functions are linearly-complete. However, we will not restrict our $N_K$ basis functions to be polynomials. In fact, of the basis functions that we will use, only the PWL coordinates are formed by combinations of polynomial functions.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - Linear
-\subsection{Traditional Linear Basis Functions - $\mathbb{P}_{1}$ and $\mathbb{Q}_{1}$ Spaces}
-\label{sec::BF_2DLinear_LDandBLD}
-
-Before presenting basis function sets applicable to polygonal finite elements, we first provide two common basis functions that are exact on triangles and convex quadrilaterals: the $\mathbb{P}_{1}$ and $\mathbb{Q}_{1}$ spaces, respectively. 
-
-\begin{equation}
-\label{eq::2D_lin_basis_functions}
-\begin{aligned}
-	b_1(r,s) & = 1-r-s \\
-	b_2(r,s) & = r \\
-	b_3(r,s) & = s 
-\end{aligned}
-\end{equation}
-
-\noindent 
-
-and
-
-\begin{equation}
-\label{eq::BiL_basis_functions}
-\begin{aligned}
-	b_1(r,s) & = (1-r)(1-s) \\
-	b_2(r,s) & = r(1-s) \\
-	b_3(r,s) & = rs \\
-	b_4(r,s) & = (1-r)s
-\end{aligned}
-\end{equation}
-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Wachspress
 \subsection{Wachspress Rational Basis Functions}
 \label{sec::BF_2DLinear_Wachspress}
+
+The first linearly-complete polygonal coordinates that we will consider are the Wachspress rational functions \cite{wachspress1975rational}. These rational functions were the first derived for 2D polygons and possess all the properties of the barycentric coordinates previously detailed.
 
 \begin{equation}
 \label{eq::BF_wach_BF}
@@ -207,6 +179,15 @@ w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, 
 \end{equation}
 
 \noindent $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function which is unity at the cell center and linearly decreases to zero to each cell vertex. $\alpha_{j}^{K}$ is the weight parameter for vertex $j$ in cell $K$. 
+
+\begin{equation}
+\label{eq::2D_tri_ref_BF}
+\begin{aligned}
+	b_1(r,s) & = 1-r-s \\
+	b_2(r,s) & = r \\
+	b_3(r,s) & = s 
+\end{aligned}
+\end{equation}
 
 \begin{figure}
 \label{fig::2D_PWLD1_unit_square_basis_functions}
@@ -670,6 +651,13 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 \section{Quadratic Serendipity Basis Functions on 2D Polygons}
 \label{sec::BF_2DQuadratic}
 
+\begin{figure}[hbt]
+\centering
+\includegraphics[width=0.80\textwidth]{figures/sec_BF/linear_to_quad_process.png}
+\caption{Overview of the process to construct the quadratic serendipity basis functions on polygons. The filled dots correspond to basis functions that maintain the Lagrange property while empty dots do not.}
+\label{fig::BF_2D_quad_process}
+\end{figure}
+
 for the constant constraint,
 
 \begin{equation}
@@ -707,9 +695,27 @@ for the constant constraint,
 
 \begin{equation}
 \label{eq::BF_quad_interp_req_vector}
-\sum_{i=1}^{N_K}  b_i (\vec{x}) \vec{c}_{i,2}(\vec{x}) = \vec{q}_2 ,
+\sum_{i=1}^{2 N_K}  b_i (\vec{x}) \vec{c}_{i,2}(\vec{x}) = \vec{q}_2 ,
 \end{equation}
 
+\begin{equation}
+\label{eq::BF_quad_to_ser_mapping}
+\left\{ \xi \right\} = \mathbb{A} \left\{ \mu \right\}
+\end{equation}
+
+\begin{equation}
+\label{eq::BF_quad_to_ser_matrix_constraints}
+\mathbb{A} = 
+\left[
+\begin{array}{ccccc}
+c_{11}^{11} & \ldots & c_{ab}^{11} & \ldots & c_{(n-2)n}^{11} \\
+\ldots&\ddots&\vdots&\ddots&\vdots \\
+c_{11}^{ij} & \ldots & c_{ab}^{ij} & \ldots & c_{(n-2)n}^{ij} \\
+\ldots&\ddots&\vdots&\ddots&\vdots \\
+c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)} 
+\end{array}
+\right]
+\end{equation}
 
 \begin{equation}
 \label{eq::BF_quad_MP_inverse}
@@ -880,56 +886,6 @@ Sections \ref{sec::BF_2DLinear} and \ref{sec::BF_2DQuadratic} detail how the bas
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - 3D Lin/TriL
-\subsection{3D Linear and TriLinear Basis Functions}
-\label{sec::BF_3DLinear_TriL}
-
-\begin{figure}
-\centering
-	\begin{subfigure}[b]{0.45\textwidth}
-		\centering
-		\label{subfig::unit_square}
-		\includegraphics[width=\textwidth]{figures/sec_BF/unit_square_linear.eps}
-		\caption{}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.45\textwidth}
-		\centering
-		\label{subfig::unit_cube}
-		\includegraphics[width=\textwidth]{figures/sec_BF/unit_cube_linear.eps}
-		\caption{}
-	\end{subfigure}
-\caption{Vertex structure for the (a) unit square and (b) unit cube.}
-\label{fig::BF_3D_unit_tet_cube}
-\end{figure}
-
-\begin{equation}
-\label{eq::3D_lin_basis_functions}
-\begin{aligned}
-	b_1(r,s,t) & = 1-r-s-t \\
-	b_2(r,s,t) & = r \\
-	b_3(r,s,t) & = s \\
-	b_4(r,s,t) & = t
-\end{aligned}
-\end{equation}
-
-\noindent and
-
-\begin{equation}
-\label{eq::TriL_basis_functions}
-\begin{aligned}
-	b_1(r,s,t) & = (1-r)(1-s)(1-t) \\
-	b_2(r,s,t) & = r(1-s)(1-t) \\
-	b_3(r,s,t) & = rs(1-t) \\
-	b_4(r,s,t) & = (1-r)s(1-t) \\
-	b_5(r,s,t) & = (1-r)(1-s)t \\
-	b_6(r,s,t) & = r(1-s)t \\
-	b_7(r,s,t) & = rst \\
-	b_8(r,s,t) & = (1-r)st \\
-\end{aligned}
-\end{equation}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - PWL
 \subsection{3D Piecewise Linear (PWL) Basis Functions}
 \label{sec::BF_3DLinear_PWL}
@@ -949,6 +905,16 @@ The 3D PWL basis functions share a similar form to the 2D PWL basis functions.
 \end{equation}
 
 \noindent respectively, where $N_K$ is the number of vertices in cell $K$ and $N_f$ is the number of vertices on face $f$, which leads to constant values of $\alpha$ and $\beta$ for each cell and face, respectively. This assumption of the cell weight function holds for both 2D and 3D.
+
+\begin{equation}
+\label{eq::3D_tetref_BF}
+\begin{aligned}
+	b_1(r,s,t) & = 1-r-s-t \\
+	b_2(r,s,t) & = r \\
+	b_3(r,s,t) & = s \\
+	b_4(r,s,t) & = t
+\end{aligned}
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Results
