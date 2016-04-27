@@ -591,69 +591,79 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 \begin{figure}
 \label{fig::2D_Linear_Summary_unit_square_basis_functions}
 \centering
+{
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_WACHSPRESS1_contour_b4.png}
-		\caption{}
+		\caption{Wachspress}
 	\end{subfigure}
 	\hspace{1.5cm}
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_PWLD1_contour_b4.png}
-		\caption{}
+		\caption{PWL}
 	\end{subfigure}
-	\vfill
+}
+	\vspace{3mm}
+{
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_MV1_contour_b4.png}
-		\caption{}
+		\caption{mean value}
 	\end{subfigure}
 	\hspace{1.5cm}
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_MAXENT1_contour_b4.png}
-		\caption{}
+		\caption{maximum entropy}
 	\end{subfigure}
-\caption[Contour plots of the linear basis functions on the unit square.]{Contour plots of the different linear basis function on the unit square located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
+}
+\caption[Contour plots of the linear basis functions on the unit square.]{Contour plots of the different linear basis function on the unit square located at vertex (0,1).}
 \end{figure}
 
 \begin{figure}
 \label{fig::2D_Summary_deg_square_basis_functions}
 \centering
+{
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_WACHSPRESS1_contour_b5.png}
-		\caption{}
+		\caption{Wachspress}
 	\end{subfigure}
 	\hspace{1.5cm}
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_PWLD1_contour_b5.png}
-		\caption{}
+		\caption{PWL}
 	\end{subfigure}
-	\vfill
+}
+	\vspace{3mm}
+{
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_MV1_contour_b5.png}
-		\caption{}
+		\caption{Mean Value}
 	\end{subfigure}
 	\hspace{1.5cm}
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_MAXENT1_contour_b5.png}
-		\caption{}
+		\caption{Maximum Entropy}
 	\end{subfigure}
-\caption[Contour plots of the linear basis functions on the degenerate pentagon.]{Contour plots of the different linear basis function on the degenerate pentagon located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
+}
+\caption[Contour plots of the linear basis functions on the degenerate pentagon.]{Contour plots of the different linear basis function on the degenerate pentagon located at vertex (0,1). It is clear that the Wachspress coordinates fail for the weakly convex case.}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Quadratic Basis Functions
-\section{Quadratic Serendipity Basis Functions on 2D Polygons}
+\section{Converting the Linear Polygonal Basis Functions to the Quadratic Serendipity Space}
 \label{sec::BF_2DQuadratic}
+
+Now that we have given complete details on the linearly-complete generalized barycentric coordinates that we will investigate for this work, we 
 
 \begin{figure}[hbt]
 \centering
-\includegraphics[width=0.80\textwidth]{figures/sec_BF/linear_to_quad_process.png}
+\includegraphics[width=\textwidth]{figures/sec_BF/linear_to_quad_process.png}
 \caption{Overview of the process to construct the quadratic serendipity basis functions on polygons. The filled dots correspond to basis functions that maintain the Lagrange property while empty dots do not.}
 \label{fig::BF_2D_quad_process}
 \end{figure}
@@ -662,41 +672,75 @@ for the constant constraint,
 
 \begin{equation}
 \label{eq::BF_quad_interp_req_constant}
-\sum_{i=1}^{2 N_K}  b_i (\vec{x})  = 1 ,
+\sum_{a=1}^{ N_K} \sum_{b=1}^{ N_K}  \mu_{ab} (\vec{x})  = 1 ,
 \end{equation}
 
 \noindent for the linear constraint,
 
 \begin{equation}
 \label{eq::BF_quad_interp_req_linear}
-\sum_{i=1}^{2 N_K}  b_i (\vec{x}) \left( \vec{x}_i -\vec{x}  \right)= \vec{0} ,
+\sum_{a=1}^{ N_K} \sum_{b=1}^{ N_K} \mu_{ab} (\vec{x}) \, \vec{x}_a   = \vec{x} ,
 \end{equation}
 
 \noindent and for the quadratic constraint,
 
 \begin{equation}
 \label{eq::BF_quad_interp_req_quadratic}
-\sum_{i=1}^{2 N_K}  b_i (\vec{x}) \left[  \left( \vec{x}_i -\vec{x}  \right) \otimes \left( \vec{x}_i -\vec{x}  \right) - \vec{d}_i   \right] =  \vec{0} .
+\sum_{a=1}^{ N_K} \sum_{b=1}^{ N_K}  \mu_{ab} (\vec{x}) \, \left( \vec{x}_a \otimes \vec{x}_b \right) =  \vec{x} \otimes \vec{x} .
 \end{equation}
 
-\noindent In Eq. (\ref{eq::BF_quad_interp_req_quadratic}), the nodal coefficients, $\vec{d}_i$, have the interpretation of being the nodal gap functions \cite{rosolen2013second}. This ensures the reproduction of our second-order convex approximation scheme. These nodal gap functions have the form for the vertex functions of,
 
 \begin{equation}
-\label{eq::BF_quad_nodal gaps_verts}
-\vec{d}_i = \vec{0}, \qquad i \in (1,N_K) ,
+\label{eq::BF_Quad_abbrev_pos}
+\vec{x}_{ab} = \frac{\vec{x}_a + \vec{x}_b}{2}
 \end{equation}
 
-\noindent and the form on the face midpoints of,
+\noindent With this definition 
 
-\begin{equation}
-\label{eq::BF_quad_nodal gaps_edges}
-\vec{d}_{a+N_K} = \frac{ \left( \vec{x}_{a+1} -\vec{x}_a  \right) \otimes \left( \vec{x}_{a+1} -\vec{x}_a   \right) }{4}, \qquad   1 \leq a \leq N_K.
-\end{equation}
+for the constant constraint,
 
 \begin{equation}
-\label{eq::BF_quad_interp_req_vector}
-\sum_{i=1}^{2 N_K}  b_i (\vec{x}) \vec{c}_{i,2}(\vec{x}) = \vec{q}_2 ,
+\label{eq::BF_quad_interp_req_constant_alt}
+\sum_{aa \in V}  \mu_{aa} (\vec{x}) + \sum_{ab \in E \cup D} 2 \mu_{ab} (\vec{x})  = 1 ,
 \end{equation}
+
+\noindent for the linear constraint,
+
+\begin{equation}
+\label{eq::BF_quad_interp_req_linear_alt}
+\sum_{aa \in V}  \mu_{aa} (\vec{x}) \, \vec{x}_{aa} +  \sum_{ab \in E \cup D} 2  \mu_{ab} (\vec{x}) \, \vec{x}_{ab} = \vec{x} ,
+\end{equation}
+
+\noindent and for the quadratic constraint,
+
+\begin{equation}
+\label{eq::BF_quad_interp_req_quadratic_alt}
+\sum_{aa \in V}  \mu_{aa} (\vec{x}) \, \left( \vec{x}_a \otimes \vec{x}_a \right) +  \sum_{ab \in E \cup D}   \mu_{ab} (\vec{x}) \, \left( \vec{x}_a \otimes \vec{x}_b + \vec{x}_b \otimes \vec{x}_a \right)   =  \vec{x} \otimes \vec{x} .
+\end{equation}
+
+
+for the constant constraint,
+
+\begin{equation}
+\label{eq::BF_ser_interp_req_constant_alt}
+\sum_{ii \in V}  \xi_{ii} (\vec{x}) + \sum_{i(i+1) \in E} 2 \xi_{i(i+1)} (\vec{x})  = 1 ,
+\end{equation}
+
+\noindent for the linear constraint,
+
+\begin{equation}
+\label{eq::BF_ser_interp_req_linear_alt}
+\sum_{ii \in V}  \xi_{ii} (\vec{x}) \, \vec{x}_{ii} +  \sum_{i(i+1) \in E} 2  \xi_{i(i+1)} (\vec{x}) \, \vec{x}_{i(i+1)} = \vec{x} ,
+\end{equation}
+
+\noindent and for the quadratic constraint,
+
+\begin{equation}
+\label{eq::BF_ser_interp_req_quadratic_alt}
+\sum_{ii \in V}  \xi_{ii} (\vec{x}) \, \left( \vec{x}_i \otimes \vec{x}_i \right) +  \sum_{i(i+1) \in E}   \xi_{i(i+1)} (\vec{x}) \, \left( \vec{x}_i \otimes \vec{x}_{i+1} + \vec{x}_{i+1} \otimes \vec{x}_i \right)   =  \vec{x} \otimes \vec{x} .
+\end{equation}
+
+
 
 \begin{equation}
 \label{eq::BF_quad_to_ser_mapping}
@@ -716,6 +760,14 @@ c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)}
 \end{array}
 \right]
 \end{equation}
+
+
+\begin{equation}
+\label{eq::BF_quad_Amat_simple}
+\mathbb{A} = \left[ \mathbb{I} \, | \, \mathbb{A}' \right]
+\end{equation}
+
+\noindent where $\mathbb{I}$ is the ($2 N_K \text{x} 2 N_K$) identity matrix, and $\mathbb{A}'$ is a full ($2 N_K \text{x}  N_Q$) matrix. This means that the vertex and face midpoint serendipity functions, $\xi_{ij}$, are formed by taking their corresponding quadratic function, $\mu{ij}$, and adding some linear combination of the interior functions. Therefore, we only need to determine 
 
 \begin{equation}
 \label{eq::BF_quad_MP_inverse}
