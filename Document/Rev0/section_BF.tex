@@ -775,12 +775,6 @@ B^* = B^T (B B^T)^{-1}
 \end{equation}
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - 2D quadratic summary
-\subsection{Summary of 2D Quadratic Serendipity Basis Functions on Polygons}
-\label{sec::BF_2DQuadratic_Summary}
-
 \begin{figure}
 \label{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF4}
 \centering
@@ -844,7 +838,9 @@ B^* = B^T (B B^T)^{-1}
 \section{Integrating the Arbitrary 2D Polygonal Elements}
 \label{sec::BF_2DIntegration}
 
-Sections \ref{sec::BF_2DLinear} and \ref{sec::BF_2DQuadratic} detail how the basis functions and their gradients can be computed at different points on a 2D polygonal element. These basis functions and gradients can then be used to calculate the integrals of the elementary matrices for a given element $K$ as described in Section \ref{sec::Sn_Spatial}. Because the elementary matrix integrals using the Wachspress, mean value, and maximum entropy coordinates cannot be integrated analytically, we need to define a numerical quadrature scheme. For this work, we choose to use a simple triangulation-based scheme. The global polygonal element $K$ with $N_K$ vertices is sub-divided into $N_K$ separate triangles. Each of these triangles is formed 
+Sections \ref{sec::BF_2DLinear} and \ref{sec::BF_2DQuadratic} detail how the basis functions and their gradients can be computed at different points on a 2D polygonal element. These basis functions and gradients can then be used to calculate the integrals of the elementary matrices for a given element $K$ as described in Section \ref{sec::Sn_Spatial}. Because the elementary matrix integrals using the Wachspress, mean value, and maximum entropy coordinates cannot be integrated analytically, we need to define a numerical quadrature scheme. The spatial quadrature sets need to be amenable to arbitrary polygons and also integrate polynomials exactly (the different polynomial orders of the basis functions). Efficient quadrature schemes exist for both triangles and quadrilaterals \cite{}. These include symmetric rules on triangles and cubature and tensor-product rules on triangles and quadrilaterals, respectively. However, polygons have an infinite number of topological shapes and explicit quadrature rules cannot be defined.
+
+For this work, we choose to use a simple triangulation-based scheme. The global polygonal element $K$ with $N_K$ vertices is sub-divided into $N_K$ separate triangles. Each of these triangles is formed 
 
 \begin{equation}
 \label{eq::BF_2DIntegration_cellK}
@@ -941,6 +937,8 @@ Sections \ref{sec::BF_2DLinear} and \ref{sec::BF_2DQuadratic} detail how the bas
 %%%   SubSection - PWL
 \subsection{3D Piecewise Linear (PWL) Basis Functions}
 \label{sec::BF_3DLinear_PWL}
+
+We have defined linearly-complete and quadratically-complete 2D polygonal basis functions. Next, we present an efficient coordinate system for arbitrary 3D polyhedra that is linearly-complete. However, at the time of this work, no analagous methodology to convert 3D linear coordinates to their serendipity basis exists. Therefore, we will utilize only a single linearly-complete 3D coordinate system for some of the analysis to be performed in Chapter \ref{sec::DSA}.
 
 The 3D PWL basis functions share a similar form to the 2D PWL basis functions.
 
