@@ -16,7 +16,7 @@
 
 In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various elementary matrices needed to form the full set of spatially-discretized PDEs. These included the mass, streaming, and surface matrices where the integrations on the element's domain and boundary require combinations of the basis functions' values and gradients.
 
-The remainder of the this chapter is organized as follows. In Section \ref{sec::BF_2DLinear}, we present the 2D, linearly-complete, barycentric, polygonal basis functions that we will analyze in this dissertation. We give their properties along with a comparison to historical basis functions that are exact on non-polygonal elements (triangles and quadrilaterals). We then present in Section \ref{sec::BF_2DQuadratic} the methodology to convert the barycentric polygonal basis functions presented in Section \ref{sec::BF_2DLinear} into a serendipity space of basis functions with quadratic-completeness. Section \ref{sec::BF_3DLinear} then presentes the 3D, linearly-complete, polyhedral basis functions that will be exclusively used in Chapter \ref{sec::DSA} for 3D DSA calculations. We then present numerical results pertaining to our linear and quadratic 2D basis functions in Section \ref{sec::BF_Results}. We then present concluding remarks for the chapter in Section \ref{sec::BF_Conclusions}.
+The remainder of the this chapter is organized as follows. In Section \ref{sec::BF_2DLinear}, we present the 2D, linearly-complete, barycentric, polygonal basis functions that we will analyze in this dissertation. We then present in Section \ref{sec::BF_2DQuadratic} the methodology to convert the barycentric polygonal basis functions presented in Section \ref{sec::BF_2DLinear} into a serendipity space of basis functions with quadratic-completeness. Section \ref{sec::BF_3DLinear} then presentes the 3D, linearly-complete, polyhedral basis functions that will be exclusively used in Chapter \ref{sec::DSA} for 3D DSA calculations. We then present numerical results pertaining to our linear and quadratic 2D basis functions in Section \ref{sec::BF_Results}. Section \ref{sec::BF_Conclusions} concludes with some closing remarks.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - 2D Linear
@@ -172,6 +172,8 @@ w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, 
 %%%   SubSection - PWL
 \subsection{Piecewise Linear (PWL) Basis Functions}
 \label{sec::BF_2DLinear_PWL}
+
+The second linearly-complete 2D polygonal coordinates that we will analyze are the Piecewise Linear (PWL) coordinates proposed by Stone and Adams \cite{ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}.
 
 \begin{equation}
 \label{eq::PWL_2D}
@@ -586,6 +588,7 @@ PWL&	1D/2D/3D&	Convex/Concave&	Analytical	&Direct\\ \hline
 Mean Value&	2D&	Convex/Concave&	Numerical	&Direct\\ \hline
 Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 \end{tabular}
+\label{tab::BF_2Dlin_summary}
 \end{table}
 
 \begin{figure}
@@ -838,19 +841,134 @@ B^* = B^T (B B^T)^{-1}
 \section{Integrating the Arbitrary 2D Polygonal Elements}
 \label{sec::BF_2DIntegration}
 
-Sections \ref{sec::BF_2DLinear} and \ref{sec::BF_2DQuadratic} detail how the basis functions and their gradients can be computed at different points on a 2D polygonal element. These basis functions and gradients can then be used to calculate the integrals of the elementary matrices for a given element $K$ as described in Section \ref{sec::Sn_Spatial}. Because the elementary matrix integrals using the Wachspress, mean value, and maximum entropy coordinates cannot be integrated analytically, we need to define a numerical quadrature scheme. The spatial quadrature sets need to be amenable to arbitrary polygons and also integrate polynomials exactly (the different polynomial orders of the basis functions). Efficient quadrature schemes exist for both triangles and quadrilaterals \cite{}. These include symmetric rules on triangles and cubature and tensor-product rules on triangles and quadrilaterals, respectively. However, polygons have an infinite number of topological shapes and explicit quadrature rules cannot be defined.
+Sections \ref{sec::BF_2DLinear} and \ref{sec::BF_2DQuadratic} detail how the basis functions and their gradients can be computed at different points on a 2D polygonal element. These basis functions and gradients can then be used to calculate the integrals of the elementary matrices for a given element $K$ as described in Section \ref{sec::Sn_Spatial}. Because the elementary matrix integrals using the Wachspress, mean value, and maximum entropy coordinates cannot be integrated analytically, we need to define a numerical quadrature scheme. The spatial quadrature sets need to be amenable to arbitrary polygons and also integrate polynomials exactly (the different polynomial orders of the basis functions). Efficient quadrature schemes exist for both triangles and quadrilaterals \cite{silvester1970symmetric,dunavant1985high,wandzurat2003symmetric,lyness1994survey,cools1987construction}. These include symmetric rules on triangles and cubature and tensor-product rules on triangles and quadrilaterals, respectively. However, polygons have an infinite number of topological shapes and explicit quadrature rules cannot be defined. Because of this, the development of efficient quadrature rules for arbitrary polytopes is an ongoing field of research \cite{nooijen1990symmetric,dasgupta2003integration,mousavi2010generalized}.
 
-For this work, we choose to use a simple triangulation-based scheme. The global polygonal element $K$ with $N_K$ vertices is sub-divided into $N_K$ separate triangles. Each of these triangles is formed 
+At this time, we were only interested in the accuracy and not the efficiency of the integration of the elementary matrices. Therefore, we simply choose to use a simple triangulation-based scheme. The global polygonal element $K$ with $N_K$ vertices is sub-divided into $N_K$ separate triangles. Each of these triangles is formed from two adjacent vertices and the polygon's centroid, $\vec{c}$. For convex and degenerate (not concave) polygons the centroid can be the average of the vertex coordinates, which is simply given by,
+
+\begin{equation}
+\label{eq::BF_2DInt_centroid}
+\vec{c} = \frac{1}{N_K} \sum_{i=1}^{N_K} \vec{x}_i .
+\end{equation}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth]{figures/sec_BF/triangle_mapping_Rev1.png}
+\caption{blah.}
+\label{fig::BF_2D_tri_mapping}
+\end{figure}
+
+\noindent Then for each sub-triangle, a quadrature rule with $N_q$ nodes is employed (we do not vary the number of nodes between sub-triangles). This quadrature rule is specified in the reference space of $\{ r, s\}$ on the unit triangle with vertices of (0,0), (1,0), and (0,1). We have chosen a symmetric reference quadrature set that is well documented in the literature \cite{dunavant1985high}. We denote this reference quadrature rule by $\Big\{ \hat{x}_q, \hat{w}_q \Big\}_{q=1}^{N_q}$, where the symbol $\hat{}$ denotes any quantity that lives in the reference space. We note that the sum of the reference weights equals the reference triangle area of 1/2. This reference quadrature is mapped into the global space of the sub-triangle by an affine transformation. The mapping of a point from the reference space, $\hat{{\bf p}}$, to its corresponding point in global space, ${\bf p}$, is done with,
+
+\begin{equation}
+\label{eq::BF_2DInt_ref_to_glob}
+{\bf p} = {\bf x}_0 + J \hat{{\bf p}} ,
+\end{equation}
+
+\noindent where ${\bf x}_0$ is the global position of one of the sub-triangle vertices and $J$ is the Jacobian matrix of the transformation. This mapping is presented graphically in Figure \ref{fig::BF_2D_tri_mapping}. If the global positions of the sub-triangle vertices are given by $\vec{x}_0$, $\vec{x}_1$, and $\vec{x}_2$, then the Jacobian is given by the following, 
+
+\begin{equation}
+\label{eq::BF_2DInt_jacobian}
+ J = \left[
+ \begin{array}{cc}
+ x_1 - x_0 & y_1 - y_0 \\
+  x_2 - x_0 & y_2 - y_0
+ \end{array}
+ \right] \, .
+\end{equation}
+
+\noindent The Jacobian matrix can also be used to map the gradients between the reference and global spaces. The gradient of the reference space can be computed in terms of the global space by,
+
+\begin{equation}
+\label{eq::BF_2DInt_grad_ref}
+\nabla_{\hat{x}} = J \nabla_{x}  ,
+\end{equation}
+
+\noindent and the gradient of the global space can be computed in terms of the reference space by,
+
+\begin{equation}
+\label{eq::BF_2DInt_grad_glob}
+\nabla_{x} = J^{-1} \nabla_{\hat{x}}  
+\end{equation}
+
+With the positions of the nodes mapped to the global space, that just leaves the weights. The value of the global weight $q$ on sub-triangle $i$ within polygon $K$ (given by $w_{i,q}^K$) is mapped from the corresponding reference weight, $\hat{w}_q$, by
+
+\begin{equation}
+\label{eq::BF_2DInt_ref_to_glob_wt}
+w_{i,q}^K =   \hat{w}_q | J_i | .
+\end{equation}
+
+\noindent In Eq. (\ref{eq::BF_2DInt_ref_to_glob_wt}), $| J_i |$ is the determinant of the Jacobian matrix corresponding the transformation to sub-triangle $i$, and it is equal to 2 times the area of the sub-triangle $i$. This means that the determinant acts to normalize the weights so that their sum is equal to the sub-triangle's area. Therefore, summing all the weights of all of the sub-triangles will equal the total area of the polygon $K$.
+
+To this point, we have provided the means to generate the quadrature nodes and weights within the global space of a polygon $K$. Next, the values and gradients of the basis functions at these quadrature nodes can be calculated by the procedures outlined in Sections \ref{sec::BF_2DLinear} and \ref{sec::BF_2DQuadratic}. Then, the function $f$ can be integrated over the polygon $K$ by the double sum,
 
 \begin{equation}
 \label{eq::BF_2DIntegration_cellK}
-\int\displaylimits_{K} f = \sum_{i=1}^{N_K} \sum_{q=1}^{N_q} w_q f_q
+\int\displaylimits_{K} f = \sum_{i=1}^{N_K} \sum_{q=1}^{N_q} w_{i,q}^K f (\vec{x}_{i,q}) ,
 \end{equation}
+
+\noindent where $w_{i,q}^K$ and $\vec{x}_{i,q}$ correspond to the quadrature weights and global positions for node $q$ within sub-triangle $i$, respectively. In this case, the function $f$ can either be some scalar quantity or an elementary matrix. Thus, the elementary matrices needed for the DGFEM formulation of the transport equation can be computed in a logical manner for any arbitrary polygon. In a similar manner, the integral of $f$ over the entire mesh, $\mathbb{T}_h$, is simply the sum of integrals over all elements. This integration of $f$ over the entire domain is simply given by
 
 \begin{equation}
 \label{eq::BF_2DIntegration_domain}
-\int\displaylimits_{\mathbb{T}_h} f = \sum_{K \in \mathbb{T}_h} \sum_{i=1}^{N_K} \sum_{q=1}^{N_q} w_q f_q
+\int\displaylimits_{\mathbb{T}_h} f = \sum_{K \in \mathbb{T}_h} \left( \sum_{i=1}^{N_K} \sum_{q=1}^{N_q} w_{i,q}^K f (\vec{x}_{i,q}) \right) ,
 \end{equation}
+
+\noindent which is clearly just an element-wise sum of Eq. (\ref{eq::BF_2DIntegration_cellK}).
+
+We conclude this section by providing some visual examples of quadrature sets for polygonal elements. Figure \ref{fig::BF_2DIntegration_RefTri} gives quadrature sets on the reference triangle for orders 1-6. We can see that our reference quadrature is symmetric about any of the three vertices, though we note that true isoparametric symmetry is obtained with equilateral triangles. Then Figures \ref{fig::BF_2DIntegration_Pentagon} and \ref{fig::BF_2DIntegration_Hexagon} provide examples of the mapping of the reference quadrature into the global space for a regular pentagon and hexagon, respectively. 
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.475\textwidth}
+		\centering
+		\label{subfig::2DInt_RefTri_Q1}
+		\includegraphics[width=0.75\textwidth]{figures/sec_BF/RefTriQuad_Q1.eps}
+		\caption{Order 1}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.475\textwidth}
+		\centering
+		\label{subfig::2DInt_RefTri_Q2}
+		\includegraphics[width=0.75\textwidth]{figures/sec_BF/RefTriQuad_Q2.eps}
+		\caption{Order 2}
+	\end{subfigure}
+}
+\vspace{3mm}
+{
+	\begin{subfigure}[b]{0.475\textwidth}
+		\centering
+		\label{subfig::2DInt_RefTri_Q3}
+		\includegraphics[width=0.75\textwidth]{figures/sec_BF/RefTriQuad_Q3.eps}
+		\caption{Order 3}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.475\textwidth}
+		\centering
+		\label{subfig::2DInt_RefTri_Q4}
+		\includegraphics[width=0.75\textwidth]{figures/sec_BF/RefTriQuad_Q4.eps}
+		\caption{Order 4}
+	\end{subfigure}
+}
+\vspace{3mm}
+{
+	\begin{subfigure}[b]{0.475\textwidth}
+		\centering
+		\label{subfig::2DInt_RefTri_Q5}
+		\includegraphics[width=0.75\textwidth]{figures/sec_BF/RefTriQuad_Q5.eps}
+		\caption{Order 5}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.475\textwidth}
+		\centering
+		\label{subfig::2DInt_RefTri_Q6}
+		\includegraphics[width=0.75\textwidth]{figures/sec_BF/RefTriQuad_Q6.eps}
+		\caption{Order 6}
+	\end{subfigure}
+}
+\caption{Quadrature sets on the reference triangle of varying order.}
+\label{fig::BF_2DIntegration_RefTri}
+\end{figure}
 
 \begin{figure}
 \centering
@@ -859,14 +977,14 @@ For this work, we choose to use a simple triangulation-based scheme. The global 
 		\centering
 		\label{subfig::2DInt_V5_Q1}
 		\includegraphics[width=\textwidth]{figures/sec_BF/V5_Q1.eps}
-		\caption{}
+		\caption{Order 1}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.475\textwidth}
 		\centering
 		\label{subfig::2DInt_V5_Q2}
 		\includegraphics[width=\textwidth]{figures/sec_BF/V5_Q2.eps}
-		\caption{}
+		\caption{Order 2}
 	\end{subfigure}
 }
 \vspace{3mm}
@@ -875,14 +993,14 @@ For this work, we choose to use a simple triangulation-based scheme. The global 
 		\centering
 		\label{subfig::2DInt_V5_Q3}
 		\includegraphics[width=\textwidth]{figures/sec_BF/V5_Q3.eps}
-		\caption{}
+		\caption{Order 3}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.475\textwidth}
 		\centering
 		\label{subfig::2DInt_V5_Q4}
 		\includegraphics[width=\textwidth]{figures/sec_BF/V5_Q4.eps}
-		\caption{}
+		\caption{Order 4}
 	\end{subfigure}
 }
 \caption{blah}
@@ -896,14 +1014,14 @@ For this work, we choose to use a simple triangulation-based scheme. The global 
 		\centering
 		\label{subfig::2DInt_V6_Q1}
 		\includegraphics[width=\textwidth]{figures/sec_BF/V6_Q1.eps}
-		\caption{}
+		\caption{Order 1}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.475\textwidth}
 		\centering
 		\label{subfig::2DInt_V6_Q2}
 		\includegraphics[width=\textwidth]{figures/sec_BF/V6_Q2.eps}
-		\caption{}
+		\caption{Order 2}
 	\end{subfigure}
 }
 \vspace{3mm}
@@ -912,14 +1030,14 @@ For this work, we choose to use a simple triangulation-based scheme. The global 
 		\centering
 		\label{subfig::2DInt_V6_Q3}
 		\includegraphics[width=\textwidth]{figures/sec_BF/V6_Q3.eps}
-		\caption{}
+		\caption{Order 3}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.475\textwidth}
 		\centering
 		\label{subfig::2DInt_V6_Q4}
 		\includegraphics[width=\textwidth]{figures/sec_BF/V6_Q4.eps}
-		\caption{}
+		\caption{Order 4}
 	\end{subfigure}
 }
 \caption{blah}
@@ -932,15 +1050,9 @@ For this work, we choose to use a simple triangulation-based scheme. The global 
 \label{sec::BF_3DLinear}
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - PWL
-\subsection{3D Piecewise Linear (PWL) Basis Functions}
-\label{sec::BF_3DLinear_PWL}
-
 We have defined linearly-complete and quadratically-complete 2D polygonal basis functions. Next, we present an efficient coordinate system for arbitrary 3D polyhedra that is linearly-complete. However, at the time of this work, no analagous methodology to convert 3D linear coordinates to their serendipity basis exists. Therefore, we will utilize only a single linearly-complete 3D coordinate system for some of the analysis to be performed in Chapter \ref{sec::DSA}.
 
-The 3D PWL basis functions share a similar form to the 2D PWL basis functions.
+For this work, we will utilize the 3D version of the Piecewise Linear (PWL) coordinates. From Table \ref{tab::BF_2Dlin_summary}, we can see some of the properties of the different 2D polygonal coordinates. The PWL functions are the only coordinates with a 3D analogue that allow for direct, analytical integration of the elementary matrices. They also allow for extremely-distorted concave polyhedra, though we will not analyze those in this work. 
 
 \begin{equation}
 \label{eq::PWL_3D}
@@ -975,7 +1087,6 @@ Now that we have presented several linear polygonal finite element basis sets al
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Linear Solutions = METHOD OF EXACT SOLUTIONS
-\newpage
 \subsection{Two-Dimensional Exactly-Linear Transport Solutions}
 \label{sec::BF_Results_Linear}
 
@@ -1286,7 +1397,6 @@ For this example, we test the various 2D polygonal finite element basis function
 % end false
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Quadratic Solutions = METHOD OF EXACT SOLUTIONS
-\newpage
 \subsection{Two-Dimensional Exactly-Quadratic Transport Solutions}
 \label{sec::BF_Results_Quadratic}
 
@@ -1566,7 +1676,6 @@ For this example, we test the various 2D polygonal finite element basis function
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - MMS
-\newpage
 \subsection{Convergence Rate Analysis by the Method of Manufactured Solutions}
 \label{sec::BF_Results_MMS}
 
@@ -1692,7 +1801,6 @@ For this example, we choose the dimensionality of our problem to be $[0,1]^2$ wh
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - PA
-\newpage
 \subsection{Convergence Rate Analysis in a Purely-Absorbing Medium}
 \label{sec::BF_Results_PA}
 
@@ -1700,7 +1808,6 @@ For this example, we choose the dimensionality of our problem to be $[0,1]^2$ wh
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Searchlight Problem
-\newpage
 \subsection{Searchlight Problem}
 \label{sec::BF_Results_SL}
 
@@ -1740,41 +1847,54 @@ We investigated this problem using several of the 2D polygonal basis functions a
 
 \begin{figure}
 \centering
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::SL_uniform_ef_wach}
-		\includegraphics[width=\textwidth]{figures/sec_BF/SL_WACHSPRESS_uniform.eps}
-		\caption{}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SL_PWLD_k1_uniform.eps}
+		\caption{Linear PWL}
 	\end{subfigure}
-	\vfill
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SL_uniform_ef_wach}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SL_PWLD_k2_uniform.eps}
+		\caption{Quadratic PWL}
+	\end{subfigure}
+}
+\vspace{2.5mm}
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::SL_uniform_ef_pwld}
-		\includegraphics[width=\textwidth]{figures/sec_BF/SL_PWLD_uniform.eps}
-		\caption{}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SL_MV_k1_uniform.eps}
+		\caption{Linear Mean Value}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::SL_uniform_ef_mv}
-		\includegraphics[width=\textwidth]{figures/sec_BF/SL_MV_uniform.eps}
-		\caption{}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SL_MV_k2_uniform.eps}
+		\caption{Quadratic Mean Value}
 	\end{subfigure}
-	\vfill
+}
+\vspace{2.5mm}
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::SL_uniform_ef_me1}
 		\includegraphics[width=\textwidth]{figures/sec_BF/SL_ME_k1_uniform.eps}
-		\caption{}
+		\caption{Linear Maximum Entropy}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::SL_uniform_ef_me2}
 		\includegraphics[width=\textwidth]{figures/sec_BF/SL_ME_k2_uniform.eps}
-		\caption{}
+		\caption{Quadratic Maximum Entropy}
 	\end{subfigure}
-\caption{Exiting angular flux on the right boundary with uniform refinement using the (a) Wachspress basis functions, (b) PWL basis functions, (c) mean value basis functions, (d) linear maximum entropy coordinates and (e) quadratic serendipity maximum entropy coordinates.}
+}
+\caption{Exiting angular flux on the right boundary with uniform refinement.}
 \label{fig::BF_Results_SL_uniform_exit_flux}
 \end{figure}
 
@@ -1784,8 +1904,6 @@ We investigated this problem using several of the 2D polygonal basis functions a
 \label{sec::BF_Conclusions}
 
 In this chapter, we have presented 
-
-
 
 
 
