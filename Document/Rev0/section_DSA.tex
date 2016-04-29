@@ -1305,64 +1305,7 @@ We illustrate the necessity for a minimization algorithm in Figure \ref{fig::DSA
 \section{Numerical Results}
 \label{sec::DSA_Results}
 
-We now present all theoretical and applied results pertaining to the described DSA schemes. First, we demonstrate that the 2D linear and quadratic basis functions defined in Chapter \ref{sec::BF} can capture the thick diffusion limit in Section \ref{sec::DSA_Results_TDL}. Next, we provide results in Section \ref{sec::DSA_Results_SIP} on the efficacy of the SIP form as a diffusion solver. Section \ref{sec::DSA_Results_1G} provides all theoretical and numerical results pertaining the 1-group DSA scheme. Then, Section \ref{sec::DSA_Results_Scaling} demonstrates the scalability of the MIP diffusion form on massively-parallel computer architectures. Finally, Section \ref{sec::DSA_Results_IM1} gives the results pertaining to the analysis performed for the thermal neutron upscattering acceleration methods.
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - Thick Diffusive Limit
-\subsection{Transport Solutions in the Thick Diffusive Limit}
-\label{sec::DSA_Results_TDL}
-
-We present our first numerical example by demonstrating that the various 2D polygonal finite element basis functions provided in Chapter \ref{sec::BF} satisfy the thick diffusion limit. We investigate the transport problem with isotropic scattering and an isotropic distributed source given by the following:
-
-\begin{equation}
-\label{eq::BF_Results_TDL_trans_eq}
-\vec{\Omega} \cdot \vec{\nabla} \Psi + \sigma_t \Psi =   \frac{\sigma_s}{4 \pi} \Phi +  \frac{Q_0}{4 \pi}.
-\end{equation}
-
-\noindent As the transport problem becomes more optically thick, the total mean free paths of the neutroncs increases. In the thick diffusion limit, the domain mean free path approaches infinity. If we fix the physical dimensions of the problem to some finite value, then we can scale the cross sections and the source term to reflect the properties of the thick diffusion limit. In the thick diffusion limit the total and scattering cross sections tend to infinity while the absorption cross section and the source term tend to zero. If we introduce a scaling parameter, $\epsilon$, then we can write the scaled terms as,
-
-\begin{equation}
-\label{eq::BF_Results_TDL_scaling}
-\begin{aligned}
-	\sigma_t &\rightarrow \frac{\sigma_t}{\epsilon} \\
-	\sigma_a &\rightarrow \epsilon \sigma_t\\
-	\sigma_s &\rightarrow \left( \frac{1}{\epsilon} - \epsilon   \right) \sigma_t \\
-	\frac{Q_0}{4 \pi} &\rightarrow \epsilon \frac{Q_0}{4 \pi}
-\end{aligned} \, .
-\end{equation}
-
-\noindent Inserting these scaled cross sections and source term into Eq. (\ref{eq::BF_Results_TDL_trans_eq}) leads to the following scaled transport equation:
-
-\begin{equation}
-\label{eq::BF_Results_TDL_scaled_trans_eq}
-\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{\sigma_t}{\epsilon} \Psi = \sigma_t \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} + \epsilon \frac{Q_0}{4 \pi} .
-\end{equation}
-
-\noindent We can also use the scaled terms of Eq. (\ref{eq::BF_Results_TDL_scaling}) to give the corresponding scaled diffusion equation. If we take the 0th and 1st moments of Eq. (\ref{eq::BF_Results_TDL_scaled_trans_eq}) and assume that the P1 terms obey Fick's Law, then the scaled diffusion equation is
-
-\begin{equation}
-\label{eq::BF_Results_TDL_scaled_diff_eq}
-\epsilon \vec{\nabla} \cdot \frac{1}{3 \sigma_t}  \vec{\nabla} \Phi + \epsilon \sigma_t \Phi =  \epsilon Q_0.
-\end{equation}
-
-\noindent One can immediately see that Eq. (\ref{eq::BF_Results_TDL_scaled_diff_eq}) does not truly scale because there is an $\epsilon$ for each term. This is the desired behavior we want to see from the diffusion equation because, as $\epsilon \rightarrow 0$, the transport equation will converge to its diffusive limit and satisfy a diffusion equation.
-
-For the sake of analysis, we seek to simplify Eqs. (\ref{eq::BF_Results_TDL_scaled_trans_eq}) and (\ref{eq::BF_Results_TDL_scaled_diff_eq}) by normalization. We choose to set $\sigma_t$ and $Q_0$ to unity which gives the final transport and diffusion equations as  
-
-\begin{equation}
-\label{eq::BF_Results_TDL_normalized_trans_eq}
-\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{1}{\epsilon} \Psi =  \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} +  \frac{\epsilon}{4 \pi} ,
-\end{equation}
-
-\noindent and
-
-\begin{equation}
-\label{eq::BF_Results_TDL_normalized_diff_eq}
-\frac{\epsilon}{3} {\nabla}^2 \Phi + \epsilon  \Phi =  \epsilon ,
-\end{equation}
-
-\noindent respectively.
+We now present all theoretical and applied results pertaining to the described DSA schemes. First, we provide results in Section \ref{sec::DSA_Results_SIP} on the efficacy of the SIP form as a diffusion solver. Section \ref{sec::DSA_Results_1G} provides all theoretical and numerical results pertaining the 1-group DSA scheme. Then, Section \ref{sec::DSA_Results_Scaling} demonstrates the scalability of the MIP diffusion form on massively-parallel computer architectures. Finally, Section \ref{sec::DSA_Results_IM1} gives the results pertaining to the analysis performed for the thermal neutron upscattering acceleration methods.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - SIP Results
