@@ -83,7 +83,40 @@ w_i (\vec{x})  = m_i(\vec{x}) \exp(-  \kappa \cdot (\vec{x}_i - \vec{x}))
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - Analytical 2D PWL Integration
+\section{Analytical Integration of the 2D PWL Basis Functions}
+\label{sec::appendix_BF_PWL2}
+
+In Section \ref{sec::BF_2DLinear_PWL}, we provided the functional form for the Piecewise Linear (PWL) coordinates. We noted that of the linearly-complete 2D polygonal coordinates, PWL is the only one that can perform analytical integrations of the elementary matrices. We now describe the procedures to perform these analytical integrations of the elementary matrices.
+
+
+\begin{equation}
+\label{eq::2D_tri_ref_BF}
+\begin{aligned}
+	b_1(r,s) & = 1-r-s \\
+	b_2(r,s) & = r \\
+	b_3(r,s) & = s 
+\end{aligned}
+\end{equation}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Analytical PWQ
 \section{Analytical Form for the Quadratic Serendipity PWL Basis Functions}
 \label{sec::appendix_BF_PWQ}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - Analytical 3D PWL Integration
+\section{Analytical Integration of the 3D PWL Basis Functions}
+\label{sec::appendix_BF_PWL3}
+
+
+
+\begin{equation}
+\label{eq::3D_tetref_BF}
+\begin{aligned}
+	b_1(r,s,t) & = 1-r-s-t \\
+	b_2(r,s,t) & = r \\
+	b_3(r,s,t) & = s \\
+	b_4(r,s,t) & = t
+\end{aligned}
+\end{equation}

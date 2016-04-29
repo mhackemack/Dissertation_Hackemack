@@ -173,7 +173,7 @@ w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, 
 \subsection{Piecewise Linear (PWL) Basis Functions}
 \label{sec::BF_2DLinear_PWL}
 
-The second linearly-complete 2D polygonal coordinates that we will analyze are the Piecewise Linear (PWL) coordinates proposed by Stone and Adams \cite{ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}.
+The second linearly-complete 2D polygonal coordinates that we will analyze are the Piecewise Linear (PWL) coordinates proposed by Stone and Adams \cite{ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}. The originally introduced the work specifically for 
 
 \begin{equation}
 \label{eq::PWL_2D}
@@ -182,14 +182,6 @@ The second linearly-complete 2D polygonal coordinates that we will analyze are t
 
 \noindent $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function which is unity at the cell center and linearly decreases to zero to each cell vertex. $\alpha_{j}^{K}$ is the weight parameter for vertex $j$ in cell $K$. 
 
-\begin{equation}
-\label{eq::2D_tri_ref_BF}
-\begin{aligned}
-	b_1(r,s) & = 1-r-s \\
-	b_2(r,s) & = r \\
-	b_3(r,s) & = s 
-\end{aligned}
-\end{equation}
 
 \begin{figure}
 \label{fig::2D_PWLD1_unit_square_basis_functions}
@@ -659,7 +651,7 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Quadratic Basis Functions
-\section{Converting the Linear Polygonal Basis Functions to the Quadratic Serendipity Space}
+\section{Converting the Linear Polygonal Basis Functions to the Quadratic Serendipity Space of Functions}
 \label{sec::BF_2DQuadratic}
 
 Now that we have given complete details on the linearly-complete generalized barycentric coordinates that we will investigate for this work, we 
@@ -1068,15 +1060,7 @@ For this work, we will utilize the 3D version of the Piecewise Linear (PWL) coor
 
 \noindent respectively, where $N_K$ is the number of vertices in cell $K$ and $N_f$ is the number of vertices on face $f$, which leads to constant values of $\alpha$ and $\beta$ for each cell and face, respectively. This assumption of the cell weight function holds for both 2D and 3D.
 
-\begin{equation}
-\label{eq::3D_tetref_BF}
-\begin{aligned}
-	b_1(r,s,t) & = 1-r-s-t \\
-	b_2(r,s,t) & = r \\
-	b_3(r,s,t) & = s \\
-	b_4(r,s,t) & = t
-\end{aligned}
-\end{equation}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Results
@@ -1903,7 +1887,9 @@ We investigated this problem using several of the 2D polygonal basis functions a
 \section{Conclusions}
 \label{sec::BF_Conclusions}
 
-In this chapter, we have presented 
+In this chapter, we presented four different linearly-complete, barycentric, 2D polygonal basis functions to be used with the DGFEM transport equation: the Wachspress rational functions, the PWL coordinates, the mean value coordinates, and maximum entropy coordinates. The Wachspress and the PWL coordinates had been previously utilized for DGFEM transport calculations, and we have extended the analysis to include the other two. Next, the procedure for converting these barycentric coordinates into the quadratic serendipity space of functions was given. For both the linear and quadratic coordinates, a simple quadrature rule for arbitrary polygons based on triangulation was used. We also provided some details of the 3D PWL coordinates that will be used in Chapter \ref{sec::DSA} for completeness.
+
+Numerical results were obtained to demonstrate the completeness and convergence properties of these coordinates. The 2D linear and quadratic basis functions capture the thick diffusion limit, which is a necessary property for TRT calculations. The linear and quadratic basis functions can capture exactly-linear and exactly-quadratic solution spaces, respectively. Next, a series of convergence studies were performed to test the convergence behavior of the basis functions under different conditions. Using MMS, the transport solutions converged at a rate of $p+1$ under uniform mesh refinement, which is perfectly in alignment with FEM theory. AMR was also used on MMS problems to achieve more accurate solutions with the same $p+1$ convergence rates using less degrees of freedom. Finally, we concluded with some numerical problems involving purely absorbing media containing a solution discontinuity. For these problems, the solutions converge at a rate of $\min ( p+1 , r)$ depending on the regularity of the alignment of the transport solution. If the spatial mesh is aligned with the discontinuity, then the $p+1$ convergence are still observed. If the meshes are not aligned, then convergence rates imposed by the regularity ($r=1/2$ or $3/2$) are observed for optically thin meshes. However, for meshes that are still optically thick convergence rates of $p+1$ are observed in the preasymptotic region before being restricted by $r$ as the mesh gets optically thin.
 
 
 
