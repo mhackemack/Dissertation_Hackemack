@@ -14,9 +14,9 @@
 \chapter{\uppercase {FEM Basis Functions for Unstructured Polytopes}}
 \label{sec::BF}
 
-In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various elementary matrices needed to form the full set of spatially-discretized PDEs. These included the mass, streaming, and surface matrices where the integrations on the element's domain and boundary require combinations of the basis functions' values and gradients.
+In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various elementary matrices needed to form the full set of spatially-discretized PDEs. These included the mass, streaming, and surface matrices where the integrations on the element's domain and boundary require combinations of the basis functions' values and gradients. From FEM theory, the basis functions act as interpolation functions with local measure on some subset of elements on a discretized mesh, $\mathbb{T}_h$. To achieve the maximum possible solution convergence rate from Section \ref{sec::Sn_Spatial_Convergence} of $p+1$, the interpolation functions must have polynomial completeness of at least order $p$. For 2D interpolants, the basis functions are linearly-complete ($p=1$) if they can exactly interpolate the $\{ 1, x, y \}$ span of functions. Likewise, 2D basis functions are said to be quadratically-complete if they can exactly interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions.
 
-The remainder of the this chapter is organized as follows. In Section \ref{sec::BF_2DLinear}, we present the 2D, linearly-complete, barycentric, polygonal basis functions that we will analyze in this dissertation. We then present in Section \ref{sec::BF_2DQuadratic} the methodology to convert the barycentric polygonal basis functions presented in Section \ref{sec::BF_2DLinear} into a serendipity space of basis functions with quadratic-completeness. Section \ref{sec::BF_3DLinear} then presentes the 3D, linearly-complete, polyhedral basis functions that will be exclusively used in Chapter \ref{sec::DSA} for 3D DSA calculations. We then present numerical results pertaining to our linear and quadratic 2D basis functions in Section \ref{sec::BF_Results}. Section \ref{sec::BF_Conclusions} concludes with some closing remarks.
+The remainder of the this chapter is organized as follows. In Section \ref{sec::BF_2DLinear}, we present the 2D, linearly-complete, barycentric, polygonal basis functions that we will analyze in this dissertation. We then present in Section \ref{sec::BF_2DQuadratic} the methodology to convert the barycentric polygonal basis functions presented in Section \ref{sec::BF_2DLinear} into a serendipity space of basis functions with quadratic-completeness. Section \ref{sec::BF_2DIntegration} provides the methodology that will be employed to generate spatial quadrature sets on 2D arbitrary polygons. Section \ref{sec::BF_3DLinear} then presentes the 3D, linearly-complete, polyhedral basis functions that will be exclusively used in Chapter \ref{sec::DSA} for 3D DSA calculations. We then present numerical results pertaining to our linear and quadratic 2D basis functions in Section \ref{sec::BF_Results}. Section \ref{sec::BF_Conclusions} concludes with some closing remarks.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - 2D Linear
@@ -34,7 +34,7 @@ We complete our geometric description for the polygonal coordinate system by ana
 \label{fig::BF_2D_ref_polygon}
 \end{figure}
 
-In this dissertation, all 1st-order, two-dimensional basis functions for an element $K$ will obey the properties for barycentric coordinates. They will form a {\em partition of unity},
+In this dissertation, all linearly-complete, 2D basis functions for an element $K$ will obey the properties for barycentric coordinates. They will form a {\em partition of unity},
 
 \begin{equation}
 \sum_{i=1}^{N_K} b_i (\vec{x})  =  1;
@@ -845,7 +845,7 @@ At this time, we were only interested in the accuracy and not the efficiency of 
 \begin{figure}
 \centering
 \includegraphics[width=0.75\textwidth]{figures/sec_BF/triangle_mapping_Rev1.png}
-\caption{blah.}
+\caption{Mapping a point on the reference triangle onto a sub-triangle of an arbitrary polygon.}
 \label{fig::BF_2D_tri_mapping}
 \end{figure}
 
@@ -907,7 +907,7 @@ To this point, we have provided the means to generate the quadrature nodes and w
 
 \noindent which is clearly just an element-wise sum of Eq. (\ref{eq::BF_2DIntegration_cellK}).
 
-We conclude this section by providing some visual examples of quadrature sets for polygonal elements. Figure \ref{fig::BF_2DIntegration_RefTri} gives quadrature sets on the reference triangle for orders 1-6. We can see that our reference quadrature is symmetric about any of the three vertices, though we note that true isoparametric symmetry is obtained with equilateral triangles. Then Figures \ref{fig::BF_2DIntegration_Pentagon} and \ref{fig::BF_2DIntegration_Hexagon} provide examples of the mapping of the reference quadrature into the global space for a regular pentagon and hexagon, respectively. 
+We conclude this section by providing some visual examples of quadrature sets for polygonal elements. Figure \ref{fig::BF_2DIntegration_RefTri} gives quadrature sets on the reference triangle for orders 1-6. We can see that our reference quadrature is symmetric about any of the three vertices, though we note that true isoparametric symmetry is only obtained with equilateral triangles. Then Figures \ref{fig::BF_2DIntegration_Pentagon} and \ref{fig::BF_2DIntegration_Hexagon} provide examples of the mapping of the reference quadrature into the global space for a regular pentagon and hexagon, respectively. 
 
 \begin{figure}
 \centering
@@ -995,7 +995,7 @@ We conclude this section by providing some visual examples of quadrature sets fo
 		\caption{Order 4}
 	\end{subfigure}
 }
-\caption{blah}
+\caption{Examples of spatial quadrature sets of varying order on a regular pentagon.}
 \label{fig::BF_2DIntegration_Pentagon}
 \end{figure}
 
@@ -1032,7 +1032,7 @@ We conclude this section by providing some visual examples of quadrature sets fo
 		\caption{Order 4}
 	\end{subfigure}
 }
-\caption{blah}
+\caption{Examples of spatial quadrature sets of varying order on a regular hexagon.}
 \label{fig::BF_2DIntegration_Hexagon}
 \end{figure}
 
@@ -1042,23 +1042,46 @@ We conclude this section by providing some visual examples of quadrature sets fo
 \label{sec::BF_3DLinear}
 
 
-We have defined linearly-complete and quadratically-complete 2D polygonal basis functions. Next, we present an efficient coordinate system for arbitrary 3D polyhedra that is linearly-complete. However, at the time of this work, no analagous methodology to convert 3D linear coordinates to their serendipity basis exists. Therefore, we will utilize only a single linearly-complete 3D coordinate system for some of the analysis to be performed in Chapter \ref{sec::DSA}.
+We have defined linearly-complete and quadratically-complete 2D polygonal basis functions for use in FEM analysis of the DGFEM transport equation. Now, we present an efficient coordinate system for arbitrary 3D polyhedra that is linearly-complete. At the time of this work and to the best of our knowledge, no analagous methodology to convert linear coordinates on 3D polyhedra to their serendipity basis exists. Therefore, we will utilize only a single linearly-complete 3D coordinate system for some of the analysis to be performed in Chapter \ref{sec::DSA}, but we include it here for completeness with the 2D coordinates.
 
-For this work, we will utilize the 3D version of the Piecewise Linear (PWL) coordinates. From Table \ref{tab::BF_2Dlin_summary}, we can see some of the properties of the different 2D polygonal coordinates. The PWL functions are the only coordinates with a 3D analogue that allow for direct, analytical integration of the elementary matrices. They also allow for extremely-distorted concave polyhedra, though we will not analyze those in this work. 
+For this work, we will utilize the 3D version of the Piecewise Linear (PWL) coordinates that is suitable for x-y-z geometries \cite{bailey2008phd}. From Table \ref{tab::BF_2Dlin_summary}, we can see some of the properties of the different 2D polygonal coordinates. The PWL functions are the only coordinates with a 3D analogue that allow for direct, analytical integration of the elementary matrices. This means that no spatial quadrature sets are required, though an analogous procedure to Section \ref{sec::BF_2DIntegration} could be employed using sub-tetrahedra instead of sub-triangles. The 3D PWL coordinates also allow for extremely-distorted concave polyhedra, though we will not analyze those in this work.
+
+The 3D PWL coordinates have an analagous form to their 2D version from Eq. (\ref{eq::PWL_2D}). In fact, the 2D PWL coordinates are identical to their 3D version along a polyhedral face (the 3D face centroid acts like the 2D cell centroid). If we define $N_K$ as the number of vertices for cell $K$ and $N_f$ as the number of vertices composing face $f$, then the cell and face centroids for a strongly-convex polyhedra can be given by
+
+\begin{equation}
+\label{eq::PWL_3D_cell_center}
+	\vec{r}_{c} = \frac{1}{N_K} \sum\displaylimits_{i=1}^{N_K} \vec{x}_i ,
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::PWL_3D_face_center}
+	\vec{r}_{f} = \frac{1}{N_f} \sum\displaylimits_{i=1}^{N_f} \vec{x}_i ,
+\end{equation}
+
+\noindent respectively. We see that these centroids have the simple definition of the average positions of the cell and face vertices. Using these centroid definitions, the functional form for the 3D PWL coordinates is given by:
 
 \begin{equation}
 \label{eq::PWL_3D}
-	b_j (x,y,z)  = t_j  (x,y,z) + \sum_{f=1}^{F_j} \beta_f^j  t_f (x,y,z) + \alpha_j^K t_c  (x,y,z)
+	b_j (x,y,z)  = t_j  (x,y,z) + \sum_{f=1}^{F_j} \beta_f^j  t_f (x,y,z) + \alpha_j^K t_c  (x,y,z) .
 \end{equation}
 
-\noindent $t_j$ is the standard 3D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center, the face center for each face that includes vertex $j$, and each vertex that shares an edge with vertex $j$. $t_c$ is the 3D cell ``tent" function which is unity at the cell center and linearly decreases to zero to each cell vertex and face center. $t_f$ is the face "tent" function which is unity at the face center and linearly decreases to zero at each vertex on that face and the cell center. $\beta_{f,j}$ is the weight parameter for face $f$ touching cell vertex $j$, and $F_j$ is the number of faces touching vertex $j$. Like the previous work defining the PWLD method \cite{bailey2008phd}, we also choose to assume the cell and face weighting parameters are
+\noindent In Eq. (\ref{eq::PWL_3D}), $t_j$ is the standard 3D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center, the face center for each face that includes vertex $j$, and each vertex that shares an edge with vertex $j$. $t_c$ is the 3D cell ``tent" function located at $\vec{r}_c$ which is unity at the cell center and linearly decreases to zero to each cell vertex and face center. $t_f$ is the face "tent" function for face $f$ located at $\vec{r}_{f}$ which is unity at the face center and linearly decreases to zero at each vertex on that face and the cell center. $\beta_{f,j}$ is the weight parameter for face $f$ touching cell vertex $j$, and $F_j$ is the number of faces touching vertex $j$. Like the previous work defining the PWLD method \cite{bailey2008phd}, we also choose to assume the cell and face weighting parameters are
 
 \begin{equation}
-\alpha_{K,j} = \frac{1}{N_K} \qquad \text{and} \qquad \beta_{f,j} = \frac{1}{N_f},
-\label{eq::PWL_weight_vals}
+\alpha_{K,j} = \frac{1}{N_K},
+\label{eq::PWL_center_weight_val}
 \end{equation}
 
-\noindent respectively, where $N_K$ is the number of vertices in cell $K$ and $N_f$ is the number of vertices on face $f$, which leads to constant values of $\alpha$ and $\beta$ for each cell and face, respectively. This assumption of the cell weight function holds for both 2D and 3D.
+\noindent and
+
+\begin{equation}
+\qquad \beta_{f,j} = \frac{1}{N_f},
+\label{eq::PWL_face_weight_val}
+\end{equation}
+
+\noindent respectively, which leads to constant values of $\alpha$ and $\beta$ for each cell and face, respectively. This assumption of the cell weight functions remains from the 2D PWL form. 
 
 
 
@@ -1067,7 +1090,7 @@ For this work, we will utilize the 3D version of the Piecewise Linear (PWL) coor
 \section{Numerical Results}
 \label{sec::BF_Results}
 
-Now that we have presented several linear polygonal finite element basis sets along with the methodology to convert them to quadratic serendipity-like basis, we present several numerical problems to demonstrate our methodology. First, we demonstrate that the presented basis sets can capture an exactly-linear transport solution in Section \ref{sec::BF_Results_Linear}. Next, we present some convergence properties of the basis sets using the method of manufactured solutions (MMS) in Section \ref{sec::BF_Results_MMS}. Then in Section \ref{sec::BF_Results_PA}, we demonstrate how the solution regularity can limit the convergence of our numerical transport solutions to the $H^{1/2-\epsilon}$ and $H^{3/2-\epsilon}$ Hilbert spaces. We conclude with a searchlight problem and observe how the basis sets react with adaptive mesh refinement (AMR) to mitigate numerical dispersion through a vacuum in Section \ref{sec::BF_Results_SL}.
+Now that we have presented several linear polygonal finite element basis sets along with the methodology to convert them to quadratic serendipity-like basis, we present several numerical problems to demonstrate our methodology. First, we demonstrate that the presented basis sets can capture an exactly-linear transport solution in Section \ref{sec::BF_Results_Linear}. Next, we present some convergence properties of the basis sets using the method of manufactured solutions (MMS) in Section \ref{sec::BF_Results_MMS}. Then in Section \ref{sec::BF_Results_PA}, we demonstrate how the solution regularity can limit the convergence of our numerical transport solutions to the $H^{1/2}$ and $H^{3/2}$ Hilbert spaces. We conclude with a searchlight problem and observe how the basis sets react with adaptive mesh refinement (AMR) to mitigate numerical dispersion through a vacuum in Section \ref{sec::BF_Results_SL}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1128,24 +1151,239 @@ For the sake of analysis, we seek to simplify Eqs. (\ref{eq::BF_Results_TDL_scal
 
 \begin{figure}
 \centering
-	\begin{subfigure}[b]{0.85\textwidth}
+{
+	\begin{subfigure}[b]{0.75\textwidth}
 		\centering
 		\label{subfig::DL_diff_mv_k1}
 		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=1.png}
-		\caption{}
+		%\caption{}
 	\end{subfigure}
-	\vspace{2mm}
-	\begin{subfigure}[b]{0.85\textwidth}
+}
+	\vspace{10mm}
+{
+	\begin{subfigure}[b]{0.75\textwidth}
 		\centering
 		\label{subfig::DL_diff_mv_k2}
 		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=2.png}
-		\caption{}
+		%\caption{}
 	\end{subfigure}
-\caption{blah}
+}
+\vspace{2mm}
+\caption{Diffusion solution representing the thick diffusion limit problem with linear (top) and quadratic (bottom) Wachspress basis functions.}
 \label{fig::BF_Results_DL_DiffSol}
 \end{figure}
 
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_w1_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=1_ep=1e-1.png}
+		\caption{Linear, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_w2_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=2_ep=1e-1.png}
+		\caption{Quadratic, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_w1_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=1_ep=1e-3.png}
+		\caption{Linear, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_w2_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=2_ep=1e-3.png}
+		\caption{Quadratic, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_w1_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=1_ep=1e-5.png}
+		\caption{Linear, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_w2_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=2_ep=1e-5.png}
+		\caption{Quadratic, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+}
+\caption{Transport solutions of the thick diffusion limit problem using the Wachspress basis functions for varying values of the scaling parameter, $\epsilon$.}
+\label{fig::BF_Results_DL_Wachspress}
+\end{figure}
 
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_pwl1_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=1_ep=1e-1.png}
+		\caption{Linear, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_pwl2_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=2_ep=1e-1.png}
+		\caption{Quadratic, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_pwl1_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=1_ep=1e-3.png}
+		\caption{Linear, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_pwl2_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=2_ep=1e-3.png}
+		\caption{Quadratic, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_pwl1_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=1_ep=1e-5.png}
+		\caption{Linear, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_pwl2_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=2_ep=1e-5.png}
+		\caption{Quadratic, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+}
+\caption{Transport solutions of the thick diffusion limit problem using the PWL basis functions for varying values of the scaling parameter, $\epsilon$.}
+\label{fig::BF_Results_DL_PWLD}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_mv1_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=1_ep=1e-1.png}
+		\caption{Linear, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_mv2_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=2_ep=1e-1.png}
+		\caption{Quadratic, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_mv1_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=1_ep=1e-3.png}
+		\caption{Linear, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_mv2_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=2_ep=1e-3.png}
+		\caption{Quadratic, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_mv1_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=1_ep=1e-5.png}
+		\caption{Linear, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_mv2_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=2_ep=1e-5.png}
+		\caption{Quadratic, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+}
+\caption{Transport solutions of the thick diffusion limit problem using the mean value basis functions for varying values of the scaling parameter, $\epsilon$.}
+\label{fig::BF_Results_DL_MV}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_me1_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=1_ep=1e-1.png}
+		\caption{Linear, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_me2_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=2_ep=1e-1.png}
+		\caption{Quadratic, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_me1_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=1_ep=1e-3.png}
+		\caption{Linear, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_me2_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=2_ep=1e-3.png}
+		\caption{Quadratic, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_me1_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=1_ep=1e-5.png}
+		\caption{Linear, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_me2_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=2_ep=1e-5.png}
+		\caption{Quadratic, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+}
+\caption{Transport solutions of the thick diffusion limit problem using the maximum entropy basis functions for varying values of the scaling parameter, $\epsilon$.}
+\label{fig::BF_Results_DL_MAXENT}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Linear Solutions = METHOD OF EXACT SOLUTIONS
@@ -1266,8 +1504,7 @@ For this example, we test the various 2D polygonal finite element basis function
 \caption{Contour plots of the exactly-linear solution with the Wachspress basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
 \label{fig::BF_Results_Linear_wach_sol}
 \end{figure}
-% Begin false
-\iffalse
+
 \begin{figure}
 \centering
 	\begin{subfigure}[b]{0.45\textwidth}
@@ -1455,7 +1692,7 @@ For this example, we test the various 2D polygonal finite element basis function
 \caption{Contour plots of the exactly-linear solution with the quadratic serendipity maximum entropy basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
 \label{fig::BF_Results_Linear_me2_sol}
 \end{figure}
-\fi
+
 % end false
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Quadratic Solutions = METHOD OF EXACT SOLUTIONS
