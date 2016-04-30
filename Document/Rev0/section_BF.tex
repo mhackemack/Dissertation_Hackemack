@@ -14,7 +14,7 @@
 \chapter{\uppercase {FEM Basis Functions for Unstructured Polytopes}}
 \label{sec::BF}
 
-In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various elementary matrices needed to form the full set of spatially-discretized PDEs. These included the mass, streaming, and surface matrices where the integrations on the element's domain and boundary require combinations of the basis functions' values and gradients. From FEM theory, the basis functions act as interpolation functions with local measure on some subset of elements on a discretized mesh, $\mathbb{T}_h$. To achieve the maximum possible solution convergence rate from Section \ref{sec::Sn_Spatial_Convergence} of $p+1$, the interpolation functions must have polynomial completeness of at least order $p$. For 2D interpolants, the basis functions are linearly-complete ($p=1$) if they can exactly interpolate the $\{ 1, x, y \}$ span of functions. Likewise, 2D basis functions are said to be quadratically-complete if they can exactly interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions.
+In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various elementary matrices needed to form the full set of spatially-discretized PDEs. These included the mass, streaming, and surface matrices where the integrations on the element's domain and boundary require combinations of the basis functions' values and gradients. From FEM theory \cite{ern2013theory}, the basis functions act as interpolation functions with local measure on some subset of elements on a discretized mesh, $\mathbb{T}_h$. To achieve the maximum possible solution convergence rate from Section \ref{sec::Sn_Spatial_Convergence} of $p+1$, the interpolation functions must have polynomial completeness of at least order $p$. For 2D interpolants, the basis functions are linearly-complete ($p=1$) if they can exactly interpolate the $\{ 1, x, y \}$ span of functions. Likewise, 2D basis functions are said to be quadratically-complete if they can exactly interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions.
 
 The remainder of the this chapter is organized as follows. In Section \ref{sec::BF_2DLinear}, we present the 2D, linearly-complete, barycentric, polygonal basis functions that we will analyze in this dissertation. We then present in Section \ref{sec::BF_2DQuadratic} the methodology to convert the barycentric polygonal basis functions presented in Section \ref{sec::BF_2DLinear} into a serendipity space of basis functions with quadratic-completeness. Section \ref{sec::BF_2DIntegration} provides the methodology that will be employed to generate spatial quadrature sets on 2D arbitrary polygons. Section \ref{sec::BF_3DLinear} then presentes the 3D, linearly-complete, polyhedral basis functions that will be exclusively used in Chapter \ref{sec::DSA} for 3D DSA calculations. We then present numerical results pertaining to our linear and quadratic 2D basis functions in Section \ref{sec::BF_Results}. Section \ref{sec::BF_Conclusions} concludes with some closing remarks.
 
@@ -650,11 +650,25 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%
 %%%   Section - Quadratic Basis Functions
+%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Converting the Linear Polygonal Basis Functions to the Quadratic Serendipity Space of Functions}
 \label{sec::BF_2DQuadratic}
 
 Now that we have given complete details on the linearly-complete generalized barycentric coordinates that we will investigate for this work, we 
+
+\begin{equation}
+\label{eq::BF_quad_pascal}
+\begin{array}{ccccc}
+ & & 1 & & \\
+ & x & & y & \\
+ x^2 &  &xy & & y^2
+\end{array}
+\end{equation}
 
 \begin{figure}[hbt]
 \centering
@@ -833,7 +847,7 @@ B^* = B^T (B B^T)^{-1}
 \section{Integrating the Arbitrary 2D Polygonal Elements}
 \label{sec::BF_2DIntegration}
 
-Sections \ref{sec::BF_2DLinear} and \ref{sec::BF_2DQuadratic} detail how the basis functions and their gradients can be computed at different points on a 2D polygonal element. These basis functions and gradients can then be used to calculate the integrals of the elementary matrices for a given element $K$ as described in Section \ref{sec::Sn_Spatial}. Because the elementary matrix integrals using the Wachspress, mean value, and maximum entropy coordinates cannot be integrated analytically, we need to define a numerical quadrature scheme. The spatial quadrature sets need to be amenable to arbitrary polygons and also integrate polynomials exactly (the different polynomial orders of the basis functions). Efficient quadrature schemes exist for both triangles and quadrilaterals \cite{silvester1970symmetric,dunavant1985high,wandzurat2003symmetric,lyness1994survey,cools1987construction}. These include symmetric rules on triangles and cubature and tensor-product rules on triangles and quadrilaterals, respectively. However, polygons have an infinite number of topological shapes and explicit quadrature rules cannot be defined. Because of this, the development of efficient quadrature rules for arbitrary polytopes is an ongoing field of research \cite{nooijen1990symmetric,dasgupta2003integration,mousavi2010generalized}.
+Sections \ref{sec::BF_2DLinear} and \ref{sec::BF_2DQuadratic} detail how the basis functions and their gradients can be computed at different points on a 2D polygonal element. These basis functions and gradients can then be used to calculate the integrals of the elementary matrices for a given element $K$ as described in Section \ref{sec::Sn_Spatial}. Because the elementary matrix integrals using the Wachspress, mean value, and maximum entropy coordinates cannot be performed analytically, we need to define a numerical quadrature scheme. The spatial quadrature sets need to be amenable to arbitrary polygons and also integrate polynomials exactly (the different polynomial orders of the basis functions). Efficient quadrature schemes exist for both triangles and quadrilaterals \cite{silvester1970symmetric,dunavant1985high,wandzurat2003symmetric,lyness1994survey,cools1987construction}. These include symmetric rules on triangles and cubature and tensor-product rules on triangles and quadrilaterals, respectively. However, polygons have an infinite number of topological shapes and explicit quadrature rules cannot be defined. Because of this, the development of efficient quadrature rules for arbitrary polytopes is an ongoing field of research \cite{nooijen1990symmetric,dasgupta2003integration,mousavi2010generalized}.
 
 At this time, we were only interested in the accuracy and not the efficiency of the integration of the elementary matrices. Therefore, we simply choose to use a simple triangulation-based scheme. The global polygonal element $K$ with $N_K$ vertices is sub-divided into $N_K$ separate triangles. Each of these triangles is formed from two adjacent vertices and the polygon's centroid, $\vec{c}$. For convex and degenerate (not concave) polygons the centroid can be the average of the vertex coordinates, which is simply given by,
 
@@ -1149,6 +1163,10 @@ For the sake of analysis, we seek to simplify Eqs. (\ref{eq::BF_Results_TDL_scal
 
 \noindent respectively.
 
+From previous work \cite{adams2001dfem}, it is already known that linear interpolants with properties corresponding to barycentric coordinates satisfy the thick diffusion limit. However, it needs to be demonstrated that the quadratic serendipity extensions will also satisfy the limit. We will demonstrate this both qualitatively and quantitatively. The transport and diffusion equations to be solved are Eqs. (\ref{eq::BF_Results_TDL_normalized_trans_eq}) and (\ref{eq::BF_Results_TDL_normalized_diff_eq}), respectively. Vacuum boundary conditions are applied for the transport equations and homogeneous dirichlet conditions are applied for the diffusion equations. With this choice of boundary conditions, the transport and diffusion solutions will converge only as $\epsilon$ gets small. Specifically, they converge at a rate of $O(\epsilon)$ with an $L_2$ norm. The diffusion equation is discretized using the same DGFEM functional space as the transport equations, and we leave these details until Section \ref{sec::DSA_SIP}. 
+
+We first provide an example of the diffusion solution in Figure \ref{fig::BF_Results_DL_DiffSol} on a polygonal grid for both the linear and quadratic mean value basis functions. Next, Figures \ref{fig::BF_Results_DL_Wachspress}, \ref{fig::BF_Results_DL_PWLD}, \ref{fig::BF_Results_DL_MV}, and \ref{fig::BF_Results_DL_MAXENT} provide the transport solutions with varying $\epsilon$ values using the Wachspress, PWL, mean value, and maximum entropy coordinates, respectively. We see that as we reduce $\epsilon$ from $10^{-1}$ to $10^{-5}$, our transport solutions converge to our diffusion solutions.
+
 \begin{figure}
 \centering
 {
@@ -1169,7 +1187,7 @@ For the sake of analysis, we seek to simplify Eqs. (\ref{eq::BF_Results_TDL_scal
 	\end{subfigure}
 }
 \vspace{2mm}
-\caption{Diffusion solution representing the thick diffusion limit problem with linear (top) and quadratic (bottom) Wachspress basis functions.}
+\caption{Diffusion solution representing the thick diffusion limit problem with linear (top) and quadratic (bottom) mean value basis functions.}
 \label{fig::BF_Results_DL_DiffSol}
 \end{figure}
 
@@ -2110,11 +2128,9 @@ For this example, we choose the dimensionality of our problem to be $[0,1]^2$ wh
 \subsection{Searchlight Problem}
 \label{sec::BF_Results_SL}
 
-The next example models a beam or searchlight. Similar problems were investigated in Dedner and Vollm{\"o}ller \cite{dedner2002adaptive} and Wang and Ragusa \cite{wang2011standard}. In this problem, an incident beam of neutrons is shined onto a small portion of a boundary, propagates through a vacuum, and then exits through a small portion of a different boundary. As the beam propagates through the vacuum, the spatial discretization causes radiation outflow through all downwind cell faces. This leads to numerical dispersion and will cause to beam to artificially broaden.
+Our final numerical example models a beam or searchlight through a vacuum. Similar problems were investigated in Dedner and Vollm{\"o}ller \cite{dedner2002adaptive} and Wang and Ragusa \cite{wang2011standard}. In this problem, an incident beam of neutrons is shined onto a small portion of a boundary, propagates through a vacuum, and then exits through a small portion of a different boundary. As the beam propagates through the vacuum, the spatial discretization causes radiation outflow through all downwind cell faces. This leads to numerical dispersion and will cause to beam to artificially broaden.
 
-In this problem, we investigate an $\mathbb{R}^2$ domain of size $[0,1]^2$ cm. The radiation enters the left boundary between $0.2 \leq y \leq 0.4$ with an un-normalized angular direction of $[1,0.4]$. For this chosen direction, the radiation beam would analytically leave the right boundary between $0.6 \leq y \leq 0.8$. This means that any radiation leaving the right boundary for all other $y$ values is due to the numerical dispersion of the beam.
-
-We investigated this problem using several of the 2D polygonal basis functions as outlined in Sections \ref{sec::BF_2DLinear} and \ref{sec::BF_2DQuadratic} as well as 
+In this problem, we investigate an $\mathbb{R}^2$ domain of size $[0,1]^2$ cm. The radiation enters the left boundary between $0.2 \leq y \leq 0.4$ with an un-normalized angular direction of $[1,0.4]$. For this chosen direction, the radiation beam would analytically leave the right boundary between $0.6 \leq y \leq 0.8$. This means that any radiation leaving the right boundary for all other $y$ values is due to the numerical dispersion of the beam. The initial mesh is a uniform $5 \text{x} 5$ Cartesian grid as shown in Figure \ref{fig::BF_Results_SL_starting_mesh}. We note that with this choice of initial grid, the analytical path of the beam is fully-contained withn a spatial cell (a mesh cell does not bisect the analytical beam at the incoming and outgoing faces). 
 
 \begin{figure}
 \centering
@@ -2122,6 +2138,10 @@ We investigated this problem using several of the 2D polygonal basis functions a
 \caption{Initial mesh configuration for the searchlight problem before any refinement cycles.}
 \label{fig::BF_Results_SL_starting_mesh}
 \end{figure}
+
+Since we are again using AMR for this problem, we will analyze the linear and quadratic PWL, mean value, and maximum entropy coordinates. The refinement criterion, $\alpha$, was set to 0.2 for all the linear elements and 0.1 for all the quadratic elements. The relative error of the leakage (in \%) along the right face from $0.6 \leq y \leq 0.8$ is given in Figures \ref{fig::BF_Results_SL_PWL_err}, \ref{fig::BF_Results_SL_MV_err}, and \ref{fig::BF_Results_SL_MAXENT_err} for the PWL, mean value, and maximum entropy coordinates, respectively. For each of the figures we plotted the convergences histories for uniform refinement ($\alpha = 0.0$) as well as AMR runs where the maximum mesh irregularities were set to 1, 2, or 3. Like the purely-absorbing media cases without meshes aligned to the discontinuities, the convergence of the transport solution is limited by its regularity. This is apparent in that the AMR solutions give significantly better results than those obtained with uniform refinement. 
+
+Next, we plot the outgoing angular flux along the right face. We wish to see how the numerical dispersion is reduced with refinement. Figure \ref{fig::BF_Results_SL_uniform_exit_flux} shows the outgoing fluxes for all of the linear and quadratic basis functions under uniform refinement.
 
 \begin{figure}
 \centering
