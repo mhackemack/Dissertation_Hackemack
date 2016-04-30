@@ -25,14 +25,15 @@ The remainder of the this chapter is organized as follows. In Section \ref{sec::
 
 Figure \ref{fig::BF_2D_ref_polygon}, gives an image of a reference polygon along with the geometric notations we will use to define the different linear polygonal coordinates. An element, $K\in \mathbb{R}^2$, is defined by a closed set of $N_K$ points (vertices) in $\mathbb{R}^2$. The vertices are ordered ($1,...,N_K$) in a counter-clockwise manner without restriction on their convexity. Face $j$ on the polygon, $e_j$, is defined as the line segment between vertices $j$ and $j+1$. The vertex $j+1$ is determined in general as $j+1 =\mod(j,N_K)+1$, which gives a wrap-around definition of vertex $N_K+1 = 1$.
 
-We complete our geometric description for the polygonal coordinate system by analyzing a point $\vec{x}$ inside the polygon's domain, as also seen in Figure \ref{fig::BF_2D_ref_polygon}. $\alpha_j$ is the angle between the points ($\vec{x}_j, \vec{x}, \vec{x}_{j+1}$). Since element $K$ is defined by a closed set of $\mathbb{R}^2$ points, $\alpha_j$ is strongly bounded: ($[0, \pi]$). We conclude by defining $|\vec{u}|$ as the Euclidean distance of the vector $\vec{u}$. This means that $|\vec{x} - \vec{x}_j|$ is the distance between the points $\vec{x}$ and $\vec{x}_j$ and $|e_j|$ is the length of face $j$ between points $\vec{x}_j$ and $\vec{x}_{j+1}$.
-
-\begin{figure}[hbt]
+\begin{figure}
 \centering
-\includegraphics[width=0.65\textwidth]{figures/sec_BF/ref_polygon.png}
+\includegraphics[width=0.85\textwidth]{figures/sec_BF/ref_polygon_Rev1.png}
 \caption{Arbitrary polygon with geometric properties used for 2D basis function generation.}
 \label{fig::BF_2D_ref_polygon}
 \end{figure}
+
+We complete our geometric description for the polygonal coordinate system by analyzing a point $\vec{x}$ inside the polygon's domain, as also seen in Figure \ref{fig::BF_2D_ref_polygon}. $\alpha_j$ is the angle between the points ($\vec{x}_j, \vec{x}, \vec{x}_{j+1}$). Since element $K$ is defined by a closed set of $\mathbb{R}^2$ points, $\alpha_j$ is strongly bounded: ($[0, \pi]$). We conclude by defining $|\vec{u}|$ as the Euclidean distance of the vector $\vec{u}$. This means that $|\vec{x} - \vec{x}_j|$ is the distance between the points $\vec{x}$ and $\vec{x}_j$ and $|e_j|$ is the length of face $j$ between points $\vec{x}_j$ and $\vec{x}_{j+1}$.
+
 
 In this dissertation, all linearly-complete, 2D basis functions for an element $K$ will obey the properties for barycentric coordinates. They will form a {\em partition of unity},
 
@@ -92,7 +93,7 @@ The first linearly-complete polygonal coordinates that we will consider are the 
 
 \begin{equation}
 \label{eq::BF_wach_BF}
-b_{j}^{W} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})}
+b_{j}^{W} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum\displaylimits_{i} w_i (\vec{x})}
 \end{equation}
 
 \noindent where the Wachspress weight function for vertex $j$, $w_j$, has the following definition:
@@ -102,10 +103,25 @@ b_{j}^{W} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})}
 w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, \vec{x}_{j-1}, \vec{x}_{j}) \, A(\vec{x}, \vec{x}_{j}, \vec{x}_{j+1})}
 \end{equation}
 
+For FEM theory, the basis function gradients are also necessary to compute some of the elementary matrices. The gradients of the Wachspress rational functions are straightforward to calculate by simply taking the partial derivatives of Eq. (\ref{eq::BF_wach_BF}). Then, using the quotient derivative rule of along with some algebra, the Wachspress gradients are given by,
 
+\begin{equation}
+\label{eq::BF_wach_gradient}
+ \vec{\nabla} w_j (\vec{x}) = b_{j}^{W} (\vec{x}) \left( \vec{R}_j  (\vec{x})- \sum\displaylimits_{i}   b_{i}^{W} (\vec{x}) \vec{R}_i (\vec{x}) \right) ,
+\end{equation}
+
+\noindent where the reduced gradient, $\vec{R}_i$, is defined as
+
+\begin{equation}
+\label{eq::BF_wach_reduced_grad}
+\vec{R}_i (\vec{x})  = \frac{1}{w_i} \vec{\nabla} w_i .
+\end{equation}
+
+\noindent This means that the gradients of the Wachspress coordinates can be calculated by combinations of the all the weight functions and their gradients.
+
+We now give a pair of contour plots of the Wachspress coordinates. First, Figure \ref{fig::2D_WACHSPRESS1_unit_square_basis_functions} provides the contour plots of the four Wachspress functions on the unit square. We see that the functions are smoothly varying within the square with at least $C^1$ continuity.
 
 \begin{figure}
-\label{fig::2D_WACHSPRESS1_unit_square_basis_functions}
 \centering
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
@@ -131,10 +147,10 @@ w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, 
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the linear Wachspress basis functions on the unit square for the vertices located at: (a) (0,1), (b) (1,1), (c) (0,0), and (d) (1,0).}
+\label{fig::2D_WACHSPRESS1_unit_square_basis_functions}
 \end{figure}
 
 \begin{figure}
-\label{fig::2D_WACHSPRESS1_deg_square_basis_functions}
 \centering
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
@@ -166,6 +182,7 @@ w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, 
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the linear Wachspress basis functions on the degnerate pentagon for the vertices located at: (a) (1/2,1), (b) (0,1), (c) (1,1), (d) (0,0), and (e) (1,0).}
+\label{fig::2D_WACHSPRESS1_deg_square_basis_functions}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -178,27 +195,50 @@ The second linearly-complete 2D polygonal coordinates that we will analyze are t
 \begin{enumerate}
 \item PWL works with concave polytopes;
 \item PWL cannot handle curved surface;
+\item points on the boundary can be directly evaluated;
 \item the PWL integrals can be computed analytically;
 \item the PWL functions are only $C^0$ continuous - their gradients are discontinuous within the element.
 \end{enumerate}
 
-The 2D PWL functions are defined as combinations of linear triangular functions, with some of them only having measure within a subregion of a polygon. These subregions are formed by triangulating the arbitrary 2D polygon into a set of sub-triangles. Each sub-triangle is defined by two adjacent vertices (taken in a counter-clockwise ordering to maintain consistency) and the polygon's centroid.
+The 2D PWL functions are defined as combinations of linear triangular functions, with some of them only having measure within a subregion of a polygon. These subregions are formed by triangulating the arbitrary 2D polygon into a set of sub-triangles. Each sub-triangle is defined by two adjacent vertices (taken in a counter-clockwise ordering to maintain consistency) and the polygon's centroid, $\vec{r}_{c}$. Looking at Figure \ref{fig::BF_2D_ref_polygon} as an example, sub-triangle $j$ is defined by the points $\{ \vec{x}_j , \vec{x}_{j+1}, \vec{r}_c \}$, which are the polygon's vertices $j$ and $j+1$ and the polygon's centroid. If a polygon $K$ has $N_K$ vertices, then its centroid can be defined by
 
 \begin{equation}
-\label{eq::PWL_2D_cell_center}
-	\vec{r}_{c} = \frac{1}{N_K} \sum\displaylimits_{i=1}^{N_K} \vec{x}_i ,
+\label{eq::PWL_2D_centroid}
+	\vec{r}_{c} =  \sum\displaylimits_{j=1}^{N_K} \alpha_{j}^{K}  \vec{x}_j ,
 \end{equation}
+
+\noindent where $\alpha_{j}^{K}$ are the vertex weights functions and, 
+
+\begin{equation}
+\label{eq::PWL_2D_vertex_weight_sum}
+ \sum\displaylimits_{j=1}^{N_K} \alpha_{j}^{K} = 1.
+\end{equation}
+
+\noindent For this work, we continue to use the definition for the vertex weight functions from previous works \cite{ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured,bailey2008phd},
+
+\begin{equation}
+\label{eq::PWL_2D_vertex_weight_val}
+\alpha_{j}^{K} = \frac{1}{N_K} .
+\end{equation}
+
+\noindent This means that the weight functions are equal for every vertex and the cell centroid simply becomes the average position of all the vertices. Using these vertex weight functions, the PWL basis function for vertex $j$, $b_j^{PWL}$, is defined as
 
 \begin{equation}
 \label{eq::PWL_2D}
-	b_j^{PWL} (x,y) = t_j (x,y) + \alpha_j^K t_c (x,y)
+	b_j^{PWL} (x,y) = t_j (x,y) + \alpha_j^K t_c (x,y) .
 \end{equation}
 
-\noindent $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function located at $\vec{r}_{c}$ which is unity at the cell center and linearly decreases to zero to each cell vertex. $\alpha_{j}^{K}$ is the weight parameter for vertex $j$ in cell $K$. 
+\noindent In Eq. (\ref{eq::PWL_2D}), $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function located at $\vec{r}_{c}$ which is unity at the cell center and linearly decreases to zero to each cell vertex. $\alpha_{j}^{K}$ is the weight parameter for vertex $j$ in cell $K$. The functional form of Eq. (\ref{eq::PWL_2D}) with constant vertex weights means that the PWL function for vertex $j$, within the domain of $K$, linearly decreases to a value of $1/N_K$ at the polygonal center. From there, the function linearly decreases to zero on all faces that are not connected to vertex $j$. The gradients of the PWL functions are easy to compute term-by-term in a straightforward manner:
+
+\begin{equation}
+\label{eq::PWL_2D_gradients}
+	\vec{\nabla} b_j^{PWL} (x,y) = \vec{\nabla} t_j (x,y) + \alpha_j^K \vec{\nabla} t_c (x,y) .
+\end{equation}
+
+We now give some example contour plots of the PWL coordinates over different polygons. First, we provide the contour plots for the four PWL functions on the unit square in Figure \ref{fig::2D_PWLD1_unit_square_basis_functions}. In this example it is easy to discern the functional form of Eq. (\ref{eq::PWL_2D}) with the use of constant vertex weights. We clearly see each function linearly decrease from its vertex to the cell center (with a value of $1/N_K$) and then linearly decrease to all non-adjoining faces. Next, Figure \ref{fig::2D_PWLD1_deg_square_basis_functions} provides the contour plots for the PWL functions on a degenerate (weakly-convex) pentagon where a fifth vertex was added to the unit square at ($1/2,1/2$). Unlike the Wachspress coordinates, the PWL functions work on weakly-convex polygons. The final example we give in Figure \ref{fig::2D_PWLD1_Ldom_basis_functions} is a favorite in the applied mathematics community: the ``L-shaped'' domain. It provides an example of PWL's ability to still be linearly-complete on concave polygons. 
 
 
 \begin{figure}
-\label{fig::2D_PWLD1_unit_square_basis_functions}
 \centering
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
@@ -224,10 +264,10 @@ The 2D PWL functions are defined as combinations of linear triangular functions,
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the linear PWL basis functions on the unit square for the vertices located at: (a) (0,1), (b) (1,1), (c) (0,0), and (d) (1,0).}
+\label{fig::2D_PWLD1_unit_square_basis_functions}
 \end{figure}
 
 \begin{figure}
-\label{fig::2D_PWLD1_deg_square_basis_functions}
 \centering
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
@@ -259,10 +299,10 @@ The 2D PWL functions are defined as combinations of linear triangular functions,
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the linear PWL basis functions on the degnerate pentagon for the vertices located at: (a) (1/2,1), (b) (0,1), (c) (1,1), (d) (0,0), and (e) (1,0).}
+\label{fig::2D_PWLD1_deg_square_basis_functions}
 \end{figure}
 
 \begin{figure}
-\label{fig::2D_PWLD1_Ldom_basis_functions}
 \centering
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
@@ -300,7 +340,12 @@ The 2D PWL functions are defined as combinations of linear triangular functions,
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the linear PWL basis functions on the L-shaped domain for the vertices located at: (a) (0,1), (b) (1/2,1), (c) (1/2,1/2), (d) (1,1/2), (e) (0,0), and (f) (1,0).}
+\label{fig::2D_PWLD1_Ldom_basis_functions}
 \end{figure}
+
+
+\iffalse
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Mean Value
@@ -2401,5 +2446,5 @@ Numerical results were obtained to demonstrate the completeness and convergence 
 
 
 
-
+\fi
 
