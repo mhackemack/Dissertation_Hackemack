@@ -173,14 +173,28 @@ w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, 
 \subsection{Piecewise Linear (PWL) Basis Functions}
 \label{sec::BF_2DLinear_PWL}
 
-The second linearly-complete 2D polygonal coordinates that we will analyze are the Piecewise Linear (PWL) coordinates proposed by Stone and Adams \cite{ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}. The originally introduced the work specifically for 
+The second linearly-complete 2D polygonal coordinates that we will analyze are the Piecewise Linear (PWL) coordinates proposed by Stone and Adams \cite{ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}. They originally introduced the PWL coordinates to work specifically for the DGFEM transport equation on unstructured quadrilateral and polygonal grids. These coordinates share some similarities with the Wachspress rational functions, but also contain some key differences. The different properties of PWL that are different from the Wachspress rational functions can be summarized with the following:
+
+\begin{enumerate}
+\item PWL works with concave polytopes;
+\item PWL cannot handle curved surface;
+\item the PWL integrals can be computed analytically;
+\item the PWL functions are only $C^0$ continuous - their gradients are discontinuous within the element.
+\end{enumerate}
+
+The 2D PWL functions are defined as combinations of linear triangular functions, with some of them only having measure within a subregion of a polygon. These subregions are formed by triangulating the arbitrary 2D polygon into a set of sub-triangles. Each sub-triangle is defined by two adjacent vertices (taken in a counter-clockwise ordering to maintain consistency) and the polygon's centroid.
+
+\begin{equation}
+\label{eq::PWL_2D_cell_center}
+	\vec{r}_{c} = \frac{1}{N_K} \sum\displaylimits_{i=1}^{N_K} \vec{x}_i ,
+\end{equation}
 
 \begin{equation}
 \label{eq::PWL_2D}
 	b_j^{PWL} (x,y) = t_j (x,y) + \alpha_j^K t_c (x,y)
 \end{equation}
 
-\noindent $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function which is unity at the cell center and linearly decreases to zero to each cell vertex. $\alpha_{j}^{K}$ is the weight parameter for vertex $j$ in cell $K$. 
+\noindent $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function located at $\vec{r}_{c}$ which is unity at the cell center and linearly decreases to zero to each cell vertex. $\alpha_{j}^{K}$ is the weight parameter for vertex $j$ in cell $K$. 
 
 
 \begin{figure}
