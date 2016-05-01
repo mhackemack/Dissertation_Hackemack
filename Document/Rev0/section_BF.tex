@@ -100,14 +100,55 @@ b_{j}^{W} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum\displaylimits_{i} w_i (\vec{x})
 
 \begin{equation}
 \label{eq::BF_wach_weights}
-w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, \vec{x}_{j-1}, \vec{x}_{j}) \, A(\vec{x}, \vec{x}_{j}, \vec{x}_{j+1})}
+w_j (\vec{x})  = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, \vec{x}_{j-1}, \vec{x}_{j}) \, A(\vec{x}, \vec{x}_{j}, \vec{x}_{j+1})} .
 \end{equation}
 
-For FEM theory, the basis function gradients are also necessary to compute some of the elementary matrices. The gradients of the Wachspress rational functions are straightforward to calculate by simply taking the partial derivatives of Eq. (\ref{eq::BF_wach_BF}). Then, using the quotient derivative rule of along with some algebra, the Wachspress gradients are given by,
+\noindent In Eq. (\ref{eq::BF_wach_weights}), the terms $A(\vec{a}, \vec{b}, \vec{c})$ denote the signed area of the triangle with vertices $\vec{a}$, $\vec{b}$, and $\vec{c}$. Each of these signed areas can be computed by
+
+\begin{equation}
+\label{eq::BF_wach_signed_area}
+A(\vec{a}, \vec{b}, \vec{c}) = \frac{1}{2}
+\left|  
+  \begin{array}{ccc}
+  1 & 1 & 1 \\
+  x_a & x_b & x_c \\
+  y_a & y_b & y_c
+  \end{array}
+\right| .
+\end{equation}
+
+There is alternative method of expressing the Wachspress weight functions. Warren et al. \cite{warren2007barycentric} proposed weight functions that are defined in terms of the perpindicular distance of the point $\vec{x}$ to the polygon's faces. Using the reference polygon of Figure \ref{fig::BF_2D_ref_polygon}, the perpendicular distance of the point $\vec{x}$ to the face $j$ is denoted as $h_j (\vec{x})$ and is given by
+
+\begin{equation}
+\label{eq::BF_wach_perp_dist}
+h_j (\vec{x}) = \left(  \vec{x}_j - \vec{x} \right) \cdot \vec{n}_j = \left(  \vec{x}_{j+1} - \vec{x} \right) \cdot \vec{n}_j , 
+\end{equation}
+
+\noindent where $\vec{n}_j$ is the outward normal direction of face $j$. Using these perpdendicular distance, the Wachspress coordinates can be calculated using Eq. (\ref{eq::BF_wach_BF}) with new function definitions of
+
+\begin{equation}
+\label{eq::BF_wach_wt_perpdist}
+ w_j (\vec{x}) = \frac{\vec{n}_{j-1} \, \text{x} \, \vec{n}_j}{h_{j-1} (\vec{x}) h_j (\vec{x})} ,
+\end{equation}
+
+\noindent where
+
+\begin{equation}
+\label{eq::BF_wach_cross}
+\vec{x}_{1} \, \text{x} \, \vec{x}_2 = 
+\left|  
+\begin{array}{ccc}
+x_1 & x_2 \\
+y_1 & y_2
+\end{array}
+\right| .
+\end{equation}
+
+For FEM theory, the basis function gradients are also necessary to compute some of the elementary matrices. The gradients of the Wachspress rational functions are straightforward to calculate by simply taking the partial derivatives of Eq. (\ref{eq::BF_wach_BF}). Then, using derivative rules along with some algebra, the Wachspress gradients are given by,
 
 \begin{equation}
 \label{eq::BF_wach_gradient}
- \vec{\nabla} w_j (\vec{x}) = b_{j}^{W} (\vec{x}) \left( \vec{R}_j  (\vec{x})- \sum\displaylimits_{i}   b_{i}^{W} (\vec{x}) \vec{R}_i (\vec{x}) \right) ,
+ \vec{\nabla} b_{j}^{W}(\vec{x}) = b_{j}^{W} (\vec{x}) \left( \vec{R}_j  (\vec{x})- \sum\displaylimits_{i}   b_{i}^{W} (\vec{x}) \vec{R}_i (\vec{x}) \right) ,
 \end{equation}
 
 \noindent where the reduced gradient, $\vec{R}_i$, is defined as
@@ -117,9 +158,21 @@ For FEM theory, the basis function gradients are also necessary to compute some 
 \vec{R}_i (\vec{x})  = \frac{1}{w_i} \vec{\nabla} w_i .
 \end{equation}
 
-\noindent This means that the gradients of the Wachspress coordinates can be calculated by combinations of the all the weight functions and their gradients.
+\noindent This means that the gradients of the Wachspress coordinates can be calculated by combinations of the all the weight functions and their gradients. The weight function gradients are easy to compute using the perpendicular form. The gradient of the $j$ weight functions is given by
 
-We now give a pair of contour plots of the Wachspress coordinates. First, Figure \ref{fig::2D_WACHSPRESS1_unit_square_basis_functions} provides the contour plots of the four Wachspress functions on the unit square. We see that the functions are smoothly varying within the square with at least $C^1$ continuity.
+\begin{equation}
+\label{eq::BF_wach_grad_perpdist}
+ \vec{\nabla} w_j (\vec{x}) = w_j (\vec{x})  \left(  \frac{\vec{n}_{j-1}}{h_{j-1} (\vec{x})} + \frac{\vec{n}_{j}}{h_{j} (\vec{x})} \right) .
+\end{equation}
+
+\noindent This lets us immediately see that $\vec{R}_j$ is simply
+
+\begin{equation}
+\label{eq::BF_wach_reduce_grad_form}
+\vec{R}_i (\vec{x})  = \frac{\vec{n}_{j-1}}{h_{j-1} (\vec{x})} + \frac{\vec{n}_{j}}{h_{j} (\vec{x})}.
+\end{equation}
+
+We now give a pair of contour plots of the Wachspress coordinates. First, Figure \ref{fig::2D_WACHSPRESS1_unit_square_basis_functions} provides the contour plots of the four Wachspress functions on the unit square. We see that the functions are smoothly varying within the square with at least $C^1$ continuity. Then in Figure \ref{fig::2D_WACHSPRESS1_deg_square_basis_functions}, we give the contour plots for a degenerate pentagon which is simply the unit square with a vertex added at point ($1/2,1$). We see how the functions fail for this weakly-convex case. The function located at the degenerate vertex has zero measure everywhere within the polygon. Also, the functions located at the vertices adjacent to the degenerate vertex 
 
 \begin{figure}
 \centering
@@ -194,10 +247,10 @@ The second linearly-complete 2D polygonal coordinates that we will analyze are t
 
 \begin{enumerate}
 \item PWL works with concave polytopes;
-\item PWL cannot handle curved surface;
+\item PWL cannot interpolate on curved surfaces;
 \item points on the boundary can be directly evaluated;
 \item the PWL integrals can be computed analytically;
-\item the PWL functions are only $C^0$ continuous - their gradients are discontinuous within the element.
+\item the PWL functions are only $C^0$ continuous: their gradients are discontinuous within the element.
 \end{enumerate}
 
 The 2D PWL functions are defined as combinations of linear triangular functions, with some of them only having measure within a subregion of a polygon. These subregions are formed by triangulating the arbitrary 2D polygon into a set of sub-triangles. Each sub-triangle is defined by two adjacent vertices (taken in a counter-clockwise ordering to maintain consistency) and the polygon's centroid, $\vec{r}_{c}$. Looking at Figure \ref{fig::BF_2D_ref_polygon} as an example, sub-triangle $j$ is defined by the points $\{ \vec{x}_j , \vec{x}_{j+1}, \vec{r}_c \}$, which are the polygon's vertices $j$ and $j+1$ and the polygon's centroid. If a polygon $K$ has $N_K$ vertices, then its centroid can be defined by
@@ -235,7 +288,7 @@ The 2D PWL functions are defined as combinations of linear triangular functions,
 	\vec{\nabla} b_j^{PWL} (x,y) = \vec{\nabla} t_j (x,y) + \alpha_j^K \vec{\nabla} t_c (x,y) .
 \end{equation}
 
-We now give some example contour plots of the PWL coordinates over different polygons. First, we provide the contour plots for the four PWL functions on the unit square in Figure \ref{fig::2D_PWLD1_unit_square_basis_functions}. In this example it is easy to discern the functional form of Eq. (\ref{eq::PWL_2D}) with the use of constant vertex weights. We clearly see each function linearly decrease from its vertex to the cell center (with a value of $1/N_K$) and then linearly decrease to all non-adjoining faces. Next, Figure \ref{fig::2D_PWLD1_deg_square_basis_functions} provides the contour plots for the PWL functions on a degenerate (weakly-convex) pentagon where a fifth vertex was added to the unit square at ($1/2,1/2$). Unlike the Wachspress coordinates, the PWL functions work on weakly-convex polygons. The final example we give in Figure \ref{fig::2D_PWLD1_Ldom_basis_functions} is a favorite in the applied mathematics community: the ``L-shaped'' domain. It provides an example of PWL's ability to still be linearly-complete on concave polygons. 
+We now give some example contour plots of the PWL coordinates over different polygons. First, we provide the contour plots for the four PWL functions on the unit square in Figure \ref{fig::2D_PWLD1_unit_square_basis_functions}. In this example it is easy to discern the functional form of Eq. (\ref{eq::PWL_2D}) with the use of constant vertex weights. We clearly see each function linearly decrease from its vertex to the cell center (with a value of $1/N_K$) and then linearly decrease to all non-adjoining faces. Next, Figure \ref{fig::2D_PWLD1_deg_square_basis_functions} provides the contour plots for the PWL functions on a degenerate (weakly-convex) pentagon where a fifth vertex was added to the unit square at ($1/2,1$). Unlike the Wachspress coordinates, the PWL functions work on weakly-convex polygons. The final example we give in Figure \ref{fig::2D_PWLD1_Ldom_basis_functions} is a favorite in the applied mathematics community: the ``L-shaped'' domain. It provides an example of PWL's ability to still be linearly-complete on concave polygons. 
 
 
 \begin{figure}
