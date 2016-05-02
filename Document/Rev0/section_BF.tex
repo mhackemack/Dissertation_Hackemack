@@ -412,14 +412,14 @@ We now give some example contour plots of the PWL coordinates over different pol
 \subsection{Mean Value Basis Functions}
 \label{sec::BF_2DLinear_MV}
 
-At this point, we now introduce the first new polygonal basis set for use with the transport equation: the {\em mean value coordinates} (MV) developed by Floater \cite{floater2003mean,hormann2006mean}. The original motivation behind the MV coordinates was to approximate harmonic maps on a polygon by a set of piecewise linear maps over a triangulation of the polygon for use in computer aided graphic design.
+At this point, we now introduce the first new polygonal basis set for use with the transport equation: the {\em mean value coordinates} (MV) developed by Floater \cite{floater2003mean,hormann2006mean}. The original motivation behind the MV coordinates was to approximate harmonic maps on a polygon by a set of piecewise linear maps over a triangulation of the polygon for use in computer aided graphic design. Injectivity is preserved if the interpolatory function is {\em harmonic} over the piecewise linear maps. This can be shown by expressing a $C^2$ function $u$ over each sub-triangle of the triangulated polygon and have it statisfy the Laplace equation,
 
 \begin{equation}
 \label{eq::BF_MV_laplace}
 \nabla^2 u = 0 ,
 \end{equation}
 
-\noindent with $u(\vec{r}) = u_0$ constituting a piecewise linear function 
+\noindent where $u(\vec{r}) = u_0$ constituting a piecewise linear function 
 
 \begin{equation}
 \label{eq::BF_MV_BF}
@@ -433,22 +433,44 @@ b_{j}^{MV} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})}
 w_j (\vec{x})  = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{x}_j - \vec{x}|}
 \end{equation}
 
+We now give the form of the mean value gradients. Since the mean value coordinates given by Eq. (\ref{eq::BF_MV_BF}) have the same form as the Wachspress coodinates, their gradients can be expressed in an indentical manner. The gradients of the mean value coordinates can be expressed as
 
 \begin{equation}
 \label{eq::BF_mv_gradient}
 \vec{\nabla} b_{j}^{MV}(\vec{x}) = b_{j}^{MV} (\vec{x}) \left( \vec{R}_j  (\vec{x})- \sum\displaylimits_{i}   b_{i}^{MV} (\vec{x}) \vec{R}_i (\vec{x}) \right) ,
-\end{equation},
+\end{equation}
 
-\noindent and where the reduced gradient, $\vec{R}_j $, still has the same definition from Eq. (\ref{eq::BF_wach_reduced_grad}). If we define $t_j=\tan(\alpha_j/2)$ and $t_{j-1}=\tan(\alpha_{j-1}/2)$, then after extensive algebra, the mean value reduced gradients are
+\noindent where the reduced gradient, $\vec{R}_j $, still has the same definition from Eq. (\ref{eq::BF_wach_reduced_grad}). If we define $t_j=\tan(\alpha_j/2)$ and $t_{j-1}=\tan(\alpha_{j-1}/2)$, then after extensive algebra, the mean value reduced gradients are
 
 \begin{equation}
 \label{eq::BF_mv_red_grad_form}
-\vec{R}_j  = \left( \frac{t_{j-1}}{t_{j-1} + t_{j}} \right)  +  \left( \frac{t_{j}}{t_{j-1} + t_{j}} \right) + \frac{\vec{g}_j}{|\vec{x}_i - \vec{x}|},
+\vec{R}_j  = \left( \frac{t_{j-1}}{t_{j-1} + t_{j}} \right) \frac{\{  \vec{c}_{j-1} \}}{\sin (  \alpha_{j-1} )} +  \left( \frac{t_{j}}{t_{j-1} + t_{j}} \right) \frac{\{  \vec{c}_{j} \}}{\sin (  \alpha_{j} )}+ \frac{\vec{g}_j}{|\vec{x}_i - \vec{x}|},
 \end{equation}
 
 \noindent where
 
+\begin{equation}
+\label{eq::BF_mv_red_cval}
+\vec{c}_j = \frac{\vec{g}_{j}}{|\vec{x}_j - \vec{x}|} - \frac{\vec{g}_{j+1}}{|\vec{x}_{j+1} - \vec{x}|},
+\end{equation}
 
+\noindent and
+
+\begin{equation}
+\label{eq::BF_mv_red_gval}
+\vec{g}_j = \frac{\vec{x}_j - \vec{x}}{|\vec{x}_j - \vec{x}|},
+\end{equation}
+
+\noindent and 
+
+\begin{equation}
+\label{eq::BF_mv_red_flop}
+\{  \vec{u} \} = \left( - u_2 , u_1  \right). 
+\end{equation}
+
+\noindent While this direct form for the MV coordinates is more complicated than the last two coordinates presented, it is still easily programmable. The interested reader can look in the appendix of \cite{floater2015generalized} for MATLAB code to compute these gradients, though we stress that it does not contain any logic for boundary detection.
+
+We again provide example contour plots of the MV coordinates, and we use the same polygonal shapes that we showed for the PWL coordinates. Figure \ref{fig::2D_MV1_unit_square_basis_functions} gives the MV coordinates on the unit square. Like the Wachspress functions, the MV coordinates are smoothly varying within 
 
 \begin{figure}
 \label{fig::2D_MV1_unit_square_basis_functions}
@@ -556,7 +578,7 @@ w_j (\vec{x})  = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{x}_j -
 \end{figure}
 
 
-\iffalse
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -575,10 +597,10 @@ b_{j}^{ME} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})} .
 
 \begin{equation}
 \label{eq::BF_ME_weights}
-w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \kappa \cdot (\vec{x}_j - \vec{x})),
+w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{x})),
 \end{equation}
 
-\noindent where $\kappa$ is a vector value of dimension $d$ that will be explained shortly. In Eq. (\ref{eq::BF_ME_weights}), $m_j$ is called the prior distribution and is a key component of Bayesian inference \cite{kullback1951information,jaynes1963information}. In the context of Eq. (\ref{eq::BF_ME_weights}), the prior distribution $m_j$ can be viewed as a weight function associated with vertex $j$. This means that there is variability that one can employ for these weight functions. These weight functions can then be tailored depending on the application and the numerical scheme employed. 
+\noindent where $\vec{\kappa}$ is a vector value of dimension $d$ that will be explained shortly. In Eq. (\ref{eq::BF_ME_weights}), $m_j$ is called the prior distribution and is a key component of Bayesian inference \cite{kullback1951information,jaynes1963information}. In the context of Eq. (\ref{eq::BF_ME_weights}), the prior distribution $m_j$ can be viewed as a weight function associated with vertex $j$. This means that there is variability that one can employ for these weight functions. These weight functions can then be tailored depending on the application and the numerical scheme employed. 
 
 \begin{equation}
 \label{eq::BF_ME_prior_funcs}
@@ -598,6 +620,18 @@ w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \kappa \cdot (\vec{x}_j - \vec{x})),
 \label{eq::BF_ME_face_funcs}
 \rho_j (\vec{x}) = || \vec{x} - \vec{x}_j || + || \vec{x} - \vec{x}_{j+1} || - || \vec{x}_{j+1} - \vec{x}_j ||
 \end{equation}
+
+\begin{enumerate}
+\item Compute and store $(\vec{x}_j - \vec{x})$ and the prior functions $m_j (\vec{x})$;
+\item Start with iteration counter at $k=0$ and initialize the Lagrange multiplier: $\vec{\kappa}_0 = \vec{0}$;
+\item Compute $g_k = \vec{\nabla}_{\kappa} F (\vec{\kappa}_k)$ and $H_k = \vec{\nabla}_{\kappa} \vec{\nabla}_{\kappa}  F (\vec{\kappa}_k)$;
+\item Determine the Newton search direction: $\Delta \vec{\kappa}_k = - H_k^{-1} g_k$;
+\item Update the multiplier: $\vec{\kappa}_{k+1} =\vec{\kappa}_k + \alpha \Delta \vec{\kappa}_k$;
+\item Check convergence by testing if $|| g_{k+1} || > \epsilon$.
+\end{enumerate}
+
+\noindent In these computational procedures, $\alpha$ is the step size. If the error at iteration $k$, $|| g_{k} || $ is greater than $10^{-4}$, then a line search algorithm is used \cite{burden2001numerical}. Otherwise, $\alpha$ can be set to unity as the . We note that a line search algorithm must be used for certain classes of polygonal shapes. For extremely-distorted concave polygons this Newton iteration procedure can be unstable without it. Due to the quadratic convergence of Newton's method in the vicinity of the final solution, only 3-7 Newton iterations should be required to obtain accuracies of at least $10^{-10}$. 
+
 
 \begin{figure}
 \label{fig::2D_MAXENT1_unit_square_basis_functions}
@@ -744,13 +778,13 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_MV1_contour_b4.png}
-		\caption{mean value}
+		\caption{Mean Value}
 	\end{subfigure}
 	\hspace{1.5cm}
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_MAXENT1_contour_b4.png}
-		\caption{maximum entropy}
+		\caption{Maximum Entropy}
 	\end{subfigure}
 }
 \caption[Contour plots of the linear basis functions on the unit square.]{Contour plots of the different linear basis function on the unit square located at vertex (0,1).}
@@ -916,71 +950,91 @@ c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)}
 \mathbb{A} = \left[ \mathbb{I} \, | \, \mathbb{A}' \right]
 \end{equation}
 
-\noindent where $\mathbb{I}$ is the ($2 N_K \text{x} 2 N_K$) identity matrix, and $\mathbb{A}'$ is a full ($2 N_K \text{x}  N_Q$) matrix. This means that the vertex and face midpoint serendipity functions, $\xi_{ij}$, are formed by taking their corresponding quadratic function, $\mu{ij}$, and adding some linear combination of the interior functions. Therefore, we only need to determine 
+\noindent where $\mathbb{I}$ is the ($2 N_K \text{x} 2 N_K$) identity matrix, and $\mathbb{A}'$ is a full ($2 N_K \text{x}  N_Q$) matrix. This means that the vertex and face midpoint serendipity functions, $\xi_{ij}$, are formed by taking their corresponding quadratic function, $\mu_{ij}$, and adding some linear combination of the interior functions. Therefore, we only need to determine 
 
 \begin{equation}
 \label{eq::BF_quad_MP_inverse}
 B^* = B^T (B B^T)^{-1}
 \end{equation}
 
+\begin{equation}
+\label{eq::BF_quad_xi_reduced}
+\begin{aligned}
+\xi_{ij} &=  \mu_{i,j} + \sum_{ab \in D} c_{ab}^{ij} \mu_{ab} \\
+&=  \lambda_i \lambda_j + \sum_{ab \in D} c_{ab}^{ij}\lambda_a \lambda_b
+\end{aligned}
+\end{equation}
+
+The gradients of the serendipity basis are simple to compute with the chain rule of Calculus. If we take the gradient of Eq. (\ref{eq::BF_quad_xi_reduced}) and use appropriate derivative rules, then the gradients of the different serendipity functions can be given by
+
+\begin{equation}
+\label{eq::BF_ser_gradient}
+\vec{\nabla} \xi_{ij} = \lambda_j \vec{\nabla} \lambda_i + \lambda_i \vec{\nabla} \lambda_j + \sum_{ab \in D} c_{ab}^{ij} \left(  \lambda_b \vec{\nabla} \lambda_a + \lambda_a \vec{\nabla} \lambda_b \right) .
+\end{equation}
+
+\noindent This means that all of the serendipity basis functions can be computed from the appropriate values and gradients of the linear barycentric basis functions using the linear transformation of the $\mathbb{A}$ matrix.
+
+We now present an example contour plot for the conversion of the linear barycentric coordinates into the quadratic serendipity space. Figures \ref{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF4} and \ref{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF8} provide the contour plots of the different quadratic serendipity functions located at the upper-left vertex and left side-node, respectively.
 
 \begin{figure}
-\label{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF4}
 \centering
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_WACHSPRESS2_contour_b4.png}
-		\caption{}
+		\caption{Wachspress}
 	\end{subfigure}
 	\hspace{1.5cm}
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_PWLD2_contour_b4.png}
-		\caption{}
+		\caption{PWL}
 	\end{subfigure}
 	\vfill
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_MV2_contour_b4.png}
-		\caption{}
+		\caption{Mean Value}
 	\end{subfigure}
 	\hspace{1.5cm}
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_MAXENT2_contour_b4.png}
-		\caption{}
+		\caption{Maximum Entropy}
 	\end{subfigure}
-\caption[Contour plots of the quadratic basis functions on the unit square.]{Contour plots of the different quadratic serendipity basis function on the unit square located at vertex (0,1): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
+\caption[Contour plots of the quadratic basis functions on the unit square.]{Contour plots of the different quadratic serendipity basis function on the unit square located at vertex (0,1).}
+\label{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF4}
 \end{figure}
 
 \begin{figure}
-\label{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF8}
 \centering
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_WACHSPRESS2_contour_b8.png}
-		\caption{}
+		\caption{Wachspress}
 	\end{subfigure}
 	\hspace{1.5cm}
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_PWLD2_contour_b8.png}
-		\caption{}
+		\caption{PWL}
 	\end{subfigure}
 	\vfill
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_MV2_contour_b8.png}
-		\caption{}
+		\caption{Mean Value}
 	\end{subfigure}
 	\hspace{1.5cm}
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_MAXENT2_contour_b8.png}
-		\caption{}
+		\caption{Maximum Entropy}
 	\end{subfigure}
-\caption[Contour plots of the quadratic basis functions on the unit square.]{Contour plots of the different quadratic serendipity basis function on the unit square at a mid-face node located at (0,1/2): (a) Wachspress, (b) PWL, (c) mean value, and (d) maximum entropy.}
+\caption[Contour plots of the quadratic basis functions on the unit square.]{Contour plots of the different quadratic serendipity basis function on the unit square at a mid-face node located at (0,1/2).}
+\label{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF8}
 \end{figure}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Integrating 2D Polygons
@@ -2261,7 +2315,203 @@ For this example, we choose the dimensionality of our problem to be $[0,1]^2$ wh
 \subsection{Convergence Rate Analysis in a Purely-Absorbing Medium}
 \label{sec::BF_Results_PA}
 
+Our next numerical examples involve studying the convergence rates of transport solutions in a purely-absorbing medium. Specifically, we seek to analyze the effects of mesh alignment along the solution discontinuities. From the theory presented in Section \ref{sec::Sn_Spatial_Convergence}, the convergence rate of the discretized transport solution, $\Phi_h$, to the exact solution, $\Phi$, is given by
 
+\begin{equation}
+\label{eq::BF_results_PA_conv}
+|| \Phi - \Phi_{h} ||_{L_2}\leq C \frac{h^{q+1/2}}{(p+1)^q} ,
+\end{equation}
+
+\noindent where $q = \min (p+1/2, r - 1/2)$ and $r$ is the regularity of the transport solution. If the mesh does not align with the discontinuities of the transport solution, then the solution convergence is restricted by $r$. However, if the mesh aligns with all of the solution discontinuities, then the maximum $p+1$ converge rates can be observed. To study this behavior, we will analyze cases with aligned and non-aligned meshes.
+
+For this example, two different transport problems will be evaluated. Both problems will consist of a purely-absorbing medium ($\sigma_s=0$) and their will be no distributed source within the domain. All meshes for both problems will be contained in the unit square: $[0,1]^2$ and $S_4$ level-symmetric quadrature is used. The first problem has incident angular flux on the left face at a downward $45^{\circ}$ angle. The second problem has the same incident flux on the left face, but also has additional incident angular flux on the top face at a $45^{\circ}$ angle aligned with that of the left face. This means that there is a solution discontinuity for both problems along the line from the vertex $(0,1)$ to $(1,0)$. Therefore, the problems have solution regularities of 1/2 and 3/2 for the first and second problem, respectively.
+
+We will analyze four different mesh types. Two of them will align with solution discontinuity and other two will not. 
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Tri_sig1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_Tri_sig1.eps}
+	\caption{$\sigma_t = 1$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Tri_sig10}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_Tri_sig10.eps}
+	\caption{$\sigma_t = 10$}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Tri_sig50}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_Tri_sig50.eps}
+	\caption{$\sigma_t = 50$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Tri_sig100}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_Tri_sig100.eps}
+	\caption{$\sigma_t = 100$}
+	\end{subfigure}
+}
+\caption{Convergence rates for the pure absober problem with left-face incidence on triangular meshes with different values of $\sigma_t$.}
+\label{fig::BF_Results_PA_Left_Tri}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Cart_sig1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_Cart_sig1.eps}
+	\caption{$\sigma_t = 1$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Cart_sig10}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_Cart_sig10.eps}
+	\caption{$\sigma_t = 10$}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Cart_sig50}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_Cart_sig50.eps}
+	\caption{$\sigma_t = 50$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Cart_sig100}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_Cart_sig100.eps}
+	\caption{$\sigma_t = 100$}
+	\end{subfigure}
+}
+\caption{Convergence rates for the pure absober problem with left-face incidence on Cartesian meshes with different values of $\sigma_t$.}
+\label{fig::BF_Results_PA_Left_Cart}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Poly_sig1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_Poly_sig1.eps}
+	\caption{$\sigma_t = 1$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Poly_sig10}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_Poly_sig10.eps}
+	\caption{$\sigma_t = 10$}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Poly_sig50}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_Poly_sig50.eps}
+	\caption{$\sigma_t = 50$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Poly_sig100}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_Poly_sig100.eps}
+	\caption{$\sigma_t = 100$}
+	\end{subfigure}
+}
+\caption{Convergence rates for the pure absober problem with left-face incidence on polygonal meshes with different values of $\sigma_t$.}
+\label{fig::BF_Results_PA_Left_Poly}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_SplitPoly_sig1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_SplitPoly_sig1.eps}
+	\caption{$\sigma_t = 1$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_SplitPoly_sig10}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_SplitPoly_sig10.eps}
+	\caption{$\sigma_t = 10$}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_SplitPoly_sig50}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_SplitPoly_sig50.eps}
+	\caption{$\sigma_t = 50$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_SplitPoly_sig100}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_Left_SplitPoly_sig100.eps}
+	\caption{$\sigma_t = 100$}
+	\end{subfigure}
+}
+\caption{Convergence rates for the pure absober problem with left-face incidence on split-polygonal meshes with different values of $\sigma_t$.}
+\label{fig::BF_Results_PA_Left_SplitPoly}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Tri_sig1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_Tri_sig1.eps}
+	\caption{$\sigma_t = 1$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Tri_sig10}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_Tri_sig10.eps}
+	\caption{$\sigma_t = 10$}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Tri_sig50}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_Tri_sig50.eps}
+	\caption{$\sigma_t = 50$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Tri_sig100}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_Tri_sig100.eps}
+	\caption{$\sigma_t = 100$}
+	\end{subfigure}
+}
+\caption{Convergence rates for the pure absober problem with left-face and top-face incidence on triangular meshes with different values of $\sigma_t$.}
+\label{fig::BF_Results_PA_LeftTop_Tri}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Searchlight Problem
@@ -2527,5 +2777,4 @@ Numerical results were obtained to demonstrate the completeness and convergence 
 
 
 
-\fi
 
