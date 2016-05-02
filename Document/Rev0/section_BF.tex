@@ -35,42 +35,49 @@ Figure \ref{fig::BF_2D_ref_polygon}, gives an image of a reference polygon along
 We complete our geometric description for the polygonal coordinate system by analyzing a point $\vec{x}$ inside the polygon's domain, as also seen in Figure \ref{fig::BF_2D_ref_polygon}. $\alpha_j$ is the angle between the points ($\vec{x}_j, \vec{x}, \vec{x}_{j+1}$). Since element $K$ is defined by a closed set of $\mathbb{R}^2$ points, $\alpha_j$ is strongly bounded: ($[0, \pi]$). We conclude by defining $|\vec{u}|$ as the Euclidean distance of the vector $\vec{u}$. This means that $|\vec{x} - \vec{x}_j|$ is the distance between the points $\vec{x}$ and $\vec{x}_j$ and $|e_j|$ is the length of face $j$ between points $\vec{x}_j$ and $\vec{x}_{j+1}$.
 
 
-In this dissertation, all linearly-complete, 2D basis functions for an element $K$ will obey the properties for barycentric coordinates. They will form a {\em partition of unity},
+In this dissertation, all linearly-complete, 2D basis functions for an element $K$ will obey the properties for barycentric coordinates. If the element $K$ is composed of $N_K$ vertices, then it contains $N_K$ barycentric coordinates, where each one is located at a vertex. These barycentric coordinates will form a {\em partition of unity},
 
 \begin{equation}
-\sum_{i=1}^{N_K} b_i (\vec{x})  =  1;
+\sum_{j=1}^{N_K} b_j (\vec{x})  =  1;
 \label{eq::BF_linear_interp_partition}
 \end{equation}
 
 \noindent coordinate interpolation will result from an {\em affine combination} of the vertices,
 
 \begin{equation}
-\sum_{i=1}^{N_K} b_i(\vec{x}) \vec{x}_i  =  \vec{x};
+\sum_{j=1}^{N_K} b_j (\vec{x}) \vec{x}_j  =  \vec{x};
 \label{eq::BF_linear_interp_affine}
 \end{equation}
 
 \noindent and they will satisfy the {\em Lagrange property},
 
 \begin{equation}
-b_i (\vec{x}_j) = \delta_{ij}.
+b_j (\vec{x}_i) = \delta_{ij}.
 \label{eq::BF_linear_interp_lagrange}
 \end{equation}
 
-\noindent $N_K$ is again the number of spatial degrees with measure in element $K$. Using the {\em partition of unity} of Eq. (\ref{eq::BF_linear_interp_partition}), we can rewrite Eqs. (\ref{eq::BF_linear_interp_partition}-\ref{eq::BF_linear_interp_affine}) into a separate, compact, vectorized form for completeness
+\noindent They also have piecewise linearity on faces adjacent to their vertex. As an example of this, consider the coordiantes at vertex $j$, $b_j$, along face $e_j$. Then the piecewise linearity of the coordinate on the face means that it can interpolate as
 
 \begin{equation}
-\sum_{i=1}^{N_K}  b_i (\vec{x}) \vec{c}_{i,1}(\vec{x}) = \vec{q}_1 ,
+\label{eq::BF_linear_bound_interp}
+b_j ((1-\mu ) \vec{x}_j  + \mu \vec{x}_{j+1})  = (1-\mu ) b_j (\vec{x}_j ) + \mu b_j (\vec{x}_{j+1} ) , \qquad \mu \in [0,1].
+\end{equation}
+
+Using the {\em partition of unity} of Eq. (\ref{eq::BF_linear_interp_partition}), we can rewrite Eqs. (\ref{eq::BF_linear_interp_partition}-\ref{eq::BF_linear_interp_affine}) into a separate, compact, vectorized form for completeness
+
+\begin{equation}
+\sum_{j=1}^{N_K}  b_j (\vec{x}) \vec{c}_{j,1}(\vec{x}) = \vec{q}_1 ,
 \label{eq::BF_linear_interp_req_vector}
 \end{equation}
 
-\noindent where $\vec{c}_{i,1}(\vec{x})$ and $\vec{q}_1$ are the lineary-complete constraint and equivalence terms, respectively. These terms are simply:
+\noindent where $\vec{c}_{j,1}(\vec{x})$ and $\vec{q}_1$ are the lineary-complete constraint and equivalence terms, respectively. These terms are simply:
 
 \begin{equation}
-\vec{c}_{i,1}(\vec{x}) = \left[
+\vec{c}_{j,1}(\vec{x}) = \left[
 \begin{array}{c}
 1 \\
-x_i - x \\
-y_i - y
+x_j - x \\
+y_j - y
 \end{array} \right]
   \qquad \text{and} \qquad \vec{q}_1 = \left[
 \begin{array}{c}
@@ -89,11 +96,11 @@ y_i - y
 \subsection{Wachspress Rational Basis Functions}
 \label{sec::BF_2DLinear_Wachspress}
 
-The first linearly-complete polygonal coordinates that we will consider are the Wachspress rational functions \cite{wachspress1975rational}. These rational functions were the first derived for 2D polygons and possess all the properties of the barycentric coordinates previously detailed.
+The first linearly-complete polygonal coordinates that we will consider are the Wachspress rational functions \cite{wachspress1975rational}. These rational functions were the first derived for 2D polygons and possess all the properties of the barycentric coordinates previously detailed. However, they are only valid interpolants over strictly-convex polygons. They have zero measure and blow up for weakly-convex and concave polygons, respectively. Also, their values and gradients cannot be directly evaluated on the polygonal boundary. However, they do have a valid limit which we show in Appendix \ref{sec::appendix_BF}. The Wachspress coordinates (which we denote as $b^W$) have the following form
 
 \begin{equation}
 \label{eq::BF_wach_BF}
-b_{j}^{W} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum\displaylimits_{i} w_i (\vec{x})}
+b_{j}^{W} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum\displaylimits_{i} w_i (\vec{x})},
 \end{equation}
 
 \noindent where the Wachspress weight function for vertex $j$, $w_j$, has the following definition:
@@ -117,7 +124,7 @@ A(\vec{a}, \vec{b}, \vec{c}) = \frac{1}{2}
 \right| .
 \end{equation}
 
-There is alternative method of expressing the Wachspress weight functions. Warren et al. \cite{warren2007barycentric} proposed weight functions that are defined in terms of the perpindicular distance of the point $\vec{x}$ to the polygon's faces. Using the reference polygon of Figure \ref{fig::BF_2D_ref_polygon}, the perpendicular distance of the point $\vec{x}$ to the face $j$ is denoted as $h_j (\vec{x})$ and is given by
+There is an alternative method of expressing the Wachspress weight functions. Warren et al. \cite{warren2007barycentric} proposed weight functions that are defined in terms of the perpindicular distance of the point $\vec{x}$ to the polygon's faces. Using the reference polygon of Figure \ref{fig::BF_2D_ref_polygon}, the perpendicular distance of the point $\vec{x}$ to the face $j$ is denoted as $h_j (\vec{x})$ and is given by
 
 \begin{equation}
 \label{eq::BF_wach_perp_dist}
@@ -172,7 +179,7 @@ For FEM theory, the basis function gradients are also necessary to compute some 
 \vec{R}_i (\vec{x})  = \frac{\vec{n}_{j-1}}{h_{j-1} (\vec{x})} + \frac{\vec{n}_{j}}{h_{j} (\vec{x})}.
 \end{equation}
 
-We now give a pair of contour plots of the Wachspress coordinates. First, Figure \ref{fig::2D_WACHSPRESS1_unit_square_basis_functions} provides the contour plots of the four Wachspress functions on the unit square. We see that the functions are smoothly varying within the square with at least $C^1$ continuity. Then in Figure \ref{fig::2D_WACHSPRESS1_deg_square_basis_functions}, we give the contour plots for a degenerate pentagon which is simply the unit square with a vertex added at point ($1/2,1$). We see how the functions fail for this weakly-convex case. The function located at the degenerate vertex has zero measure everywhere within the polygon. Also, the functions located at the vertices adjacent to the degenerate vertex 
+We now give a pair of contour plots of the Wachspress coordinates. First, Figure \ref{fig::2D_WACHSPRESS1_unit_square_basis_functions} provides the contour plots of the four Wachspress functions on the unit square. We see that the functions are smoothly varying within the square with at least $C^1$ continuity. Then in Figure \ref{fig::2D_WACHSPRESS1_deg_square_basis_functions}, we give the contour plots for a degenerate pentagon which is simply the unit square with a vertex added at point ($1/2,1$). We see how the functions fail for this weakly-convex case. The function located at the degenerate vertex has zero measure everywhere within the polygon. Also, the functions located at the vertices adjacent to the degenerate vertex no longer maintain linearity on their adjacent faces. We will not show it here for brevity, but the Wachspress functions on concave polygons will have points in the interior that will result in divide-by-zero operations.
 
 \begin{figure}
 \centering
@@ -243,7 +250,7 @@ We now give a pair of contour plots of the Wachspress coordinates. First, Figure
 \subsection{Piecewise Linear (PWL) Basis Functions}
 \label{sec::BF_2DLinear_PWL}
 
-The second linearly-complete 2D polygonal coordinates that we will analyze are the Piecewise Linear (PWL) coordinates proposed by Stone and Adams \cite{ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}. They originally introduced the PWL coordinates to work specifically for the DGFEM transport equation on unstructured quadrilateral and polygonal grids. These coordinates share some similarities with the Wachspress rational functions, but also contain some key differences. The different properties of PWL that are different from the Wachspress rational functions can be summarized with the following:
+The second linearly-complete 2D polygonal coordinates that we will analyze are the Piecewise Linear (PWL) coordinates proposed by Stone and Adams \cite{ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}. They originally introduced the PWL coordinates to work specifically for the DGFEM transport equation on unstructured quadrilateral and polygonal grids. These coordinates share some similarities with the Wachspress rational functions, but also contain some key differences. The properties of the PWL coordinates that are different from the Wachspress rational functions can be summarized with the following:
 
 \begin{enumerate}
 \item PWL works with concave polytopes;
@@ -274,7 +281,7 @@ The 2D PWL functions are defined as combinations of linear triangular functions,
 \alpha_{j}^{K} = \frac{1}{N_K} .
 \end{equation}
 
-\noindent This means that the weight functions are equal for every vertex and the cell centroid simply becomes the average position of all the vertices. Using these vertex weight functions, the PWL basis function for vertex $j$, $b_j^{PWL}$, is defined as
+\noindent This means that the weight functions are equal for every vertex and the cell centroid simply becomes the average position of all the vertices. However, we note that care must be taken so that the centroid does not like on the polygon's boundary. This will cause the PWL functions to no longer have piecewise linearity along the boundary. Using these vertex weight functions, the PWL basis function for vertex $j$, $b_j^{PWL}$, is defined as
 
 \begin{equation}
 \label{eq::PWL_2D}
@@ -288,7 +295,7 @@ The 2D PWL functions are defined as combinations of linear triangular functions,
 	\vec{\nabla} b_j^{PWL} (x,y) = \vec{\nabla} t_j (x,y) + \alpha_j^K \vec{\nabla} t_c (x,y) .
 \end{equation}
 
-We now give some example contour plots of the PWL coordinates over different polygons. First, we provide the contour plots for the four PWL functions on the unit square in Figure \ref{fig::2D_PWLD1_unit_square_basis_functions}. In this example it is easy to discern the functional form of Eq. (\ref{eq::PWL_2D}) with the use of constant vertex weights. We clearly see each function linearly decrease from its vertex to the cell center (with a value of $1/N_K$) and then linearly decrease to all non-adjoining faces. Next, Figure \ref{fig::2D_PWLD1_deg_square_basis_functions} provides the contour plots for the PWL functions on a degenerate (weakly-convex) pentagon where a fifth vertex was added to the unit square at ($1/2,1$). Unlike the Wachspress coordinates, the PWL functions work on weakly-convex polygons. The final example we give in Figure \ref{fig::2D_PWLD1_Ldom_basis_functions} is a favorite in the applied mathematics community: the ``L-shaped'' domain. It provides an example of PWL's ability to still be linearly-complete on concave polygons. 
+We now give some example contour plots of the PWL coordinates over different polygons. First, we provide the contour plots for the four PWL functions on the unit square in Figure \ref{fig::2D_PWLD1_unit_square_basis_functions}. In this example it is easy to discern the functional form of Eq. (\ref{eq::PWL_2D}) with the use of constant vertex weights. We clearly see each function linearly decrease from its vertex to the cell center (with a value of $1/N_K$) and then linearly decrease to all non-adjoining faces. Next, Figure \ref{fig::2D_PWLD1_deg_square_basis_functions} provides the contour plots for the PWL functions on a degenerate (weakly-convex) pentagon where a fifth vertex was added to the unit square at ($1/2,1$). Unlike the Wachspress coordinates, the PWL functions work on weakly-convex polygons. The final example we give in Figure \ref{fig::2D_PWLD1_Ldom_basis_functions} is a favorite in the applied mathematics community: the ``L-shaped'' domain. It provides an example of PWL's ability to still be linearly-complete on concave polygons. In this example, the cell centroid was forced to be at the point ($1/3,1/3$) so that it would be inside of the polygon.
 
 
 \begin{figure}
@@ -397,7 +404,7 @@ We now give some example contour plots of the PWL coordinates over different pol
 \end{figure}
 
 
-\iffalse
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -425,6 +432,23 @@ b_{j}^{MV} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})}
 \label{eq::BF_MV_weights}
 w_j (\vec{x})  = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{x}_j - \vec{x}|}
 \end{equation}
+
+
+\begin{equation}
+\label{eq::BF_mv_gradient}
+\vec{\nabla} b_{j}^{MV}(\vec{x}) = b_{j}^{MV} (\vec{x}) \left( \vec{R}_j  (\vec{x})- \sum\displaylimits_{i}   b_{i}^{MV} (\vec{x}) \vec{R}_i (\vec{x}) \right) ,
+\end{equation},
+
+\noindent and where the reduced gradient, $\vec{R}_j $, still has the same definition from Eq. (\ref{eq::BF_wach_reduced_grad}). If we define $t_j=\tan(\alpha_j/2)$ and $t_{j-1}=\tan(\alpha_{j-1}/2)$, then after extensive algebra, the mean value reduced gradients are
+
+\begin{equation}
+\label{eq::BF_mv_red_grad_form}
+\vec{R}_j  = \left( \frac{t_{j-1}}{t_{j-1} + t_{j}} \right)  +  \left( \frac{t_{j}}{t_{j-1} + t_{j}} \right) + \frac{\vec{g}_j}{|\vec{x}_i - \vec{x}|},
+\end{equation}
+
+\noindent where
+
+
 
 \begin{figure}
 \label{fig::2D_MV1_unit_square_basis_functions}
@@ -530,6 +554,10 @@ w_j (\vec{x})  = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{x}_j -
 	\end{subfigure}
 \caption{Contour plots of the linear mean value basis functions on the L-shaped domain for the vertices located at: (a) (0,1), (b) (1/2,1), (c) (1/2,1/2), (d) (1,1/2), (e) (0,0), and (f) (1,0).}
 \end{figure}
+
+
+\iffalse
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Maximum Entropy
