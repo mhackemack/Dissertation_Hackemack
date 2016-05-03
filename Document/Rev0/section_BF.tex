@@ -1858,58 +1858,14 @@ For this example, we test the various 2D polygonal finite element basis function
 \label{fig::BF_Results_Linear_me1_sol}
 \end{figure}
 
-\begin{figure}
-\centering
-	\begin{subfigure}[b]{0.45\textwidth}
-		\centering
-		\label{subfig::cart_me_k2_lin_sol}
-		\includegraphics[width=\textwidth]{figures/sec_BF/cart_MAXENT_k2.eps}
-		\caption{}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.45\textwidth}
-		\centering
-		\label{subfig::tri_me_k2_lin_sol}
-		\includegraphics[width=\textwidth]{figures/sec_BF/tri_MAXENT_k2.eps}
-		\caption{}
-	\end{subfigure}
-	\vfill
-	\begin{subfigure}[b]{0.45\textwidth}
-		\centering
-		\label{subfig::shes_quad_me_k2_lin_sol}
-		\includegraphics[width=\textwidth]{figures/sec_BF/shes_quad_MAXENT_k2.eps}
-		\caption{}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.45\textwidth}
-		\centering
-		\label{subfig::smooth_poly_me_k2_lin_sol}
-		\includegraphics[width=\textwidth]{figures/sec_BF/smooth_poly_MAXENT_k2.eps}
-		\caption{}
-	\end{subfigure}
-	\vfill
-	\begin{subfigure}[b]{0.45\textwidth}
-		\centering
-		\label{subfig::z_quad_me_k2_lin_sol}
-		\includegraphics[width=\textwidth]{figures/sec_BF/z_quad_MAXENT_k2.eps}
-		\caption{}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.45\textwidth}
-		\centering
-		\label{subfig::z_poly_me_k2_lin_sol}
-		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_MAXENT_k2.eps}
-		\caption{}
-	\end{subfigure}
-\caption{Contour plots of the exactly-linear solution with the quadratic serendipity maximum entropy basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
-\label{fig::BF_Results_Linear_me2_sol}
-\end{figure}
 
 % end false
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Quadratic Solutions = METHOD OF EXACT SOLUTIONS
 \subsection{Two-Dimensional Exactly-Quadratic Transport Solutions}
 \label{sec::BF_Results_Quadratic}
+
+In Section \ref{sec::BF_2DQuadratic}, we stated that the quadratic serendipity basis can only interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions. Unlike the $\mathbb{Q}9$ elements, the quadratic serendipity basis cannot interpolate the $\{ x^2y, x y^2 x^2 y^2 \}$ span of functions.
 
 \begin{equation}
 \label{eq::BF_Results_Quadratic_fluxsols}
@@ -2324,9 +2280,108 @@ Our next numerical examples involve studying the convergence rates of transport 
 
 \noindent where $q = \min (p+1/2, r - 1/2)$ and $r$ is the regularity of the transport solution. If the mesh does not align with the discontinuities of the transport solution, then the solution convergence is restricted by $r$. However, if the mesh aligns with all of the solution discontinuities, then the maximum $p+1$ converge rates can be observed. To study this behavior, we will analyze cases with aligned and non-aligned meshes.
 
-For this example, two different transport problems will be evaluated. Both problems will consist of a purely-absorbing medium ($\sigma_s=0$) and their will be no distributed source within the domain. All meshes for both problems will be contained in the unit square: $[0,1]^2$ and $S_4$ level-symmetric quadrature is used. The first problem has incident angular flux on the left face at a downward $45^{\circ}$ angle. The second problem has the same incident flux on the left face, but also has additional incident angular flux on the top face at a $45^{\circ}$ angle aligned with that of the left face. This means that there is a solution discontinuity for both problems along the line from the vertex $(0,1)$ to $(1,0)$. Therefore, the problems have solution regularities of 1/2 and 3/2 for the first and second problem, respectively.
+For this example, two different transport problems will be evaluated. Both problems will consist of a purely-absorbing medium ($\sigma_s=0$) and their will be no distributed source within the domain. All meshes for both problems will be contained in the unit square: $[0,1]^2$ and $S_4$ level-symmetric quadrature is used. The first problem has incident angular flux on the left face at a downward $45^{\circ}$ angle. The second problem has the same incident flux on the left face, but also has additional incident angular flux on the top face at a $45^{\circ}$ angle aligned with that of the left face. This means that there is a solution discontinuity for both problems along the line from the vertex $(0,1)$ to $(1,0)$. Furthermore, the first problem has a void in the upper-right portion of the domain. Therefore, the problems have solution regularities of 1/2 and 3/2 for the first and second problem, respectively.
 
-We will analyze four different mesh types. Two of them will align with solution discontinuity and other two will not. 
+We will analyze four different mesh types. Two of them will align with solution discontinuity and other two will not. The meshes used are an ordered triangular mesh (aligns with the discontinuity), a regular Cartesian mesh (does not align with the discontinuity), a polygonal mesh (does not align with the discontinuity), and a split-polygonal mesh (aligns with the disccontinuity). The split-polygonal meshes are formed by bisecting the polygonal meshes along the solution discontinuity. These meshes are shown in Figure \ref{fig::BF_Results_PA_Meshes}. 
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Mesh_Tri}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAMesh_Tri.png}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Mesh_Cart}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAMesh_Cart.png}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Mesh_Poly}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAMesh_Poly.png}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Mesh_SplitPoly}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAMesh_SplitPoly.png}
+	\end{subfigure}
+}
+\caption{Mesh types used for the purely-absorbing medium problem.}
+\label{fig::BF_Results_PA_Meshes}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Mesh_Tri}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftSol_Tri.png}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Mesh_Cart}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftSol_Cart.png}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Mesh_Poly}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftSol_Poly.png}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Mesh_SplitPoly}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftSol_SplitPoly.png}
+	\end{subfigure}
+}
+\caption{Example Solution of the purely-absorbing medium case with left-face incidence and $\sigma_t=1$ using the linear PWL basis functions.}
+\label{fig::BF_Results_PA_Ex_Solutions}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Mesh_Tri}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftTopSol_Tri.png}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Mesh_Cart}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftTopSol_Cart.png}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Mesh_Poly}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftTopSol_Poly.png}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Mesh_SplitPoly}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftTopSol_SplitPoly.png}
+	\end{subfigure}
+}
+\caption{Example Solution of the purely-absorbing medium case with left-face and top-face incidence incidence and $\sigma_t=1$ using the linear PWL basis functions.}
+\label{fig::BF_Results_PA_Ex_Solutions}
+\end{figure}
 
 \begin{figure}
 \centering
