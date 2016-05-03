@@ -14,6 +14,8 @@
 \chapter{\uppercase {FEM Basis Functions for Unstructured Polytopes}}
 \label{sec::BF}
 
+
+
 In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various elementary matrices needed to form the full set of spatially-discretized PDEs. These included the mass, streaming, and surface matrices where the integrations on the element's domain and boundary require combinations of the basis functions' values and gradients. From FEM theory \cite{ern2013theory}, the basis functions act as interpolation functions with local measure on some subset of elements on a discretized mesh, $\mathbb{T}_h$. To achieve the maximum possible solution convergence rate from Section \ref{sec::Sn_Spatial_Convergence} of $p+1$, the interpolation functions must have polynomial completeness of at least order $p$. For 2D interpolants, the basis functions are linearly-complete ($p=1$) if they can exactly interpolate the $\{ 1, x, y \}$ span of functions. Likewise, 2D basis functions are said to be quadratically-complete if they can exactly interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions.
 
 The remainder of the this chapter is organized as follows. In Section \ref{sec::BF_2DLinear}, we present the 2D, linearly-complete, barycentric, polygonal basis functions that we will analyze in this dissertation. We then present in Section \ref{sec::BF_2DQuadratic} the methodology to convert the barycentric polygonal basis functions presented in Section \ref{sec::BF_2DLinear} into a serendipity space of basis functions with quadratic-completeness. Section \ref{sec::BF_2DIntegration} provides the methodology that will be employed to generate spatial quadrature sets on 2D arbitrary polygons. Section \ref{sec::BF_3DLinear} then presentes the 3D, linearly-complete, polyhedral basis functions that will be exclusively used in Chapter \ref{sec::DSA} for 3D DSA calculations. We then present numerical results pertaining to our linear and quadratic 2D basis functions in Section \ref{sec::BF_Results}. Section \ref{sec::BF_Conclusions} concludes with some closing remarks.
@@ -470,10 +472,9 @@ We now give the form of the mean value gradients. Since the mean value coordinat
 
 \noindent While this direct form for the MV coordinates is more complicated than the last two coordinates presented, it is still easily programmable. The interested reader can look in the appendix of \cite{floater2015generalized} for MATLAB code to compute these gradients, though we stress that it does not contain any logic for boundary detection.
 
-We again provide example contour plots of the MV coordinates, and we use the same polygonal shapes that we showed for the PWL coordinates. Figure \ref{fig::2D_MV1_unit_square_basis_functions} gives the MV coordinates on the unit square. Like the Wachspress functions, the MV coordinates are smoothly varying within 
+We again provide example contour plots of the MV coordinates, and we use the same polygonal shapes that we showed for the PWL coordinates. Figure \ref{fig::2D_MV1_unit_square_basis_functions} gives the MV coordinates on the unit square. Like the Wachspress functions, the MV coordinates are smoothly varying within the domain of the polygon and posess continuous derivatives. Next in Figure \ref{fig::2D_MV1_deg_square_basis_functions}, we give the example contour plots for the degenerate pentagon which is formed by inserting a vertex into the unit square at $(1/2,1)$. Finally, Figure \ref{fig::2D_MV1_Ldom_basis_functions} gives the contour plots for the linear mean value coordinates on the L-shaped domain. We see that the linear mean value coordinates are applicable to interpolation on concave polygons.
 
 \begin{figure}
-\label{fig::2D_MV1_unit_square_basis_functions}
 \centering
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
@@ -499,10 +500,10 @@ We again provide example contour plots of the MV coordinates, and we use the sam
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the linear mean value basis functions on the unit square for the vertices located at: (a) (0,1), (b) (1,1), (c) (0,0), and (d) (1,0).}
+\label{fig::2D_MV1_unit_square_basis_functions}
 \end{figure}
 
 \begin{figure}
-\label{fig::2D_MV1_deg_square_basis_functions}
 \centering
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
@@ -534,10 +535,10 @@ We again provide example contour plots of the MV coordinates, and we use the sam
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the linear mean value basis functions on the degnerate pentagon for the vertices located at: (a) (1/2,1), (b) (0,1), (c) (1,1), (d) (0,0), and (e) (1,0).}
+\label{fig::2D_MV1_deg_square_basis_functions}
 \end{figure}
 
 \begin{figure}
-\label{fig::2D_MV1_Ldom_basis_functions}
 \centering
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
@@ -575,6 +576,7 @@ We again provide example contour plots of the MV coordinates, and we use the sam
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the linear mean value basis functions on the L-shaped domain for the vertices located at: (a) (0,1), (b) (1/2,1), (c) (1/2,1/2), (d) (1,1/2), (e) (0,0), and (f) (1,0).}
+\label{fig::2D_MV1_Ldom_basis_functions}
 \end{figure}
 
 
@@ -630,11 +632,10 @@ w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{x})),
 \item Check convergence by testing if $|| g_{k+1} || > \epsilon$.
 \end{enumerate}
 
-\noindent In these computational procedures, $\alpha$ is the step size. If the error at iteration $k$, $|| g_{k} || $ is greater than $10^{-4}$, then a line search algorithm is used \cite{burden2001numerical}. Otherwise, $\alpha$ can be set to unity as the . We note that a line search algorithm must be used for certain classes of polygonal shapes. For extremely-distorted concave polygons this Newton iteration procedure can be unstable without it. Due to the quadratic convergence of Newton's method in the vicinity of the final solution, only 3-7 Newton iterations should be required to obtain accuracies of at least $10^{-10}$. 
+\noindent In these computational procedures, $\alpha$ is the step size. If the error at iteration $k$, $|| g_{k} || $ is greater than $10^{-4}$, then a line search algorithm is used \cite{burden2001numerical}. Otherwise, $\alpha$ can be set to unity as the error decreases. We note that a line search algorithm must be used for certain classes of polygonal shapes. For extremely-distorted concave polygons this Newton iteration procedure can be unstable without it. Due to the quadratic convergence of Newton's method in the vicinity of the final solution, only 3-7 Newton iterations should be required to obtain accuracies of at least $10^{-10}$. 
 
 
 \begin{figure}
-\label{fig::2D_MAXENT1_unit_square_basis_functions}
 \centering
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
@@ -660,10 +661,10 @@ w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{x})),
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the linear maximum entropy basis functions on the unit square for the vertices located at: (a) (0,1), (b) (1,1), (c) (0,0), and (d) (1,0).}
+\label{fig::2D_MAXENT1_unit_square_basis_functions}
 \end{figure}
 
 \begin{figure}
-\label{fig::2D_MAXENT1_deg_square_basis_functions}
 \centering
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
@@ -695,10 +696,10 @@ w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{x})),
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the linear maximum entropy basis functions on the degnerate pentagon for the vertices located at: (a) (1/2,1), (b) (0,1), (c) (1,1), (d) (0,0), and (e) (1,0).}
+\label{fig::2D_MAXENT1_deg_square_basis_functions}
 \end{figure}
 
 \begin{figure}
-\label{fig::2D_MAXENT1_Ldom_basis_functions}
 \centering
 	\begin{subfigure}[b]{0.39\textwidth}
 		\centering
@@ -736,6 +737,7 @@ w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{x})),
 		\caption{}
 	\end{subfigure}
 \caption{Contour plots of the linear maximum entropy basis functions on the L-shaped domain for the vertices located at: (a) (0,1), (b) (1/2,1), (c) (1/2,1/2), (d) (1,1/2), (e) (0,0), and (f) (1,0).}
+\label{fig::2D_MAXENT1_Ldom_basis_functions}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -743,11 +745,16 @@ w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{x})),
 \subsection{Summary of 2D Linear Basis Functions on Polygons}
 \label{sec::BF_2DLinear_Summary}
 
+In Sections \ref{sec::BF_2DLinear_Wachspress}, \ref{sec::BF_2DLinear_PWL}, \ref{sec::BF_2DLinear_MV}, and \ref{sec::BF_2DLinear_ME}, we presented the linear Wachspress, PWL, mean value, and maximum entropy coordinates, respectively. We gave the functional forms for their values and gradients along with example contour plots for different polygonal elements. Table \ref{tab::BF_2Dlin_summary} provides a summary of the properties for the different coordinates. The Wachspress, PWL, and ME functions have natural extensions to 3D polyhedra, but the MV functions can only interpolate on polyhedra with triangular facets \cite{floater2005mean,wicke2007finite}. The PWL, MV, and ME coordinates can interpolate degenerate-convex and concave polygons while the Wachspress functions can only interpolate strictly-convex polygons. This means that the Wachspress coordinates are not suited for AMR calculations that form degenerate polygons. PWL is the only functional form that can analytically integrate the elementary matrices and directly evaluate its values and gradients on the boundary of the polygon. Finally, every point within the domain can be directly evaluated using the Wachspress, PWL, and MV coordinates. However, the ME coordinates use an iterative approach with Newton's method since their functional form constitutes a non-linear minimization problem.
+
+We conclude this summary discussion on the different linearly-complete 2D polygonal coordinates by again presenting examples of their functional forms. Figure \ref{fig::2D_Linear_Summary_unit_square_basis_functions} provides the contour plots of the different coordinates located at vertex ($0,1$) on the unit square. It is easy to see that the Wachspress, MV, and ME coordinates are smoothly varying within the polygon's domain while the PWL coordinates only have $C^0$ continuity. Figure \ref{fig::2D_Summary_deg_square_basis_functions} provides the contour plots on the degenerate pentagon that is formed by inserting a vertex at $(1/2,1)$ into the unit square. This re-emphasizes that the Wachspress coordinates are only valid interpolatory functions on strongly-convex polygons. Finally, Figure \ref{fig::2DSummary_Ldom_basis_functions} provides the contour plots of the PWL, MV, and ME functions on the L-shaped domain at the $(0,1)$ and $(1/2,1/2)$ vertices. These coordinates can successfully interpolate on concave polygons.
+
 \begin{table}
-\caption[Summary of the 2D polygonal basis functions]{Summary of the 2D coordinate systems used on polygons. }
+\centering
+\caption[Summary of the 2D polygonal basis functions]{Summary of the properties of the 2D coordinate systems used on polygons. }
 \begin{tabular}{|c|c|c|c|c|}
 \hline
-Basis Function & Dimension & Polytope Types & Integration & Direct/Iterative \\
+Basis Function & Dimension & Polygon Type & Integration & Evaluation \\
 \hline \hline
 Wachspress	&2D/3D&	Convex&	Numerical	&Direct\\ \hline
 PWL&	1D/2D/3D&	Convex/Concave&	Analytical	&Direct\\ \hline
@@ -758,7 +765,6 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 \end{table}
 
 \begin{figure}
-\label{fig::2D_Linear_Summary_unit_square_basis_functions}
 \centering
 {
 	\begin{subfigure}[b]{0.39\textwidth}
@@ -788,10 +794,10 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 	\end{subfigure}
 }
 \caption[Contour plots of the linear basis functions on the unit square.]{Contour plots of the different linear basis function on the unit square located at vertex (0,1).}
+\label{fig::2D_Linear_Summary_unit_square_basis_functions}
 \end{figure}
 
 \begin{figure}
-\label{fig::2D_Summary_deg_square_basis_functions}
 \centering
 {
 	\begin{subfigure}[b]{0.39\textwidth}
@@ -821,6 +827,49 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 	\end{subfigure}
 }
 \caption[Contour plots of the linear basis functions on the degenerate pentagon.]{Contour plots of the different linear basis function on the degenerate pentagon located at vertex (0,1). It is clear that the Wachspress coordinates fail for the weakly convex case.}
+\label{fig::2D_Summary_deg_square_basis_functions}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.375\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/L-domain_PWLD1_contour_b6.png}
+	\end{subfigure}
+	\hspace{1.5cm}
+	\begin{subfigure}[b]{0.375\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/L-domain_PWLD1_contour_b4.png}
+	\end{subfigure}
+}
+\vspace{3mm}
+{
+	\begin{subfigure}[b]{0.375\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/L-domain_MV1_contour_b6.png}
+	\end{subfigure}
+	\hspace{1.5cm}
+	\begin{subfigure}[b]{0.375\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/L-domain_MV1_contour_b4.png}
+	\end{subfigure}
+}
+\vspace{3mm}
+{
+	\begin{subfigure}[b]{0.375\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/L-domain_MAXENT1_contour_b6.png}
+	\end{subfigure}
+	\hspace{1.5cm}
+	\begin{subfigure}[b]{0.375\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/L-domain_MAXENT1_contour_b4.png}
+	\end{subfigure}
+}
+\vspace{2mm}
+\caption[Contour plots of the linear basis functions on the L-shaped domain.]{Contour plots of the different linear basis functions on the L-shaped domain. The PWL (top), mean value (middle), and maximum entropy (bottom) functions are plotted at vertices $(0,1)$ (left) and $(1/2,1/2)$ (right).}
+\label{fig::2DSummary_Ldom_basis_functions}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1357,9 +1406,9 @@ For the sake of analysis, we seek to simplify Eqs. (\ref{eq::BF_Results_TDL_scal
 
 \noindent respectively.
 
-From previous work \cite{adams2001dfem}, it is already known that linear interpolants with properties corresponding to barycentric coordinates satisfy the thick diffusion limit. However, it needs to be demonstrated that the quadratic serendipity extensions will also satisfy the limit. We will demonstrate this both qualitatively and quantitatively. The transport and diffusion equations to be solved are Eqs. (\ref{eq::BF_Results_TDL_normalized_trans_eq}) and (\ref{eq::BF_Results_TDL_normalized_diff_eq}), respectively. Vacuum boundary conditions are applied for the transport equations and homogeneous dirichlet conditions are applied for the diffusion equations. With this choice of boundary conditions, the transport and diffusion solutions will converge only as $\epsilon$ gets small. Specifically, they converge at a rate of $O(\epsilon)$ with an $L_2$ norm. The diffusion equation is discretized using the same DGFEM functional space as the transport equations, and we leave these details until Section \ref{sec::DSA_SIP}. 
+From previous work \cite{adams2001dfem}, it is already known that linear interpolants with properties corresponding to barycentric coordinates satisfy the thick diffusion limit. However, it needs to be demonstrated that the quadratic serendipity extensions will also satisfy the limit. We will demonstrate this both qualitatively and quantitatively. The transport and diffusion equations to be solved are Eqs. (\ref{eq::BF_Results_TDL_normalized_trans_eq}) and (\ref{eq::BF_Results_TDL_normalized_diff_eq}), respectively. Vacuum boundary conditions are applied for the transport equations and homogeneous dirichlet conditions are applied for the diffusion equations. With this choice of boundary conditions, the transport and diffusion solutions will converge only as $\epsilon$ gets small. Specifically, they converge at a rate of $O(\epsilon)$ with an $L_2$-norm. The diffusion equation is discretized using the same DGFEM functional space as the transport equations, and we leave these details until Section \ref{sec::DSA_SIP}. 
 
-We first provide an example of the diffusion solution in Figure \ref{fig::BF_Results_DL_DiffSol} on a polygonal grid for both the linear and quadratic mean value basis functions. Next, Figures \ref{fig::BF_Results_DL_Wachspress}, \ref{fig::BF_Results_DL_PWLD}, \ref{fig::BF_Results_DL_MV}, and \ref{fig::BF_Results_DL_MAXENT} provide the transport solutions with varying $\epsilon$ values using the Wachspress, PWL, mean value, and maximum entropy coordinates, respectively. We see that as we reduce $\epsilon$ from $10^{-1}$ to $10^{-5}$, our transport solutions converge to our diffusion solutions.
+We first provide an example of the diffusion solution in Figure \ref{fig::BF_Results_DL_DiffSol} on a polygonal grid for both the linear and quadratic mean value basis functions. Next, Figures \ref{fig::BF_Results_DL_Wachspress}, \ref{fig::BF_Results_DL_PWLD}, \ref{fig::BF_Results_DL_MV}, and \ref{fig::BF_Results_DL_MAXENT} provide the transport solutions with varying $\epsilon$ values using the Wachspress, PWL, mean value, and maximum entropy coordinates, respectively. We see that as we reduce $\epsilon$ from $10^{-1}$ to $10^{-5}$, our transport solutions converge to our diffusion solutions. Finally, we show the convergence rates of the discretized transport, $\Phi_T$, and diffusion, $\Phi_D$, solutions under the $L_2$-norm. As $\epsilon$ decreases, the $L_2$-norm of the difference between the transport and diffusion solutions, $|| \Phi_T - \Phi_D||_{L_2}$, should decrease as $O(\epsilon)$. We demonstrate this as true in Figures \ref{fig::BF_Results_DL_Conv_Cart} and \ref{fig::BF_Results_DL_Conv_Poly} for a Cartesian and polygonal mesh, respectively. For both meshes, all of the linear and quadratic basis functions show convergence rates of $O(\epsilon)$.
 
 \begin{figure}
 \centering
@@ -1597,6 +1646,20 @@ We first provide an example of the diffusion solution in Figure \ref{fig::BF_Res
 \label{fig::BF_Results_DL_MAXENT}
 \end{figure}
 
+\begin{figure}
+\centering
+\includegraphics[width=0.775\textwidth]{figures/sec_BF/DLConvergenceError_Cartesian.eps}
+\caption{Convergence rates for the diffusion limit problem on a Cartesian mesh.}
+\label{fig::BF_Results_DL_Conv_Cart}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.775\textwidth]{figures/sec_BF/DLConvergenceError_SqPoly.eps}
+\caption{Convergence rates for the diffusion limit problem on a polygonal mesh.}
+\label{fig::BF_Results_DL_Conv_Poly}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Linear Solutions = METHOD OF EXACT SOLUTIONS
 \subsection{Two-Dimensional Exactly-Linear Transport Solutions}
@@ -1666,7 +1729,7 @@ For this example, we test the various 2D polygonal finite element basis function
 	\item A polygonal variant of the quadrilateral z-mesh. The polygonal grid is formed in a similar manner to the sinusoidal polygonal mesh with a Voronoi diagram.
 \end{enumerate}
 
-\noindent We also wish that both the angular flux solution as well as the 0th moment solution are strictly positive everywhere. Therefore, we set the function parameters in Eq. (\ref{eq::BF_Results_Linear_fluxsols}) to $\sigma_t = a = c = d = e = 1.0$ and $b = 1.5$. We gave the solution the $40 \%$ tilt in space ($a \neq b$) so that it would not align with the triangular mesh. Using an S8 LS quadrature set, we ran all combinations of the polygonal basis functions and the mesh types. The linear solutions for the Wachspress, PWL, mean value, linear maximum entropy, and quadratic serendipity maximum entropy basis functions are presented in Figures \ref{fig::BF_Results_Linear_wach_sol}, \ref{fig::BF_Results_Linear_pwld_sol}, \ref{fig::BF_Results_Linear_mv_sol}, \ref{fig::BF_Results_Linear_me1_sol}, and \ref{fig::BF_Results_Linear_me2_sol}, respectively. We can see that for all the polygonal basis functions, an exact linear solution is captured as shown by the unbroken nature of the contour lines. This even holds on the highly distorted quadrilateral shestakov mesh.
+\noindent We also wish that both the angular flux solution as well as the 0th moment solution are strictly positive everywhere. Therefore, we set the function parameters in Eq. (\ref{eq::BF_Results_Linear_fluxsols}) to $\sigma_t = a = c = d = e = 1.0$ and $b = 1.5$. We gave the solution the $40 \%$ tilt in space ($a \neq b$) so that it would not align with the triangular mesh. Using an S8 LS quadrature set, we ran all combinations of the polygonal basis functions and the mesh types. The linear solutions for the Wachspress, PWL, mean value, and linear maximum entropy are presented in Figures \ref{fig::BF_Results_Linear_wach_sol}, \ref{fig::BF_Results_Linear_pwld_sol}, \ref{fig::BF_Results_Linear_mv_sol}, \ref{fig::BF_Results_Linear_me1_sol}, respectively. We can see that for all the polygonal basis functions, an exact linear solution is captured as shown by the unbroken nature of the contour lines. This even holds on the highly distorted quadrilateral shestakov mesh.
 
 %%%%%%%%%%%%%%%%%
 % Begin Linear Solution figures
@@ -1865,16 +1928,50 @@ For this example, we test the various 2D polygonal finite element basis function
 \subsection{Two-Dimensional Exactly-Quadratic Transport Solutions}
 \label{sec::BF_Results_Quadratic}
 
-In Section \ref{sec::BF_2DQuadratic}, we stated that the quadratic serendipity basis can only interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions. Unlike the $\mathbb{Q}9$ elements, the quadratic serendipity basis cannot interpolate the $\{ x^2y, x y^2 x^2 y^2 \}$ span of functions.
+In Section \ref{sec::BF_2DQuadratic}, we stated that the quadratic serendipity basis can only interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions. Unlike the $\mathbb{Q}9$ elements, the quadratic serendipity basis cannot interpolate the $\{ x^2y, x y^2 x^2 y^2 \}$ span of functions. In this example we show the limit of the interpolatory properties of the quadratic serendipity space by again using MES. We will test two exact solution spaces. The first spans the functions that are captured by the quadratic serendipity space, and the second spans the additional functions captured by the $\mathbb{Q}9$ elements (but is not captured by the quadratic serendipity space).
+
+The first problem interpolates the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions, which we denote with the following general and exactly-quadratic solution, $\{\Psi_q, \Phi_q\}$:
 
 \begin{equation}
 \label{eq::BF_Results_Quadratic_fluxsols}
 \begin{aligned}
-\Psi (x,y,\mu,\eta) &= a + bx + c y+ d xy + e x^2 + fy^2 \\
-\Phi (x,y) &= 2 \pi \left(  a + bx + c y+ d xy + e x^2 + fy^2 \right)
+\Psi_q (x,y,\mu,\eta) &= a + bx + c y+ d xy + e x^2 + fy^2 \\
+\Phi_q (x,y) &= 2 \pi \left(  a + bx + c y+ d xy + e x^2 + fy^2 \right)
 \end{aligned} .
 \end{equation}
 
+\noindent Inserting the angular flux solution of Eq. (\ref{eq::BF_Results_Quadratic_fluxsols}) into the previously-defined Eq. (\ref{eq::BF_Results_Linear_angflux}) yields the following right-hand-side distributed source,
+
+\begin{equation}
+\label{eq::BF_Results_Quadratic_rhs}
+\begin{aligned}
+Q_q (x,y,\mu,\eta) &=  \left( b+d y+2 e x \right) \mu + \left( c+d x+2 f y \right) \eta \\
+&+ \sigma_t \left( a + bx + c y+ d xy + e x^2 + fy^2 \right)
+\end{aligned} .
+\end{equation}
+
+\noindent We clearly see that any combination of positive or negative (non-zero) values for the coefficients $a-f$ will span the quadratic serendipity space. The second problem contains terms up to $x^2 y^2$. This higher-order functional form has a solution, $\{ \Psi_{x2y2}, \Phi_{x2y2}\}$, given by the following
+
+\begin{equation}
+\label{eq::BF_Results_x2y2_fluxsols}
+\begin{aligned}
+\Psi_{x2y2} (x,y,\mu,\eta) &= x \left(L_x - x \right) y \left(L_y - y \right) \\
+\Phi_{x2y2} (x,y) &= 2 \pi x \left(L_x - x \right) y \left(L_y - y \right) 
+\end{aligned} ,
+\end{equation}
+
+\noindent where $L_x$ and $L_y$ are the dimensions of the domain in $x$ and $y$. Again, inserting this solution into Eq. (\ref{eq::BF_Results_Quadratic_fluxsols}) yields the following right-hand-side distributed source,
+
+\begin{equation}
+\label{eq::BF_Results_x2y2_rhs}
+\begin{aligned}
+Q_{x2y2} (x,y,\mu,\eta) &=  \left[ y\left( L_x-x \right)\left( L_y-y \right) - xy\left( L_y-y \right) \right] \mu \\
+&+ \left[ x\left( L_x-x \right) \left( L_y-y \right) - xy\left( L_x-x \right) \right] \eta \\
+&+ \sigma_t x \left(L_x - x \right) y \left(L_y - y \right)
+\end{aligned} .
+\end{equation}
+
+For both problems, $L_x$ and $L_y$ are set to 1.0 to form the unit square. For the exactly-quadratic solutions, $\{\Psi_q, \Phi_q\}$, we set the function parameters in Eqs. (\ref{eq::BF_Results_Quadratic_fluxsols}) and (\ref{eq::BF_Results_Quadratic_rhs}) all to be 1.0: $\sigma_t=a=b=c=d=e=f=1.0$. The meshes used for both problems are the same used for the exactly-linear problem. We give an example of the numerical solutions for the exactly-quadratic solution in Figure \ref{fig::BF_Results_quad_sol} using the quadratic serendipity maximum entropy coordinates for all the different meshes. Next, we give the spatial distributions of the error for the exactly-quadratic problem in Figures \ref{fig::BF_Results_quad_err_Wach2}, \ref{fig::BF_Results_quad_err_PWL2}, \ref{fig::BF_Results_quad_err_MV2}, and \ref{fig::BF_Results_quad_err_ME2} for the Wachspress, PWL, MV, and ME basis functions, respectively. The magnitudes of these spatial distributions are around $10^{-14}-10^{-15}$ showing that the quadratic serendipity basis functions can capture exactly-quadratic solutions to machine precision. We next present results for the quadratic solution that includes the $x^2 y^2$ term. From the theory for the quadratic serendipity functional space, we should not be able to capture solutions of higher order than $x^2$ and $y^2$. Figure \ref{fig::BF_Results_x2y2_sol_ME2} gives an example of this solution using the quadratic serendipity maximum entropy coordinates for all the different meshes. Table \ref{tab::BF_x2y2_err} then gives the $L_2$-norm of the MMS error for the different basis functions and mesh types. We clearly see errors on the order of $O(10^{-6})$ to $O(10^{-4})$ which means that we do not capture the functional space as predicted.
 
 \begin{figure}
 \centering
@@ -2141,6 +2238,83 @@ In Section \ref{sec::BF_2DQuadratic}, we stated that the quadratic serendipity b
 \label{fig::BF_Results_quad_err_ME2}
 \end{figure}
 
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::x2y2_cart_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/x2y2Sol_Cart_ME2.png}
+		\caption{Cartesian}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::x2y2_tri_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/x2y2Sol_Tri_ME2.png}
+		\caption{Triangular}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::x2y2_shes_quad_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/x2y2Sol_ShesQuad_ME2.png}
+		\caption{Shestakov Quadrilaterals}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::x2y2_smooth_poly_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/x2y2Sol_SinePoly_ME2.png}
+		\caption{Sinusoid Polygons}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::x2y2_z_quad_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/x2y2Sol_ZQuad_ME2.png}
+		\caption{Z-Quadrilaterals}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::x2y2_z_poly_me_k2_lin_sol}
+		\includegraphics[width=\textwidth]{figures/sec_BF/x2y2Sol_ZPoly_ME2.png}
+		\caption{Z-Polygons}
+	\end{subfigure}
+}
+\caption{Quadratic solutions containing the $x^2y^2$ term for different meshes with the quadratic maximum entropy basis functions.}
+\label{fig::BF_Results_x2y2_sol_ME2}
+\end{figure}
+
+\begin{table}
+\caption{$L_2$-norm of the error in the quadratic solution containing the $x^2y^2$ term for the different quadratic serendipity basis functions on different mesh types.}
+\begin{center}
+\def\arraystretch{1.6}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+& \multicolumn{4}{c}{Basis Functions}\vline\\
+\hline
+Mesh Type & Wachspress & PWL& Mean Value& Max. Entropy \\
+\hline
+Cartesian&3.5e-06&2.72e-05&8.29e-06&3.86e-05\\
+Triangular&5.13e-05&5.13e-05&5.13e-05&5.13e-05\\
+Shes. Quad&3.97e-04&3.37e-04&2.81e-04&3.91e-04\\
+Sine Poly&3.75e-05&1.22e-04&7.62e-05&1.39e-04\\
+Z-Poly&2.93e-05&3.07e-05&2.6e-05&3.46e-05\\
+Z-Quad&2.98e-05&8.73e-05&5.08e-05&1.17e-04\\
+\hline
+\end{tabular}
+\end{center}
+\label{tab::BF_x2y2_err}
+\end{table}
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - MMS
 \subsection{Convergence Rate Analysis by the Method of Manufactured Solutions}
@@ -2158,25 +2332,25 @@ For this example, we choose the following solution and problem parameters and ch
 	\item The angular flux solution is zero on the boundary for all incident directions - this is identical to vacuum boundaries which can ease code development.
 \end{enumerate}
 
-\noindent To satisfy these characteristics, we choose to analyze two different solution spaces. The first is a smoothly varying sinusoid solution with no extreme local maxima. The second solution is a product of a quadratic function and a gaussian which yields a significant local maximum. 
+\noindent To satisfy these characteristics, we choose to analyze two different solution spaces. The first is a smoothly varying sinusoid solution with no extreme local maxima. The second solution is a product of the quadratic function from Eq. (\ref{eq::BF_Results_x2y2_fluxsols}) and a gaussian which yields a significant local maximum. 
 
-The sinusoid flux solutions, \{$\Psi^s$, $\Phi^s$\}, have the following parameterized form,
+The sinusoid flux solutions, \{$\Psi_s$, $\Phi_s$\}, have the following parameterized form,
 
 \begin{equation}
 \label{eq::BF_Results_MMS_sinefluxsols}
 \begin{aligned}
-\Psi^s (x,y) = &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}), \\ 
-\Phi^s (x,y) = 2 \pi &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}),
+\Psi_s (x,y) = &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}), \\ 
+\Phi_s (x,y) = 2 \pi &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}),
 \end{aligned} 
 \end{equation}
 
-\noindent where $\nu$ is a frequency parameter. We restrict this paremeter to positive integers ($\nu = 1,2,3,...$) to maintain characteristic 5 of the solution and problem space. The gaussian solution space, \{$\Psi^g$, $\Phi^g$\}, that has its local maximum centered at ($x_0,y_0$) has the parameterized form,
+\noindent where $\nu$ is a frequency parameter. We restrict this paremeter to positive integers ($\nu = 1,2,3,...$) to maintain characteristic 5 of the solution and problem space. The gaussian solution space, \{$\Psi_g$, $\Phi_g$\}, that has its local maximum centered at ($x_0,y_0$) has the parameterized form,
 
 \begin{equation}
 \label{eq::BF_Results_MMS_gaussfluxsols}
 \begin{aligned}
-\Psi^g (x,y) = &C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}), \\ 
-\Phi^g (x,y) = 2 \pi &C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}),
+\Psi_g (x,y) = &C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}), \\ 
+\Phi_g (x,y) = 2 \pi &C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}),
 \end{aligned} 
 \end{equation}
 
@@ -2189,6 +2363,171 @@ C_M = \frac{100}{L_x^2 L_y^2} \qquad \gamma = \frac{L_x L_y}{100} .
 
 For this example, we choose the dimensionality of our problem to be $[0,1]^2$ which makes $L_x=L_y=1$ for both the sinusoid and gaussian solutions. For the sinusoid solution, we select the frequency parameter, $\nu$, to be 3 and for the gaussian solution we set the local maximum: $x_0=y_0 = 0.75$. With these parameters, the sinusoid solution will have local minima and maxima of $-2 \pi$ and $2 \pi$, respectively, and the gaussian solution will have a global maximum of $\frac{225}{32} \pi \approx 22.1$.
 
+For these two examples, we will use a different meshing strategy between them. The convergence rate analysis for the sinusoid problem will be performed on three different mesh types: 1) Cartesian meshes, 2) ordered-triangular meshes, and 3) polygonal meshes. The Cartesian and triangular meshes are the same as those used for the exactly-linear and exactly-quadratic problems. The polygonal meshes are the same as those used for the diffusion limit problem. We give an example of how the mesh will be refined for these different types in Figure \ref{fig::BF_Results_MMS_Sine_Meshes}. For the gaussian problem, we will utilize AMR to form our polygonal meshes. The numbers of polygons and their generation history will depend on the basis functions used and the mesh irregularity that is imposed.
+
+The convergence rates of the sinusoid solution are given in Figures \ref{fig::BF_Results_MMS_Sine_cart}, \ref{fig::BF_Results_MMS_Sine_tri}, and \ref{fig::BF_Results_MMS_Sine_cart} for the Cartesian, triangular, and polygonal meshes, respectively. The total cross section was set to 1.0 and $S_8$ level-symmetric quadrature was used. First, we provide some examples of the sinusoid solutions. Figures \ref{fig::BF_Results_MMS_Sine_PWL1_Sol} and \ref{fig::BF_Results_MMS_Sine_PWL2_Sol} give the contour plots for the sinusoid solutions using the linear and quadratic PWL basis functions, respectively. The meshes used are identical (in the same order) as those given in Figure \ref{fig::BF_Results_MMS_Sine_Meshes}. Next, we plot the $L_2$-norm of the error against the number of spatial degrees of freedom in the problem. From the theoretical analysis of Section \ref{sec::Sn_Spatial_Convergence}, we expected and obtained slope values of the convergence rate of -1 and -3/2 for the linear and quadratic basis functions, respectively. 
+
+Because we are using AMR for the gaussian problem, we will only analyze the PWL, MV, and ME basis functions since the Wachspress functions cannot handle degenerate polygons. For both the linear and quadratic AMR runsets, the refinement criterion, $\alpha$, was set to 0.1. For each linear and quadratic basis function, we performed mesh refinement where the maximum irregularity was set to either 1, 2, or 3. Figure \ref{fig::BF_Results_MMS_Gauss2D_cart}, \ref{fig::BF_Results_MMS_Gauss2D_tri}, and \ref{fig::BF_Results_MMS_Gauss2D_poly} give the convergence history of the 2D gaussian error in the $L_2$-norm using the PWL, mean value, and maximum entropy basis functions, respectively. We plot the different AMR cases with the corresponding uniform refinement case ($\alpha=0$) for comparison. We can clearly see that we obtain the proper convergence rates for all cases, and the AMR sets provide better solution accuracy with significantly less spatial degrees of freedom. Finally, we provide an example of a pair of AMR meshes and solutions in Figure \ref{fig::BF_Results_MMS_GQ_AMR_MeshSol} using the ME basis functions. We can see a clear difference in how the linear and quadratic basis functions will refine, with the quadratic functions causing much smoother refinement to occur.
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_CartMesh00}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SineCartMesh_cyc00.png}
+		%\caption{p=1, 1-Irregularity}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_CartMesh01}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SineCartMesh_cyc01.png}
+		%\caption{p=2, 1-Irregularity}
+	\end{subfigure}
+}
+\vspace{2.5mm}
+{
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_TriMesh00}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SineTriMesh_cyc00.png}
+		%\caption{p=1, 2-Irregularity}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_TriMesh01}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SineTriMesh_cyc01.png}
+		%\caption{p=2, 2-Irregularity}
+	\end{subfigure}
+}
+\vspace{2.5mm}
+{
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_SqPolyMeshn64}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SineSqPolyMesh_n64.png}
+		%\caption{p=1, 3-Irregularity}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_SqPolyMeshn256}
+		\includegraphics[width=\textwidth]{figures/sec_BF/SineSqPolyMesh_n256.png}
+		%\caption{p=2, 3-Irregularity}
+	\end{subfigure}
+}
+\caption{Examples of the mesh refinement for the sinusoid MMS transport problem for Cartesian (top), triangular (middle), and polygonal (bottom) meshes.}
+\label{fig::BF_Results_MMS_Sine_Meshes}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_Cart00_PWL1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/MMSSine_PWL1_Cart_cyc00.png}
+		%\caption{p=1, 1-Irregularity}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_Cart01_PWL1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/MMSSine_PWL1_Cart_cyc01.png}
+		%\caption{p=2, 1-Irregularity}
+	\end{subfigure}
+}
+\vspace{2.5mm}
+{
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_Tri00_PWL1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/MMSSine_PWL1_Tri_cyc00.png}
+		%\caption{p=1, 2-Irregularity}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_Tri01_PWL1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/MMSSine_PWL1_Tri_cyc01.png}
+		%\caption{p=2, 2-Irregularity}
+	\end{subfigure}
+}
+\vspace{2.5mm}
+{
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_SqPolyn64_PWL1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/MMSSine_PWLD1_SQPMesh_n64.png}
+		%\caption{p=1, 3-Irregularity}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_SqPolyn256_PWL1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/MMSSine_PWLD1_SQPMesh_n256.png}
+		%\caption{p=2, 3-Irregularity}
+	\end{subfigure}
+}
+\caption{Example contour plots for the sinusoid problem using the linear PWL basis functions. The meshes used are those from Figure \ref{fig::BF_Results_MMS_Sine_Meshes}.}
+\label{fig::BF_Results_MMS_Sine_PWL1_Sol}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_Cart00_PWL2}
+		\includegraphics[width=\textwidth]{figures/sec_BF/MMSSine_PWLD2_Cart_cyc00.png}
+		%\caption{p=1, 1-Irregularity}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_Cart01_PWL2}
+		\includegraphics[width=\textwidth]{figures/sec_BF/MMSSine_PWLD2_Cart_cyc01.png}
+		%\caption{p=2, 1-Irregularity}
+	\end{subfigure}
+}
+\vspace{2.5mm}
+{
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_Tri00_PWL2}
+		\includegraphics[width=\textwidth]{figures/sec_BF/MMSSine_PWLD2_Tri_cyc00.png}
+		%\caption{p=1, 2-Irregularity}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_Tri01_PWL2}
+		\includegraphics[width=\textwidth]{figures/sec_BF/MMSSine_PWLD2_Tri_cyc01.png}
+		%\caption{p=2, 2-Irregularity}
+	\end{subfigure}
+}
+\vspace{2.5mm}
+{
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_SqPolyn64_PWL2}
+		\includegraphics[width=\textwidth]{figures/sec_BF/MMSSine_PWLD2_SQPMesh_n64.png}
+		%\caption{p=1, 3-Irregularity}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::SineMMS_SqPolyn256_PWL2}
+		\includegraphics[width=\textwidth]{figures/sec_BF/MMSSine_PWLD2_SQPMesh_n256.png}
+		%\caption{p=2, 3-Irregularity}
+	\end{subfigure}
+}
+\caption{Example contour plots for the sinusoid problem using the quadratic PWL basis functions. The meshes used are those from Figure \ref{fig::BF_Results_MMS_Sine_Meshes}.}
+\label{fig::BF_Results_MMS_Sine_PWL2_Sol}
+\end{figure}
+
 % Sine Error Plots
 \begin{figure}
 \centering
@@ -2200,7 +2539,7 @@ For this example, we choose the dimensionality of our problem to be $[0,1]^2$ wh
 \begin{figure}
 \centering
 \includegraphics[width=0.775\textwidth]{figures/sec_BF/TransMMS_Sine_tri_err.eps}
-\caption{Convergence rates for the sinusoid MMS problem on an ordered triangular mesh.}
+\caption{Convergence rates for the sinusoid MMS problem on an ordered-triangular mesh.}
 \label{fig::BF_Results_MMS_Sine_tri}
 \end{figure}
 
@@ -2266,6 +2605,9 @@ For this example, we choose the dimensionality of our problem to be $[0,1]^2$ wh
 \label{fig::BF_Results_MMS_GQ_AMR_MeshSol}
 \end{figure}
 
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - PA
 \subsection{Convergence Rate Analysis in a Purely-Absorbing Medium}
@@ -2282,7 +2624,9 @@ Our next numerical examples involve studying the convergence rates of transport 
 
 For this example, two different transport problems will be evaluated. Both problems will consist of a purely-absorbing medium ($\sigma_s=0$) and their will be no distributed source within the domain. All meshes for both problems will be contained in the unit square: $[0,1]^2$ and $S_4$ level-symmetric quadrature is used. The first problem has incident angular flux on the left face at a downward $45^{\circ}$ angle. The second problem has the same incident flux on the left face, but also has additional incident angular flux on the top face at a $45^{\circ}$ angle aligned with that of the left face. This means that there is a solution discontinuity for both problems along the line from the vertex $(0,1)$ to $(1,0)$. Furthermore, the first problem has a void in the upper-right portion of the domain. Therefore, the problems have solution regularities of 1/2 and 3/2 for the first and second problem, respectively.
 
-We will analyze four different mesh types. Two of them will align with solution discontinuity and other two will not. The meshes used are an ordered triangular mesh (aligns with the discontinuity), a regular Cartesian mesh (does not align with the discontinuity), a polygonal mesh (does not align with the discontinuity), and a split-polygonal mesh (aligns with the disccontinuity). The split-polygonal meshes are formed by bisecting the polygonal meshes along the solution discontinuity. These meshes are shown in Figure \ref{fig::BF_Results_PA_Meshes}. 
+We will analyze four different mesh types. Two of them will align with solution discontinuity and other two will not. The meshes used are an ordered triangular mesh (aligns with the discontinuity), a regular Cartesian mesh (does not align with the discontinuity), a polygonal mesh (does not align with the discontinuity), and a split-polygonal mesh (aligns with the discontinuity). The split-polygonal meshes are formed by bisecting the polygonal meshes along the solution discontinuity. These meshes are shown in Figure \ref{fig::BF_Results_PA_Meshes}. Next, in Figures \ref{fig::BF_Results_PA_Left_Solutions} and \ref{fig::BF_Results_PA_LeftTop_Solutions}, we provide example solutions for the problems with left-face incidence and then left-face and top-face incidence, respectively. It is easy to see in Figure \ref{fig::BF_Results_PA_Left_Solutions} how the alignment of the triangular and split-polygonal meshes allow us to capture the void in the upper-right portion of the meshes. The numerical dispersion of the beam due to the nature of the upwind scheme forces bleeding of the flux into the void area.
+
+
 
 \begin{figure}
 \centering
@@ -2347,7 +2691,7 @@ We will analyze four different mesh types. Two of them will align with solution 
 	\end{subfigure}
 }
 \caption{Example Solution of the purely-absorbing medium case with left-face incidence and $\sigma_t=1$ using the linear PWL basis functions.}
-\label{fig::BF_Results_PA_Ex_Solutions}
+\label{fig::BF_Results_PA_Left_Solutions}
 \end{figure}
 
 \begin{figure}
@@ -2380,7 +2724,7 @@ We will analyze four different mesh types. Two of them will align with solution 
 	\end{subfigure}
 }
 \caption{Example Solution of the purely-absorbing medium case with left-face and top-face incidence incidence and $\sigma_t=1$ using the linear PWL basis functions.}
-\label{fig::BF_Results_PA_Ex_Solutions}
+\label{fig::BF_Results_PA_LeftTop_Solutions}
 \end{figure}
 
 \begin{figure}
@@ -2586,26 +2930,26 @@ In this problem, we investigate an $\mathbb{R}^2$ domain of size $[0,1]^2$ cm. T
 
 Since we are again using AMR for this problem, we will analyze the linear and quadratic PWL, mean value, and maximum entropy coordinates. The refinement criterion, $\alpha$, was set to 0.2 for all the linear elements and 0.1 for all the quadratic elements. The relative error of the leakage (in \%) along the right face from $0.6 \leq y \leq 0.8$ is given in Figures \ref{fig::BF_Results_SL_PWL_err}, \ref{fig::BF_Results_SL_MV_err}, and \ref{fig::BF_Results_SL_MAXENT_err} for the PWL, mean value, and maximum entropy coordinates, respectively. For each of the figures we plotted the convergences histories for uniform refinement ($\alpha = 0.0$) as well as AMR runs where the maximum mesh irregularities were set to 1, 2, or 3. Like the purely-absorbing media cases without meshes aligned to the discontinuities, the convergence of the transport solution is limited by its regularity. This is apparent in that the AMR solutions give significantly better results than those obtained with uniform refinement. 
 
-Next, we plot the outgoing angular flux along the right face. We wish to see how the numerical dispersion is reduced with refinement. Figure \ref{fig::BF_Results_SL_uniform_exit_flux} shows the outgoing fluxes for all of the linear and quadratic basis functions under uniform refinement.
+Next, we plot the outgoing angular flux along the right face. We wish to see how the numerical dispersion is reduced with refinement. Figure \ref{fig::BF_Results_SL_uniform_exit_flux} shows the outgoing fluxes for all of the linear and quadratic basis functions under uniform refinement. For all of the linear and quadratic basis functions we see the solution converging to the proper exit flux solution (looks like a step function along the face). However, there is still some over-shooting and under-shooting occuring, even for the most refined case. We then plot the outgoing angular fluxes for the AMR cases in Figures \ref{fig::BF_Results_SL_AMR_PWL_exit_flux}, \ref{fig::BF_Results_SL_AMR_MV_exit_flux}, and \ref{fig::BF_Results_SL_AMR_ME_exit_flux} using the PWL, MV, and ME basis functions, respectively. For all of these cases, we can see better convergence to the analytical outgoing flux for the later AMR cycles. However, the over-shooting and under-shooting still remain.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.70\textwidth]{figures/sec_BF/SL_PWL_Err.eps}
-\caption{blah.}
+\caption{Convergence history for the searchlight problem using the PWL basis functions.}
 \label{fig::BF_Results_SL_PWL_err}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.70\textwidth]{figures/sec_BF/SL_MV_Err.eps}
-\caption{blah.}
+\caption{Convergence history for the searchlight problem using the mean value basis functions.}
 \label{fig::BF_Results_SL_MV_err}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.70\textwidth]{figures/sec_BF/SL_MAXENT_Err.eps}
-\caption{blah.}
+\caption{Convergence history for the searchlight problem using the maximum entropy basis functions.}
 \label{fig::BF_Results_SL_MAXENT_err}
 \end{figure}
 
