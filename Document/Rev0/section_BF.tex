@@ -15,10 +15,9 @@
 \label{sec::BF}
 
 
+In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various elementary matrices needed to form the full set of spatially-discretized PDEs. These included the mass, streaming, and surface matrices where the integrations on the element's domain and boundary require combinations of the basis functions' values and gradients. From FEM theory \cite{ern2013theory}, the basis functions act as interpolation functions with local measure on some subset of elements on a discretized mesh, $\mathbb{T}_h$. To achieve the maximum possible solution convergence rate from Section \ref{sec::Sn_Spatial_Convergence} of $p+1$, the interpolation functions must have polynomial completeness of at least order $p$. For 2D interpolants, the basis functions are linearly-complete ($p=1$) if they can exactly interpolate the $\{ 1, x, y \}$ span of functions. Likewise, 2D basis functions are said to be quadratically-complete if they can exactly interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions. This work seeks to analyze the use of the different linearly-complete polygonal basis functions with the DGFEM $S_N$ transport equation. We then seek to extend this analysis to quadratically-complete basis functions, thus achieving higher convergence rates (third-order). We will do this by utilizing the methodology developed by Rand et al. \cite{rand2014quadratic} on the different linearly-complete polygonal coordinates.
 
-In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various elementary matrices needed to form the full set of spatially-discretized PDEs. These included the mass, streaming, and surface matrices where the integrations on the element's domain and boundary require combinations of the basis functions' values and gradients. From FEM theory \cite{ern2013theory}, the basis functions act as interpolation functions with local measure on some subset of elements on a discretized mesh, $\mathbb{T}_h$. To achieve the maximum possible solution convergence rate from Section \ref{sec::Sn_Spatial_Convergence} of $p+1$, the interpolation functions must have polynomial completeness of at least order $p$. For 2D interpolants, the basis functions are linearly-complete ($p=1$) if they can exactly interpolate the $\{ 1, x, y \}$ span of functions. Likewise, 2D basis functions are said to be quadratically-complete if they can exactly interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions.
-
-The remainder of the this chapter is organized as follows. In Section \ref{sec::BF_2DLinear}, we present the 2D, linearly-complete, barycentric, polygonal basis functions that we will analyze in this dissertation. We then present in Section \ref{sec::BF_2DQuadratic} the methodology to convert the barycentric polygonal basis functions presented in Section \ref{sec::BF_2DLinear} into a serendipity space of basis functions with quadratic-completeness. Section \ref{sec::BF_2DIntegration} provides the methodology that will be employed to generate spatial quadrature sets on 2D arbitrary polygons. Section \ref{sec::BF_3DLinear} then presentes the 3D, linearly-complete, polyhedral basis functions that will be exclusively used in Chapter \ref{sec::DSA} for 3D DSA calculations. We then present numerical results pertaining to our linear and quadratic 2D basis functions in Section \ref{sec::BF_Results}. Section \ref{sec::BF_Conclusions} concludes with some closing remarks.
+The remainder of this chapter is organized as follows. In Section \ref{sec::BF_2DLinear}, we present the 2D, linearly-complete, barycentric, polygonal basis functions that we will analyze in this dissertation. We then present in Section \ref{sec::BF_2DQuadratic} the methodology to convert the barycentric polygonal basis functions presented in Section \ref{sec::BF_2DLinear} into a serendipity space of basis functions with quadratic-completeness. Section \ref{sec::BF_2DIntegration} provides the methodology that will be employed to generate spatial quadrature sets on 2D arbitrary polygons. Section \ref{sec::BF_3DLinear} then presents the 3D, linearly-complete, polyhedral basis functions that will be exclusively used in Chapter \ref{sec::DSA} for 3D DSA calculations. We then present numerical results pertaining to our linear and quadratic 2D basis functions in Section \ref{sec::BF_Results}. Section \ref{sec::BF_Conclusions} concludes with some closing remarks.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - 2D Linear
@@ -58,7 +57,7 @@ b_j (\vec{x}_i) = \delta_{ij}.
 \label{eq::BF_linear_interp_lagrange}
 \end{equation}
 
-\noindent They also have piecewise linearity on faces adjacent to their vertex. As an example of this, consider the coordiantes at vertex $j$, $b_j$, along face $e_j$. Then the piecewise linearity of the coordinate on the face means that it can interpolate as
+\noindent They also have piecewise linearity on faces adjacent to their vertex. As an example of this, consider the coordinates at vertex $j$, $b_j$, along face $e_j$. Then the piecewise linearity of the coordinate on the face means that it can interpolate as
 
 \begin{equation}
 \label{eq::BF_linear_bound_interp}
@@ -72,7 +71,7 @@ Using the {\em partition of unity} of Eq. (\ref{eq::BF_linear_interp_partition})
 \label{eq::BF_linear_interp_req_vector}
 \end{equation}
 
-\noindent where $\vec{c}_{j,1}(\vec{x})$ and $\vec{q}_1$ are the lineary-complete constraint and equivalence terms, respectively. These terms are simply:
+\noindent where $\vec{c}_{j,1}(\vec{x})$ and $\vec{q}_1$ are the linearly-complete constraint and equivalence terms, respectively. These terms are simply:
 
 \begin{equation}
 \vec{c}_{j,1}(\vec{x}) = \left[
@@ -126,14 +125,14 @@ A(\vec{a}, \vec{b}, \vec{c}) = \frac{1}{2}
 \right| .
 \end{equation}
 
-There is an alternative method of expressing the Wachspress weight functions. Warren et al. \cite{warren2007barycentric} proposed weight functions that are defined in terms of the perpindicular distance of the point $\vec{x}$ to the polygon's faces. Using the reference polygon of Figure \ref{fig::BF_2D_ref_polygon}, the perpendicular distance of the point $\vec{x}$ to the face $j$ is denoted as $h_j (\vec{x})$ and is given by
+There is an alternative method of expressing the Wachspress weight functions. Warren et al. \cite{warren2007barycentric} proposed weight functions that are defined in terms of the perpendicular distance of the point $\vec{x}$ to the polygon's faces. Using the reference polygon of Figure \ref{fig::BF_2D_ref_polygon}, the perpendicular distance of the point $\vec{x}$ to the face $j$ is denoted as $h_j (\vec{x})$ and is given by
 
 \begin{equation}
 \label{eq::BF_wach_perp_dist}
 h_j (\vec{x}) = \left(  \vec{x}_j - \vec{x} \right) \cdot \vec{n}_j = \left(  \vec{x}_{j+1} - \vec{x} \right) \cdot \vec{n}_j , 
 \end{equation}
 
-\noindent where $\vec{n}_j$ is the outward normal direction of face $j$. Using these perpdendicular distance, the Wachspress coordinates can be calculated using Eq. (\ref{eq::BF_wach_BF}) with new function definitions of
+\noindent where $\vec{n}_j$ is the outward normal direction of face $j$. Using these perpendicular distance, the Wachspress coordinates can be calculated using Eq. (\ref{eq::BF_wach_BF}) with new function definitions of
 
 \begin{equation}
 \label{eq::BF_wach_wt_perpdist}
@@ -290,7 +289,7 @@ The 2D PWL functions are defined as combinations of linear triangular functions,
 	b_j^{PWL} (x,y) = t_j (x,y) + \alpha_j^K t_c (x,y) .
 \end{equation}
 
-\noindent In Eq. (\ref{eq::PWL_2D}), $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function located at $\vec{r}_{c}$ which is unity at the cell center and linearly decreases to zero to each cell vertex. $\alpha_{j}^{K}$ is the weight parameter for vertex $j$ in cell $K$. The functional form of Eq. (\ref{eq::PWL_2D}) with constant vertex weights means that the PWL function for vertex $j$, within the domain of $K$, linearly decreases to a value of $1/N_K$ at the polygonal center. From there, the function linearly decreases to zero on all faces that are not connected to vertex $j$. The gradients of the PWL functions are easy to compute term-by-term in a straightforward manner:
+\noindent In Eq. (\ref{eq::PWL_2D}), $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero to the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function located at $\vec{r}_{c}$ which is unity at the cell center and linearly decreases to zero to each cell vertex. $\alpha_{j}^{K}$ is the weight parameter for vertex $j$ in cell $K$. The functional form of Eq. (\ref{eq::PWL_2D}) with constant vertex weights means that the PWL function for vertex $j$, within the domain of $K$, linearly decreases to a value of $1/N_K$ at the polygonal center. From there, the function linearly decreases to zero on all faces that are not connected to vertex $j$. In Appendix \ref{sec::appendix_BF}, we detail how the 2D PWL coordinates can be analytically integrated using the reference triangle and affine mapping. The gradients of the PWL functions are easy to compute term-by-term in a straightforward manner:
 
 \begin{equation}
 \label{eq::PWL_2D_gradients}
@@ -414,28 +413,30 @@ We now give some example contour plots of the PWL coordinates over different pol
 \subsection{Mean Value Basis Functions}
 \label{sec::BF_2DLinear_MV}
 
-At this point, we now introduce the first new polygonal basis set for use with the transport equation: the {\em mean value coordinates} (MV) developed by Floater \cite{floater2003mean,hormann2006mean}. The original motivation behind the MV coordinates was to approximate harmonic maps on a polygon by a set of piecewise linear maps over a triangulation of the polygon for use in computer aided graphic design. Injectivity is preserved if the interpolatory function is {\em harmonic} over the piecewise linear maps. This can be shown by expressing a $C^2$ function $u$ over each sub-triangle of the triangulated polygon and have it statisfy the Laplace equation,
+At this point, we now introduce the first new polygonal basis set for use with the transport equation: the {\em mean value coordinates} (MV) developed by Floater \cite{floater2003mean}. The original motivation behind the MV coordinates was to approximate harmonic maps on a polygon by a set of piecewise linear maps over a triangulation of the polygon for use in computer aided graphic design. Injectivity is preserved if the interpolatory function is {\em harmonic} over the piecewise linear maps. This can be shown by expressing a $C^2$ function $u$ over each sub-triangle, $\mathcal{T}$, of the triangulated polygon and have it satisfy the Laplace equation,
 
 \begin{equation}
 \label{eq::BF_MV_laplace}
 \nabla^2 u = 0 ,
 \end{equation}
 
-\noindent where $u(\vec{r}) = u_0$ constituting a piecewise linear function 
+\noindent where $u(\vec{r}_b) = u_0$ consists of a piecewise linear Dirichlet boundary condition ($\vec{r}_b \in \partial \mathcal{T}$) for each triangulation. Then, by use of the mean value theorem (where these coordinates got their name), the mean value function at vertex $j$, $b_{j}^{MV}$, for a polygon $K$ with $N_K$ vertices can be given by
 
 \begin{equation}
 \label{eq::BF_MV_BF}
-b_{j}^{MV} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})}
+b_{j}^{MV} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})} ,
 \end{equation}
 
 \noindent where the mean value weight function for vertex $j$, $w_j$, has the following definition:
 
 \begin{equation}
 \label{eq::BF_MV_weights}
-w_j (\vec{x})  = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{x}_j - \vec{x}|}
+w_j (\vec{x})  = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{x}_j - \vec{x}|}.
 \end{equation}
 
-We now give the form of the mean value gradients. Since the mean value coordinates given by Eq. (\ref{eq::BF_MV_BF}) have the same form as the Wachspress coodinates, their gradients can be expressed in an indentical manner. The gradients of the mean value coordinates can be expressed as
+\noindent This weight simply consists of the addition of the two tangent functions (where the angles are given in Figure \ref{fig::BF_2D_ref_polygon}) that is then divided through by the distance between the vertex $j$ and the point of interest, $\vec{x}$. Through careful observation of Eq. (\ref{eq::BF_MV_weights}), we can see that these MV weights are undefined on certain portions of the polygon's boundary, $\partial K$, in a similar way to the Wachspress coordinates. However, the limits of the coordinates are bounded on the polygon's faces and vertices, and we rigorously show this in Appendix \ref{sec::appendix_BF}.
+
+We now give the form of the mean value gradients. Since the mean value coordinates given by Eq. (\ref{eq::BF_MV_BF}) have the same form as the Wachspress coordinates, their gradients can be expressed in an indentical manner. The gradients of the mean value coordinates can be expressed as
 
 \begin{equation}
 \label{eq::BF_mv_gradient}
@@ -472,7 +473,7 @@ We now give the form of the mean value gradients. Since the mean value coordinat
 
 \noindent While this direct form for the MV coordinates is more complicated than the last two coordinates presented, it is still easily programmable. The interested reader can look in the appendix of \cite{floater2015generalized} for MATLAB code to compute these gradients, though we stress that it does not contain any logic for boundary detection.
 
-We again provide example contour plots of the MV coordinates, and we use the same polygonal shapes that we showed for the PWL coordinates. Figure \ref{fig::2D_MV1_unit_square_basis_functions} gives the MV coordinates on the unit square. Like the Wachspress functions, the MV coordinates are smoothly varying within the domain of the polygon and posess continuous derivatives. Next in Figure \ref{fig::2D_MV1_deg_square_basis_functions}, we give the example contour plots for the degenerate pentagon which is formed by inserting a vertex into the unit square at $(1/2,1)$. Finally, Figure \ref{fig::2D_MV1_Ldom_basis_functions} gives the contour plots for the linear mean value coordinates on the L-shaped domain. We see that the linear mean value coordinates are applicable to interpolation on concave polygons.
+We again provide example contour plots of the MV coordinates, and we use the same polygonal shapes that we showed for the PWL coordinates. Figure \ref{fig::2D_MV1_unit_square_basis_functions} gives the MV coordinates on the unit square. Like the Wachspress functions, the MV coordinates are smoothly varying within the domain of the polygon and posses continuous derivatives. Next in Figure \ref{fig::2D_MV1_deg_square_basis_functions}, we give the example contour plots for the degenerate pentagon which is formed by inserting a vertex into the unit square at $(1/2,1)$. Finally, Figure \ref{fig::2D_MV1_Ldom_basis_functions} gives the contour plots for the linear mean value coordinates on the L-shaped domain. We see that the linear mean value coordinates are applicable to interpolation on concave polygons.
 
 \begin{figure}
 \centering
@@ -588,40 +589,89 @@ We again provide example contour plots of the MV coordinates, and we use the sam
 \subsection{Maximum Entropy Basis Functions}
 \label{sec::BF_2DLinear_ME}
 
-The final linearly-complete 2D basis functions that we will analyze in this work are generated by use of the {\em maximum entropy coordinates} (ME) \cite{sukumar2004construction,arroyo2006local,hormann2008maximum}. 
+The final linearly-complete 2D basis functions that we will analyze in this work are generated by use of the {\em maximum entropy coordinates} (ME) \cite{sukumar2004construction,arroyo2006local,hormann2008maximum}. These coordinates have garnered much interest in different fields because their functional forms can be tailored based on the application. The principle of maximum entropy stems from the concept of {\em Shannon entropy} \cite{shannon1948mathematical}. If we define a functional for the Shannon entropy as $H$, then its maximum will lead to the least-biased statistical inference for some set of testable constraints \cite{jaynes1957information}. For the application of FEM analysis, these testable constraints correspond to those given in Eq. (\ref{eq::BF_linear_interp_req_vector}). For $N_K$ discrete probability functions (corresponding to the $N_K$ vertex functions on polygon $K$), the functional form for the Shannon entropy can be given by
+
+\begin{equation}
+\label{eq::BF_ME_H}
+H(b, m) = - \sum\displaylimits_{j=1}^{N_K} b_j \log \left(  \frac{b_j}{m_j} \right) , 
+\end{equation}
+
+\noindent where $m_j$ is called the prior distribution. These prior distributions are a key component of Bayesian inference \cite{kullback1951information,jaynes1963information}. If ($b_j^{ME} (\vec{x})  ,j=1,...,N_K$) is the solution of the following constrained optimization problem
+
+\begin{equation}
+\label{eq::BF_ME_cont_opt_probl}
+\max\displaylimits_{b(\vec{x})}  H(b, m,\vec{x}),
+\end{equation}
+
+\noindent then the maximum entropy coordinates can be given by
 
 \begin{equation}
 \label{eq::BF_ME_BF}
 b_{j}^{ME} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})} .
 \end{equation}
 
-\noindent where the maximum entropy weight function for vertex $j$, $w_j$, has the following definition,
+\noindent In Eq. (\ref{eq::BF_ME_BF}), the maximum entropy weight function for vertex $j$, $w_j$, has the following definition,
 
 \begin{equation}
 \label{eq::BF_ME_weights}
 w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{x})),
 \end{equation}
 
-\noindent where $\vec{\kappa}$ is a vector value of dimension $d$ that will be explained shortly. In Eq. (\ref{eq::BF_ME_weights}), $m_j$ is called the prior distribution and is a key component of Bayesian inference \cite{kullback1951information,jaynes1963information}. In the context of Eq. (\ref{eq::BF_ME_weights}), the prior distribution $m_j$ can be viewed as a weight function associated with vertex $j$. This means that there is variability that one can employ for these weight functions. These weight functions can then be tailored depending on the application and the numerical scheme employed. 
+\noindent where $\vec{\kappa}$ is a vector value of dimension $d$ that will be explained shortly. In the context of Eq. (\ref{eq::BF_ME_weights}), the prior distribution, $m_j$, can be viewed as a weight function associated with vertex $j$. This means that there is variability that one can employ for these weight functions. These weight functions can then be tailored depending on the application and the numerical scheme employed. For FEM applications, an optimal functional form for the prior distribution is given by
 
 \begin{equation}
 \label{eq::BF_ME_prior_funcs}
- m_j(\vec{x}) = \frac{\pi_j (\vec{x}) }{\sum_{k} \pi_k (\vec{x})}
+ m_j(\vec{x}) = \frac{\pi_j (\vec{x}) }{\sum_{k} \pi_k (\vec{x})},
 \end{equation}
 
 \noindent where
 
 \begin{equation}
 \label{eq::BF_ME_prior_products}
-\pi_j (\vec{x}) = \prod\displaylimits_{i \neq j-1, j} \rho_j (\vec{x})
+\pi_j (\vec{x}) = \prod\displaylimits_{k \neq j-1, j} \rho_k (\vec{x}),
 \end{equation}
 
-\noindent where
+\noindent and
 
 \begin{equation}
 \label{eq::BF_ME_face_funcs}
-\rho_j (\vec{x}) = || \vec{x} - \vec{x}_j || + || \vec{x} - \vec{x}_{j+1} || - || \vec{x}_{j+1} - \vec{x}_j ||
+\rho_j (\vec{x}) = || \vec{x} - \vec{x}_j || + || \vec{x} - \vec{x}_{j+1} || - || \vec{x}_{j+1} - \vec{x}_j || .
 \end{equation}
+
+\noindent In Eqs. (\ref{eq::BF_ME_prior_products}) and (\ref{eq::BF_ME_face_funcs}), we have defined a new weight function, $\rho_j$, that corresponds to face $j$ between vertices $j$ and $j+1$. These face functions are zero along face $j$, but strictly positive elsewhere due to the triangle inequality. This means that the vertex function $\pi_j$ is also non-negative and vanishes on all faces that are not adjacent to vertex $j$. This is important to ensure that each of the ME vertex functions are strictly zero on all non-adjacent faces. However, this also means that once again, the ME coordinates cannot be directly evaluated on the polygon's boundary. We show that the limits of these functions are bounded on the polygon's and vertices in Appendix \ref{sec::appendix_BF}.
+
+Now that we have provided sufficient details for the basis functions and their weight functions, we can explain how the $\vec{\kappa}$ vector in Eq. (\ref{eq::BF_ME_weights}) is computed. We can see that once $\vec{\kappa}$ is known, the ME functions can be directly calculated. To do this, we solve the constrained optimization problem of Eq. (\ref{eq::BF_ME_cont_opt_probl}) through the use of Lagrange multipliers with a Newton's method. If we define $\kappa_0$ as the Lagrange multiplier for the constant constraint, then the Lagrangian for the problem of Eq. (\ref{eq::BF_ME_cont_opt_probl}) is given by
+
+\begin{equation}
+\label{eq::BF_ME_lagrangian}
+\begin{aligned}
+\mathcal{L} (\vec{b}; \kappa_0, \vec{\kappa} ) = &- \sum_{j=1}^{N_K} b_j \log \left(  \frac{b_j}{m_j} \right) - \kappa_0 \left(  \sum_{j=1}^{N_K} b_j - 1 \right) \\
+&- \vec{\kappa} \cdot \left(  \sum_{j=1}^{N_K} b_j \left( \vec{x}_j - \vec{x} \right) \right)
+\end{aligned} ,
+\end{equation}
+
+\noindent where we repressed the spatial parameter $\vec{x}$ for brevity. If we take the first variation of $\mathcal{L}$ to zero ($\delta \mathcal{L} (\vec{b}; \kappa_0, \vec{\kappa} ) = 0$), then we obtain
+
+\begin{equation}
+\label{eq::BF_ME_lagrangian_zero}
+\left[ -1 - \log \left(  \frac{b_j}{m_j} \right) - \kappa_0 - \vec{\kappa} \cdot \left( \vec{x}_j - \vec{x} \right)  \right] \delta b_j = 0 .
+\end{equation}
+
+\noindent Since $\delta b_j $ is arbitrary, everything within the bracket of Eq. (\ref{eq::BF_ME_lagrangian_zero}) must be equal to zero. If we use the substitution $\log W= 1 + \kappa_0$ and extensive algrebra, then we can rewrite Eq. (\ref{eq::BF_ME_lagrangian_zero}) as
+
+\begin{equation}
+\label{eq::BF_ME_lagrangian_result}
+b_j (\vec{x}) = \frac{m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{x}))}{W} ,
+\end{equation}
+
+\noindent where $W = \sum_j w_j (\vec{x})$. We can immediately see that this satisfies the form for our maximum entropy coordinates given in Eq. (\ref{eq::BF_ME_BF}). This means that we are just left with describing the non-linear numerical procedure to compute $\vec{\kappa}$. The solution of Eq. (\ref{eq::BF_ME_lagrangian_result}) is equivalent to solving the following dual unconstrained optimization problem \cite{boyd2004convex}:
+
+\begin{equation}
+\label{eq::BF_ME_opt_prob_form}
+\vec{\kappa}^* = \min F(\vec{\kappa}) , \qquad F(\vec{\kappa}) = \log W (\vec{\kappa})
+\end{equation}
+
+\noindent In Eq. (\ref{eq::BF_ME_opt_prob_form}),  $F(\vec{\kappa})$ is the non-linear function to be solved with Newton's method. We summarize all the steps needed for computation as follows:
 
 \begin{enumerate}
 \item Compute and store $(\vec{x}_j - \vec{x})$ and the prior functions $m_j (\vec{x})$;
@@ -630,10 +680,12 @@ w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{x})),
 \item Determine the Newton search direction: $\Delta \vec{\kappa}_k = - H_k^{-1} g_k$;
 \item Update the multiplier: $\vec{\kappa}_{k+1} =\vec{\kappa}_k + \alpha \Delta \vec{\kappa}_k$;
 \item Check convergence by testing if $|| g_{k+1} || > \epsilon$.
+\item Set $\vec{\kappa}^*$ = $\vec{\kappa}_{k+1}$ and compute $\vec{b} (\vec{x})$
 \end{enumerate}
 
-\noindent In these computational procedures, $\alpha$ is the step size. If the error at iteration $k$, $|| g_{k} || $ is greater than $10^{-4}$, then a line search algorithm is used \cite{burden2001numerical}. Otherwise, $\alpha$ can be set to unity as the error decreases. We note that a line search algorithm must be used for certain classes of polygonal shapes. For extremely-distorted concave polygons this Newton iteration procedure can be unstable without it. Due to the quadratic convergence of Newton's method in the vicinity of the final solution, only 3-7 Newton iterations should be required to obtain accuracies of at least $10^{-10}$. 
+In these computational procedures, $\alpha$ is the step size. If the error at iteration $k$, $|| g_{k} || $ is greater than $10^{-4}$, then a line search algorithm is used \cite{burden2001numerical}. Otherwise, $\alpha$ can be set to unity as the error decreases. We note that a line search algorithm must be used for certain classes of polygonal shapes. For extremely-distorted concave polygons this Newton iteration procedure can be unstable without it. Due to the quadratic convergence of Newton's method in the vicinity of the final solution, only 3-7 Newton iterations should be required to obtain accuracies of at least $10^{-10}$. 
 
+We conclude our discussion of the maximum entropy coordinates, by providing example plots over the same polygonal domains that we showed for the PWL and MV coordinates. First, we give the contour plots of the ME coordinates over the unit square in Figure \ref{fig::2D_MAXENT1_unit_square_basis_functions}. Similar to the Wachspress and MV coordinates, the maximum entropy coordinates are smoothly varying within the domain of the polygon and posess continuous derivatives (in contrast to the PWL coordinates). Next in Figure \ref{fig::2D_MAXENT1_deg_square_basis_functions}, we give the contour plots of the degenerate polygon. Finally, Figure \ref{fig::2D_MAXENT1_Ldom_basis_functions} gives the contour plots for the linear maximum entropy coordinates on the L-shaped domain. We can see that these coordinates can appropriately interpolate functions on concave polygons.
 
 \begin{figure}
 \centering
@@ -739,6 +791,8 @@ w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{x})),
 \caption{Contour plots of the linear maximum entropy basis functions on the L-shaped domain for the vertices located at: (a) (0,1), (b) (1/2,1), (c) (1/2,1/2), (d) (1,1/2), (e) (0,0), and (f) (1,0).}
 \label{fig::2D_MAXENT1_Ldom_basis_functions}
 \end{figure}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - 2D linear summary
@@ -882,7 +936,7 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 \section{Converting the Linear Polygonal Basis Functions to the Quadratic Serendipity Space of Functions}
 \label{sec::BF_2DQuadratic}
 
-Now that we have given complete details on the linearly-complete generalized barycentric coordinates that we will investigate for this work, we 
+We have given complete details on the linearly-complete generalized barycentric coordinates that we will investigate for this work. Now we describe how to convert any generalized barycentric coordinate into the quadratic serendipity space of functions to yield quadratic (not linear) precision based on the work of Rand et al. \cite{rand2014quadratic}. The maximum entropy coordinates were independently converted into the quadratic space \cite{gonzalez2010higher,sukumar2013quadratic}. These 2D serendipity coordinates can exactly interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions, which can be shown with the first three levels of Pascal's triangle,
 
 \begin{equation}
 \label{eq::BF_quad_pascal}
@@ -890,8 +944,17 @@ Now that we have given complete details on the linearly-complete generalized bar
  & & 1 & & \\
  & x & & y & \\
  x^2 &  &xy & & y^2
-\end{array}
+\end{array} \, .
 \end{equation}
+
+\noindent Between the linear and quadratic precision of the generalized barycentric coordinates and the quadratic serendipity extension, a relation can be formed on the functional space of their precision. If we seek a functional space up to order $p$ precision, then for $k=0,...,p$, the interpolatory functions must exactly span the following monomial functions,
+
+\begin{equation}
+\label{eq::BF_quad_monomial}
+f_{\sigma, \tau}^k (x, y) = x^{\sigma} y^{\tau} ,
+\end{equation}
+
+\noindent where $\sigma + \tau = k$. From the first three levels of Pascal's triangle given in Eq. (\ref{eq::BF_quad_pascal}), we see that $k=0$ gives the constant function $\{ 1 \}$, that $k=1$ gives the linear functions $\{ x,y \}$, and that $k=2$ gives the quadratic functions $\{ x^2,xy,y^2 \}$.
 
 \begin{figure}[hbt]
 \centering
@@ -900,36 +963,16 @@ Now that we have given complete details on the linearly-complete generalized bar
 \label{fig::BF_2D_quad_process}
 \end{figure}
 
-for the constant constraint,
+Now, we give the full details on converting the linear generalized barycentric coordinates to the quadratic serendipity space of functions. Figure \ref{fig::BF_2D_quad_process} gives a visual depiction of this conversion process. For a polygon with $N_K$ vertices, we can summarize this procedure as the following:
 
-\begin{equation}
-\label{eq::BF_quad_interp_req_constant}
-\sum_{a=1}^{ N_K} \sum_{b=1}^{ N_K}  \mu_{ab} (\vec{x})  = 1 ,
-\end{equation}
+\begin{enumerate}
+\item For a point $\vec{x}$, compute the $N_K$ linear barycentric functions $\{ \lambda_i (\vec{x}) \}$;
+\item Take all non-repeating pairwise products of the linear functions to obtain $\frac{N_K(N_K+1)}{2}$ quadratic functions $\{ \mu_{ab} \}$;
+\item Form the linear transformation matrix $\mathbb{A}$ through the use of monomial constraint equations;
+\item Use the $\mathbb{A}$ matrix to reduce the $\{ \mu_{ab} \}$ function set to the $2 N_K$ serendipity basis set $\{ \xi_{ij} \}$.
+\end{enumerate}
 
-\noindent for the linear constraint,
-
-\begin{equation}
-\label{eq::BF_quad_interp_req_linear}
-\sum_{a=1}^{ N_K} \sum_{b=1}^{ N_K} \mu_{ab} (\vec{x}) \, \vec{x}_a   = \vec{x} ,
-\end{equation}
-
-\noindent and for the quadratic constraint,
-
-\begin{equation}
-\label{eq::BF_quad_interp_req_quadratic}
-\sum_{a=1}^{ N_K} \sum_{b=1}^{ N_K}  \mu_{ab} (\vec{x}) \, \left( \vec{x}_a \otimes \vec{x}_b \right) =  \vec{x} \otimes \vec{x} .
-\end{equation}
-
-
-\begin{equation}
-\label{eq::BF_Quad_abbrev_pos}
-\vec{x}_{ab} = \frac{\vec{x}_a + \vec{x}_b}{2}
-\end{equation}
-
-\noindent With this definition 
-
-for the constant constraint,
+We begin by computing the ($i=1,...,N_K$) linear barycentric functions, $\{ \lambda_i (\vec{x}) \}$, and their gradients, $\{ \vec{\nabla} \lambda_i (\vec{x}) \}$, for a point $\vec{x}$. These linearly-complete barycentric functions can be converted immediately to barycentric-like functions with quadratic precision. Taking all non-repeating pairwise products of the linear functions yields a total of $N_Q=\frac{N_K(N_K+1)}{2}$ quadratic functions: $\mu_{ab} = \lambda_a \lambda_b$. Doing this generates functions that either live on the polygon's vertices, mid-face points, or midpoints of the polygon's diagonals between two vertices as seen in Figure \ref{fig::BF_2D_quad_process}. The $N_K$ vertex functions are denoted as $ab \in V$, the $N_K$ mid-face functions are denoted as $ab \in E$, and the $\frac{N_K(N_K-3)}{2}$ diameter functions are denoted as $ab \in D$. We also define the abbreviated notation of $\vec{x}_{ab} = \frac{\vec{x}_a + \vec{x}_b}{2}$, so that $\vec{x}_{aa}$ corresponds to a vertex function at $\vec{x}_a$. Using these various notations, we can write the precision properties of the $\mu_{ab}$ functions for the constant constraint,
 
 \begin{equation}
 \label{eq::BF_quad_interp_req_constant_alt}
@@ -951,33 +994,54 @@ for the constant constraint,
 \end{equation}
 
 
-for the constant constraint,
+\noindent We can immediately see that quadratic precision is ensured. However, the set of these pairwise quadratic functions grows quadratically. This means that as $N_K$ grows large, the number of interpolatory grows as order $O(N_K^2)$, but still only maintains precision of the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions. Therefore, the computational work required to utilize these quadratic barycentric functions can become prohibitive for polygons with large vertex counts.
+
+To minimize the number of interpolatory functions but still maintain the precision of the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions, we seek to convert the quadratic barycentric functions into the quadratic serendipity space of functions $\{ \xi_{ij} \}$. This quadratic serendipity space only contains the vertex and mid-face functions (total of $2 N_K$) and has been extensively studied for tensor-based elements in the past \cite{macneal1992eight,arnold2011serendipity}. This means that we seek to reduce the $\{ \mu_{ab} \}$ set of functions by removing the diagonal functions ($ab \in D$), but still maintaining quadratic precision. If we define $\xi_{ii}$ and $\xi_{i(i+1)}$ as the serendipity functions that live at vertex $i$ and the mid-face point between vertices $i$ and $i+1$, respectively, then we can write the serendipity precision properties for the constant constraint,
 
 \begin{equation}
-\label{eq::BF_ser_interp_req_constant_alt}
+\label{eq::BF_ser_interp_req_constant}
 \sum_{ii \in V}  \xi_{ii} (\vec{x}) + \sum_{i(i+1) \in E} 2 \xi_{i(i+1)} (\vec{x})  = 1 ,
 \end{equation}
 
 \noindent for the linear constraint,
 
 \begin{equation}
-\label{eq::BF_ser_interp_req_linear_alt}
+\label{eq::BF_ser_interp_req_linear}
 \sum_{ii \in V}  \xi_{ii} (\vec{x}) \, \vec{x}_{ii} +  \sum_{i(i+1) \in E} 2  \xi_{i(i+1)} (\vec{x}) \, \vec{x}_{i(i+1)} = \vec{x} ,
 \end{equation}
 
 \noindent and for the quadratic constraint,
 
 \begin{equation}
-\label{eq::BF_ser_interp_req_quadratic_alt}
+\label{eq::BF_ser_interp_req_quadratic}
 \sum_{ii \in V}  \xi_{ii} (\vec{x}) \, \left( \vec{x}_i \otimes \vec{x}_i \right) +  \sum_{i(i+1) \in E}   \xi_{i(i+1)} (\vec{x}) \, \left( \vec{x}_i \otimes \vec{x}_{i+1} + \vec{x}_{i+1} \otimes \vec{x}_i \right)   =  \vec{x} \otimes \vec{x} .
 \end{equation}
 
-
+To remove the diagonal functions, we formalize this procedure by recasting it as a linear algebra problem. We seek a matrix $\mathbb{A}$ such that the linear transformation, 
 
 \begin{equation}
 \label{eq::BF_quad_to_ser_mapping}
-\left\{ \xi \right\} = \mathbb{A} \left\{ \mu \right\}
+\left\{ \xi \right\} = \mathbb{A} \left\{ \mu \right\} ,
 \end{equation}
+
+\noindent will satisfy the precision properties of Eqs. (\ref{eq::BF_ser_interp_req_constant} - \ref{eq::BF_ser_interp_req_quadratic}). It is easy to see that $\mathbb{A}$ has dimension ($2 N_K \text{x} N_Q$). We wish for this matrix to have constant entries for any point within the polygon's interior so that it does not have to be recalculated for each interpolatory point of interest. To ease the notation, we will assign specific basis orderings for the quadratic and quadratic serendipity functions. The serendipity basis is ordered such that all vertex functions ($ii \in V$) in a counter-clockwise ordering are first, followed by a counter-clockwise ordering of the mid-face nodes ($ij \in E$) starting with the node between vertices 1 and 2. This ordering can be succinctly stated by
+
+\begin{equation}
+\label{eq::BF_ser_ordering}
+\left\{ \xi_{ij} \right\} = \Big\{ \left[  \xi_{11}, \xi_{22}, ... , \xi_{N_K N_K} \right] , \left[ \xi_{12}, \xi_{23}, ..., \xi_{(N_K-1)N_K}, \xi_{N_K(N_K+1)} \right] \Big\} .
+\end{equation}
+
+\noindent The quadratic basis begins identically to the serendipity basis by first listing the vertex and mid-face functions. Then the diagonal functions are indexed in lexicographical order. This gives the following ordering for the quadratic functions
+
+\begin{equation}
+\label{eq::BF_quad_ordering}
+\begin{aligned}
+\left\{ \mu_{ab} \right\} = \Big\{ \left[  \mu_{11}, \mu_{22}, ... , \mu_{N_K N_K} \right] , &\left[ \mu_{12}, \mu_{23}, ..., \mu_{(N_K-1)N_K}, \mu_{N_K(N_K+1)} \right] ,\\ 
+&\left[ \mu_{13}, ..., \text{(lexicographical)} ,..., \mu_{(N_K-2)N_K} \right] \Big\} 
+\end{aligned} .
+\end{equation}
+
+\noindent With these basis orderings, we can now denote the entries of $\mathbb{A}$ (given by $c_{ab}^{ij}$) as the following:
 
 \begin{equation}
 \label{eq::BF_quad_to_ser_matrix_constraints}
@@ -990,28 +1054,75 @@ c_{11}^{ij} & \ldots & c_{ab}^{ij} & \ldots & c_{(n-2)n}^{ij} \\
 \ldots&\ddots&\vdots&\ddots&\vdots \\
 c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)} 
 \end{array}
-\right]
+\right] .
 \end{equation}
+
+A sufficient set of constraints for the entries in $\mathbb{A}$ to ensure the precision properties of Eqs. (\ref{eq::BF_ser_interp_req_constant} - \ref{eq::BF_ser_interp_req_quadratic}) can be written for the constant constraint,
+
+\begin{equation}
+\label{eq::BF_Amat_cons_constraints}
+\begin{aligned}
+\sum_{ii \in V} c_{aa}^{ii} + \sum_{i(i+1) \in E} 2 c_{aa}^{i(i+1)} = 1, &\qquad \forall aa \in V \\
+\sum_{ii \in V} c_{ab}^{ii} + \sum_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} = 2, &\qquad \forall ab \in E \cup D
+\end{aligned}
+\end{equation}
+
+\noindent for the linear constraint,
+
+\begin{equation}
+\label{eq::BF_Amat_lin_constraints}
+\begin{aligned}
+\sum_{ii \in V} c_{aa}^{ii} \vec{x}_{ii} + \sum_{i(i+1) \in E} 2 c_{aa}^{i(i+1)} \vec{x}_{i(i+1)} = \vec{x}_{aa}, &\qquad \forall aa \in V \\
+\sum_{ii \in V} c_{ab}^{ii} \vec{x}_{ii} + \sum_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} \vec{x}_{i(i+1)} = 2 \vec{x}_{ab}, &\qquad \forall ab \in E \cup D
+\end{aligned}
+\end{equation}
+
+\noindent for the $a\in V$ vertex quadratic constraints
+
+\begin{equation}
+\label{eq::BF_Amat_quad_vert_constraints}
+\sum_{ii \in V} c_{aa}^{ii} \vec{x}_{ii} \otimes \vec{x}_{ii} + \sum_{i(i+1) \in E}  c_{aa}^{i(i+1)} \left( \vec{x}_i \otimes \vec{x}_{i+1} + \vec{x}_{i+1} \otimes \vec{x}_i \right) = \vec{x}_{aa} \otimes \vec{x}_{aa}, 
+\end{equation}
+
+\noindent and for the $ab \in E \cup D$ mid-face and diagonal quadratic constraints,
+
+\begin{equation}
+\label{eq::BF_Amat_quad_facediag_constraints}
+\sum_{ii \in V} c_{ab}^{ii} \vec{x}_{ii} \otimes \vec{x}_{ii} + \sum_{i(i+1) \in E}  c_{ab}^{i(i+1)} \left( \vec{x}_i \otimes \vec{x}_{i+1} + \vec{x}_{i+1} \otimes \vec{x}_i \right) = \left( \vec{x}_a \otimes \vec{x}_{b} + \vec{x}_{b} \otimes \vec{x}_a \right).
+\end{equation}
+
+\noindent For $N_K > 3$, there are more coefficients than the six constraint equations. This means that there is flexibility in the construction of the solution to the constraint equations. Therefore, we choose a simple structure for $\mathbb{A}$ that consists of the following,
 
 
 \begin{equation}
 \label{eq::BF_quad_Amat_simple}
-\mathbb{A} = \left[ \mathbb{I} \, | \, \mathbb{A}' \right]
+\mathbb{A} = \left[ \mathbb{I} \, | \, \mathbb{A}' \right],
 \end{equation}
 
-\noindent where $\mathbb{I}$ is the ($2 N_K \text{x} 2 N_K$) identity matrix, and $\mathbb{A}'$ is a full ($2 N_K \text{x}  N_Q$) matrix. This means that the vertex and face midpoint serendipity functions, $\xi_{ij}$, are formed by taking their corresponding quadratic function, $\mu_{ij}$, and adding some linear combination of the interior functions. Therefore, we only need to determine 
+\noindent where $\mathbb{I}$ is the ($2 N_K \text{x} 2 N_K$) identity matrix, and $\mathbb{A}'$ is a full ($2 N_K \text{x}  \frac{N_K(N_K-3)}{2}$) matrix. This means that the vertex and face midpoint serendipity functions, $\xi_{ij}$, are formed by taking their corresponding quadratic function, $\mu_{ij}$, and adding some linear combination of the interior functions. Therefore, we only need to determine the $\frac{N_K(N_K-3)}{2}$ columns of the $\mathbb{A}'$ matrix to complete this linear transformation. 
+
+In their work, Rand et al. proposed a methodology where only six coefficients are chosen to be non-zero and can be directly calculated through geometric expressions. However, their approach is only valid for strictly-convex polygons. This will not work for our analysis since we wish to also analyze degenerate polygons that will arise in our AMR calculations. Therefore, we will use a least squares method to calculate each of the columns of $\mathbb{A}'$. We note that the coefficients calculated with this least squares method and that of Rand will be identical only for orthogonal quadrilaterals. If we isolate the column $(ab)$ from $\mathbb{A}'$, then we can form the following system of equations, 
+
+\begin{equation}
+\label{eq::BF_quad_MP_form}
+\mathbb{B} \vec{c}_{ab} = \vec{q}_{ab}, 
+\end{equation}
+
+\noindent where $\mathbb{B}$ is a matrix of dimension $(6 \text{x} 2 N_K)$, $\vec{c}_{ab}$ is vector of length $2 N_K$, and $\vec{q}_{ab}$ is a vector of length 6. The entries of $\mathbb{B}$ correspond to coefficients given in the left-hand-side terms of Eqs. (\ref{eq::BF_Amat_cons_constraints}), (\ref{eq::BF_Amat_lin_constraints}), and (\ref{eq::BF_Amat_quad_facediag_constraints}). The values of $\vec{q}_{ab}$ are given by the right-hand-side constants of these same equations. To invert $\mathbb{B}$, we use the Moore-Penrose pseudoinverse (denoted as $\mathbb{B}^*$) \cite{penrose1955generalized}. For an under-determined system of equations, the pseudoinverse is given by,
 
 \begin{equation}
 \label{eq::BF_quad_MP_inverse}
-B^* = B^T (B B^T)^{-1}
+\mathbb{B}^* = \mathbb{B}^T (\mathbb{B} \mathbb{B}^T)^{-1}.
 \end{equation}
+
+\noindent Once all of the coefficients for the $\mathbb{A}'$ matrix are known, each of the quadratic serendipity functions can be computed by
 
 \begin{equation}
 \label{eq::BF_quad_xi_reduced}
 \begin{aligned}
 \xi_{ij} &=  \mu_{i,j} + \sum_{ab \in D} c_{ab}^{ij} \mu_{ab} \\
 &=  \lambda_i \lambda_j + \sum_{ab \in D} c_{ab}^{ij}\lambda_a \lambda_b
-\end{aligned}
+\end{aligned} .
 \end{equation}
 
 The gradients of the serendipity basis are simple to compute with the chain rule of Calculus. If we take the gradient of Eq. (\ref{eq::BF_quad_xi_reduced}) and use appropriate derivative rules, then the gradients of the different serendipity functions can be given by
@@ -1021,9 +1132,9 @@ The gradients of the serendipity basis are simple to compute with the chain rule
 \vec{\nabla} \xi_{ij} = \lambda_j \vec{\nabla} \lambda_i + \lambda_i \vec{\nabla} \lambda_j + \sum_{ab \in D} c_{ab}^{ij} \left(  \lambda_b \vec{\nabla} \lambda_a + \lambda_a \vec{\nabla} \lambda_b \right) .
 \end{equation}
 
-\noindent This means that all of the serendipity basis functions can be computed from the appropriate values and gradients of the linear barycentric basis functions using the linear transformation of the $\mathbb{A}$ matrix.
+\noindent This means that all of the serendipity basis function gradients can be computed from the appropriate values and gradients of the linear barycentric basis functions using the linear transformation of the $\mathbb{A}$ matrix.
 
-We now present an example contour plot for the conversion of the linear barycentric coordinates into the quadratic serendipity space. Figures \ref{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF4} and \ref{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF8} provide the contour plots of the different quadratic serendipity functions located at the upper-left vertex and left side-node, respectively.
+We now present some example contour plots for the conversion of the linear barycentric coordinates into the quadratic serendipity space. Figures \ref{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF4} and \ref{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF8} provide the contour plots of the different quadratic serendipity functions located at the upper-left vertex and left side-node, respectively. Then, Figure \ref{fig::2DQuadSer_degsquare_basis_functions} provides some of the contour plots of the PWL, MV, and ME basis functions on the degenerate square that is formed by inserting a vertex at ($1/2,1$) onto the unit square.
 
 \begin{figure}
 \centering
@@ -1082,6 +1193,50 @@ We now present an example contour plot for the conversion of the linear barycent
 \caption[Contour plots of the quadratic basis functions on the unit square.]{Contour plots of the different quadratic serendipity basis function on the unit square at a mid-face node located at (0,1/2).}
 \label{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF8}
 \end{figure}
+
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.375\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_PWLD2_contour_b5.png}
+	\end{subfigure}
+	\hspace{1.5cm}
+	\begin{subfigure}[b]{0.375\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_PWLD2_contour_b9.png}
+	\end{subfigure}
+}
+\vspace{3mm}
+{
+	\begin{subfigure}[b]{0.375\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_MV2_contour_b5.png}
+	\end{subfigure}
+	\hspace{1.5cm}
+	\begin{subfigure}[b]{0.375\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_MV2_contour_b9.png}
+	\end{subfigure}
+}
+\vspace{3mm}
+{
+	\begin{subfigure}[b]{0.375\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_MAXENT2_contour_b5.png}
+	\end{subfigure}
+	\hspace{1.5cm}
+	\begin{subfigure}[b]{0.375\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_BF/deg_square_MAXENT2_contour_b9.png}
+	\end{subfigure}
+}
+\vspace{2mm}
+\caption[Contour plots of the quadratic basis functions on the degenerate square.]{Contour plots of the different quadratic serendipity basis functions on the degenerate square. The PWL (top), mean value (middle), and maximum entropy (bottom) functions are plotted at vertices $(0,1)$ (left) and $(1/2,1)$ (right)}
+\label{fig::2DQuadSer_degsquare_basis_functions}
+\end{figure}
+
 
 
 
@@ -1299,11 +1454,11 @@ We conclude this section by providing some visual examples of quadrature sets fo
 \label{sec::BF_3DLinear}
 
 
-We have defined linearly-complete and quadratically-complete 2D polygonal basis functions for use in FEM analysis of the DGFEM transport equation. Now, we present an efficient coordinate system for arbitrary 3D polyhedra that is linearly-complete. At the time of this work and to the best of our knowledge, no analagous methodology to convert linear coordinates on 3D polyhedra to their serendipity basis exists. Therefore, we will utilize only a single linearly-complete 3D coordinate system for some of the analysis to be performed in Chapter \ref{sec::DSA}, but we include it here for completeness with the 2D coordinates.
+We have defined linearly-complete and quadratically-complete 2D polygonal basis functions for use in FEM analysis of the DGFEM transport equation. Now, we present an efficient coordinate system for arbitrary 3D polyhedra that is linearly-complete. At the time of this work and to the best of our knowledge, no analogous methodology to convert linear coordinates on 3D polyhedra to their serendipity basis exists. Therefore, we will utilize only a single linearly-complete 3D coordinate system for some of the analysis to be performed in Chapter \ref{sec::DSA}, but we include it here for completeness with the 2D coordinates.
 
-For this work, we will utilize the 3D version of the Piecewise Linear (PWL) coordinates that is suitable for x-y-z geometries \cite{bailey2008phd}. From Table \ref{tab::BF_2Dlin_summary}, we can see some of the properties of the different 2D polygonal coordinates. The PWL functions are the only coordinates with a 3D analogue that allow for direct, analytical integration of the elementary matrices. This means that no spatial quadrature sets are required, though an analogous procedure to Section \ref{sec::BF_2DIntegration} could be employed using sub-tetrahedra instead of sub-triangles. The 3D PWL coordinates also allow for extremely-distorted concave polyhedra, though we will not analyze those in this work.
+For this work, we will utilize the 3D version of the Piecewise Linear (PWL) coordinates that is suitable for x-y-z geometries \cite{bailey2008phd}. From Table \ref{tab::BF_2Dlin_summary}, we can see some of the properties of the different 2D polygonal coordinates. The PWL functions are the only coordinates with a 3D analogue that allow for direct, analytical integration of the elementary matrices. This means that no spatial quadrature sets are required, though an analogous procedure to Section \ref{sec::BF_2DIntegration} could be employed using sub-tetrahedra instead of sub-triangles. In Appendix \ref{sec::appendix_BF}, we detail how these 3D PWL coordinates can be analytically integrated using the reference tetrahedron and affine mapping. The 3D PWL coordinates also allow for extremely-distorted concave polyhedra, though we will not analyze those in this work.
 
-The 3D PWL coordinates have an analagous form to their 2D version from Eq. (\ref{eq::PWL_2D}). In fact, the 2D PWL coordinates are identical to their 3D version along a polyhedral face (the 3D face centroid acts like the 2D cell centroid). If we define $N_K$ as the number of vertices for cell $K$ and $N_f$ as the number of vertices composing face $f$, then the cell and face centroids for a strongly-convex polyhedra can be given by
+The 3D PWL coordinates have an analogous form to their 2D version from Eq. (\ref{eq::PWL_2D}). In fact, the 2D PWL coordinates are identical to their 3D version along a polyhedral face (the 3D face centroid acts like the 2D cell centroid). If we define $N_K$ as the number of vertices for cell $K$ and $N_f$ as the number of vertices composing face $f$, then the cell and face centroids for a strongly-convex polyhedra can be given by
 
 \begin{equation}
 \label{eq::PWL_3D_cell_center}
@@ -1347,7 +1502,7 @@ The 3D PWL coordinates have an analagous form to their 2D version from Eq. (\ref
 \section{Numerical Results}
 \label{sec::BF_Results}
 
-Now that we have presented several linear polygonal finite element basis sets along with the methodology to convert them to quadratic serendipity-like basis, we present several numerical problems to demonstrate our methodology. First, we demonstrate that the presented basis sets can capture an exactly-linear transport solution in Section \ref{sec::BF_Results_Linear}. Next, we present some convergence properties of the basis sets using the method of manufactured solutions (MMS) in Section \ref{sec::BF_Results_MMS}. Then in Section \ref{sec::BF_Results_PA}, we demonstrate how the solution regularity can limit the convergence of our numerical transport solutions to the $H^{1/2}$ and $H^{3/2}$ Hilbert spaces. We conclude with a searchlight problem and observe how the basis sets react with adaptive mesh refinement (AMR) to mitigate numerical dispersion through a vacuum in Section \ref{sec::BF_Results_SL}.
+Now that we have presented several linear polygonal finite element basis sets along with the methodology to convert them to quadratic serendipity-like basis, we present several numerical problems to demonstrate our methodology. First, we demonstrate that all of the 2D linear and quadratic serendipity basis functions can capture the correct transport solution in the thick diffusion limit. Then, we demonstrate that the presented linear basis functions can capture an exactly-linear transport solution in Section \ref{sec::BF_Results_Linear}. We follow that by demonstrating that the quadratic serendipity basis functions can capture an exactly-quadratic transport solution in Section \ref{sec::BF_Results_Quadratic}. Next, we present some convergence properties of the basis sets using the method of manufactured solutions (MMS) in Section \ref{sec::BF_Results_MMS}. Then in Section \ref{sec::BF_Results_PA}, we demonstrate how the solution regularity can limit the convergence of our numerical transport solutions to the $H^{1/2}$ and $H^{3/2}$ Hilbert spaces. We conclude with a searchlight problem and observe how the basis sets react with adaptive mesh refinement (AMR) to mitigate numerical dispersion through a vacuum in Section \ref{sec::BF_Results_SL}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1362,7 +1517,7 @@ We present our first numerical example by demonstrating that the various 2D poly
 \vec{\Omega} \cdot \vec{\nabla} \Psi + \sigma_t \Psi =   \frac{\sigma_s}{4 \pi} \Phi +  \frac{Q_0}{4 \pi}.
 \end{equation}
 
-\noindent As the transport problem becomes more optically thick, the total mean free paths of the neutroncs increases. In the thick diffusion limit, the domain mean free path approaches infinity. If we fix the physical dimensions of the problem to some finite value, then we can scale the cross sections and the source term to reflect the properties of the thick diffusion limit. In the thick diffusion limit the total and scattering cross sections tend to infinity while the absorption cross section and the source term tend to zero. If we introduce a scaling parameter, $\epsilon$, then we can write the scaled terms as,
+\noindent As the transport problem becomes more optically thick, the total mean free paths of the neutrons increases. In the thick diffusion limit, the domain mean free path approaches infinity. If we fix the physical dimensions of the problem to some finite value, then we can scale the cross sections and the source term to reflect the properties of the thick diffusion limit. In the thick diffusion limit the total and scattering cross sections tend to infinity while the absorption cross section and the source term tend to zero. If we introduce a scaling parameter, $\epsilon$, then we can write the scaled terms as,
 
 \begin{equation}
 \label{eq::BF_Results_TDL_scaling}
@@ -1699,7 +1854,7 @@ We then define an angular flux solution that is linear in both space and angle a
 	\end{array} \right] .
 \end{equation}
 
-\noindent The sum of the quadrature weights is handled by simply renormalizing those that are generated in Section \ref{sec::Sn_Angle} to $2 \pi$.
+\noindent The sum of the quadrature weights is handled by simply re-normalizing those that are generated in Section \ref{sec::Sn_Angle} to $2 \pi$.
 
 Our boundary conditions for all inflow boundaries are then uniquely determined by the angular flux solution of Eq. (\ref{eq::BF_Results_Linear_fluxsols}). Inserting the angular flux solution of Eq. (\ref{eq::BF_Results_Linear_fluxsols}) into Eq. (\ref{eq::BF_Results_Linear_angflux}), we obtain the distributed source that will produce our exactly-linear solution space:
 
@@ -1721,15 +1876,15 @@ Q(x,y,\mu,\eta) = a \mu + b \eta + \sigma_t \left(  c \mu + d \eta \right) + \si
 For this example, we test the various 2D polygonal finite element basis functions on six different mesh types. These mesh types include triangular, quadrilateral, and polygonal meshes:
 
 \begin{enumerate}
-	\item Orthogonal cartesian mesh formed by the intersection of 11 equally-spaced vertices in both the $x$ and $y$ dimensions. This forms a 10x10 array of quadrilateral mesh cells.
-	\item Ordered-triangular mesh formed by the bisection of the previous orthogonal cartesian mesh (forming 200 triangles all of the same size/shape).
-	\item Quadrilateral shestakov grid formed by the randomization of vertices based on a skewness parameter \cite{shestakov1988solution,shestakov1990test}. With a certain range of this skewness parameter, highly distorted meshes can be generated.
+	\item Orthogonal Cartesian mesh formed by the intersection of 11 equally-spaced vertices in both the $x$ and $y$ dimensions. This forms a 10x10 array of quadrilateral mesh cells.
+	\item Ordered-triangular mesh formed by the bisection of the previous orthogonal Cartesian mesh (forming 200 triangles all of the same size/shape).
+	\item Quadrilateral Shestakov grid formed by the randomization of vertices based on a skewness parameter \cite{shestakov1988solution,shestakov1990test}. With a certain range of this skewness parameter, highly distorted meshes can be generated.
 	\item Sinusoidal polygonal grid that is generated by the transformation of a uniform orthogonal grid based on a sinusoid functional. The transformed vertices are then converted into a polygonal grid by computing a bounded Voronoi diagram.
 	\item Kershaw's quadrilateral z-mesh \cite{kershaw1981differencing}. This mesh is formed by taking an orthogonal quadrilateral grid and displacing certain interior vertices only in the $y$ dimension.
 	\item A polygonal variant of the quadrilateral z-mesh. The polygonal grid is formed in a similar manner to the sinusoidal polygonal mesh with a Voronoi diagram.
 \end{enumerate}
 
-\noindent We also wish that both the angular flux solution as well as the 0th moment solution are strictly positive everywhere. Therefore, we set the function parameters in Eq. (\ref{eq::BF_Results_Linear_fluxsols}) to $\sigma_t = a = c = d = e = 1.0$ and $b = 1.5$. We gave the solution the $40 \%$ tilt in space ($a \neq b$) so that it would not align with the triangular mesh. Using an S8 LS quadrature set, we ran all combinations of the polygonal basis functions and the mesh types. The linear solutions for the Wachspress, PWL, mean value, and linear maximum entropy are presented in Figures \ref{fig::BF_Results_Linear_wach_sol}, \ref{fig::BF_Results_Linear_pwld_sol}, \ref{fig::BF_Results_Linear_mv_sol}, \ref{fig::BF_Results_Linear_me1_sol}, respectively. We can see that for all the polygonal basis functions, an exact linear solution is captured as shown by the unbroken nature of the contour lines. This even holds on the highly distorted quadrilateral shestakov mesh.
+\noindent We also wish that both the angular flux solution as well as the 0th moment solution are strictly positive everywhere. Therefore, we set the function parameters in Eq. (\ref{eq::BF_Results_Linear_fluxsols}) to $\sigma_t = a = c = d = e = 1.0$ and $b = 1.5$. We gave the solution the $40 \%$ tilt in space ($a \neq b$) so that it would not align with the triangular mesh. Using an S8 LS quadrature set, we ran all combinations of the polygonal basis functions and the mesh types. The linear solutions for the Wachspress, PWL, mean value, and linear maximum entropy are presented in Figures \ref{fig::BF_Results_Linear_wach_sol}, \ref{fig::BF_Results_Linear_pwld_sol}, \ref{fig::BF_Results_Linear_mv_sol}, \ref{fig::BF_Results_Linear_me1_sol}, respectively. We can see that for all the polygonal basis functions, an exactly-linear solution is captured as shown by the unbroken nature of the contour lines. This even holds on the highly distorted quadrilateral Shestakov mesh.
 
 %%%%%%%%%%%%%%%%%
 % Begin Linear Solution figures
@@ -1776,7 +1931,7 @@ For this example, we test the various 2D polygonal finite element basis function
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_WACHSPRESS_k1.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Contour plots of the exactly-linear solution with the Wachspress basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\caption{Contour plots of the exactly-linear solution with the Wachspress basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
 \label{fig::BF_Results_Linear_wach_sol}
 \end{figure}
 
@@ -1823,7 +1978,7 @@ For this example, we test the various 2D polygonal finite element basis function
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_PWLD_k1.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Contour plots of the exactly-linear solution with the PWL basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\caption{Contour plots of the exactly-linear solution with the PWL basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
 \label{fig::BF_Results_Linear_pwld_sol}
 \end{figure}
 
@@ -1870,7 +2025,7 @@ For this example, we test the various 2D polygonal finite element basis function
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_MV_k1.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Contour plots of the exactly-linear solution with the mean value basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\caption{Contour plots of the exactly-linear solution with the mean value basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
 \label{fig::BF_Results_Linear_mv_sol}
 \end{figure}
 
@@ -1917,7 +2072,7 @@ For this example, we test the various 2D polygonal finite element basis function
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_MAXENT_k1.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Contour plots of the exactly-linear solution with the linear maximum entropy basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\caption{Contour plots of the exactly-linear solution with the linear maximum entropy basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
 \label{fig::BF_Results_Linear_me1_sol}
 \end{figure}
 
@@ -2607,7 +2762,6 @@ Because we are using AMR for the gaussian problem, we will only analyze the PWL,
 
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - PA
 \subsection{Convergence Rate Analysis in a Purely-Absorbing Medium}
@@ -2624,9 +2778,11 @@ Our next numerical examples involve studying the convergence rates of transport 
 
 For this example, two different transport problems will be evaluated. Both problems will consist of a purely-absorbing medium ($\sigma_s=0$) and their will be no distributed source within the domain. All meshes for both problems will be contained in the unit square: $[0,1]^2$ and $S_4$ level-symmetric quadrature is used. The first problem has incident angular flux on the left face at a downward $45^{\circ}$ angle. The second problem has the same incident flux on the left face, but also has additional incident angular flux on the top face at a $45^{\circ}$ angle aligned with that of the left face. This means that there is a solution discontinuity for both problems along the line from the vertex $(0,1)$ to $(1,0)$. Furthermore, the first problem has a void in the upper-right portion of the domain. Therefore, the problems have solution regularities of 1/2 and 3/2 for the first and second problem, respectively.
 
-We will analyze four different mesh types. Two of them will align with solution discontinuity and other two will not. The meshes used are an ordered triangular mesh (aligns with the discontinuity), a regular Cartesian mesh (does not align with the discontinuity), a polygonal mesh (does not align with the discontinuity), and a split-polygonal mesh (aligns with the discontinuity). The split-polygonal meshes are formed by bisecting the polygonal meshes along the solution discontinuity. These meshes are shown in Figure \ref{fig::BF_Results_PA_Meshes}. Next, in Figures \ref{fig::BF_Results_PA_Left_Solutions} and \ref{fig::BF_Results_PA_LeftTop_Solutions}, we provide example solutions for the problems with left-face incidence and then left-face and top-face incidence, respectively. It is easy to see in Figure \ref{fig::BF_Results_PA_Left_Solutions} how the alignment of the triangular and split-polygonal meshes allow us to capture the void in the upper-right portion of the meshes. The numerical dispersion of the beam due to the nature of the upwind scheme forces bleeding of the flux into the void area.
+We will analyze four different mesh types. Two of them will align with solution discontinuity and other two will not. The meshes used are an ordered triangular mesh (aligns with the discontinuity), a regular Cartesian mesh (does not align with the discontinuity), a polygonal mesh (does not align with the discontinuity), and a split-polygonal mesh (aligns with the discontinuity). The split-polygonal meshes are formed by bisecting the polygonal meshes along the solution discontinuity. These meshes are shown in Figure \ref{fig::BF_Results_PA_Meshes}. Next, in Figures \ref{fig::BF_Results_PA_Left_Solutions} and \ref{fig::BF_Results_PA_LeftTop_Solutions}, we provide example solutions for the problems with left-face incidence and then left-face and top-face incidence, respectively. It is easy to see in Figure \ref{fig::BF_Results_PA_Left_Solutions} how the alignment of the triangular and split-polygonal meshes allow us to capture the void in the upper-right portion of the meshes. The numerical dispersion of the beam due to the nature of the upwind scheme forces bleeding of the flux into the void region for the Cartesian and polygonal meshes.
 
+Next, we provide the convergence plots of the solution histories for both problems, for all meshes, for all basis functions, and for several values of $\sigma_t$. For each combination of problem and mesh type, convergence rate analysis was performed using $\sigma_t$ values of 1, 10, 50, and 100. First we analyze the problem with only left-face incidence. For the non-aligned meshes, we expect convergence rates of 1/2 since the transport solutions only live in the $H^{1/2-\epsilon}$ space. The convergence rates are measured in the $L_2$-norm and are plotted in Figures \ref{fig::BF_Results_PA_Left_Tri}, \ref{fig::BF_Results_PA_Left_Cart}, \ref{fig::BF_Results_PA_Left_Poly}, and \ref{fig::BF_Results_PA_Left_SplitPoly} for the triangular, Cartesian, polygonal, and split-polygonal meshes, respectively. With the aligned meshes, we can clearly see that convergence rates of $p+1$ are obtained. The DGFEM solution ``does not see'' the lack of regularity in the transport solution. For the Cartesian and polygonal meshes, we see that convergence rates of about 1/2 are obtained for optically thin meshes. However, for thicker domains in the pre-asymptotic range, higher convergence rates (without quite obtaining $p+1$ values) are observed.
 
+Finally, we analyze the problem with both left-face and top-face incidence of the angular flux. For the non-aligned meshes, we expect convergence rates of 3/2 since the transport solutions only live in the $H^{3/2-\epsilon}$ space. Again, the convergence rates are measured in the $L_2$-norm and are plotted in Figures \ref{fig::BF_Results_PA_LeftTop_Tri}, \ref{fig::BF_Results_PA_LeftTop_Cart}, \ref{fig::BF_Results_PA_LeftTop_Poly}, and \ref{fig::BF_Results_PA_LeftTop_SplitPoly} for the triangular, Cartesian, polygonal, and split-polygonal meshes, respectively. For the triangular and split-polygonal meshes, we again see convergence rates of order $p+1$ in an identical manner to the left-face incidence problem. The non-aligned Cartesian and polygonal meshes give convergence rates of 3/2 for the optically thin meshes. This higher convergence rate is achieved because the transport solution is now $C^0$ continuous yielding a higher regularity. Again, we also see for the thicker domains in the pre-asymptotic range higher convergence rates that tend to $p+1$.
 
 \begin{figure}
 \centering
@@ -2912,6 +3068,117 @@ We will analyze four different mesh types. Two of them will align with solution 
 \label{fig::BF_Results_PA_LeftTop_Tri}
 \end{figure}
 
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Cart_sig1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_Cart_sig1.eps}
+	\caption{$\sigma_t = 1$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Cart_sig10}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_Cart_sig10.eps}
+	\caption{$\sigma_t = 10$}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Cart_sig50}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_Cart_sig50.eps}
+	\caption{$\sigma_t = 50$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Cart_sig100}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_Cart_sig100.eps}
+	\caption{$\sigma_t = 100$}
+	\end{subfigure}
+}
+\caption{Convergence rates for the pure absober problem with left-face and top-face incidence incidence on Cartesian meshes with different values of $\sigma_t$.}
+\label{fig::BF_Results_PA_LeftTop_Cart}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Poly_sig1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_Poly_sig1.eps}
+	\caption{$\sigma_t = 1$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Poly_sig10}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_Poly_sig10.eps}
+	\caption{$\sigma_t = 10$}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Poly_sig50}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_Poly_sig50.eps}
+	\caption{$\sigma_t = 50$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Poly_sig100}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_Poly_sig100.eps}
+	\caption{$\sigma_t = 100$}
+	\end{subfigure}
+}
+\caption{Convergence rates for the pure absober problem with left-face and top-face incidence incidence on polygonal meshes with different values of $\sigma_t$.}
+\label{fig::BF_Results_PA_LeftTop_Poly}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_SplitPoly_sig1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_SplitPoly_sig1.eps}
+	\caption{$\sigma_t = 1$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_SplitPoly_sig10}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_SplitPoly_sig10.eps}
+	\caption{$\sigma_t = 10$}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_SplitPoly_sig50}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_SplitPoly_sig50.eps}
+	\caption{$\sigma_t = 50$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_SplitPoly_sig100}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAErr_LeftTop_SplitPoly_sig100.eps}
+	\caption{$\sigma_t = 100$}
+	\end{subfigure}
+}
+\caption{Convergence rates for the pure absober problem with left-face and top-face incidence incidence on split-polygonal meshes with different values of $\sigma_t$.}
+\label{fig::BF_Results_PA_LeftTop_SplitPoly}
+\end{figure}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Searchlight Problem
 \subsection{Searchlight Problem}
@@ -2928,7 +3195,7 @@ In this problem, we investigate an $\mathbb{R}^2$ domain of size $[0,1]^2$ cm. T
 \label{fig::BF_Results_SL_starting_mesh}
 \end{figure}
 
-Since we are again using AMR for this problem, we will analyze the linear and quadratic PWL, mean value, and maximum entropy coordinates. The refinement criterion, $\alpha$, was set to 0.2 for all the linear elements and 0.1 for all the quadratic elements. The relative error of the leakage (in \%) along the right face from $0.6 \leq y \leq 0.8$ is given in Figures \ref{fig::BF_Results_SL_PWL_err}, \ref{fig::BF_Results_SL_MV_err}, and \ref{fig::BF_Results_SL_MAXENT_err} for the PWL, mean value, and maximum entropy coordinates, respectively. For each of the figures we plotted the convergences histories for uniform refinement ($\alpha = 0.0$) as well as AMR runs where the maximum mesh irregularities were set to 1, 2, or 3. Like the purely-absorbing media cases without meshes aligned to the discontinuities, the convergence of the transport solution is limited by its regularity. This is apparent in that the AMR solutions give significantly better results than those obtained with uniform refinement. 
+Since we are again using AMR for this problem, we will analyze the linear and quadratic PWL, mean value, and maximum entropy basis functions (not the Wachspress basis functions). The refinement criterion, $\alpha$, was set to 0.2 for all the linear elements and 0.1 for all the quadratic elements. The relative error of the leakage (in \%) along the right face from $0.6 \leq y \leq 0.8$ is given in Figures \ref{fig::BF_Results_SL_PWL_err}, \ref{fig::BF_Results_SL_MV_err}, and \ref{fig::BF_Results_SL_MAXENT_err} for the PWL, mean value, and maximum entropy coordinates, respectively. For each of the figures we plotted the convergences histories for uniform refinement ($\alpha = 0.0$) as well as AMR runs where the maximum mesh irregularities were set to 1, 2, or 3. Like the purely-absorbing media cases without meshes aligned to the discontinuities, the convergence of the transport solution is limited by its regularity. This is apparent in that the AMR solutions give significantly better results than those obtained with uniform refinement. 
 
 Next, we plot the outgoing angular flux along the right face. We wish to see how the numerical dispersion is reduced with refinement. Figure \ref{fig::BF_Results_SL_uniform_exit_flux} shows the outgoing fluxes for all of the linear and quadratic basis functions under uniform refinement. For all of the linear and quadratic basis functions we see the solution converging to the proper exit flux solution (looks like a step function along the face). However, there is still some over-shooting and under-shooting occuring, even for the most refined case. We then plot the outgoing angular fluxes for the AMR cases in Figures \ref{fig::BF_Results_SL_AMR_PWL_exit_flux}, \ref{fig::BF_Results_SL_AMR_MV_exit_flux}, and \ref{fig::BF_Results_SL_AMR_ME_exit_flux} using the PWL, MV, and ME basis functions, respectively. For all of these cases, we can see better convergence to the analytical outgoing flux for the later AMR cycles. However, the over-shooting and under-shooting still remain.
 
@@ -3170,10 +3437,9 @@ Next, we plot the outgoing angular flux along the right face. We wish to see how
 \section{Conclusions}
 \label{sec::BF_Conclusions}
 
-In this chapter, we presented four different linearly-complete, barycentric, 2D polygonal basis functions to be used with the DGFEM transport equation: the Wachspress rational functions, the PWL coordinates, the mean value coordinates, and maximum entropy coordinates. The Wachspress and the PWL coordinates had been previously utilized for DGFEM transport calculations, and we have extended the analysis to include the other two. Next, the procedure for converting these barycentric coordinates into the quadratic serendipity space of functions was given. For both the linear and quadratic coordinates, a simple quadrature rule for arbitrary polygons based on triangulation was used. We also provided some details of the 3D PWL coordinates that will be used in Chapter \ref{sec::DSA} for completeness.
+In this chapter, we presented four different linearly-complete, barycentric, 2D polygonal basis functions to be used with the DGFEM transport equation: the Wachspress rational functions, the PWL coordinates, the mean value coordinates, and the maximum entropy coordinates. The Wachspress and the PWL coordinates had been previously utilized for DGFEM transport calculations, and we have extended the analysis to include the other two. Next, the procedure for converting these barycentric coordinates into the quadratic serendipity space of functions was given. For both the linear and quadratic coordinates, a simple quadrature rule for arbitrary polygons based on triangulation was used. We also provided some details of the 3D PWL coordinates that will be used in Chapter \ref{sec::DSA} for completeness.
 
-Numerical results were obtained to demonstrate the completeness and convergence properties of these coordinates. The 2D linear and quadratic basis functions capture the thick diffusion limit, which is a necessary property for TRT calculations. The linear and quadratic basis functions can capture exactly-linear and exactly-quadratic solution spaces, respectively. Next, a series of convergence studies were performed to test the convergence behavior of the basis functions under different conditions. Using MMS, the transport solutions converged at a rate of $p+1$ under uniform mesh refinement, which is perfectly in alignment with FEM theory. AMR was also used on MMS problems to achieve more accurate solutions with the same $p+1$ convergence rates using less degrees of freedom. Finally, we concluded with some numerical problems involving purely absorbing media containing a solution discontinuity. For these problems, the solutions converge at a rate of $\min ( p+1 , r)$ depending on the regularity of the alignment of the transport solution. If the spatial mesh is aligned with the discontinuity, then the $p+1$ convergence are still observed. If the meshes are not aligned, then convergence rates imposed by the regularity ($r=1/2$ or $3/2$) are observed for optically thin meshes. However, for meshes that are still optically thick convergence rates of $p+1$ are observed in the preasymptotic region before being restricted by $r$ as the mesh gets optically thin.
-
+Numerical results were obtained to demonstrate the completeness and convergence properties of these coordinates. The 2D linear and quadratic basis functions capture the thick diffusion limit, which is a necessary property for TRT calculations. The linear and quadratic basis functions can capture exactly-linear and exactly-quadratic solution spaces, respectively. Next, a series of convergence studies were performed to test the convergence behavior of the basis functions under different conditions. Using MMS, the transport solutions converged at a rate of $p+1$ under uniform mesh refinement, which is perfectly in alignment with FEM theory. AMR was also used on MMS problems to achieve more accurate solutions with the same $p+1$ convergence rates using less degrees of freedom. Finally, we concluded with some numerical problems involving purely absorbing media containing a solution discontinuity. For these problems, the solutions converge at a rate of $\min ( p+1 , r)$ depending on the regularity of the alignment of the transport solution. If the spatial mesh is aligned with the discontinuity, then the $p+1$ convergence are still observed. If the meshes are not aligned, then convergence rates imposed by the regularity ($r=1/2$ or $3/2$) are observed for optically thin meshes. However, for meshes that are still optically thick convergence rates of $p+1$ are observed in the pre-asymptotic region before being restricted by $r$ as the mesh gets optically thin.
 
 
 
