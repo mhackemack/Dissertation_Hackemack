@@ -38,7 +38,6 @@
 .DS_Store
 *.txt
 *.pdf
-!Document/Rev0/tamuthesis.pdf
 !Copies/Sn_Chapter_Completed_HACKEMACK.pdf
 !Copies/DSA_Chapter_NOResults.pdf
 !Defense/examples/phd_defense_till.pdf
