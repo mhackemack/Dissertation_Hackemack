@@ -36,6 +36,8 @@ Accurate solutions of the neutral particle transport equation are important for 
 \section{Current State of the Problem}
 \label{sec::Intro_Past}
 
+We now provide a brief overview on what consititutes the state-of-the-art in the different 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - DGFEM Sn Transport
 \subsection{Background on the Multigroup DGFEM $S_N$ Transport Equation}
@@ -51,6 +53,10 @@ DGFEM Sn goes here...
 %%%   SubSection - DSA
 \subsection{Diffusion Synthetic Acceleration}
 \label{sec::Intro_Past_DSA}
+
+For transport calculations involving highly-diffusive media, Diffusion Synthetic Acceleration (DSA) becomes an effective scheme to precondition the DGFEM transport iterations. For these optically thick problems, the traditional Richardson or Source Iteration (SI) schemes become ineffective and prohibitively-slow convergence arises \cite{ref::adams_larsen_iter_methods}. There are many different synthetic acceleration schemes that have been proposed over the years, but DSA is the most popular and common method for highly-diffusive problems.
+
+Unfortunately, a continuous finite element (CFEM) discretization of the standard reaction-diffusion equation (the simplest option) is ineffective. This is because we are not guaranteed stability when it is used in conjunction with the DGFEM transport equation on multi-dimensional, unstructured meshes. It was realized that the discretization of the diffusion equations needed to be consistently derived from the discretized transport equation \cite{alcouffe1976stable,alcouffe1977DSA,larsen1982unconditionally_I,larsen1982unconditionally_II,warsa2002fully}. Unfortunately, for higher spatial dimensions, this ``fully-consistent'' DSA scheme constituted a hybrid DGFEM form of the $P_1$ equations that is computationally expensive to solve. Therefore, much work has been performed to develop ``partially-consistent'' DSA schemes that are stable and robust for many mesh types \cite{ref::dsa_DFEM_adams_martin,wareing1991diffusion,ref::DSA_wang_ragusa}. To date, the Modified Interior Penalty (MIP) DSA scheme is the only one that has been shown to be unconditionally stable and effective on unstructured meshes while still being computationally efficient \cite{ref::DSA_wang_ragusa,turcksin2014discontinuous}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Voronoi
