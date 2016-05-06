@@ -210,7 +210,7 @@ We first develop an approximation for the scattering term in Eq. (\ref{eq::Sn_An
 \sigma_s ( \vec{\Omega}' \rightarrow \vec{\Omega}) = \frac{1}{2 \pi} \sigma_s ( \vec{\Omega}' \cdot \vec{\Omega}) = \frac{1}{2 \pi} \sigma_s ( \mu_0) , 
 \end{equation}
 
-\noindent where $\mu_0 \equiv  \vec{\Omega}' \cdot \vec{\Omega}$. With this simplification, the scattering cross section can now be expanded in an infinite series in terms of the Legendre polynomials,
+\noindent where $\mu_0 \equiv  \vec{\Omega}' \cdot \vec{\Omega}$. With this assumption, the scattering cross section can now be expanded in an infinite series in terms of the Legendre polynomials,
 
 \begin{equation}
 \label{eq::Sn_scatt_xs_legendre}
@@ -245,14 +245,14 @@ With the scattering cross section redefined, we can now expand the angular flux 
 \vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{\Omega}) + \sigma_t \Psi (\vec{\Omega}) = \sum_{p=0}^{\infty} \frac{2p + 1}{4 \pi} \sigma_{s,p}   \sum_{n=-p}^{p}  \Phi_{p,n}  Y_{p,n} (  \vec{\Omega} )+ Q  (\vec{\Omega}) .
 \end{equation}
 
-From the initial assumption of material isotropy (which may or may not be an approximation), the scattering term of Eq. (\ref{eq::Sn_Angle_simple_trans_eq_w_moments_inf}) has introduced no approximation. Unfortunately, this form requires an infinite series expansion which we cannot use with only finite computational resources. Instead, we truncate the series at some maximum expansion order, $N_p$, which, in general, introduces an approximate form for the scattering. However, we note that if the problem scattering can be exactly captured with moments through order $N_p$, then we have introduced no approximation with this truncation. With this order of truncation, we again write the angularly continuous Eq. (\ref{eq::Sn_Angle_simple_trans_eq_w_moments_inf}), but also fold the source term into the spherical harmonics expansion,
+From the initial assumption of material isotropy (which may or may not be an approximation), the scattering term of Eq. (\ref{eq::Sn_Angle_simple_trans_eq_w_moments_inf}) has introduced no approximation. Unfortunately, this form requires an infinite series expansion which we cannot use with only finite computational resources. Instead, we truncate the series at some maximum expansion order, $N_p$, which, in general, introduces an approximate form for the scattering. However, we note that if the problem's scattering anisotropy can be exactly captured with moments through order $N_p$, then we have introduced no approximation with this truncation. With this order of truncation, we again write the angularly continuous Eq. (\ref{eq::Sn_Angle_simple_trans_eq_w_moments_inf}), but also fold the source term into the spherical harmonics expansion,
 
 \begin{equation}
 \label{eq::Sn_Angle_simple_trans_eq_w_moments_trunc}
 \vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{\Omega}) + \sigma_t \Psi (\vec{\Omega}) = \sum_{p=0}^{N_p} \frac{2p + 1}{4 \pi}   \sum_{n=-p}^{p}   Y_{p,n} (  \vec{\Omega} ) \left[ \sigma_{s,p} \Phi_{p,n} + Q_{p,n}  \right] .
 \end{equation}
 
-At this point, one may wonder why we have altered the scattering operator so that it is terms of moments of the scattering cross sections and the angular flux. The reason is two-fold which will also be discussed in further detail later in this chapter. First, it greatly reduces the phase space of the scattering cross sections. With proper preprocessing, the scattering cross sections can be simplified into just their Legendre moments, instead of having to store angle-to-angle quantities ($\vec{\Omega}' \rightarrow \vec{\Omega}$). For every group-to-group combination in energy ($g' \rightarrow g$), there are only the $N_p$ moments of the scattering cross section. Secondly, the contribution of the angular flux into the scattering source with its moments can also greatly reduce the dimensional space that needs to be stored in computer memory. This will be discussed later in further detail in Section \ref{sec::Sn_Solution_Iterative}, but it simply means that we only have to store $N_{mom}$ angular flux moments for use in the scattering source. In 1 dimension, $N_{mom}$ is equal to ($N_p + 1$). In 2 dimensions, $N_{mom}$ is equal to $\frac{(N_p + 1) (N_p + 2)}{2}$. In 3 dimensions, $N_{mom}$ is equal to $(N_p + 1)^2$. For comparative purposes, we have plotted $N_{mom}$ for 1, 2, and 3 dimensions up to order 8 in Figure \ref{fig::Sn_Num_Sph_Harm_Moments}.
+At this point, one may wonder why we have altered the scattering operator so that it is terms of moments of the scattering cross sections and the angular flux. The reason is two-fold which will also be discussed in further detail later in this chapter. First, it greatly simplifies the representation of the scattering cross sections. With proper preprocessing, the scattering cross sections can be simplified into just their Legendre moments, instead of having to store angle-to-angle quantities ($\vec{\Omega}' \rightarrow \vec{\Omega}$). For every group-to-group combination in energy ($g' \rightarrow g$), there are only the $N_p$ moments of the scattering cross section. Secondly, the contribution of the angular flux into the scattering source with its moments can also greatly reduce the dimensional space that needs to be stored in computer memory. This will be discussed later in further detail in Section \ref{sec::Sn_Solution_Iterative}, but it simply means that we only have to store $N_{mom}$ angular flux moments for use in the scattering source. In 1 dimension, $N_{mom}$ is equal to ($N_p + 1$). In 2 dimensions, $N_{mom}$ is equal to $\frac{(N_p + 1) (N_p + 2)}{2}$. In 3 dimensions, $N_{mom}$ is equal to $(N_p + 1)^2$. For comparative purposes, we have plotted $N_{mom}$ for 1, 2, and 3 dimensions up to order 8 in Figure \ref{fig::Sn_Num_Sph_Harm_Moments}.
 
 \begin{figure}
 \centering
@@ -289,7 +289,7 @@ Up to this point, we have only presented the methodology to express our source t
 \Psi_m = \Psi (\vec{\Omega}_m).
 \end{equation}
 
-Next, we substitute Eq. (\ref{eq::Sn_ang_flux_basis}) into Eq. (\ref{eq::Sn_Angle_simple_trans_eq_w_moments_trunc}), drop the external source for clarity, and collocate at the ($k=1,...,M$) interpolation (quadrature) points,
+Next, we substitute Eq. (\ref{eq::Sn_ang_flux_basis}) into Eq. (\ref{eq::Sn_Angle_simple_trans_eq_w_moments_trunc}), drop the external source for brevity, and collocate at the ($k=1,...,M$) interpolation (quadrature) points,
 
 \begin{equation}
 \label{eq::Sn_Angle_simple_trans_eq_w_ang_basis}
@@ -419,7 +419,7 @@ We next specify the order of the quadrature set, $N$, which we restrict to only 
 \mu_i = \eta_i = \xi_i, \qquad i \in (1,N/2)
 \end{equation}
 
-As previously stated, once the location of the first ordinate, $\mu_1$, is selected, then the remaining are directly known. However, to maintain the relation of Eq. (\ref{eq::Sn_Angle_angle_cos_relation}), this first ordinate has restrictions placed on it. It must maintain a positive value: $\mu_1^2 \in (0, 1/3]$. Also, for the $S2$ set (N=2), there is exactly one direction cosine with no degrees of freedom. This requires that $\mu_1^2 = 1/3$ for the $S2$ case.
+As previously stated, once the location of the first ordinate, $\mu_1$, is selected, then the remaining are directly known. However, to maintain the relation of Eq. (\ref{eq::Sn_Angle_angle_cos_relation}), this first ordinate has restrictions placed on it. It must maintain a positive value: $\mu_1^2 \in (0, 1/3]$. Also, for the $S_2$ set (N=2), there is exactly one direction cosine with no degrees of freedom. This requires that $\mu_1^2 = 1/3$ for the $S_2$ case.
 
 With $\mu_1$ now selected, we can consider an ordinate set [$\mu_i, \eta_j, \xi_k $], where $i+j+k = N/2 + 2$. To maintain the appropriate Euclidean norm, a recursion relation can be derived (which we will not do for brevity):
 
@@ -508,7 +508,8 @@ The second angular quadrature set we will present is a Product Gauss-Legendre-Ch
 	\item Does not have $90^o$ rotational invariance within the primary octant; however, we still maintain octant-to-octant symmetry via mapping;
 	\item Has more control over the placement of the anglular directions within the primary octant;
 	\item Quadrature weights are aligned with the polar level;
-	\item Has strictly positive weights for all polar and azimuthal combinations.
+	\item Has strictly positive weights for all polar and azimuthal combinations;
+	\item Integrates exactly many of the spherical harmonics functions.
 \end{itemize}
 
 From the listed differences, we can already discern some clear advantages and disadvantages from a fully-symmetric quadrature set like LS. If a high number of angles are required for a problem, then negative weights do not arise. This is beneficial for transport problems with significant discontinuities. Also, the quadrature directions can be preferentially distributed in the primary octant if required for a particular problem. For example, if the transport solution is smoothly varying in the polar direction and not in the azimuthal direction, then we can specify a larger number of quadrature points in the azimuthal direction, with much fewer points in the polar direction. However, this also highlights the fact that the quadrature weights are aligned with the polar level, which can lead to less accurate moment integrations for certain transport problems. 
@@ -670,7 +671,7 @@ For this dissertation work, we will consider only one type of boundary condition
 \section{Spatial Discretization}
 \label{sec::Sn_Spatial}
 
-For the spatial discretization of the problem domain, we simplify Eq. (\ref{eq::Sn_mg_sn_trans_eq}) into a single energy group and drop the fission term (it can be lumped into the 0th order external source term and will act similarly to the total interaction term)
+For the spatial discretization of the problem domain, we simplify Eq. (\ref{eq::Sn_mg_sn_trans_eq}) into a single energy group and drop the fission term (it can be lumped into the 0th moment of the source term and will act similarly to the total interaction term)
 
 \begin{equation}
 \label{eq::Sn_trans_eq_simple_no_energy_groups}
@@ -686,7 +687,7 @@ For the spatial discretization of the problem domain, we simplify Eq. (\ref{eq::
 \label{fig::Sn_two_ref_cells}
 \end{figure}
 
-Next, we left-multiply Eq. (\ref{eq::Sn_trans_eq_simple_no_energy_groups}) by an appropriate test function $b_m$, integrate over cell $K$, and apply Gauss' Divergence Theorem to the streaming term to obtain the Galerkin weighted-residual for cell $K$ for an angular direction $\vec{\Omega}_m$:
+Next, we multiply Eq. (\ref{eq::Sn_trans_eq_simple_no_energy_groups}) by an appropriate test function $b_m$, integrate over cell $K$, and apply Gauss' Divergence Theorem to the streaming term to obtain the Galerkin weighted-residual for cell $K$ for an angular direction $\vec{\Omega}_m$:
 
 \begin{equation}
 \label{eq::Sn_DGFEM_trans_eq_cellK}
@@ -710,7 +711,7 @@ Next, we left-multiply Eq. (\ref{eq::Sn_trans_eq_simple_no_energy_groups}) by an
  \Big< u, v \Big>_f \equiv \int_f u \, v \, d s
 \end{equation}
 
-\noindent correspond to integrations over the cell and faces, respectively, where $dr \in \mathbb{R}^d$ is within the cell and $ds \in \mathbb{R}^{d-1}$ is along the cell boundary. We note that we will use this notation of the inner product for the remainder of the dissertation unless otherwise stated. We then separate the summation of the cell $K$ boundary integration terms into two different types: outflow boundaries ($\partial K^+ = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m > 0 \}$) and inflow boundaries ($\partial K^- = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m < 0 \}$). The inflow boundaries can further be separated into inflow from another cell: $\partial K^- \backslash \partial \mathcal{D} $; inflow from incident flux on the domain boundary: $\partial K^- \cap \partial \mathcal{D}^d $; and reflecting domain boundaries: $\partial K^- \cap \partial \mathcal{D}^r $. At this point, we note that the derivation can comprise an additional step by using Gauss' Divergence Theorem again on the streaming term. This is sometimes performed for radiation transport work so that mass matrix lumping can be performed, but we will not do so here at this time. Therefore, with the cell boundary terminology as proposed, Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK}) can be written into the following form:
+\noindent correspond to integrations over the cell volume and faces, respectively, where $dr \in \mathbb{R}^d$ is within the cell and $ds \in \mathbb{R}^{d-1}$ is along the cell boundary. We note that we will use this notation of the inner product for the remainder of the dissertation unless otherwise stated. We then separate the summation of the cell $K$ boundary integration terms into two different types: outflow boundaries ($\partial K^+ = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m > 0 \}$) and inflow boundaries ($\partial K^- = \{  \vec{r} \in \partial K: \vec{n} (\vec{r}) \cdot \vec{\Omega}_m < 0 \}$). The inflow boundaries can further be separated into inflow from another cell: $\partial K^- \backslash \partial \mathcal{D} $; inflow from incident flux on the domain boundary: $\partial K^- \cap \partial \mathcal{D}^d $; and reflecting domain boundaries: $\partial K^- \cap \partial \mathcal{D}^r $. At this point, we note that the derivation can comprise an additional step by using Gauss' Divergence Theorem again on the streaming term. This is sometimes performed for radiation transport work so that mass matrix lumping can be performed, but we will not do so here at this time. Therefore, with the cell boundary terminology as proposed, Eq. (\ref{eq::Sn_DGFEM_trans_eq_cellK}) can be written into the following form:
 
 \begin{equation}
 \label{eq::Sn_DGFEM_trans_eq_cellK_diff_faces}
@@ -728,7 +729,7 @@ We can now deal with the boundary fluxes, $\tilde{\Psi}_m$, by enforcing the ubi
 \label{eq::Sn_upwind_cases}
 \tilde{\Psi}_m (\vec{r}) = \begin{cases}
 \Psi_m^{-} , & \partial K^+ \\
-\Psi_m^{+}, & \partial K^- \backslash \partial \mathcal{D} \\
+\Psi_m^{-}, & \partial K^- \backslash \partial \mathcal{D} \\
 \Psi_m^{inc}, & \partial K^- \cap \partial \mathcal{D}^d \\
 \Psi_{m'}^{-}, & \partial K^- \cap \partial \mathcal{D}^r
 \end{cases} ,
@@ -741,19 +742,26 @@ We can now deal with the boundary fluxes, $\tilde{\Psi}_m$, by enforcing the ubi
 \Psi_m^{\pm} (\vec{r}) \equiv \lim_{s \rightarrow 0^{\pm}} \Psi_m \Big( \vec{r} + s (\vec{\Omega}_m \cdot \vec{n}) \vec{n} \Big) .
 \end{equation}
 
-\noindent This trace has the notation, with $\vec{n}$ pointing outwards from cell $K$, of $\Psi_m^-$ corresponding to fluxes within the cell and $\Psi_m^+$ corresponding to fluxes out of the cell. Now, using the upwind scheme as previously defined, we can write our complete set of DGFEM equations for cell $K$ as
+\begin{figure}
+\centering
+\includegraphics[width=0.35\textwidth]{figures/sec_Sn/upwind_triangle.png}
+\caption{Definition of the trace for the upwinding scheme.}
+\label{fig::Sn_Spatial_upwind_triangle}
+\end{figure}
+
+\noindent We give a visual example of this trace in Figure \ref{fig::Sn_Spatial_upwind_triangle} on a triangle with a single inflow and a single outflow boundary. For the inflow (left) boundary, the within-cell fluxes are ``+'' and the out-of-cell fluxes are ``-''. Likewise, the outflow (right) boundary has within-cell fluxes designated as ``-'' and out-of-cell fluxes designated as ``+''. Therefore, with this definition of the trace, we always use the flux values corresponding to the ``-'' direction (as seen in Eq. (\ref{eq::Sn_upwind_cases})). Now, using the upwind scheme as previously defined, we can write our complete set of DGFEM equations for cell $K$ as
 
 \begin{equation}
 \label{eq::Sn_DGFEM_trans_eq_cellK_complete}
 \begin{aligned}
--  \Big( \vec{\Omega}_m \cdot  & \vec{\nabla} b_m, \Psi_{m} \Big)_{K}   + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K} +  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{-}  \Big>_{\partial K^+}  \\
-  + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{+}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}^{-}_{m'}  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
+-  \Big( \vec{\Omega}_m \cdot  & \vec{\nabla} b_m, \Psi_{m} \Big)_{K}   + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K} +  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m^{-}, {\Psi}_m^{-}  \Big>_{\partial K^+}  \\
+  + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m^{+}, {\Psi}_m^{-}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m^{-}, {\Psi}^{-}_{m'}  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
 = & \sum_{p=0}^{N_P} \sum_{n=-p}^{p} \frac{2p + 1}{4 \pi}  Y_{p,n} (  \vec{\Omega}_m ) \left[ \Big( \sigma_{s,p} \, b_m,  \Phi_{p,n,} \Big)_{K}  + \left(  b_m ,   Q_{p,n} \right)_{K} \right] \\
-- & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}^d}
+- & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m^{-}, {\Psi}_m^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}^d}
 \end{aligned} .
 \end{equation} 
 
-\noindent We note that fluxes without the trace superscript are all within the cell. By completely defining our mathematical formulation for an arbitrary spatial cell, it is easy to see that the full set of equations to define our discretized solution space for a single angle and energy group comprises of a simple double integration loop. The full set of equations can be formed by looping over all spatial cells, $\mathcal{D} = \bigcup_{K \in \mathbb{T}_h} K$, while further looping over all faces within each cell, $\partial \mathcal{D}_K = \bigcup_{ f \in N_f^K} f$. 
+\noindent We note that fluxes without the trace superscript corresponding to the volumetric terms are all within the cell. By completely defining our mathematical formulation for an arbitrary spatial cell, it is easy to see that the full set of equations to define our discretized solution space for a single angle and energy group comprises of a simple double integration loop. The full set of equations can be formed by looping over all spatial cells, $\mathcal{D} = \bigcup_{K \in \mathbb{T}_h} K$, while further looping over all faces within each cell, $\partial \mathcal{D}_K = \bigcup_{ f \in N_f^K} f$. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Convergence

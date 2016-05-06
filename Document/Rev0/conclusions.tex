@@ -20,10 +20,19 @@
 \section{Conclusions}
 \label{sec::Conclusions_Conclusions}
 
-In this dissertation, we have performed work to advance the state-of-the-art in solving the DGFEM $S_N$ transport equation on polytope meshes using massively-parallel computer architectures. We have done this by investigating two different topical areas. First, we investigated four different linearly-complete polygonal coordinate systems to be used as FEM basis functions. Then, 
+In this dissertation, we have performed work to advance the state-of-the-art in solving the DGFEM $S_N$ transport equation on polytope meshes using massively-parallel computer architectures. We have done this by investigating two different topical areas. First, we investigated four different linearly-complete polygonal coordinate systems to be used as FEM basis functions. Then, we investigated the methodology to convert these linearly-complete functions into the quadratic serendipity space of functions. Higher-order FEM basis functions have two-fold benefits. One, they achieve enhanced convergence rates with mesh refinement due to their higher-dimensional interpolation space. Two, they can enhance parallel computing efficiancy by decreasing memory-access bottlenecks by giving the CPUs more data to compute per solve. Currently, memory-access calls are the limiting bottleneck on massively-parallel computer architectures. Following the work on the quadratic serendipity basis functions on polygonal meshes, we analyzed the performance of 1-group and multigroup thermal neutron upscattering DSA acceleration methods. Specifically, we sought 
+
+We tested both of these topical areas through theoretical and numerical analyses. Our conclusions involving the work on the higher-order polygonal basis functions are listed below:
 
 \begin{enumerate}
 \item
+\item
+\item
+\end{enumerate}
+
+Next, our conclusions for the DSA work on massively-parallel computer architectures are listed below:
+
+\begin{enumerate}
 \item
 \item
 \item
@@ -44,7 +53,7 @@ The quadratic serendipity basis functions were formed by taking pairwise product
 \item {\em Alternate integration schemes on polygons:} \\
 For this work, our quadrature integration scheme on arbitrary polygons consisted of a simple triangulation scheme where each sub-triangle had points mapped onto it from the reference triangle. We did not focus on efficiency for this work, but instead simply used a high-order reference quadrature set. However, by performing our integration this way, the basis function values and gradients must be computed for each polygon in the mesh. This becomes computationally expensive for meshes with many cells containing polygons with large vertex counts. An alternative approach could consist of the use of Schwarz-Christoffel Conforming Maps (SCCM) \cite{driscoll2002schwarz,driscoll2005algorithm}. Generation of the polygonal basis functions and gradients could be computed on reference (regular) polygons and then conformally mapped to any arbitrary polygon for integration \cite{natarajan2009numerical}.
 \item {\em Mixed-mode parallelism with DSA preconditioning:} \\
-In this work, the only parallelism used was 
+In this work, the only parallelism used was domain partitioning 
 \item {\em Further preconditioning the MJA method:} \\
-
+The Multigroup Jacobi Acceleration (MJA) method that we presented in Chapter \ref{sec::DSA} does not require the serialization of the energy group transport solves like the TG and MTG methods.
 \end{enumerate}
