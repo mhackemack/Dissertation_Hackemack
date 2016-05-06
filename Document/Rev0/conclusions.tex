@@ -20,7 +20,7 @@
 \section{Conclusions}
 \label{sec::Conclusions_Conclusions}
 
-In this dissertation, we have performed work to advance the state-of-the-art in solving the DGFEM $S_N$ transport equation on polytope meshes using massively-parallel computer architectures. We have done this by investigating two different topical areas. First, we investigated four different linearly-complete polygonal coordinate systems to be used as FEM basis functions. Then, we investigated the methodology to convert these linearly-complete functions into the quadratic serendipity space of functions. Higher-order FEM basis functions have two-fold benefits. One, they achieve enhanced convergence rates with mesh refinement due to their higher-dimensional interpolation space. Two, they can enhance parallel computing efficiancy by decreasing memory-access bottlenecks by giving the CPUs more data to compute per solve. Currently, memory-access calls are the limiting bottleneck on massively-parallel computer architectures. Following the work on the quadratic serendipity basis functions on polygonal meshes, we analyzed the performance of 1-group and multigroup thermal neutron upscattering DSA acceleration methods. Specifically, we sought 
+In this dissertation, we have performed work to advance the state-of-the-art in solving the DGFEM $S_N$ transport equation on polytope meshes using massively-parallel computer architectures. We have done this by investigating two different topical areas. First, we investigated four different linearly-complete polygonal coordinate systems to be used as FEM basis functions. Then, we investigated the methodology to convert these linearly-complete functions into the quadratic serendipity space of functions. Higher-order FEM basis functions have two-fold benefits. One, they achieve enhanced convergence rates with mesh refinement due to their higher-dimensional interpolation space. Two, they can enhance parallel computing efficiancy by decreasing memory-access bottlenecks by giving the CPUs more data to compute per solve. Currently, memory-access calls are the limiting bottleneck on massively-parallel computer architectures. Following the work on the quadratic serendipity basis functions on polygonal meshes, we analyzed the performance of 1-group and multigroup thermal neutron upscattering DSA acceleration methods. Specifically, we sought to analyze 
 
 We tested both of these topical areas through theoretical and numerical analyses. Our conclusions involving the work on the higher-order polygonal basis functions are listed below:
 
@@ -33,9 +33,10 @@ We tested both of these topical areas through theoretical and numerical analyses
 Next, our conclusions for the DSA work on massively-parallel computer architectures are listed below:
 
 \begin{enumerate}
-\item
-\item
-\item
+\item The Symmetric Interior Penalty (SIP) discretization of the diffusion equation is an efficient solver for the 3D diffusion problem using DFEM. It is Symmetric Positive Definite (SPD) and its system matrix is easily solvable with a Preconditioned Conjugate Gradient Method (PCG). We demonstrated that linearly-complete polyhedral basis functions can capture exactly-linear diffusion solutions on arbitrary grids. We also showed that the proper second-order convergence is obtained in the $L_2$-norm.
+\item The Modified Interior Penalty (MIP) method is a modification to the SIP scheme that can be used for as a DFEM diffusion form for DSA calcualtions. It is also SPD and easily solvable the same as SIP. Fourier and numerical analysis showed that it is efficient and robust on parallelipipeds, even those with high aspect ratios. However, this efficiency degrades with large discontinuities across material cross sections.
+\item MIP DSA was successfully implemented in the Texas A\&M University massively-parallel $S_N$ sweeping code: PDT.
+\item We tested three different 
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -55,5 +56,5 @@ For this work, our quadrature integration scheme on arbitrary polygons consisted
 \item {\em Mixed-mode parallelism with DSA preconditioning:} \\
 In this work, the only parallelism used was domain partitioning 
 \item {\em Further preconditioning the MJA method:} \\
-The Multigroup Jacobi Acceleration (MJA) method that we presented in Chapter \ref{sec::DSA} does not require the serialization of the energy group transport solves like the TG and MTG methods.
+The Multigroup Jacobi Acceleration (MJA) method that we presented in Chapter \ref{sec::DSA} does not require the serialization of the energy group transport solves like the TG and MTG methods. This makes it more amenable to parallelizable computational transport methods. However, since the inner iterations are not converged 
 \end{enumerate}
