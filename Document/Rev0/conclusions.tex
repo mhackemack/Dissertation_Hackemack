@@ -25,9 +25,9 @@ In this dissertation, we have performed work to advance the state-of-the-art in 
 We tested both of these topical areas through theoretical and numerical analyses. Our conclusions involving the work on the higher-order polygonal basis functions are listed below:
 
 \begin{enumerate}
-\item
-\item
-\item
+\item 
+\item 
+\item 
 \end{enumerate}
 
 Next, our conclusions for the DSA work on massively-parallel computer architectures are listed below:
@@ -54,7 +54,15 @@ The quadratic serendipity basis functions were formed by taking pairwise product
 \item {\em Alternate integration schemes on polygons:} \\
 For this work, our quadrature integration scheme on arbitrary polygons consisted of a simple triangulation scheme where each sub-triangle had points mapped onto it from the reference triangle. We did not focus on efficiency for this work, but instead simply used a high-order reference quadrature set. However, by performing our integration this way, the basis function values and gradients must be computed for each polygon in the mesh. This becomes computationally expensive for meshes with many cells containing polygons with large vertex counts. An alternative approach could consist of the use of Schwarz-Christoffel Conforming Maps (SCCM) \cite{driscoll2002schwarz,driscoll2005algorithm}. Generation of the polygonal basis functions and gradients could be computed on reference (regular) polygons and then conformally mapped to any arbitrary polygon for integration \cite{natarajan2009numerical}.
 \item {\em Mixed-mode parallelism with DSA preconditioning:} \\
-In this work, the only parallelism used was domain partitioning 
+In this work, spatial parallelism was done with domain decomposition using the Message Passing Interface (MPI).  
 \item {\em Further preconditioning the MJA method:} \\
-The Multigroup Jacobi Acceleration (MJA) method that we presented in Chapter \ref{sec::DSA} does not require the serialization of the energy group transport solves like the TG and MTG methods. This makes it more amenable to parallelizable computational transport methods. However, since the inner iterations are not converged 
+The Multigroup Jacobi Acceleration (MJA) method that we presented in Chapter \ref{sec::DSA} does not require the serialization of the energy group transport solves like the TG and MTG methods. This makes it more amenable to parallelizable computational transport methods. However, since the inner iterations are not converged with MJA, we see degradation of the iterative spectral radius compared to TG (~0.95 compared to ~0.4 for pure graphite). 
+	\begin{enumerate}
+	\item Perform a single 1 group set transport sweep for all thermal groups.
+	\item For each thermal group, perform a 1-group DSA acceleration step for the within-group, 0th moment scattering residual. This correspdonds to the following error equations ($g=1,...,G$):
+	        \begin{equation*}
+	        -\vec{\nabla} \cdot D_g \vec{\nabla} \delta \phi_g^{(k+1/2)} + \left( \sigma_{t,g} - \sigma_{s,0}^{gg} \right) \delta \phi_g^{(k+1/2)} = \sigma_{s,0}^{gg} \left( \phi_g^{(k+1/2)} - \phi_g^{(k)}\right)
+	        \end{equation*}
+	\item Perform a single 1-group, energy-collapsed 
+	\end{enumerate}
 \end{enumerate}
