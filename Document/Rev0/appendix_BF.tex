@@ -21,7 +21,7 @@
 \section{Limits of the Linear Polygonal Basis Functions}
 \label{sec::appendix_BF_Limits}
 
-As it was stated in Chapter \ref{sec::B}, the Wachspress, mean value, and maximum entropy coordinates are all undefined on the boundary of the polygonal element. However, these basis functions do have a valid limit on the boundary. This means that while direct boundary evaluation of the coordinates is impossible (results in divide-by-zero issues), we can demonstrate that the limits of their values are exactly those required of general barycentric coordinates.
+As it was stated in Chapter \ref{sec::B}, the Wachspress, mean value, and maximum entropy coordinates are all undefined on the boundary of the polygonal element. However, these basis functions do have a valid limit on the boundary. This means that while direct boundary evaluation of the coordinates is impossible (results in divide-by-zero issues), we can demonstrate that the limits of their values are exactly those required of general barycentric coordinates. We use the geometric properties for an arbitrary polygon presented in Figure \ref{fig::App_BF_2D_ref_polygon} to do this.
 
 \begin{figure}
 \centering
@@ -35,16 +35,25 @@ As it was stated in Chapter \ref{sec::B}, the Wachspress, mean value, and maximu
 \subsection{Limits of the Wachspress Coordinates}
 \label{sec::appendix_BF_Limits_Wachspress}
 
+Recall from Section \ref{sec::BF_2DLinear_Wachspress} that the Wachspress basis functions are of the form
+
 \begin{equation}
 \label{eq::App_BF_WachBF}
-\lambda_i^{W} (\vec{x}) = \frac{w_i^W  (\vec{x}) }{\sum_j w_j^W  (\vec{x}) }
+\lambda_i (\vec{x}) = \frac{w_i^W  (\vec{x}) }{\sum_j w_j^W  (\vec{x}) },
 \end{equation}
 
 \noindent where the weight function for vertex $i$, $w_i$, has the following definition:
 
 \begin{equation}
-\label{eq::BF_wach_weights}
-w_i (\vec{x})  = \frac{A(\vec{x}_{i-1}, \vec{x}_{i}, \vec{x}_{i+1})}{A(\vec{x}, \vec{x}_{i-1}, \vec{x}_{i}) \, A(\vec{x}, \vec{x}_{i}, \vec{x}_{i+1})}
+\label{eq::App_BF_wach_weights}
+w_i (\vec{x})  = \frac{A(\vec{x}_{i-1}, \vec{x}_{i}, \vec{x}_{i+1})}{A(\vec{x}, \vec{x}_{i-1}, \vec{x}_{i}) \, A(\vec{x}, \vec{x}_{i}, \vec{x}_{i+1})} .
+\end{equation}
+
+First, we analyze the limiting case as the point of evaluation, $\vec{x}$, approaches a vertex. The Wachspress coordinates maintain the {\em Lagrange property}: $\lambda_i (\vec{x}_j)=\delta_{ij}$. We prove this now by first dividing the numerator and denominator of Eq. (\ref{eq::App_BF_WachBF}) through by $w_j$ to yield the following:
+
+\begin{equation}
+\label{eq::App_BF_wach_divide}
+\lambda_i (\vec{x}) = \frac{w_i/w_j}{1+\sum_{k\neq j} w_k/w_j}, \, i \neq j \qquad \text{and} \qquad \lambda_j (\vec{x}) = \frac{1}{1+\sum_{k\neq j} w_k/w_j} .
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -52,9 +61,11 @@ w_i (\vec{x})  = \frac{A(\vec{x}_{i-1}, \vec{x}_{i}, \vec{x}_{i+1})}{A(\vec{x}, 
 \subsection{Limits of the Mean Value Coordinates}
 \label{sec::appendix_BF_Limits_MV}
 
+Recall from Section \ref{sec::BF_2DLinear_MV} that the mean value basis functions are of the form
+
 \begin{equation}
 \label{eq::App_BF_MVBF}
-\lambda_i^{MV} (\vec{x}) = \frac{w_i^{MV}  (\vec{x}) }{\sum_j w_j^{MV}  (\vec{x}) }
+\lambda_i (\vec{x}) = \frac{w_i^{MV}  (\vec{x}) }{\sum_j w_j^{MV}  (\vec{x}) }
 \end{equation}
 
 \noindent where the weight function for vertex $i$, $w_i$, has the following definition:
@@ -64,15 +75,47 @@ w_i (\vec{x})  = \frac{A(\vec{x}_{i-1}, \vec{x}_{i}, \vec{x}_{i+1})}{A(\vec{x}, 
 w_i (\vec{x})  = \frac{\tan(\alpha_{i-1} / 2) + \tan(\alpha_i / 2)}{|\vec{x}_i - \vec{x}|}
 \end{equation}
 
+First, we analyze the limiting case as the point of evaluation, $\vec{x}$, approaches a vertex. The mean value coordinates maintain the {\em Lagrange property}: $\lambda_i (\vec{x}_j)=\delta_{ij}$. We prove this now by first dividing the numerator and denominator of Eq. (\ref{eq::App_BF_MVBF}) through by $w_j$ to yield the following:
+
+\begin{equation}
+\label{eq::App_BF_MV_divide}
+\lambda_i (\vec{x}) = \frac{w_i/w_j}{1+\sum_{k\neq j} w_k/w_j}, \, i \neq j \qquad \text{and} \qquad \lambda_j (\vec{x}) = \frac{1}{1+\sum_{k\neq j} w_k/w_j} .
+\end{equation}
+
+\noindent Next, we define the term $R_{i,j}$ to be the following
+
+\begin{equation}
+\label{eq::App_BF_MV_R}
+R_{i,j} = \frac{w_i}{w_j} .
+\end{equation}
+
+\noindent It is obvious from Eq. (\ref{eq::App_BF_MV_divide}) that if all the $R_{k,j}$ terms ($k \neq j$) are zero, then we capture the {\em Lagrange property} for the mean value coordinates. Therefore, we expand the terms of $R_{i,j}$ to give Eq. (\ref{eq::App_BF_MV_R_expand}).
+
+\begin{equation}
+\label{eq::App_BF_MV_R_expand}
+\begin{aligned}
+R_{i,j} = \frac{w_i}{w_j}  &= \frac{\tan (\alpha_{i-1}/2) + \tan (\alpha_{i}/2)}{|| \vec{x}_i - \vec{x} ||} \frac{|| \vec{x}_j - \vec{x} ||}{\tan (\alpha_{j-1}/2) + \tan (\alpha_{j}/2)} \\ \\
+&= \frac{|| \vec{x}_j - \vec{x} ||}{|| \vec{x}_i - \vec{x} ||} \frac{\tan (\alpha_{i-1}/2) + \tan (\alpha_{i}/2)}{\tan (\alpha_{j-1}/2) + \tan (\alpha_{j}/2)}
+\end{aligned}
+\end{equation}
+
+\noindent Next, we define the following trigonometric property:
+
+\begin{equation}
+\label{eq::App_BF_MV_trig}
+\tan(x) + \tan(y) = \frac{\sin(x+y)}{\cos(x) \cos(y)}
+\end{equation}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Sub Section - ME Limits
 \subsection{Limits of the Maximum Entropy Coordinates}
 \label{sec::appendix_BF_Limits_ME}
 
+Recall from Section \ref{sec::BF_2DLinear_ME} that the maximum entropy basis functions are of the form
 
 \begin{equation}
 \label{eq::App_BF_MEBF}
-\lambda_i^{ME} (\vec{x}) = \frac{w_i^{ME}  (\vec{x}) }{\sum_j w_j^{ME}  (\vec{x}) }
+\lambda_i (\vec{x}) = \frac{w_i^{ME}  (\vec{x}) }{\sum_j w_j^{ME}  (\vec{x}) }
 \end{equation}
 
 \noindent where the weight function for vertex $i$, $w_i$, has the following definition:
