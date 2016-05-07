@@ -39,7 +39,7 @@ Recall from Section \ref{sec::BF_2DLinear_Wachspress} that the Wachspress basis 
 
 \begin{equation}
 \label{eq::App_BF_WachBF}
-\lambda_i (\vec{x}) = \frac{w_i^W  (\vec{x}) }{\sum_j w_j^W  (\vec{x}) },
+\lambda_i (\vec{x}) = \frac{w_i  (\vec{x}) }{\sum_j w_j  (\vec{x}) },
 \end{equation}
 
 \noindent where the weight function for vertex $i$, $w_i$, has the following definition:
@@ -65,7 +65,7 @@ Recall from Section \ref{sec::BF_2DLinear_MV} that the mean value basis function
 
 \begin{equation}
 \label{eq::App_BF_MVBF}
-\lambda_i (\vec{x}) = \frac{w_i^{MV}  (\vec{x}) }{\sum_j w_j^{MV}  (\vec{x}) }
+\lambda_i (\vec{x}) = \frac{w_i  (\vec{x}) }{\sum_j w_j  (\vec{x}) }
 \end{equation}
 
 \noindent where the weight function for vertex $i$, $w_i$, has the following definition:
@@ -75,7 +75,7 @@ Recall from Section \ref{sec::BF_2DLinear_MV} that the mean value basis function
 w_i (\vec{x})  = \frac{\tan(\alpha_{i-1} / 2) + \tan(\alpha_i / 2)}{|\vec{x}_i - \vec{x}|}
 \end{equation}
 
-First, we analyze the limiting case as the point of evaluation, $\vec{x}$, approaches a vertex. The mean value coordinates maintain the {\em Lagrange property}: $\lambda_i (\vec{x}_j)=\delta_{ij}$. We prove this now by first dividing the numerator and denominator of Eq. (\ref{eq::App_BF_MVBF}) through by $w_j$ to yield the following:
+First, we analyze the limiting case as the point of evaluation, $\vec{x}$, approaches the vertex $j$, $\vec{x}_j$. The mean value coordinates maintain the {\em Lagrange property}: $\lambda_i (\vec{x}_j)=\delta_{ij}$. We prove this now by first dividing the numerator and denominator of Eq. (\ref{eq::App_BF_MVBF}) through by $w_j$ to yield the following:
 
 \begin{equation}
 \label{eq::App_BF_MV_divide}
@@ -86,16 +86,23 @@ First, we analyze the limiting case as the point of evaluation, $\vec{x}$, appro
 
 \begin{equation}
 \label{eq::App_BF_MV_R}
-R_{i,j} = \frac{w_i}{w_j} .
+R_{i,j}(\vec{x}) = \frac{w_i (\vec{x})}{w_j (\vec{x})} .
 \end{equation}
 
-\noindent It is obvious from Eq. (\ref{eq::App_BF_MV_divide}) that if all the $R_{k,j}$ terms ($k \neq j$) are zero, then we capture the {\em Lagrange property} for the mean value coordinates. Therefore, we expand the terms of $R_{i,j}$ to give Eq. (\ref{eq::App_BF_MV_R_expand}).
+\noindent Using the definition of Eq. (\ref{eq::App_BF_MV_R}), we can rewrite Eq. (\ref{eq::App_BF_MV_divide}) as the following 
+
+\begin{equation}
+\label{eq::App_BF_MV_divideR}
+\lambda_i (\vec{x}) = \frac{R_{i,j}}{1+\sum_{k\neq j} R_{k,j}}, \, i \neq j \qquad \text{and} \qquad \lambda_j (\vec{x}) = \frac{1}{1+\sum_{k\neq j} R_{k,j}} .
+\end{equation}
+
+\noindent It is obvious from Eq. (\ref{eq::App_BF_MV_divideR}) that if all the $R_{k,j}$ ($k \neq j$) and $R_{i,j}$ ($i \neq j$) terms are zero, then we capture the {\em Lagrange property} for the mean value coordinates. Therefore, we expand the terms of $R_{i,j}$ to give Eq. (\ref{eq::App_BF_MV_R_expand}).
 
 \begin{equation}
 \label{eq::App_BF_MV_R_expand}
 \begin{aligned}
-R_{i,j} = \frac{w_i}{w_j}  &= \frac{\tan (\alpha_{i-1}/2) + \tan (\alpha_{i}/2)}{|| \vec{x}_i - \vec{x} ||} \frac{|| \vec{x}_j - \vec{x} ||}{\tan (\alpha_{j-1}/2) + \tan (\alpha_{j}/2)} \\ \\
-&= \frac{|| \vec{x}_j - \vec{x} ||}{|| \vec{x}_i - \vec{x} ||} \frac{\tan (\alpha_{i-1}/2) + \tan (\alpha_{i}/2)}{\tan (\alpha_{j-1}/2) + \tan (\alpha_{j}/2)}
+R_{i,j}(\vec{x}) = \frac{w_i}{w_j}  &= \frac{\tan (\alpha_{i-1}/2) + \tan (\alpha_{i}/2)}{| \vec{x}_i - \vec{x} |} \frac{| \vec{x}_j - \vec{x} |}{\tan (\alpha_{j-1}/2) + \tan (\alpha_{j}/2)} \\ \\
+&= \frac{| \vec{x}_j - \vec{x} |}{| \vec{x}_i - \vec{x}|} \frac{\tan (\alpha_{i-1}/2) + \tan (\alpha_{i}/2)}{\tan (\alpha_{j-1}/2) + \tan (\alpha_{j}/2)}
 \end{aligned}
 \end{equation}
 
@@ -103,8 +110,128 @@ R_{i,j} = \frac{w_i}{w_j}  &= \frac{\tan (\alpha_{i-1}/2) + \tan (\alpha_{i}/2)}
 
 \begin{equation}
 \label{eq::App_BF_MV_trig}
-\tan(x) + \tan(y) = \frac{\sin(x+y)}{\cos(x) \cos(y)}
+\tan(x) + \tan(y) = \frac{\sin(x+y)}{\cos(x) \cos(y)} .
+\end{equation} 
+
+\noindent Inserting Eq. (\ref{eq::App_BF_MV_trig}) into the final line of Eq. (\ref{eq::App_BF_MV_R_expand}), we obtain:
+
+\begin{equation}
+\label{eq::App_BF_MV_R_wtrig}
+R_{i,j}(\vec{x}) = \frac{| \vec{x}_j - \vec{x} |}{| \vec{x}_i - \vec{x} |} \frac{\sin (\alpha_{i-1}/2 + \alpha_{i}/2)}{\sin (\alpha_{j-1}/2 + \alpha_{j}/2)} \frac{\cos (\alpha_{j-1}/2) \cos (\alpha_{j}/2)}{\cos (\alpha_{i-1}/2) \cos (\alpha_{i}/2)} .
+\end{equation} 
+
+\noindent In the limit as $\vec{x}$ approaches $\vec{x}_j$, we see that the term $|| \vec{x}_j - \vec{x} ||$ approaches zero. However, we need to assess what the other terms in Eq. (\ref{eq::App_BF_MV_R_wtrig}) will approach. If we examine the limiting cases where $\vec{x}_i = \vec{x}_{j-1}$ or $\vec{x}_i = \vec{x}_{j}$, then the limits of the remaining terms of Eq. (\ref{eq::App_BF_MV_R_wtrig}) can be written as the following.
+
+\begin{equation}
+\label{eq::App_BF_MV_R_terms}
+\begin{aligned}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}_j}  | \vec{x}_i - \vec{x} |  > 0 \\
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}_j} \left|  \sin (\alpha_{i-1}/2 + \alpha_{i}/2) \right| > 0 \\
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}_j} \left|  \sin (\alpha_{j-1}/2 + \alpha_{j}/2) \right| > 0 \\
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}_j} \left|  \cos (\alpha_{i-1}/2) \right| > 0 \\
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}_j} \left|  \cos (\alpha_{i}/2) \right| > 0 \\
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}_j} \left|  \cos (\alpha_{j-1}/2) \right| > 0 \\
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}_j} \left|  \cos (\alpha_{j}/2) \right| > 0
+\end{aligned}
 \end{equation}
+
+\noindent Therefore, the following is true,
+
+\begin{equation}
+\label{eq::App_BF_MV_Rlim}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}_j} R_{i,j}(\vec{x}) = 0 ,
+\end{equation} 
+
+\noindent and the {\em Lagrange property} holds for the Wachspress coordinates:
+
+\begin{equation}
+\label{eq::App_BF_MV_vertFINAL}
+\lambda_i (\vec{x}) = \delta_{ij}.
+\end{equation} 
+
+Next, we seek to show that the Wachspress coordinates have piecewise linearity on the boundary of the polygon $K$. Therefore, we will analyze the limit of the basis functions as the point $\vec{x}$ approaches face $e_j$. This limit is formally defined as the following
+
+\begin{equation}
+\label{eq::App_BF_MV_edge_lim_init}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j}  \lambda_i (\vec{x}) .
+\end{equation} 
+
+\noindent If we define the signed area function, $A_j (\vec{x})$, for face, $e_j$,
+
+
+\begin{equation}
+\label{eq::App_BF_MV_weights_mod}
+A_j (\vec{x}) = \frac{1}{2} 
+\left|
+\begin{array}{ccc}
+1&1&1\\
+x&x_j&x_{j+1}\\
+y&y_j&y_{j+1}
+\end{array}
+\right|
+= \frac{| \vec{x}_j - \vec{x} | \,| \vec{x}_{j+1} - \vec{x} | \sin (\alpha_j)}{2}
+\end{equation}
+
+\noindent then a modified vertex weight function, $\hat{w}_i$, can be given as
+
+\begin{equation}
+\label{eq::App_BF_MV_weights_mod}
+\hat{w}_i (\vec{x})  = w_i (\vec{x}) A_j (\vec{x}) .
+\end{equation}
+
+\noindent This modified weight functions can be expanded to
+
+\begin{equation}
+\label{eq::App_BF_MV_weights_mod_expand}
+\hat{w}_i (\vec{x})  = \frac{\tan(\alpha_{i-1} / 2) + \tan(\alpha_i / 2)}{|\vec{x}_i - \vec{x}|} \frac{| \vec{x}_j - \vec{x} | \,|\vec{x}_{j+1} - \vec{x} | \sin (\alpha_j)}{2},
+\end{equation}
+
+\noindent and the mean value basis functions can be rewritten in terms of these modified functions:
+
+\begin{equation}
+\label{eq::App_BF_MVBF_mod}
+\lambda_i (\vec{x}) = \frac{\hat{w}_i  (\vec{x}) }{\sum_j \hat{w}_j  (\vec{x}) }
+\end{equation}
+
+\noindent Analyzing Eq. (\ref{eq::App_BF_MV_weights_mod_expand}), we can immediately discern that $\hat{w}_i (\vec{x}) = 0 $ for ($i=j,j+1$). This is because as $\vec{x}$ goes to the boundary, $\alpha_j$ goes to $\pi$ and $\sin (\alpha_j)$ goes to zero. We will show below that the limit of $\hat{w}_i (\vec{x}) $ is greater than zero and bounded for ($i=j,j+1$). We can then write the mean value basis functions in the modified terms for vertex $j$ and $j+1$ as 
+
+\begin{equation}
+\label{eq::App_BF_MVBF_mod_j}
+\lambda_j (\vec{x}) = \frac{\hat{w}_j  }{\hat{w}_j+ \hat{w}_{j+1} } ,
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::App_BF_MVBF_mod_j1}
+\lambda_{j+1} (\vec{x}) = \frac{\hat{w}_{j+1}   }{\hat{w}_j+ \hat{w}_{j+1} } ,
+\end{equation}
+
+\noindent respectively. Taking the limits of the modified weight functions for vertex $j$ and $j+1$ gives
+
+\begin{equation}
+\label{eq::App_BF_MVBF_weightmod_j}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j}\hat{w}_j (\vec{x}) =  | \vec{x}_{j+1} - \vec{x} |,
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::App_BF_MVBF_weightmod_j1}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j} \hat{w}_{j+1} (\vec{x}) = | \vec{x}_j - \vec{x} |,
+\end{equation}
+
+\noindent respectively. Therefore, we can write the final result for the boundary analysis of the mean value coordinates in Eq. (\ref{eq::App_BF_MV_faceFINAL}).
+
+\begin{equation}
+\label{eq::App_BF_MV_faceFINAL}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j} \lambda_i (\vec{x}) = 
+\begin{cases}
+\frac{| \vec{x}_{j+1} - \vec{x} |}{| \vec{x}_{j+1} - \vec{x}_{j} |},&i=j\\
+\frac{| \vec{x}_{j} - \vec{x} |}{| \vec{x}_{j+1} - \vec{x}_{j} |},&i=j+1\\
+\,0,&\text{otherwise}
+\end{cases}
+\end{equation} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Sub Section - ME Limits
@@ -115,7 +242,7 @@ Recall from Section \ref{sec::BF_2DLinear_ME} that the maximum entropy basis fun
 
 \begin{equation}
 \label{eq::App_BF_MEBF}
-\lambda_i (\vec{x}) = \frac{w_i^{ME}  (\vec{x}) }{\sum_j w_j^{ME}  (\vec{x}) }
+\lambda_i (\vec{x}) = \frac{w_i  (\vec{x}) }{\sum_j w_j  (\vec{x}) }
 \end{equation}
 
 \noindent where the weight function for vertex $i$, $w_i$, has the following definition:
@@ -142,6 +269,31 @@ In Chapter \ref{sec::BF}, we provided the functional form for the Piecewise Line
 In Section \ref{sec::BF_2DLinear_PWL}, we provided the functional form for the Piecewise Linear (PWL) coordinates. We noted that of the linearly-complete 2D polygonal coordinates, PWL is the only one that can perform analytical integrations of the elementary matrices. We now describe the procedures to perform these analytical integrations of the elementary matrices.
 
 
+
+\begin{equation}
+\label{eq::App_BF_2D_triref_massterm}
+\begin{aligned}
+\int\displaylimits_K b_i b_j &= \int\displaylimits_K \left( t_i + \alpha_K t_c  \right) \left(  t_j + \alpha_K t_c \right) \\
+&= \int\displaylimits_K t_i t_j + \alpha_K \int\displaylimits_K t_i t_c + \alpha_K \int\displaylimits_K t_j t_c + \alpha_K^2 \int\displaylimits_K t_c t_c
+\end{aligned}
+\end{equation}
+
+\begin{equation}
+\label{eq::App_BF_2D_triref_gradterm}
+\begin{aligned}
+\int\displaylimits_K \vec{\nabla} b_i \,  b_j &= \int\displaylimits_K \left( \vec{\nabla} t_i + \alpha_K \vec{\nabla} t_c  \right) \left(  t_j + \alpha_K t_c \right) \\
+&= \int\displaylimits_K \vec{\nabla} t_i \,t_j + \alpha_K \int\displaylimits_K \vec{\nabla} t_i\, t_c + \alpha_K \int\displaylimits_K t_j \vec{\nabla} t_c + \alpha_K^2 \int\displaylimits_K \vec{\nabla} t_c \, t_c
+\end{aligned}
+\end{equation}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.75\textwidth]{figures/appendices/triangle_mapping_Rev1.png}
+\caption{Mapping a point on the reference triangle onto a sub-triangle of an arbitrary polygon.}
+\label{fig::BF_2D_tri_mapping}
+\end{figure}
+
+
 \begin{equation}
 \label{eq::App_BF_2D_triref}
 \begin{aligned}
@@ -161,15 +313,6 @@ In Section \ref{sec::BF_2DLinear_PWL}, we provided the functional form for the P
 0 & 1
 \end{array}
 \right]
-\end{equation}
-
-
-\begin{equation}
-\label{eq::App_BF_2D_triref_massterm}
-\begin{aligned}
-\int\displaylimits_K b_i b_j &= \int\displaylimits_K \left( t_i + \alpha_K t_c  \right) \left(  t_j + \alpha_K t_c \right) \\
-&= \int\displaylimits_K t_i t_j + \alpha_K \int\displaylimits_K t_i t_c + \alpha_K \int\displaylimits_K t_j t_c + \alpha_K^2 \int\displaylimits_K t_c t_c
-\end{aligned}
 \end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

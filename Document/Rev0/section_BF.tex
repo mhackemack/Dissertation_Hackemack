@@ -136,14 +136,14 @@ h_j (\vec{x}) = \left(  \vec{x}_j - \vec{x} \right) \cdot \vec{n}_j = \left(  \v
 
 \begin{equation}
 \label{eq::BF_wach_wt_perpdist}
- w_j (\vec{x}) = \frac{\vec{n}_{j-1} \, \text{x} \, \vec{n}_j}{h_{j-1} (\vec{x}) h_j (\vec{x})} ,
+ w_j (\vec{x}) = \frac{\vec{n}_{j-1} \, \times \, \vec{n}_j}{h_{j-1} (\vec{x}) h_j (\vec{x})} ,
 \end{equation}
 
 \noindent where
 
 \begin{equation}
 \label{eq::BF_wach_cross}
-\vec{x}_{1} \, \text{x} \, \vec{x}_2 = 
+\vec{x}_{1} \times \vec{x}_2 = 
 \left|  
 \begin{array}{ccc}
 x_1 & x_2 \\
@@ -254,14 +254,14 @@ We now give a pair of contour plots of the Wachspress coordinates. First, Figure
 The second linearly-complete 2D polygonal coordinates that we will analyze are the Piecewise Linear (PWL) coordinates proposed by Stone and Adams \cite{ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}. They originally introduced the PWL coordinates to work specifically for the DGFEM transport equation on unstructured quadrilateral and polygonal grids. These coordinates share some similarities with the Wachspress rational functions, but also contain some key differences. The properties of the PWL coordinates that are different from the Wachspress rational functions can be summarized with the following:
 
 \begin{enumerate}
-\item PWL works with concave polytopes;
+\item PWL works with concave polygons;
 \item PWL cannot interpolate on curved surfaces;
 \item points on the boundary can be directly evaluated;
 \item the PWL integrals can be computed analytically;
 \item the PWL functions are only $C^0$ continuous: their gradients are discontinuous within the element.
 \end{enumerate}
 
-The 2D PWL functions are defined as combinations of linear triangular functions, with some of them only having measure within a subregion of a polygon. These subregions are formed by triangulating the arbitrary 2D polygon into a set of sub-triangles. Each sub-triangle is defined by two adjacent vertices (taken in a counter-clockwise ordering to maintain consistency) and the polygon's centroid, $\vec{r}_{c}$. Looking at Figure \ref{fig::BF_2D_ref_polygon} as an example, sub-triangle $j$ is defined by the points $\{ \vec{x}_j , \vec{x}_{j+1}, \vec{r}_c \}$, which are the polygon's vertices $j$ and $j+1$ and the polygon's centroid. If a polygon $K$ has $N_K$ vertices, then its centroid can be defined by
+The 2D PWL functions are defined as combinations of linear triangular functions, with some of them only having measure within a subregion of a polygon. These subregions are formed by triangulating the arbitrary 2D polygon into a set of sub-triangles. Each sub-triangle is defined by two adjacent vertices of the polygon (taken in a counter-clockwise ordering to maintain consistency) and the polygon's centroid, $\vec{r}_{c}$. Looking at Figure \ref{fig::BF_2D_ref_polygon} as an example, sub-triangle $j$ is defined by the points $\{ \vec{x}_j , \vec{x}_{j+1}, \vec{r}_c \}$, which are the polygon's vertices $j$ and $j+1$ and the polygon's centroid. If a polygon $K$ has $N_K$ vertices, then its centroid can be defined by
 
 \begin{equation}
 \label{eq::PWL_2D_centroid}
@@ -282,14 +282,14 @@ The 2D PWL functions are defined as combinations of linear triangular functions,
 \alpha_{j}^{K} = \frac{1}{N_K} .
 \end{equation}
 
-\noindent This means that the weight functions are equal for every vertex and the cell centroid simply becomes the average position of all the vertices. However, we note that care must be taken so that the centroid does not lie on the polygon's boundary. This will cause the PWL functions to no longer have piecewise linearity along the boundary. Using these vertex weight functions, the PWL basis function for vertex $j$, $b_j^{PWL}$, is defined as
+\noindent This means that the vertex weight functions are the same for every vertex and the cell centroid simply becomes the average position of all the vertices. However, we note that care must be taken so that the centroid does not lie on the polygon's boundary. This will cause the PWL functions to no longer have piecewise linearity along the boundary. Using these vertex weight functions, the PWL basis function for vertex $j$, $b_j^{PWL}$, is defined as
 
 \begin{equation}
 \label{eq::PWL_2D}
 	b_j^{PWL} (x,y) = t_j (x,y) + \alpha_j^K t_c (x,y) .
 \end{equation}
 
-\noindent In Eq. (\ref{eq::PWL_2D}), $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero at the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function located at $\vec{r}_{c}$ which is unity at the cell center and linearly decreases to zero at each cell vertex. $\alpha_{j}^{K}$ is the weight parameter for vertex $j$ in cell $K$. The functional form of Eq. (\ref{eq::PWL_2D}) with constant vertex weights means that the PWL function for vertex $j$, within the domain of $K$, linearly decreases to a value of $1/N_K$ at the polygonal center. From there, the function linearly decreases to zero on all faces that are not connected to vertex $j$. In Appendix \ref{sec::appendix_BF}, we detail how the 2D PWL coordinates can be analytically integrated using the reference triangle and affine mapping. The gradients of the PWL functions are easy to compute term-by-term in a straightforward manner:
+\noindent In Eq. (\ref{eq::PWL_2D}), $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero at the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function located at $\vec{r}_{c}$ which is unity at the cell center and linearly decreases to zero at each cell vertex. $\alpha_{j}^{K}$ is the weight parameter for vertex $j$ in cell $K$. The functional form of Eq. (\ref{eq::PWL_2D}) with identical vertex weights means that the PWL function for vertex $j$, within the domain of $K$, linearly decreases to a value of $1/N_K$ at the polygonal center. From there, the function linearly decreases to zero on all faces that are not connected to vertex $j$. In Appendix \ref{sec::appendix_BF}, we detail how the 2D PWL coordinates can be analytically integrated using the reference triangle and affine mapping. The gradients of the PWL functions are easy to compute term-by-term in a straightforward manner:
 
 \begin{equation}
 \label{eq::PWL_2D_gradients}
@@ -436,7 +436,7 @@ w_j (\vec{x})  = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{x}_j -
 
 \noindent This weight simply consists of the addition of the two tangent functions (where the angles are given in Figure \ref{fig::BF_2D_ref_polygon}) that is then divided through by the distance between the vertex $j$ and the point of interest, $\vec{x}$. Through careful observation of Eq. (\ref{eq::BF_MV_weights}), we can see that these MV weights are undefined on certain portions of the polygon's boundary, $\partial K$, in a similar way to the Wachspress coordinates. However, the limits of the coordinates are bounded on the polygon's faces and vertices, and we rigorously show this in Appendix \ref{sec::appendix_BF}.
 
-We now give the form of the mean value gradients. Since the mean value coordinates given by Eq. (\ref{eq::BF_MV_BF}) have the same form as the Wachspress coordinates, their gradients can be expressed in an indentical manner. The gradients of the mean value coordinates can be expressed as
+We now give the form of the mean value gradients. Since the mean value coordinates given by Eq. (\ref{eq::BF_MV_BF}) have the same form as the Wachspress coordinates, their gradients can be expressed in an identical manner. The gradients of the mean value coordinates can be expressed as
 
 \begin{equation}
 \label{eq::BF_mv_gradient}
@@ -471,7 +471,7 @@ We now give the form of the mean value gradients. Since the mean value coordinat
 \{  \vec{u} \} = \left( - u_2 , u_1  \right). 
 \end{equation}
 
-\noindent While this direct form for the MV coordinates is more complicated than the last two coordinates presented, it is still easily programmable. The interested reader can look in the appendix of \cite{floater2015generalized} for MATLAB code to compute these gradients, though we stress that it does not contain any logic for boundary detection.
+\noindent While this direct form for the MV coordinates is more complicated than the last two coordinates presented, it is still easily programmable. The interested reader can look in the appendix of \cite{floater2015generalized} for MATLAB code to compute these gradients.
 
 We again provide example contour plots of the MV coordinates, and we use the same polygonal shapes that we showed for the PWL coordinates. Figure \ref{fig::2D_MV1_unit_square_basis_functions} gives the MV coordinates on the unit square. Like the Wachspress functions, the MV coordinates are smoothly varying within the domain of the polygon and possess continuous derivatives. Next in Figure \ref{fig::2D_MV1_deg_square_basis_functions}, we give the example contour plots for the degenerate pentagon which is formed by inserting a vertex into the unit square at $(1/2,1)$. Finally, Figure \ref{fig::2D_MV1_Ldom_basis_functions} gives the contour plots for the linear mean value coordinates on the L-shaped domain. We see that the linear mean value coordinates are applicable to interpolation on concave polygons.
 
@@ -1319,7 +1319,7 @@ To this point, we have provided the means to generate the quadrature nodes and w
 
 \noindent which is clearly just an element-wise sum of Eq. (\ref{eq::BF_2DIntegration_cellK}).
 
-We conclude this section by providing some visual examples of quadrature sets for polygonal elements. Figure \ref{fig::BF_2DIntegration_RefTri} gives quadrature sets on the reference triangle for orders 1-6. We can see that our reference quadrature is symmetric about any of the three vertices, though we note that true isoparametric symmetry is only obtained with equilateral triangles. Then Figures \ref{fig::BF_2DIntegration_Pentagon} and \ref{fig::BF_2DIntegration_Hexagon} provide examples of the mapping of the reference quadrature into the global space for a regular pentagon and hexagon, respectively. 
+We conclude this section by providing some visual examples of quadrature sets for polygonal elements. Figure \ref{fig::BF_2DIntegration_RefTri} gives quadrature sets on the reference triangle for orders 1-6 \cite{dunavant1985high}. We can see that our reference quadrature is symmetric about any of the three vertices, though we note that true isoparametric symmetry is only obtained with equilateral triangles. Then Figures \ref{fig::BF_2DIntegration_Pentagon} and \ref{fig::BF_2DIntegration_Hexagon} provide examples of the mapping of the reference quadrature into the global space for a regular pentagon and hexagon, respectively. 
 
 \begin{figure}
 \centering
