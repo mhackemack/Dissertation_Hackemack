@@ -56,6 +56,55 @@ First, we analyze the limiting case as the point of evaluation, $\vec{x}$, appro
 \lambda_i (\vec{x}) = \frac{w_i/w_j}{1+\sum_{k\neq j} w_k/w_j}, \, i \neq j \qquad \text{and} \qquad \lambda_j (\vec{x}) = \frac{1}{1+\sum_{k\neq j} w_k/w_j} .
 \end{equation}
 
+\noindent Next, we define the term $R_{i,j}$ to be the following
+
+\begin{equation}
+\label{eq::App_BF_wach_R}
+R_{i,j}(\vec{x}) = \frac{w_i (\vec{x})}{w_j (\vec{x})} .
+\end{equation}
+
+\noindent Using the definition of Eq. (\ref{eq::App_BF_wach_R}), we can rewrite Eq. (\ref{eq::App_BF_wach_divide}) as the following 
+
+\begin{equation}
+\label{eq::App_BF_wach_divideR}
+\lambda_i (\vec{x}) = \frac{R_{i,j}}{1+\sum_{k\neq j} R_{k,j}}, \, i \neq j \qquad \text{and} \qquad \lambda_j (\vec{x}) = \frac{1}{1+\sum_{k\neq j} R_{k,j}} .
+\end{equation}
+
+\noindent It is obvious from Eq. (\ref{eq::App_BF_wach_divideR}) that if all the $R_{k,j}$ ($k \neq j$) and $R_{i,j}$ ($i \neq j$) terms are zero, then we capture the {\em Lagrange property} for the mean value coordinates. Therefore, we expand the terms of $R_{i,j}$ to give Eq. (\ref{eq::App_BF_wach_R_expand}).
+
+\begin{equation}
+\label{eq::App_BF_wach_R_expand}
+R_{i,j}(\vec{x}) = \frac{A(\vec{x}_{i-1}, \vec{x}_{i}, \vec{x}_{i+1})}{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})} \, \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}) A(\vec{x}_{j}, \vec{x}_{j+1}, \vec{x})}{A(\vec{x}_{i-1}, \vec{x}_{i}, \vec{x}) A(\vec{x}_{i}, \vec{x}_{i+1}, \vec{x})}
+\end{equation}
+
+\noindent From Eq. (\ref{eq::App_BF_wach_R_expand}), it is clear that the first term is bounded and non-zero and that the following limit is true:
+
+\begin{equation}
+\label{eq::App_BF_wach_vertlim}
+\lim\displaylimits_{\vec{x}\rightarrow \vec{x}_j} \left(  \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}) A(\vec{x}_{j}, \vec{x}_{j+1}, \vec{x})}{A(\vec{x}_{i-1}, \vec{x}_{i}, \vec{x}) A(\vec{x}_{i}, \vec{x}_{i+1}, \vec{x})} \right) = 0
+\end{equation}
+
+\noindent Therefore, the following is true,
+
+\begin{equation}
+\label{eq::App_BF_wach_Rlim}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}_j} R_{i,j}(\vec{x}) = 0 ,
+\end{equation} 
+
+\noindent and the {\em Lagrange property} holds for the Wachspress coordinates:
+
+\begin{equation}
+\label{eq::App_BF_wach_vertFINAL}
+\lambda_i (\vec{x}) = \delta_{ij}.
+\end{equation} 
+
+Next, we seek to show that the Wachspress coordinates have piecewise linearity on the boundary of the polygon $K$. Therefore, we will analyze the limit of the basis functions as the point $\vec{x}$ approaches face $e_j$. This limit is formally defined as the following
+
+\begin{equation}
+\label{eq::App_BF_wach_edge_lim_init}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j}  \lambda_i (\vec{x}) .
+\end{equation} 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Sub Section - MV Limits
 \subsection{Limits of the Mean Value Coordinates}
@@ -142,14 +191,14 @@ R_{i,j}(\vec{x}) = \frac{| \vec{x}_j - \vec{x} |}{| \vec{x}_i - \vec{x} |} \frac
 \lim\displaylimits_{\vec{x} \rightarrow \vec{x}_j} R_{i,j}(\vec{x}) = 0 ,
 \end{equation} 
 
-\noindent and the {\em Lagrange property} holds for the Wachspress coordinates:
+\noindent and the {\em Lagrange property} holds for the mean value coordinates:
 
 \begin{equation}
 \label{eq::App_BF_MV_vertFINAL}
 \lambda_i (\vec{x}) = \delta_{ij}.
 \end{equation} 
 
-Next, we seek to show that the Wachspress coordinates have piecewise linearity on the boundary of the polygon $K$. Therefore, we will analyze the limit of the basis functions as the point $\vec{x}$ approaches face $e_j$. This limit is formally defined as the following
+Next, we seek to show that the mean value coordinates have piecewise linearity on the boundary of the polygon $K$. Therefore, we will analyze the limit of the basis functions as the point $\vec{x}$ approaches face $e_j$. This limit is formally defined as the following
 
 \begin{equation}
 \label{eq::App_BF_MV_edge_lim_init}
@@ -259,16 +308,14 @@ w_i (\vec{x})  = m_i(\vec{x}) \exp(-  \kappa \cdot (\vec{x}_i - \vec{x}))
 \section{Analytical Integration of the PWL Basis Functions}
 \label{sec::appendix_BF_PWLInt}
 
-In Chapter \ref{sec::BF}, we provided the functional form for the Piecewise Linear (PWL) coordinates in 2D and 3D. 
+In Chapter \ref{sec::BF}, we provided the functional form for the Piecewise Linear (PWL) coordinates in 2D and 3D. At that time, we simply left the notation for the basis functions and did not give any further information except that a quadrature scheme could be used to integrate the elementary matrices. However, since the PWL coordinates are collections of polynomials over sub-triangles and sub-tetrahedra in 2D and 3D, respectively, direct analytical integration can also be performed. In this section, we detail how the elementary matrices can be integrated with the PWL functions.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Sub Section - 2D integration
 \subsection{2D PWL Basis Functions}
 \label{sec::appendix_BF_PWLInt_2D}
 
-In Section \ref{sec::BF_2DLinear_PWL}, we provided the functional form for the Piecewise Linear (PWL) coordinates. We noted that of the linearly-complete 2D polygonal coordinates, PWL is the only one that can perform analytical integrations of the elementary matrices. We now describe the procedures to perform these analytical integrations of the elementary matrices.
-
-
+In Section \ref{sec::BF_2DLinear_PWL}, we provided the functional form for the 2D Piecewise Linear (PWL) coordinates. We noted that of the linearly-complete 2D polygonal coordinates, PWL is the only one that can perform analytical integrations of the elementary matrices. We now describe the procedures to perform these analytical integrations of the elementary matrices.
 
 \begin{equation}
 \label{eq::App_BF_2D_triref_massterm}
