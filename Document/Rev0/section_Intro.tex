@@ -23,9 +23,9 @@ Accurate solutions of the neutral particle transport equation are important for 
 
 Traditionally, solutions of the neutral particle transport equation have required the use of the most advanced computer hardwares (available at a given time) due to the fidelity required for each dimension of their high-dimensional phase space. This means that further development of transport methods on modern HPCs is beholden to the exascale level limitations. At the exascale level, high-fideltiy numerical transport solutions could have up to $O(10^9)$ unknowns in space, $O(10^5-10^6)$ unknowns in angle, and $O(10^2-10^3)$ unknowns in energy. Due to the decreased availability of memory at exascale levels, the limiting case for data storage for the numerical transport calculations will lead to only a small number of mesh cells per process location (all the way down to 1 mesh cell per process). Therefore, it becomes necessary to maximize the process work per location compared to data passing and retrieval operations. 
 
-With these limitations in mind, this dissertation seeks to advance the state-of-art concerning the spatial discretization of the transport equation for use on massively-parallel computer architectures. The discretization that will be used in this work is the {\em Discontinuous Galerkin Finite Element Method} (DGFEM) in space and {\em discrete ordinates} ($S_N$) in angle \cite{johnson1984finite,morel2005s}. Specifically, we seek to marry three distinct topical areas together for this work: polytope (polygons and polyhedra in 2D and 3D, respectively) spatial discretizations, higher-order basis FEM basis functions on polytope grids, and Diffusion Synthetic Acceleration (DSA) schemes compatible with arbitrary meshes. All three of these points can provide higher fidelity solutions while being amenable to exascale level computing architectures.
+With these limitations in mind, this dissertation seeks to advance the state-of-art concerning the spatial discretization of the transport equation for use on massively-parallel computer architectures. The discretization that will be used in this work is the {\em Discontinuous Galerkin Finite Element Method} (DGFEM) in space and {\em discrete ordinates} ($S_N$) in angle \cite{johnson1984finite,morel2005s}. Specifically, we seek to marry three distinct topical areas together for this work: polytope (polygons and polyhedra in 2D and 3D, respectively) spatial discretizations, higher-order FEM basis functions on polytope grids, and Diffusion Synthetic Acceleration (DSA) schemes compatible with arbitrary meshes. All three of these points can provide higher-fidelity solutions while being amenable to exascale level computing architectures.
 
-The benefits of using polytope meshes are given as the following:
+We can sumamrize the benefits of using polytope meshes as the following:
 
 \begin{enumerate}
 	\item Polytope mesh cells are now being employed in other physics communities - most notably computational fluid dynamics (CFD) \cite{ref::star_CCM} and solid mechanics \cite{yip2005automated};
@@ -38,10 +38,23 @@ The benefits of using polytope meshes are given as the following:
 
 \begin{figure}
 \centering
-\includegraphics[width=0.80\textwidth]{figures/sec_Intro/locally_refined_vertices.png}
+\includegraphics[width=0.85\textwidth]{figures/sec_Intro/locally_refined_vertices.png}
 \caption{Local mesh refinement of an initial quadrilateral cell (left) leads to a degenerate pentagonal cell (right) without the use of a hanging node.}
 \label{fig::Intro_locally_refined_vertices}
 \end{figure}
+
+\noindent This means that, besides being able to accurately model complicated geometries, polytope meshes have benefits that are amenable to future HPC architectures. Specifically, they can reduce cell counts while maintaining equivalent accuracy. Furthermore, they allow for more general cells on non-conforming grids that can arise from either parallel mesh generation or local refinement procedures.
+
+Higher-order FEM bais functions provide a two-fold benefit when used in conjunction with HPCs. First, they provide a richer interpolatory space for the FEM basis functions resulting in increased convergence rates for the discretized solution \cite{ern2013theory}. Second, they can maximize the parallel efficiency on these proposed exascale machines. Low-order spatial discretizations of the DGFEM transport equation may require more mesh cells in the computational domain compared to the number of mesh cells of high-order spatial discretizations. For the DGFEM $S_N$ method, this equates to a greater number of independent linear solves for the low-order discretizations. Since the current and future computational bottlenecks for neutron transport are memory-access related, then higher-order FEM basis functions will be more computationally efficient. This is because the higher-order basis functions can perform more on-process work before memory-access are needed.
+
+In this work, we will answer two specific open questions regarding solutions of the DGFEM $S_N$ transport equations:
+
+\begin{enumerate}
+\item Can higher-order 2D polygonal basis functions be used to solve the DGFEM transport equation?
+\item Can an efficient and robust DSA scheme be used on arbitrary grids while maintaining scalability to high process counts?
+\end{enumerate}
+
+\noindent The methodology, implementation, and results pertaining to these two items are provided in Chapters \ref{sec::BF} and \ref{sec::DSA}, respectively.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Current State of the Problem
@@ -55,7 +68,7 @@ We now provide a brief overview on what consititutes the state-of-the-art in the
 \subsection{Background on the Multigroup DGFEM $S_N$ Transport Equation}
 \label{sec::Intro_Past_DGFEMMGSn}
 
-The neutral particle transport equation has a high-dimensional phase space, consisting of 3 spatial variables, 1 energy variable, and 2 angular variables. 
+The neutral particle transport equation has a high-dimensional phase space, consisting of 3 spatial variables, 1 energy variable, and 2 angular variables. Many different methodologies have been developed over the years to efficiently discretize and solve each of these variables. We now briefly detail the discretization methods that will be utilized in this work.
 
 For the energy variable, we will utilize the multigroup method since it is the only widely-used energy discretization scheme in determinstic transport \cite{duderstadt1976nuclear,bell1979nuclear}. With the multigroup approximation, the energy domain is broken up into intervals (groups) and then averaged over these intervals with an approximation of the spectral transport solution as the weighting spectrum. This process requires a combination of highly accurate nuclear data libraries such as the Evaluated Nuclear Data File (ENDF) \cite{chadwick2006endf,chadwick2011endf}, the Japanese Evaluated Nuclear Data Library (JENDL) \cite{shibata2002japanese}, and the Joint Evaluated Fission and Fusion Project (JEFF) \cite{koning2006jeff}, as well as high fidelity processing software such as NJOY \cite{macfarlane2002njoy,kahler2012njoy}, AMPX \cite{dunn2002ampx}, and SCALE \cite{bucholz1982scale} to form the multigroup cross sections. Work is continuously being performed to quantify uncertainties in these cross sections and their effects to solution accuracy \cite{aliberti2006nuclear,jessee2008cross}.
 
@@ -88,14 +101,22 @@ Since this dissertation work is on the solution of the transport equation on pol
 
 Traditionally, 2D and 3D FEM calculations have been performed on simplical (triangles and tetrahedra) and tensor based meshes (quadrilaterals and hexahedra), respectively. In fact, it is still a standard practice to refer to any type of mesh as a {\em triangulation} in some communities \cite{ern2013theory}. Many different mesh generation software has been developed to build these simple grids \cite{shewchuk1996triangle,shewchuk2002delaunay,si2015tetgen,geuzaine2009gmsh}. However, multiple fields including {\em computational fluid dynamics} (CFD) and {\em solid mechanics} are now finding benefits to utilizing polytope meshes for their calculations \cite{ref::star_CCM,yip2005automated}.
 
-However, polytope mesh generation is still in its infancy \cite{yip2005automated,sieger2010optimizing,ebeida2011uniform}. In general, polytope meshes have infinite variety in their topological shape and closed-form solutions are impossible. Therefore, polytope mesh generation is defined as a minimization of an energy residual. This is typically performed with Voronoi tesselation (diagram), where the iterative scheme employed is Lloyd's algorithm \cite{lloyd1982least,linde1980algorithm}. There are two many classes of Voronoi mesh generation. The first is based on uniform random sampling known as Maximal Poisson-Disk Sampling (MPS) \cite{ebeida2011uniform,ebeida2011efficient,ebeida2012simple}. MPS inserts Voronoi seed points into the domain without bias and is known as dart-throwing in computer graphics. The second class of Voronoi mesh generation is known as Centroidal Voronoi Tessellation (CVT) \cite{du1999centroidal,valette2004approximated}. CVT is a Voronoi meshing methodology where the seed points are the centroids of the Voronoi regions. These Voronoi regions correspond to the elements (cells) in the resulting polytope mesh. A simple-to-use CVT algorithm written in MATLAB and based on Lloyd's algorithm is given in \cite{talischi2012polymesher}.
+However, polytope mesh generation is still in its infancy \cite{yip2005automated,sieger2010optimizing,ebeida2011uniform}. In general, polytope meshes have infinite variety in their topological shape and closed-form solutions are impossible. Therefore, polytope mesh generation is defined as a minimization of an energy residual. This is typically performed with Voronoi tesselation (diagram), where the iterative scheme employed is Lloyd's algorithm \cite{lloyd1982least,linde1980algorithm}. There are two many classes of Voronoi mesh generation. The first is based on uniform random sampling known as Maximal Poisson-Disk Sampling (MPS) \cite{ebeida2011uniform,ebeida2011efficient,ebeida2012simple}. MPS inserts Voronoi seed points into the domain without bias and is known as dart-throwing in computer graphics. The second class of Voronoi mesh generation is known as Centroidal Voronoi Tessellation (CVT) \cite{du1999centroidal,valette2004approximated}. CVT is a Voronoi meshing methodology where the seed points are the centroids of the Voronoi regions. These Voronoi regions correspond to the elements (cells) in the resulting polytope mesh. A lightweight CVT algorithm written in MATLAB and based on Lloyd's algorithm is given in \cite{talischi2012polymesher}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - AMR
 \subsubsection{Adaptive Mesh Refinement (AMR) for the DGFEM $S_N$ Transport Equation}
 \label{sec::Intro_Past_Polytopes_AMR}
 
-As mentioned previously, an alternative method to generating polytope meshes is through the use of spatial Adaptive Mesh Refinement (AMR). Spatial AMR calculations can result in the generation of an irregular mesh (one with hanging nodes) at any refinement level \cite{plewa2005adaptive}. Looking at Figure \ref{fig::Intro_locally_refined_vertices}, 
+As mentioned previously, an alternative method to generating polytope meshes is through the use of spatial Adaptive Mesh Refinement (AMR). Spatial AMR calculations can result in the generation of an irregular mesh (one with hanging nodes) at any refinement level \cite{carey1997computational,plewa2005adaptive}. Looking at the right image in Figure \ref{fig::Intro_locally_refined_vertices}, the colinear vertex along the right face of the unrefined quadrilateral is an example of a hanging node. To the unrefined quadrilateral, this hanging node is not a degree of freedom. However, careful integration must be performed along the face so that the across-face connectivity is preserved for the refined cells. This leads to additional implementation overhead to properly account for the irregular mesh. If we instead use polytope mesh cells, then the unrefined quadrilateral cell with a hanging node can instead be viewed as degenerate pentagon with two colinear faces. This can ease the implementation burden of AMR methods.
+
+AMR methods have become commonplace across many scientific and engineering fields \cite{plewa2005adaptive,carey1997computational,ramm2003error,karniadakis2013spectral,schwab1998p,solin2003higher}, but is still in its infancy in its use with the transport equation \cite{fuhrer1997posteriori,hartmann2002adaptive,dedner2002adaptive,hartmann2003adaptive,ragusa2010two,wang2011standard}. There are three key factors that are required to yield efficient and successful AMR results:
+
+\begin{enumerate}
+\item The number of unknowns from the mesh adaptation compared to those resulting from uniform refinement is orders of magnitude smaller while still attaining similar order of accuracy.
+\item The meshes resulting from the iterative refinement strategy are close to ``optimal'' and are represented hierarchically as a nest.
+\item An efficient {\em a posteriori} method can be used to accurately determine the relative error distribution of a numerical solution on a mesh.
+\end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Organization

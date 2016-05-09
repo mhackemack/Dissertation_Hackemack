@@ -159,11 +159,11 @@ For FEM theory, the basis function gradients are also necessary to compute some 
  \vec{\nabla} b_{j}^{W}(\vec{x}) = b_{j}^{W} (\vec{x}) \left( \vec{R}_j  (\vec{x})- \sum\displaylimits_{i}   b_{i}^{W} (\vec{x}) \vec{R}_i (\vec{x}) \right) ,
 \end{equation}
 
-\noindent where the reduced gradient, $\vec{R}_i$, is defined as
+\noindent where the reduced gradient, $\vec{R}_j$, is defined as
 
 \begin{equation}
 \label{eq::BF_wach_reduced_grad}
-\vec{R}_i (\vec{x})  = \frac{1}{w_i} \vec{\nabla} w_i .
+\vec{R}_j (\vec{x})  = \frac{1}{w_j} \vec{\nabla} w_j .
 \end{equation}
 
 \noindent This means that the gradients of the Wachspress coordinates can be calculated by combinations of the all the weight functions and their gradients. The weight function gradients are easy to compute using the perpendicular form. The gradient of the $j$ weight functions is given by
@@ -943,8 +943,8 @@ We have given complete details on the linearly-complete generalized barycentric 
 \begin{array}{ccccc}
  & & 1 & & \\
  & x & & y & \\
- x^2 &  &xy & & y^2
-\end{array} \, .
+ x^2 &  &xy & & y^2 .
+\end{array} \, 
 \end{equation}
 
 \noindent Between the linear and quadratic precision of the generalized barycentric coordinates and the quadratic serendipity extension, a relation can be formed on the functional space of their precision. If we seek a functional space up to order $p$ precision, then for $k=0,...,p$, the interpolatory functions must exactly span the following monomial functions,
@@ -966,7 +966,7 @@ f_{\sigma, \tau}^k (x, y) = x^{\sigma} y^{\tau} ,
 Now, we give the full details on converting the linear generalized barycentric coordinates to the quadratic serendipity space of functions. Figure \ref{fig::BF_2D_quad_process} gives a visual depiction of this conversion process. For a polygon with $N_K$ vertices, we can summarize this procedure as the following:
 
 \begin{enumerate}
-\item For a point $\vec{x}$, compute the $N_K$ linear barycentric functions $\{ \lambda_i (\vec{x}) \}$;
+\item For a point $\vec{x}$, compute the $N_K$ linear barycentric functions $\{ \lambda_i (\vec{x}) \}$ (Wachspress, PWL, mean value, or maximum entropy);
 \item Take all non-repeating pairwise products of the linear functions to obtain $\frac{N_K(N_K+1)}{2}$ quadratic functions $\{ \mu_{ab} \}$;
 \item Form the linear transformation matrix $\mathbb{A}$ through the use of monomial constraint equations;
 \item Use the $\mathbb{A}$ matrix to reduce the $\{ \mu_{ab} \}$ function set to the $2 N_K$ serendipity basis set $\{ \xi_{ij} \}$.
@@ -994,7 +994,7 @@ We begin by computing the ($i=1,...,N_K$) linear barycentric functions, $\{ \lam
 \end{equation}
 
 
-\noindent We can immediately see that quadratic precision is ensured. However, the set of these pairwise quadratic functions grows quadratically. This means that as $N_K$ grows large, the number of interpolatory functions grows as order $O(N_K^2)$, but still only maintains precision of the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions. Therefore, the computational work required to utilize these quadratic barycentric functions can become prohibitive for polygons with large vertex counts.
+\noindent In Eq. (\ref{eq::BF_quad_interp_req_quadratic_alt}), $\otimes$ is the dyadic tensor product. We can immediately see that quadratic precision is ensured. However, the set of these pairwise quadratic functions grows quadratically. This means that as $N_K$ grows large, the number of interpolatory functions grows as order $O(N_K^2)$, but still only maintains precision of the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions. Therefore, the computational work required to utilize these quadratic barycentric functions can become prohibitive for polygons with large vertex counts.
 
 To minimize the number of interpolatory functions but still maintain the precision of the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions, we seek to convert the quadratic barycentric functions into the quadratic serendipity space of functions $\{ \xi_{ij} \}$. This quadratic serendipity space only contains the vertex and mid-face functions (total of $2 N_K$) and has been extensively studied for tensor-based elements in the past \cite{macneal1992eight,arnold2011serendipity}. This means that we seek to reduce the $\{ \mu_{ab} \}$ set of functions by removing the diagonal functions ($ab \in D$) while still maintaining quadratic precision. If we define $\xi_{ii}$ and $\xi_{i(i+1)}$ as the serendipity functions that live at vertex $i$ and the mid-face point between vertices $i$ and $i+1$, respectively, then we can write the serendipity precision properties for the constant constraint,
 
@@ -1024,7 +1024,7 @@ To remove the diagonal functions, we formalize this procedure by recasting it as
 \left\{ \xi \right\} = \mathbb{A} \left\{ \mu \right\} ,
 \end{equation}
 
-\noindent will satisfy the precision properties of Eqs. (\ref{eq::BF_ser_interp_req_constant} - \ref{eq::BF_ser_interp_req_quadratic}). It is easy to see that $\mathbb{A}$ has dimension ($2 N_K \text{x} N_Q$). We wish for this matrix to have constant entries for any point within the polygon's interior so that it does not have to be recalculated for each interpolatory point of interest. To ease the notation, we will assign specific basis orderings for the quadratic and quadratic serendipity functions. The serendipity basis is ordered such that all vertex functions ($ii \in V$) in a counter-clockwise ordering are first, followed by a counter-clockwise ordering of the mid-face nodes ($ij \in E$) starting with the node between vertices 1 and 2. This ordering can be succinctly stated by
+\noindent will satisfy the precision properties of Eqs. (\ref{eq::BF_ser_interp_req_constant} - \ref{eq::BF_ser_interp_req_quadratic}). It is easy to see that $\mathbb{A}$ has dimension ($2 N_K \times N_Q$). We wish for this matrix to have constant entries for any point within the polygon's interior so that it does not have to be recalculated for each interpolatory point of interest. To ease the notation, we will assign specific basis orderings for the quadratic and quadratic serendipity functions. The serendipity basis is ordered such that all vertex functions ($ii \in V$) in a counter-clockwise ordering are first, followed by a counter-clockwise ordering of the mid-face nodes ($ij \in E$) starting with the node between vertices 1 and 2. This ordering can be succinctly stated by
 
 \begin{equation}
 \label{eq::BF_ser_ordering}
@@ -1274,8 +1274,8 @@ At this time, we are only interested in the accuracy and not the efficiency of t
 \label{eq::BF_2DInt_jacobian}
  J = \left[
  \begin{array}{cc}
- x_1 - x_0 & y_1 - y_0 \\
-  x_2 - x_0 & y_2 - y_0
+ x_1 - x_0 & x_2 - x_0 \\
+ y_1 - y_0  & y_2 - y_0
  \end{array}
  \right] \, .
 \end{equation}
@@ -1284,14 +1284,14 @@ At this time, we are only interested in the accuracy and not the efficiency of t
 
 \begin{equation}
 \label{eq::BF_2DInt_grad_ref}
-\nabla_{\hat{x}} = J \nabla_{x}  ,
+\nabla_{\hat{x}} = J^{T} \nabla_{x}  ,
 \end{equation}
 
 \noindent and the gradient of the global space can be computed in terms of the reference space by,
 
 \begin{equation}
 \label{eq::BF_2DInt_grad_glob}
-\nabla_{x} = J^{-1} \nabla_{\hat{x}}  
+\nabla_{x} = J^{-T} \nabla_{\hat{x}}  
 \end{equation}
 
 With the positions of the nodes mapped to the global space, that just leaves the weights. The value of the global weight $q$ on sub-triangle $i$ within polygon $K$ (given by $w_{i,q}^K$) is mapped from the corresponding reference weight, $\hat{w}_q$, by
