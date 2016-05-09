@@ -105,6 +105,95 @@ Next, we seek to show that the Wachspress coordinates have piecewise linearity o
 \lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j}  \lambda_i (\vec{x}) .
 \end{equation} 
 
+\noindent From the definitions of the vertex weight functions of Eq. (\ref{eq::App_BF_wach_weights}), we can immediately see that 
+
+\begin{equation}
+\label{eq::App_BF_wach_edge_lim_jj1}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j} | w_i (\vec{x}) |= \infty, \qquad i=(j,j+1) ,
+\end{equation} 
+
+\noindent and
+
+\begin{equation}
+\label{eq::App_BF_wach_edge_lim_others}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j} |  w_i (\vec{x}) | < \infty, \qquad i\neq (j,j+1) .
+\end{equation} 
+
+\noindent Therefore, the following is also true for the basis functions
+
+\begin{equation}
+\label{eq::App_BF_wach_edge_lim_bfj}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j}  \lambda_i (\vec{x}) = 0, \qquad i\neq(j,j+1),
+\end{equation} 
+
+\noindent and
+
+\begin{equation}
+\label{eq::App_BF_wach_edge_lim_bfj}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j}  \lambda_{j} (\vec{x}) = \frac{w_j}{w_j + w_{j+1}}, 
+\end{equation} 
+
+\noindent and
+
+\begin{equation}
+\label{eq::App_BF_wach_edge_lim_bfj1}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j}  \lambda_{j+1} (\vec{x}) = \frac{w_{j+1}}{w_j + w_{j+1}}.
+\end{equation} 
+
+\noindent We expand the term $\lambda_j$ as the following,
+
+\begin{equation}
+\label{eq::App_BF_wach_edge_lim_lamj_expand}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j}  \lambda_{j} (\vec{x}) = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1}) \, A(\vec{x}_{j+1}, \vec{x}_{j+2}, \vec{x})}{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1}) \, A(\vec{x}_{j+1}, \vec{x}_{j+2}, \vec{x}) + A(\vec{x}_{j}, \vec{x}_{j+1}, \vec{x}_{j+2}) \, A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x})},
+\end{equation} 
+
+\noindent or
+
+\begin{equation}
+\label{eq::App_BF_wach_edge_lim_lamj_expand2}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j}  \lambda_{j} (\vec{x}) = \frac{1}{1+\beta},
+\end{equation} 
+
+\noindent where
+
+\begin{equation}
+\label{eq::App_BF_wach_beta}
+\beta = \frac{A(\vec{x}_{j}, \vec{x}_{j+1}, \vec{x}_{j+2}) \, A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x})}{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1}) \, A(\vec{x}_{j+1}, \vec{x}_{j+2}, \vec{x}) }. 
+\end{equation} 
+
+\noindent Through extensive algebra along with the use of some trigonometric properties and further limits, the $\beta$ term can be written as the following 
+
+\begin{equation}
+\label{eq::App_BF_wach_beta2}
+\beta = \frac{|\vec{x}_{j} - \vec{x}|}{|\vec{x}_{j+1} - \vec{x}|}, 
+\end{equation} 
+
+\noindent which means that the limit of $\lambda_{j}$ can be written as the following as well:
+
+\begin{equation}
+\label{eq::App_BF_wach_edge_lim_lamj_expand3}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j}  \lambda_{j} (\vec{x}) = \frac{|\vec{x}_{j+1} - \vec{x}|}{|\vec{x}_{j+1} - \vec{x}_j|} .
+\end{equation} 
+
+\noindent Through a similar procedure, the limit of $\lambda_{j+1}$ can be written as the following as well:
+
+\begin{equation}
+\label{eq::App_BF_wach_edge_lim_lamj1_expand3}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j}  \lambda_{j+1} (\vec{x}) = \frac{|\vec{x}_{j} - \vec{x}|}{|\vec{x}_{j+1} - \vec{x}_j|} .
+\end{equation} 
+
+\noindent respectively. Therefore, we can write the final result for the boundary analysis of the Wachspress coordinates in Eq. (\ref{eq::App_BF_wach_faceFINAL}).
+
+\begin{equation}
+\label{eq::App_BF_wach_faceFINAL}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j} \lambda_i (\vec{x}) = 
+\begin{cases}
+\frac{| \vec{x}_{j+1} - \vec{x} |}{| \vec{x}_{j+1} - \vec{x}_{j} |},&i=j\\
+\frac{| \vec{x}_{j} - \vec{x} |}{| \vec{x}_{j+1} - \vec{x}_{j} |},&i=j+1\\
+\,0,&\text{otherwise}
+\end{cases}
+\end{equation} 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Sub Section - MV Limits
 \subsection{Limits of the Mean Value Coordinates}
@@ -294,12 +383,37 @@ Recall from Section \ref{sec::BF_2DLinear_ME} that the maximum entropy basis fun
 \lambda_i (\vec{x}) = \frac{w_i  (\vec{x}) }{\sum_j w_j  (\vec{x}) }
 \end{equation}
 
-\noindent where the weight function for vertex $i$, $w_i$, has the following definition:
+\noindent where the weight function for vertex $i$, $w_i$, has the following definition
 
 \begin{equation}
 \label{eq::App_BF_ME_weights}
-w_i (\vec{x})  = m_i(\vec{x}) \exp(-  \kappa \cdot (\vec{x}_i - \vec{x}))
+w_i (\vec{x})  = m_i(\vec{x}) \exp(-  \kappa \cdot (\vec{x}_i - \vec{x})).
 \end{equation}
+
+\noindent In Eq. (\ref{eq::App_BF_ME_weights}), the prior distribution, $m_i$, has the form 
+
+\begin{equation}
+\label{eq::BF_ME_prior_funcs}
+ m_i(\vec{x}) = \frac{\pi_i (\vec{x}) }{\sum_{k} \pi_k (\vec{x})},
+\end{equation}
+
+\noindent where
+
+\begin{equation}
+\label{eq::BF_ME_prior_products}
+\pi_i (\vec{x}) = \prod\displaylimits_{k \neq i-1, i} \rho_k (\vec{x}),
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::BF_ME_face_funcs}
+\rho_j (\vec{x}) = || \vec{x} - \vec{x}_j || + || \vec{x} - \vec{x}_{j+1} || - || \vec{x}_{j+1} - \vec{x}_j || ,
+\end{equation}
+
+\noindent and $\rho_j$ is the face weight function corresponding to face $e_j$. 
+
+For the maximum entropy coordinates, we will only demonstrate the piecewise linearity property since the {\em Lagrange property} is satisfied by the limit at the face vertices.
 
 
 
