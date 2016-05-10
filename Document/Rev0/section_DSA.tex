@@ -30,9 +30,9 @@ In this chapter, we analyze the Modified Interior Penalty (MIP) form of the diff
 \subsection{Review of Diffusion Synthetic Accleration Schemes}
 \label{sec::DSA_Introduction_History}
 
-In Section \ref{sec::Sn_Solution_Spatial}, we described the full-domain transport sweep, and how it can efficiently invert the loss operator. We also provided the parallel implementation details that allow these full-domain transport sweeps to scale out to $O(10^6)$ processors. However, the ability to efficiently invert the transport (streaming and collision) operator does not necessarily mean that transport solutions can be easily obtained. In general, radiation transport solutions are obtained iteratively. The simplest and widely-used method is a fixed-point scheme ({\em i.e.} Richardson iteration) ubiquitously called Source Iteration (SI) in the transport community. Unfortunately, the iteration process of SI can converge arbitrarily slowly if the problem is optically thick \cite{ref::adams_larsen_iter_methods}. This corresponds to long mean free paths for neutronics problems. This also corresponds to time steps and material heat capacities tending to infinity and zero, respectively, for thermal radiative transport (TRT) problems.
+In Section \ref{sec::Sn_Solution_Spatial}, we described the full-domain transport sweep, and how it can efficiently invert the loss operator. We also provided the parallel implementation details that allow these full-domain transport sweeps to scale out to $O(10^6)$ processors. However, the ability to efficiently invert the transport (streaming and collision) operator does not necessarily mean that transport solutions can be easily obtained. In general, radiation transport solutions are obtained iteratively. The simplest and widely-used method is a fixed-point scheme ({\em i.e.,} Richardson iteration) ubiquitously called Source Iteration (SI) in the transport community. Unfortunately, the iteration process of SI can converge arbitrarily slowly if the problem is optically thick \cite{ref::adams_larsen_iter_methods}. This corresponds to long mean free paths for neutronics problems. This also corresponds to time steps and material heat capacities tending to infinity and zero, respectively, for thermal radiative transport (TRT) problems.
 
-For these problem regimes in which solution is prohibitively slow, additional steps should be taken to speed up, or accelerate, solution convergence \cite{ref::adams_larsen_iter_methods}. The most used methods to assist in solution convergence are often called synthetic acceleration techniques. These techniques were first introduced by Kopp \cite{kopp1963synthetic} and Lebedev \cite{lebedevI,lebedevII,lebedevIII,lebedevIV,lebedevV,lebedevVI,lebedevVII} in the 1960's. From Kopp's and Lebedev's work, Gelbard and Hageman then introduced two synthetic acceleration options for the low-order operator: diffusion and $S_2$ \cite{gelbard1969synthetic}. Their diffusion preconditioning led to efficient convergence properties on fine spatial meshes. Reed then showed that Gelbard and Hageman's diffusion preconditioning would yield a diverging system for coarse meshes \cite{reed1971effectiveness}. At this point in time, no one knew if an unconditionally efficient acceleration method could be derived.
+For such regimes in which solution is prohibitively slow, additional steps should be taken to speed up, or accelerate, solution convergence \cite{ref::adams_larsen_iter_methods}. The most used methods to assist in solution convergence are often called synthetic acceleration techniques. These techniques were first introduced by Kopp \cite{kopp1963synthetic} and Lebedev \cite{lebedevI,lebedevII,lebedevIII,lebedevIV,lebedevV,lebedevVI,lebedevVII} in the 1960's. From Kopp's and Lebedev's work, Gelbard and Hageman then introduced two synthetic acceleration options for the low-order operator: diffusion and $S_2$ \cite{gelbard1969synthetic}. Their diffusion preconditioning led to efficient convergence properties on fine spatial meshes. Reed then showed that Gelbard and Hageman's diffusion preconditioning would yield a diverging system for coarse meshes \cite{reed1971effectiveness}. At this point in time, no one knew if an unconditionally efficient acceleration method could be derived.
 
 Then in 1976, Alcouffe proposed a remedy to Gelbard and Reed that he called diffusion synthetic acceleration (DSA) \cite{alcouffe1976stable,alcouffe1977DSA,alcouffe1977diffusion}. He showed that if you derived the diffusion operator consistently with the discretized transport operator, then SI could be accelerated with DSA in an efficient and robust manner. Larsen and McCoy then demonstrated that unconditional stability required that consistency be maintained in both spatial and angular discretization in their four-step procedure \cite{larsen1982unconditionally_I,larsen1982unconditionally_II}. However, Adams and Martin then showed that partially-consistent diffusion discretizations could effectively accelerate DFEM discretizations of the neutron transport equation \cite{ref::dsa_DFEM_adams_martin}. Their modified-four-step procedure (M4S), based on Larsen and McCoy's work, was shown to be unconditionally stable for regular geometries, but divergent for unstructured multi-dimensional meshes \cite{warsa2002fully}. In more recent years, alternate discretizations for the diffusion operator have been applied to unstructured multi-dimensional grids. These include the partially consistent Wareing-Larsen-Adams (WLA) DSA \cite{ref::WLA_DSA}, the fully consistent DSA (FCDSA) \cite{warsa2002fully}, and the partially consistent MIP DSA \cite{ref::DSA_wang_ragusa,wang2009adaptive,turcksin2014discontinuous}.
 
@@ -48,33 +48,33 @@ Synthetic acceleration techniques have been widely used in the nuclear engineeri
 
 \begin{equation}
 \label{eq::DSA_simple_trans_eq_w_ops}
-\left(  {\bf A} - {\bf B}  \right) \Psi = {\bf Q} ,
+\left(  {\bf L} - {\bf B}  \right) \Psi = {\bf Q} ,
 \end{equation}
 
-\noindent where ${\bf A}$ and ${\bf B}$ are both linear operators, $\Psi$ is the full angular flux solution in space, angle, and energy, and ${\bf Q}$ is the source or driving function. If we had the ability to efficiently invert $\left(  {\bf A} - {\bf B}  \right)$ directly, then $\Psi$ could be directly computed:
+\noindent where ${\bf L}$ and ${\bf B}$ are both linear operators, $\Psi$ is the full angular flux solution in space, angle, and energy, and ${\bf Q}$ is the source or driving function. If we had the ability to efficiently invert $\left(  {\bf L} - {\bf B}  \right)$ directly, then $\Psi$ could be directly computed:
 
 \begin{equation}
 \label{eq::DSA_simple_trans_eq_w_ops_inverted}
-\Psi = \left(  {\bf A} - {\bf B}  \right)^{-1} {\bf Q} .
+\Psi = \left(  {\bf L} - {\bf B}  \right)^{-1} {\bf Q} .
 \end{equation}
 
-\noindent However, since in practice the discretized version of $\left(  {\bf A} - {\bf B}  \right)$ is much more costly to directly invert than the discretized version of ${\bf A}$, we instead choose to iteratively solve for $\Psi$.
+\noindent However, since in practice the discretized version of $\left(  {\bf L} - {\bf B}  \right)$ is much more costly to directly invert than the discretized version of ${\bf L}$, we instead choose to iteratively solve for $\Psi$.
 
 To compute $\Psi$, the following iterative system of equations is usually employed,
 
 \begin{equation}
 \label{eq::DSA_simple_trans_eq_w_ops_iterates}
- {\bf A} \Psi^{(k+1)} ={\bf B}  \Psi^{(k)} + {\bf Q} ,
+ {\bf L} \Psi^{(k+1)} ={\bf B}  \Psi^{(k)} + {\bf Q} ,
 \end{equation}
 
 \noindent where directly solving for $\Psi^{(k+1)}$ yields the following:
 
 \begin{equation}
 \label{eq::DSA_simple_trans_eq_sol_w_ops_iterates}
- \Psi^{(k+1)} =  {\bf A}^{-1} {\bf B}  \Psi^{(k)} +  {\bf A}^{-1} {\bf Q} .
+ \Psi^{(k+1)} =  {\bf L}^{-1} {\bf B}  \Psi^{(k)} +  {\bf L}^{-1} {\bf Q} .
 \end{equation}
 
-\noindent For brevity, we define a new operator ${\bf C} = {\bf A}^{-1} {\bf B}$ which is known as the iteration operator. The spectral radius, $\rho$, of this operator is simply the supremum of the absolute values of its eigenvalues. For this work, we assume that $\rho$ is less than unity to guarantee convergence. We next define the residual, $r^{(k)}$, as the difference between two successive solution iterates,
+\noindent For brevity, we define a new operator ${\bf C} = {\bf L}^{-1} {\bf B}$ which is known as the iteration operator. The spectral radius, $\rho$, of this operator is simply the supremum of the absolute values of its eigenvalues. For this work, we assume that $\rho$ is less than unity to guarantee convergence. We next define the residual, $r^{(k)}$, as the difference between two successive solution iterates,
 
 \begin{equation}
 \label{eq::DSA_synthetic_eq_residual}
@@ -113,16 +113,16 @@ With the iteration operator, ${\bf C}$, and the residual for iterate $k$ , $r^{(
 
 \begin{equation}
 \label{eq::DSA_synthetic_eq_true_sol_orig_ops}
-\Psi = \Psi^{(k)} + \left(  {\bf A} - {\bf B}   \right)^{-1} {\bf B} r^{(k)}.
+\Psi = \Psi^{(k)} + \left(  {\bf L} - {\bf B}   \right)^{-1} {\bf B} r^{(k)}.
 \end{equation}
 
-We would like to use the results of Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) to immediately compute our exact transport solution, $\Psi$. However, this would require the inversion of $\left(  {\bf A} - {\bf B}  \right)$ which we did not employ originally in Eq. (\ref{eq::DSA_simple_trans_eq_w_ops}) because of the difficulty. This means that, in its current form, Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) is no more useful to us than Eq. (\ref{eq::DSA_simple_trans_eq_w_ops}). This would then be an exercise in futility if we were restricted to only working with the $\left(  {\bf A} - {\bf B}  \right)$ operator. Instead, suppose that we could define an operator, ${\bf W}$, that closely approximates $\left(  {\bf A} - {\bf B}  \right)$ but it is easily invertible. If ${\bf W}$ efficiently approximates the slowest converging error modes of $\left(  {\bf A} - {\bf B}  \right)$, then Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) can be modified to form a new iterative procedure.
+We would like to use the results of Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) to immediately compute our exact transport solution, $\Psi$. However, this would require the inversion of $\left(  {\bf L} - {\bf B}  \right)$ which we did not employ originally in Eq. (\ref{eq::DSA_simple_trans_eq_w_ops}) because of the difficulty. This means that, in its current form, Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) is no more useful to us than Eq. (\ref{eq::DSA_simple_trans_eq_w_ops}). This would then be an exercise in futility if we were restricted to only working with the $\left(  {\bf L} - {\bf B}  \right)$ operator. Instead, suppose that we could define an operator, ${\bf W}$, that closely approximates $\left(  {\bf L} - {\bf B}  \right)$ but it is easily invertible. If ${\bf W}$ efficiently approximates the slowest converging error modes of $\left(  {\bf L} - {\bf B}  \right)$, then Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) can be modified to form a new iterative procedure.
 
 The new iterative procedure begins by simply taking the half-iterate of Eq. (\ref{eq::DSA_simple_trans_eq_sol_w_ops_iterates}) instead of its full version: ${(k+1/2)}$ instead of {(k+1)}. This half-iterate has the form
 
 \begin{equation}
 \label{eq::DSA_synthetic_eq_half_it}
-\Psi^{(k+1/2)} = {\bf C} \Psi^{(k)} + {\bf A}^{-1} {\bf Q}.
+\Psi^{(k+1/2)} = {\bf C} \Psi^{(k)} + {\bf L}^{-1} {\bf Q}.
 \end{equation}
 
 \noindent We can then express the full-iterate by the suggestion of Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}). Using the low-order operator, we express the full-iterate as the following,
@@ -136,10 +136,10 @@ The new iterative procedure begins by simply taking the half-iterate of Eq. (\re
 
 \begin{equation}
 \label{eq::DSA_synthetic_eq_new_algo}
-\Psi^{(k+1)} = \left[  {\bf I} - {\bf W}^{-1} \left(  {\bf A} - {\bf B}  \right)  \right] {\bf C} \Psi^{(k)} + \left({\bf I} + {\bf W}^{-1} {\bf B} \right) {\bf A}^{-1} {\bf Q} .
+\Psi^{(k+1)} = \left[  {\bf I} - {\bf W}^{-1} \left(  {\bf L} - {\bf B}  \right)  \right] {\bf C} \Psi^{(k)} + \left({\bf I} + {\bf W}^{-1} {\bf B} \right) {\bf L}^{-1} {\bf Q} .
 \end{equation}
 
-\noindent Observe in Eq. (\ref{eq::DSA_synthetic_eq_new_algo}) that as ${\bf W}$ more closely approximates $\left(  {\bf A} - {\bf B}  \right)$, the operator ${\bf W}^{-1} \left(  {\bf A} - {\bf B}  \right)$ converges to the identity matrix, ${\bf I}$. This means that the spectral radius of this new iteration matrix will approach zero as ${\bf W}$ gets closer to $\left(  {\bf A} - {\bf B}  \right)$ and therefore more quickly and efficiently converge to the true solution. 
+\noindent Observe in Eq. (\ref{eq::DSA_synthetic_eq_new_algo}) that as ${\bf W}$ more closely approximates $\left(  {\bf L} - {\bf B}  \right)$, the operator ${\bf W}^{-1} \left(  {\bf L} - {\bf B}  \right)$ converges to the identity matrix, ${\bf I}$. This means that the spectral radius of this new iteration matrix will approach zero as ${\bf W}$ gets closer to $\left(  {\bf L} - {\bf B}  \right)$ and therefore more quickly and efficiently converge to the true solution. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -290,7 +290,7 @@ We first take the 0th angular moment of the continuous transport equation which 
 
 \begin{equation}
 \label{eq::DSA_1G_diffeq_FINAL}
-\vec{\nabla} \cdot D \vec{\nabla} \phi + \sigma_a \phi =  Q ,
+-\vec{\nabla} \cdot D \vec{\nabla} \phi + \sigma_a \phi =  Q ,
 \end{equation}
 
 \noindent where the diffusion coefficient, $D$, has the form: $D = \frac{1}{3 \sigma_t}$. 
@@ -299,7 +299,7 @@ Equation (\ref{eq::DSA_1G_diffeq_FINAL}) can then be represented as the low-orde
 
 \begin{equation}
 \label{eq::DSA_1G_erreq_FINAL}
-\vec{\nabla} \cdot D \vec{\nabla} \delta \phi^{(k+1/2)} + \sigma_a \delta \phi^{(k+1/2)} = \sigma_s \left( \phi^{(k+1/2)} -  \phi^{(k)}\right)  .
+-\vec{\nabla} \cdot D \vec{\nabla} \delta \phi^{(k+1/2)} + \sigma_a \delta \phi^{(k+1/2)} = \sigma_s \left( \phi^{(k+1/2)} -  \phi^{(k)}\right)  .
 \end{equation}
 
 \noindent Equation (\ref{eq::DSA_1G_erreq_FINAL}) represents the continuous form for the error operator which has not been spatially discretized. There are many such discretization schemes that could be employed as outlined in Section \ref{sec::DSA_Introduction_History}. We leave the details of the discretization scheme that we will employ in this work until Section \ref{sec::DSA_SIP}. Once this approximate error distribution, $\delta \phi^{(k+1/2)}$, is computed by any solution algorithm of choice, the full-iterate correction of the scalar flux is given by:
@@ -449,13 +449,13 @@ We have just provided a detailed description of the DSA methodology for a 1-grou
 The first thermal neutron upscatter acceleration methodology that we will investigate is the standard Two-Grid (TG) acceleration scheme devised by Adams and Morel \cite{adams1993two}. They originally derived the scheme to accelerate 1D multigroup transport problems that are dominated by thermal neutron upscattering (physical systems containing a lot of graphite or heavy water). The method can be quickly summarized as the following:
 
 \begin{enumerate}
-\item Perform a Gauss-Seidel procedure in energy for the thermal groups and converge the inner iterations;
+\item Perform a Gauss-Seidel procedure in energy for all of the thermal groups and converge the inner iterations;
 \item Perform a spectral collapse of the transport iteration error into a 1-group diffusion equation;
 \item Solve the 1-group diffusion equation for the spatial variation of the transport iteration error;
-\item Interpolate the diffusive multigroup error back onto the transport solution.
+\item Interpolate the diffusion multigroup error back onto the transport solution.
 \end{enumerate}
 
-\noindent We now provide fulls details for each of these steps of the TG method.
+\noindent We now provide full details for each of these steps of the TG method.
 
 The first step in the TG method is to perform a Gauss-Seidel procedure in energy across the thermal groups. This means that for every outer iteration (we can also think of these as thermal iterations), we sequentially proceed through the thermal energy groups. Based on the notation of a group set introduced in Section \ref{sec::Sn_Solution}, we can achieve this Gauss-Seidel iteration scheme by having each thermal group be in its own group set. The TG method then requires full convergence of the within-group inner iterations for each of the group sets. If we have $G$ number of thermal groups, this Gauss-Seidel iteration scheme (with convergence of the inner iterations) leads to the following iteration equation,
 
@@ -536,7 +536,7 @@ We again choose to utilize the diffusion operator as the low-order operator for 
 
 \begin{equation}
 \label{eq::DSA_TG_diff_err_full}
-\vec{\nabla} \cdot D_g \vec{\nabla} \delta \phi_{g}^{(k+1/2)} + \sigma_{t,g} \delta \phi_{g}^{(k+1/2)} - \sum\displaylimits_{g'=1}^{G} \sigma_{s,0}^{g g'} \delta \phi_{g'}^{(k+1/2)} = R_g^{(k+1/2)} ,
+-\vec{\nabla} \cdot D_g \vec{\nabla} \delta \phi_{g}^{(k+1/2)} + \sigma_{t,g} \delta \phi_{g}^{(k+1/2)} - \sum\displaylimits_{g'=1}^{G} \sigma_{s,0}^{g g'} \delta \phi_{g'}^{(k+1/2)} = R_g^{(k+1/2)} ,
 \end{equation}
 
 \noindent where the residual, $R_g$, is only in terms of the 0th-order scattering moment and has the following form:
@@ -564,7 +564,7 @@ R_g^{(k+1/2)} = \sum_{g'=g+1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)}
 
 \begin{equation}
 \label{eq::DSA_TG_1G_err_eq_wdrift}
-\vec{\nabla} \cdot \big< D \big> \vec{\nabla} \epsilon^{(k+1/2)} + \vec{\nabla} \cdot \vec{\big< D \big>} \epsilon^{(k+1/2)} + \big< \sigma \big> \epsilon^{(k+1/2)}  = \big< R^{(k+1/2)} \big> ,
+-\vec{\nabla} \cdot \big< D \big> \vec{\nabla} \epsilon^{(k+1/2)} + \vec{\nabla} \cdot \vec{\big< D \big>} \epsilon^{(k+1/2)} + \big< \sigma \big> \epsilon^{(k+1/2)}  = \big< R^{(k+1/2)} \big> ,
 \end{equation}
 
 \noindent where the energy-averaged terms are 
@@ -583,10 +583,10 @@ R_g^{(k+1/2)} = \sum_{g'=g+1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)}
 
 \begin{equation}
 \label{eq::DSA_TG_1G_err_eq}
-\vec{\nabla} \cdot \big< D \big> \vec{\nabla} \epsilon^{(k+1/2)}  + \big< \sigma \big> \epsilon^{(k+1/2)}  = \big< R^{(k+1/2)} \big> .
+-\vec{\nabla} \cdot \big< D \big> \vec{\nabla} \epsilon^{(k+1/2)}  + \big< \sigma \big> \epsilon^{(k+1/2)}  = \big< R^{(k+1/2)} \big> .
 \end{equation}
 
-\noindent If we define the left-hand-side matrix operator of Eq. (\ref{eq::DSA_TG_1G_err_eq}) as ${\bf A}$, then the operator form of this coarse-grid error equation is 
+\noindent If we define the left-hand-side matrix operator of Eq. (\ref{eq::DSA_TG_1G_err_eq}) as ${\bf A}$, then the operator form of this coarse-grid (in energy) error equation is 
 
 \begin{equation}
 \label{eq::DSA_TG_1G_err_eq_op}
@@ -644,7 +644,7 @@ Up to this point, we have provided the full details of the TG methodology includ
 \subsubsection{Modified Two-Grid (MTG) Acceleration}
 \label{sec:DSA_DSA_MG_MTG}
 
-The second thermal upscattering acceleration method that we will investigate is a simple modification to the standard TG method of Section \ref{sec:DSA_DSA_MG_TG}. At the end of their work involving a TSA variant of the TG method \cite{evans2010transport}, Evans, Clarno, and Morel proposed a modified form for the TG method, which they labeled the Modified Transport Two-Grid (MTTG) method. We wish to adopt their iterative strategy, but use the diffusion equation as our low-order operator. We choose to call this method the Modified Two-Grid (MTG) method. In their work, they proposed to not fully converge the inner iterations for each group in the Gauss-Seidel process. Just like the TG method, we again sequentially proceed through the thermal groups in a Gauss-Seidel manner but only perform 1 transport sweep for each group. This process yields the following iteration scheme,
+The second thermal upscattering acceleration method that we will investigate is a simple modification to the standard TG method of Section \ref{sec:DSA_DSA_MG_TG}. At the end of their work involving a TSA variant of the TG method \cite{evans2010transport}, Evans, Clarno, and Morel proposed a modified form for the TG method, which they labeled the Modified Transport Two-Grid (MTTG) method. We wish to adopt their iterative strategy, but keep using the diffusion equation as our low-order operator. We choose to call this method the Modified Two-Grid (MTG) method. In their work, they proposed to not fully converge the inner iterations for each group in the Gauss-Seidel process. Just like the TG method, we again sequentially proceed through the thermal groups in a Gauss-Seidel manner but only perform 1 transport sweep for each group. This process yields the following iteration scheme,
 
 \begin{equation}
 \label{eq::DSA_MTG_trans_it_eq}
@@ -865,7 +865,7 @@ We begin our discussion of the SIP form by analyzing the standard form of the di
 \Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{\mathcal{D}} - \Big<  b, D \partial_n \Phi \Big>_{\partial \mathcal{D}} + \Big(  \sigma   b ,  \Phi  \Big)_{\mathcal{D}}  = \Big(  b, Q  \Big)_{\mathcal{D}}
 \end{equation}
 
-\noindent If we were to use the CFEM form of Eq. (\ref{eq::SIP_diff_eq_weak}), then there would be no further formulations required except on how to properly apply the boundary term: $\Big<  b, D \partial_n \Phi \Big>_{\partial \mathcal{D}}$. For the neumann and robin boundary conditions, this is straightforward since we simply need to insert the definitions of the outgoing currents, $ D \partial_n \Phi$, of Eqs. (\ref{eq::DSA_standard_diff_eq_neumann_bound}) and (\ref{eq::DSA_standard_diff_eq_robin_bound}) into Eq. (\ref{eq::SIP_diff_eq_weak}). However, this still leaves the question of how to handle the dirichlet boundary conditions. Again, if we were to use CFEM, we could simply strongly enforce these boundary conditions \cite{akin1982application}.
+\noindent If we were to use the CFEM form of Eq. (\ref{eq::SIP_diff_eq_weak}), then there would be no further formulations required except on how to properly apply the boundary term: $\Big<  b, D \partial_n \Phi \Big>_{\partial \mathcal{D}}$. For the Neumann and Robin boundary conditions, this is straightforward since we simply need to insert the definitions of the outgoing currents, $ D \partial_n \Phi$, of Eqs. (\ref{eq::DSA_standard_diff_eq_neumann_bound}) and (\ref{eq::DSA_standard_diff_eq_robin_bound}) into Eq. (\ref{eq::SIP_diff_eq_weak}). However, this still leaves the question of how to handle the Dirichlet boundary conditions. Again, if we were to use CFEM, we could simply strongly enforce these boundary conditions \cite{akin1982application}.
 
 Instead, we are choosing to utilize a discontinuous form of the diffusion equation. This means that we can employ the same DG finite elements used in the discretization of the transport operator in Section \ref{sec::Sn_Spatial}. With this in mind, we recast Eq. (\ref{eq::SIP_diff_eq_weak}) to only contain the appropriate inner products for element K,
 
@@ -874,25 +874,25 @@ Instead, we are choosing to utilize a discontinuous form of the diffusion equati
 \Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{K} - \Big<  b, D \partial_n \Phi \Big>_{\partial K} + \Big(  \sigma   b ,  \Phi  \Big)_{K}  = \Big(  b, Q  \Big)_{K} ,
 \end{equation}
 
-\noindent where we use the same notation for the volumetric and surface inner products as Section \ref{sec::Sn_Spatial}. We further decompose the boundary terms for element $K$ into its respective interior ($\partial K \backslash \partial \mathcal{D}$), dirichlet ($\partial	K \cap \partial \mathcal{D}^d$), neumann ($\partial	K \cap \partial \mathcal{D}^n$), and robin ($\partial	K \cap \partial \mathcal{D}^r$) components:
+\noindent where we use the same notation for the volumetric and surface inner products as Section \ref{sec::Sn_Spatial}. We further decompose the boundary terms for element $K$ into its respective interior ($\partial K \backslash \partial \mathcal{D}$), Dirichlet ($\partial K \cap \partial \mathcal{D}^d$), Neumann ($\partial K \cap \partial \mathcal{D}^n$), and Robin ($\partial K \cap \partial \mathcal{D}^r$) components:
 
 \begin{equation}
 \label{eq::SIP_diff_eq_weak_cellK_wbounds}
 \begin{aligned}
 &\Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{K}  + \Big(  \sigma   b ,  \Phi  \Big)_{K}   - \Big<  b, D \partial_n \Phi \Big>_{\partial K \backslash \partial \mathcal{D}}   \\
- &- \Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^d} - \Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^n}  - \Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^r} \\
-&= \Big(  b, Q  \Big)_{K} 
+ - &\Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^d} - \Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^n}  - \Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^r} \\
+= &\Big(  b, Q  \Big)_{K} 
 \end{aligned} .
 \end{equation}
 
-\noindent We can then immediately utilize the definitions of the outgoing currents from Eqs. (\ref{eq::DSA_standard_diff_eq_neumann_bound}) and (\ref{eq::DSA_standard_diff_eq_robin_bound}), and add the neumann and robin boundary contributions from element $K$:
+\noindent We can then immediately utilize the definitions of the outgoing currents from Eqs. (\ref{eq::DSA_standard_diff_eq_neumann_bound}) and (\ref{eq::DSA_standard_diff_eq_robin_bound}), and add the Neumann and Robin boundary contributions from element $K$:
 
 \begin{equation}
 \label{eq::SIP_diff_eq_weak_cellK_NR}
 \begin{aligned}
-\Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{K}  + \Big(  \sigma   b ,  \Phi  \Big)_{K}  \\
-- \Big<  b, D \partial_n \Phi \Big>_{\partial K \backslash \partial \mathcal{D}} - \Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^d}+ \frac{1}{2} \Big<  b, \Phi  \Big>_{\partial K \cap \partial \mathcal{D}^r} \\
-= \Big(  b, Q  \Big)_{K} - \Big<   b, J_{0}  \Big>_{\partial K \cap \partial \mathcal{D}^n} +  2 \Big<  b, J^{inc}  \Big>_{\partial	K \cap \partial \mathcal{D}^r}.
+&\Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{K}  + \Big(  \sigma   b ,  \Phi  \Big)_{K}  \\
+- &\Big<  b, D \partial_n \Phi \Big>_{\partial K \backslash \partial \mathcal{D}} - \Big<  b, D \partial_n \Phi \Big>_{\partial	K \cap \partial \mathcal{D}^d}+ \frac{1}{2} \Big<  b, \Phi  \Big>_{\partial K \cap \partial \mathcal{D}^r} \\
+= &\Big(  b, Q  \Big)_{K} - \Big<   b, J_{0}  \Big>_{\partial K \cap \partial \mathcal{D}^n} +  2 \Big<  b, J^{inc}  \Big>_{\partial	K \cap \partial \mathcal{D}^r}.
 \end{aligned}
 \end{equation}
 
@@ -935,7 +935,7 @@ Unfortunately, we are now left with the burden of deciding what to do with eleme
 
 \noindent where the face's unit normal direction, $\vec{n}$, has been arbitrarily chosen.
 
-These weak formulations for the dirichlet boundary conditions and the interior faces can now be inserted into Eq. (\ref{eq::SIP_diff_eq_weak_cellK_NR}). From there, we sum the remaining inner products besides the interior face terms across all elements. With this completed, the SIP form of the diffusion equation can be succinctly written as
+These weak formulations for the Dirichlet boundary conditions and the interior faces can now be inserted into Eq. (\ref{eq::SIP_diff_eq_weak_cellK_NR}). From there, we sum the remaining inner products besides the interior face terms across all elements. With this completed, the SIP form of the diffusion equation can be succinctly written as
 
 \begin{equation}
 a^{SIP}( b, \Phi) = b^{SIP}(b),
@@ -1109,7 +1109,7 @@ N_{i,j,f,K} =  \int_f \vec{n} \cdot  \vec{\nabla} b_i \, b_j .
 \section{Modified Interior Penalty Form of the Diffusion Equation used for Diffusion Synthetic Acceleration Applications}
 \label{sec::DSA_MIP}
 
-In Section \ref{sec::DSA_SIP}, we presented the SIP form of the diffusion equation that uses discontinuous Galerkin finite elements. This form can be used as a general solver for the diffusion equation that contains boundary conditions of the first three kinds: dirichlet, neumann, and robin. From the SIP form, we simply need to make some modifications to account for the boundary conditions that arise from the transport solution error as detailed in Section \ref{sec::DSA_DSA}. The two types of transport conditions that we have considered in this work are dirichlet type conditions (incoming incident and vacuum) and neumann type conditions (reflecting). Since there is no iteration error associated with the incident boundary conditions, we can express the corresponding diffusion boundary condition as a zero dirichlet condition ($\delta \Phi_0 = 0$). Conversely, reflecting transport boundary conditions yield neumann diffusion boundary conditions that we express as $\delta J^{inc}$. However, depending on the mesh and sweep ordering employed, we are not guaranteed to have this reflecting boundary condition error be strictly zero. If we seek to accelerate the $k$ iterate, then the error in the incoming current, $\delta J^{inc}$, is given by
+In Section \ref{sec::DSA_SIP}, we presented the SIP form of the diffusion equation that uses discontinuous Galerkin finite elements. This form can be used as a general solver for the diffusion equation that contains boundary conditions of the first three kinds: Dirichlet, Neumann, and Robin. From the SIP form, we simply need to make some modifications to account for the boundary conditions that arise from the transport solution error as detailed in Section \ref{sec::DSA_DSA}. The two types of transport conditions that we have considered in this work are dirichlet type conditions (incoming incident and vacuum) and neumann type conditions (reflecting). Since there is no iteration error associated with the incident boundary conditions, we can express the corresponding diffusion boundary condition as a zero dirichlet condition ($\delta \Phi_0 = 0$). Conversely, reflecting transport boundary conditions yield neumann diffusion boundary conditions that we express as $\delta J^{inc}$. However, depending on the mesh and sweep ordering employed, we are not guaranteed to have this reflecting boundary condition error be strictly zero. If we seek to accelerate the $k$ iterate, then the error in the incoming current, $\delta J^{inc}$, is given by
 
 \begin{equation}
 \label{eq::MIP_inc_curr_error}
@@ -1148,7 +1148,7 @@ b^{MIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  + \Big< b, \delta  J^{inc}  \Big
 \kappa_e^{MIP} = \text{max} \left( \kappa_e^{SIP}, \frac{1}{4} \right).
 \end{equation}
 
-\noindent Just like the SIP penalty coefficient, this definition of $\kappa_e^{MIP}$ ensures that the MIP bilinear form of Eq. (\ref{eq::MIP_bilinear_form}) is SPD. We next describe the procedures used to efficiently invert the MIP system matrix for our work.
+\noindent Just like the SIP penalty coefficient, this definition of $\kappa_e^{MIP}$ ensures that the MIP bilinear form of Eq. (\ref{eq::MIP_bilinear_form}) is SPD. We next describe the procedures used to efficiently solve the MIP system matrix for our work.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1158,9 +1158,9 @@ b^{MIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  + \Big< b, \delta  J^{inc}  \Big
 \section{Solving the MIP Diffusion Problem}
 \label{sec::DSA_Solving}
 
-Equations (\ref{eq::MIP_bilinear_form}) and (\ref{eq::MIP_linear_form}) form the system matrix and right-hand-side, respectively, that we need to solve for a given DSA step. Just like the system of equations for the transport problem is too large to solve in a direct manner, we again employ an iterative scheme. Because the MIP bilinear form is SPD, we have natural recourse to use the simple Preconditioned Conjugate Gradient (PCG) method \cite{saad2003iterative}. If the system of equations you are trying to solve for is SPD, then Conjugate Gradient (CG) is the most light-weight iterative method possible. It has a low memory footprint and is guaranteed to converge in ($N_{dof}/2$) iterations, even if it is ill-conditioned. With a good preconditioner, the iteration counts with PCG can be reduced substantially further. If we define ${\bf A}$ as the MIP system matrix to be inverted and ${\bf b}$ as the right-hand-side vector, then the CG algorithm acts by minimizing the residual ${\bf r} = {\bf b} - {\bf A} {\bf x}$. This is accomplished by taking successive operations of matrix-vector multiplications on conjugate krylov vectors, ${\bf p}_k$. The PCG algorithm performs one additional step by solving the equation ${\bf M} {\bf z_k} = {\bf r_k}$ at each CG iteration, where ${\bf M}$ is some preconditioner. We provide the simple pseudocode for PCG in algorithm \ref{alg::DSA_PCG}.
+Equations (\ref{eq::MIP_bilinear_form}) and (\ref{eq::MIP_linear_form}) form the system matrix and right-hand-side, respectively, that we need to solve for a given DSA step. Just like the system of equations for the transport problem is too large to solve in a direct manner, we again employ an iterative scheme. Because the MIP bilinear form is SPD, we have natural recourse to use the simple Preconditioned Conjugate Gradient (PCG) method \cite{saad2003iterative}. If the system of equations you seek to solve is SPD, then Conjugate Gradient (CG) is the most light-weight iterative method possible. It has a low memory footprint and is guaranteed to converge in ($N_{dof}/2$) iterations for well-conditioned matrices. With a good preconditioner, the iteration counts with PCG can be reduced substantially further. If we define ${\bf A}$ as the MIP system matrix to be inverted and ${\bf b}$ as the right-hand-side vector, then the CG algorithm acts by minimizing the residual ${\bf r} = {\bf b} - {\bf A} {\bf x}$. This is accomplished by taking successive operations of matrix-vector multiplications on conjugate krylov vectors, ${\bf p}_k$. The PCG algorithm performs one additional step by solving the equation ${\bf M} {\bf z_k} = {\bf r_k}$ at each CG iteration, where ${\bf M}$ is some preconditioner. We provide the simple pseudocode for PCG in algorithm \ref{alg::DSA_PCG}.
 
-There are several choices of preconditioners that can be employed with PCG \cite{saad2003iterative}. Depending on the structure and conditioning of the matrix to be inverted, some simple preconditioners can be effective. We can decompose the MIP system matrix, ${\bf A} = {\bf L} + {\bf D} + {\bf L}^T$, into its strictly lower-triangular portion, ${\bf L}$, its strictly diagonal portion, ${\bf D}$, and its strictly lower-triangular portion, ${\bf L}^T$. The simplest preconditioner we could employ is Jacobi preconditioning, which is just the strictly diagonal portion of the system matrix: ${\bf M} = {\bf D}$. This preconditioner is effective for diagonally-dominant matrices. The next preconditioner would be a simple Symmetric Successive Over-Relaxation (SSOR) method: ${\bf M} (\omega) = \frac{\omega}{2-\omega} \left( \frac{1}{\omega}{\bf D} + {\bf L}  \right)  {\bf D}^{-1}  \left( \frac{1}{\omega}{\bf D} + {\bf L}  \right)^T$. The PCG algorithm can be simplified with this preconditioner choice by the Eisenstat trick \cite{eisenstat1981efficient}. The final simple preconditioner that we will consider is Incomplete LU Factorization (ILU). Instead of simply decomposing the system matrix, we factorize it into a unit-lower triangular portion, $\tilde{{\bf L}}$, and an upper triangular portion, $\tilde{{\bf U}}$. These factorized matrices then form our preconditioner: ${\bf M} =\tilde{{\bf L}}\tilde{{\bf U}}$. From this factorization, the preconditioning step to solve ${\bf M} {\bf z}= {\bf r}$ is accomplished by first solving $\tilde{{\bf L}} {\bf y}= {\bf r} $, followed by $\tilde{{\bf U}} {\bf z}= {\bf y} $. While this leads to a second preconditioning step, the factorized matrices are easy to invert since they are triangular.
+There are several choices of preconditioners that can be employed with PCG \cite{saad2003iterative}. Depending on the structure and conditioning of the matrix to be inverted, some simple preconditioners can be effective. We can decompose the MIP system matrix, ${\bf A} = {\bf L} + {\bf D} + {\bf L}^T$, into its strictly lower-triangular portion, ${\bf L}$, its strictly diagonal portion, ${\bf D}$, and its strictly lower-triangular portion, ${\bf L}^T$. The simplest preconditioner we could employ is Jacobi preconditioning, which is just the strictly diagonal portion of the system matrix: ${\bf M} = {\bf D}$. This preconditioner is effective for diagonally-dominant matrices. The next preconditioner would be a simple Symmetric Successive Over-Relaxation (SSOR) method: ${\bf M} (\omega) = \frac{\omega}{2-\omega} \left( \frac{1}{\omega}{\bf D} + {\bf L}  \right)  {\bf D}^{-1}  \left( \frac{1}{\omega}{\bf D} + {\bf L}  \right)^T$. The PCG algorithm can be simplified with this preconditioner choice by the Eisenstat trick \cite{eisenstat1981efficient}. The final simple preconditioner that we will consider is Incomplete LU Factorization (ILU). Instead of simply decomposing the system matrix, we approximately factorize it into a unit-lower triangular portion, $\tilde{{\bf L}}$, and an upper triangular portion, $\tilde{{\bf U}}$. These factorized matrices then form our preconditioner: ${\bf M} =\tilde{{\bf L}}\tilde{{\bf U}}$. From this factorization, the preconditioning step to solve ${\bf M} {\bf z}= {\bf r}$ is accomplished by first solving $\tilde{{\bf L}} {\bf y}= {\bf r} $, followed by $\tilde{{\bf U}} {\bf z}= {\bf y} $. While this leads to a second preconditioning step, the factorized matrices are easy to invert since they are triangular.
 
 Besides Jacobi, SSOR and ILU preconditioning, we also seek to investigate multigrid methods to invert the MIP system matrix. Turcksin and Ragusa demonstrated in \cite{turcksin2014discontinuous} that multigrid preconditioning methods can efficiently invert the MIP operator. Both Algebraic MultiGrid (AMG) \cite{ruge1987algebraic,briggs2000multigrid} and AGgregation-based algebraic MultiGrid (AGMG) \cite{notay2010user,notay2010aggregation,napov2012algebraic,notay2012aggregation} were shown to be effective. We leave the general details of multigrid methods to the previously defined references.
 
@@ -1196,7 +1196,7 @@ Besides Jacobi, SSOR and ILU preconditioning, we also seek to investigate multig
 \section{Fourier Analysis}
 \label{sec::DSA_Fourier}
 
-With the acceleration methodologies and diffusion discretization scheme described in detail, we now present the Fourier Analysis (FA) tool. Fourier Analysis is commonly used to analyze the performance characteristics of acceleration schemes for the transport equation. It is a powerful tool because it allows us to express the iteration error in terms of a Fourier series. Then, because of the orthogonality of the terms in the series, each Fourier mode can be analyzed independently. If these modes were not independent, then we would have no ability to simultaneously solve the infinite spectrum of Fourier modes except for an extremely small set of idealized problems where analytical analysis can be performed.
+With the acceleration methodologies and diffusion discretization scheme described in detail, we now present the Fourier Analysis (FA) tool. Fourier Analysis is commonly used to analyze the performance characteristics of acceleration schemes for the transport equation. It is a powerful tool because it allows us to decompose the iteration error into Fourier modes. Then, because of the orthogonality of the terms in the series, each Fourier mode can be analyzed independently. If these modes were not independent, then we would have no ability to simultaneously solve the infinite spectrum of Fourier modes except for an extremely small set of idealized problems where analytical analysis can be performed.
 
 For the Fourier Analysis of this work, we will only investigate geometries with tensor-based mesh cells (quadrilaterals and hexahedra). For completeness, some examples of 1D FA is provided in Appendix \ref{{sec::appendix_DSA}}. The FA domains are composed of regular Cartesian geometries defined by the global domain size and cell widths in each dimension. The domain size is given by ($X,Y$) in 2D and ($X,Y,Z$) in 3D. The cell layout is described by its $N_x$ cell widths ($\Delta x_{1}, \Delta x_{2}, ..., \Delta x_{N_x}$) in the $x$-dimension, its $N_y$ cell widths ($\Delta y_{1}, \Delta y_{2}, ..., \Delta y_{N_y}$) in the $y$-dimension, and its $N_z$ cell widths ($\Delta z_{1}, \Delta z_{2}, ..., \Delta z_{N_z}$) in the $z$-dimension. This simple, yet structured, geometric layout is shown in Figure \ref{fig::DSA_fourier_grid_layout} for a 2D domain. The analogous 3D geometric layout can be formed by extruding this 2D grid. For FA, periodic boundary conditions are applied on the domain boundary. A graphical depiction of periodic boundary conditions is given for a 2D, 2-cell domain in Figure \ref{fig::DSA_fourier_periodic_BC}. The periodic boundary conditions work by actually representing boundary faces as extensions to the interior faces. In other words, boundary faces are simply additional ``interior'' faces. Figure \ref{fig::DSA_fourier_periodic_BC} shows this with the translocations of the neighboring cells to the exterior. For example, the periodic condition for the left face of cell 1 states that the degrees of freedom that we employ actually come from cell 2 (which we denote as 2'). Likewise, the periodic condition for the right face of cell 2 states that the degrees of freedom that we employ actually come from cell 1 (which we denote as 1'). The cells 1' and 2' can be viewed as virtual cells for use as an implementation detail.
 
@@ -1916,6 +1916,334 @@ III & 1.0 & 0.30 & 0.0\\
 \label{fig::DSA_IW_starting_mesh}
 \end{figure}
 
+\begin{table}
+\caption{DSA counts based on preconditioner type for the Iron-Water problem with $LS_4$ quadrature, linear basis functions, and solution reinitialization.}
+\begin{center}
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+& & \multicolumn{5}{c}{Preconditioner Type}\vline\\
+\hline
+Cycle & SI Iters. & None&Jacobi&SSOR& ILU& AGMG \\
+\hline
+0&19&357&282&58&94&19\\
+1&21&635&506&75&170&21\\
+2&17&831&700&91&233&17\\
+3&16&917&791&100&269&127\\
+4&13&1164&1062&158&351&114\\
+5&12&1787&1547&218&501&106\\
+6&12&2187&1883&266&594&116\\
+7&12&2407&2123&330&670&122\\
+8&12&3116&2698&395&843&111\\
+9&11&3176&2835&449&903&113\\
+10&11&4058&3515&563&1109&112\\
+11&11&4442&3821&657&1221&110\\
+12&11&5378&4659&788&1495&119\\
+13&11&5989&5209&860&1680&123\\
+14&11&6648&5824&957&1893&123\\
+15&11&7655&6640&1098&2153&130\\
+16&11&7973&6934&1149&2250&134\\
+17&11&9456&8200&1378&2686&139\\
+18&11&10181&8890&1373&2906&145\\
+19&11&11111&9716&1550&3139&143\\
+20&11&11934&10494&1780&3406&143\\
+21&11&12456&10940&1779&3567&135\\
+22&11&13896&12308&2043&3981&144\\
+23&11&15216&13531&2253&4401&146\\
+24&11&15932&14188&2436&4646&144\\
+\hline
+\end{tabular}
+\end{center}
+\label{tab::DSA_IW_LS4_k1_reinit}
+\end{table}
+
+\begin{table}
+\caption{DSA counts based on preconditioner type for the Iron-Water problem with $LS_4$ quadrature, linear basis functions, and solution bootstrapping.}
+\begin{center}
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+& & \multicolumn{5}{c}{Preconditioner Type}\vline\\
+\hline
+Cycle & SI Iters. & None&Jacobi&SSOR& ILU& AGMG \\
+\hline
+0&19&357&282&58&94&19\\
+1&22&675&538&73&179&22\\
+2&17&787&708&78&230&17\\
+3&14&788&692&74&228&118\\
+4&13&1028&953&116&328&123\\
+5&11&1452&1317&149&470&110\\
+6&10&1592&1449&165&497&106\\
+7&10&1762&1581&143&501&106\\
+8&9&2335&1976&217&633&97\\
+9&9&2434&1989&269&606&110\\
+10&8&2775&2392&309&762&92\\
+11&8&2951&2531&310&775&95\\
+12&8&3570&3200&384&1029&95\\
+13&8&4197&3676&363&1172&103\\
+14&7&4159&3604&377&1183&92\\
+15&6&3961&3529&391&1087&84\\
+16&6&4301&3612&333&1198&88\\
+17&7&6035&5182&498&1711&104\\
+18&6&5352&4790&578&1550&93\\
+19&6&5897&5156&626&1655&89\\
+20&6&6343&5478&518&1758&89\\
+21&6&6578&5692&661&1875&89\\
+22&6&6709&6212&685&1925&92\\
+23&6&8376&7213&583&2346&98\\
+24&5&7051&6148&659&1937&80\\
+\hline
+\end{tabular}
+\end{center}
+\label{tab::DSA_IW_LS4_k1_boot}
+\end{table}
+
+\begin{table}
+\caption{DSA counts based on preconditioner type for the Iron-Water problem with $LS_4$ quadrature, quadratic basis functions, and solution reinitialization.}
+\begin{center}
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+& & \multicolumn{5}{c}{Preconditioner Type}\vline\\
+\hline
+Cycle & SI Iters. & None&Jacobi&SSOR& ILU& AGMG \\
+\hline
+0&18&681&553&93&108&18\\
+1&14&902&750&120&202&69\\
+2&14&1358&1196&163&245&78\\
+3&12&1464&1277&216&265&65\\
+4&12&1977&1704&283&349&60\\
+5&11&2858&2379&536&494&56\\
+6&11&3813&3210&714&653&66\\
+7&11&4450&3784&902&779&112\\
+8&11&6465&5403&1259&1105&167\\
+9&11&7541&6370&1691&1328&155\\
+10&11&9107&7477&1948&1557&146\\
+11&11&10535&8648&2554&1793&174\\
+12&11&11843&9662&2660&2016&166\\
+13&11&12810&10481&2960&2167&158\\
+14&11&14227&11790&3179&2451&178\\
+15&11&14888&12411&3422&2598&177\\
+16&11&15652&12902&3408&2690&185\\
+17&11&16327&13723&4120&2820&189\\
+18&11&17611&14647&4105&3006&177\\
+19&11&18922&15392&4319&3192&179\\
+20&11&19457&16009&4527&3304&179\\
+21&11&20099&16798&5032&3467&178\\
+22&11&21359&17446&5198&3599&183\\
+23&11&22000&17880&5397&3702&188\\
+24&11&22363&18465&5539&3815&167\\
+\hline
+\end{tabular}
+\end{center}
+\label{tab::DSA_IW_LS4_k2_reinit}
+\end{table}
+
+\begin{table}
+\caption{DSA counts based on preconditioner type for the Iron-Water problem with $LS_4$ quadrature, quadratic basis functions, and solution bootstrapping.}
+\begin{center}
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+& & \multicolumn{5}{c}{Preconditioner Type}\vline\\
+\hline
+Cycle & SI Iters. & None&Jacobi&SSOR& ILU& AGMG \\
+\hline
+0&18&681&553&93&108&18\\
+1&14&885&722&84&195&70\\
+2&13&1315&1132&112&246&78\\
+3&11&1383&1195&170&242&66\\
+4&10&1722&1451&218&292&60\\
+5&10&2663&2201&326&461&61\\
+6&10&3509&2971&448&611&67\\
+7&9&3918&3072&386&651&102\\
+8&8&4919&4070&621&837&129\\
+9&8&5643&4658&776&969&117\\
+10&8&6770&5639&848&1160&123\\
+11&9&8430&6727&1028&1430&146\\
+12&8&8611&7236&1015&1492&132\\
+13&8&9382&7725&1112&1606&125\\
+14&7&8915&7495&1065&1559&120\\
+15&7&9646&7776&1295&1623&120\\
+16&7&10235&8594&1336&1788&124\\
+17&7&10577&8442&1127&1747&131\\
+18&7&11190&9431&1540&1949&116\\
+19&7&11867&9672&1553&2069&125\\
+20&7&12494&10271&1540&2090&131\\
+21&7&12724&10963&1668&2259&118\\
+22&7&13367&11471&1375&2370&137\\
+23&7&12816&10481&1398&2207&127\\
+24&7&14850&12149&1706&2560&125\\
+\hline
+\end{tabular}
+\end{center}
+\label{tab::DSA_IW_LS4_k2_boot}
+\end{table}
+
+\begin{table}
+\caption{DSA counts based on preconditioner type for the Iron-Water problem with $S_{24}^2$ quadrature, linear basis functions, and solution reinitialization.}
+\begin{center}
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+& & \multicolumn{5}{c}{Preconditioner Type}\vline\\
+\hline
+Cycle & SI Iters. & None&Jacobi&SSOR& ILU& AGMG \\
+\hline
+0&19&360&282&55&95&19\\
+1&20&592&478&70&161&20\\
+2&17&794&664&90&225&122\\
+3&14&958&850&123&310&117\\
+4&13&1571&1386&163&443&137\\
+5&12&2170&1926&259&597&124\\
+6&12&2308&2075&298&668&131\\
+7&11&3269&2837&416&901&131\\
+8&11&3836&3376&491&1093&130\\
+9&10&3853&3290&570&1072&118\\
+10&10&4563&4062&694&1264&115\\
+11&10&4625&4288&694&1331&119\\
+12&10&4932&4458&724&1386&119\\
+13&10&5028&4557&744&1422&122\\
+14&10&6507&5831&968&1822&124\\
+15&10&6431&5936&1021&1873&123\\
+16&10&8128&6994&1212&2186&125\\
+17&10&8510&7421&1276&2353&128\\
+18&10&8974&8043&1198&2571&131\\
+19&10&8999&8110&1226&2615&127\\
+20&10&9242&8236&1447&2654&132\\
+21&10&9304&8327&1367&2710&132\\
+22&10&11464&10143&1807&3249&135\\
+23&10&11629&10272&1815&3286&135\\
+24&10&11956&10565&1974&3386&134\\
+\hline
+\end{tabular}
+\end{center}
+\label{tab::DSA_IW_PGLC24_k1_reinit}
+\end{table}
+
+\begin{table}
+\caption{DSA counts based on preconditioner type for the Iron-Water problem with $S_{24}^2$ quadrature, linear basis functions, and solution bootstrapping.}
+\begin{center}
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+& & \multicolumn{5}{c}{Preconditioner Type}\vline\\
+\hline
+Cycle & SI Iters. & None&Jacobi&SSOR& ILU& AGMG \\
+\hline
+0&19&360&282&55&95&19\\
+1&21&629&512&70&171&21\\
+2&16&787&681&75&227&118\\
+3&13&991&875&93&298&112\\
+4&11&1271&1064&121&357&128\\
+5&10&1879&1682&168&508&119\\
+6&10&1883&1605&177&526&115\\
+7&9&2419&2168&217&675&99\\
+8&8&2427&2100&271&712&88\\
+9&8&2624&2325&282&720&88\\
+10&7&3170&2723&327&846&82\\
+11&7&3132&2700&325&874&81\\
+12&7&3069&2470&332&841&79\\
+13&7&3310&2850&327&933&74\\
+14&7&3547&3340&418&1037&77\\
+15&7&4307&3889&360&1214&76\\
+16&6&4505&3992&604&1301&72\\
+17&6&5036&4460&501&1425&73\\
+18&6&5162&4580&544&1467&75\\
+19&6&5236&4572&552&1459&69\\
+20&6&5525&4849&643&1523&72\\
+21&6&5597&4876&613&1579&74\\
+22&6&6249&5652&770&1880&72\\
+23&6&6202&5537&666&1805&72\\
+24&6&5918&5375&741&1717&72\\
+\hline
+\end{tabular}
+\end{center}
+\label{tab::DSA_IW_PGLC24_k1_boot}
+\end{table}
+
+\begin{table}
+\caption{DSA counts based on preconditioner type for the Iron-Water problem with $S_{24}^2$ quadrature, quadratic basis functions, and solution reinitialization.}
+\begin{center}
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+& & \multicolumn{5}{c}{Preconditioner Type}\vline\\
+\hline
+Cycle & SI Iters. & None&Jacobi&SSOR& ILU& AGMG \\
+\hline
+0&17&432&518&47&109&19\\
+1&16&710&592&76&192&79\\
+2&15&953&794&144&219&84\\
+3&13&1150&958&197&239&70\\
+4&14&1885&1571&261&339&70\\
+5&13&2604&2170&414&487&66\\
+6&12&2770&2308&477&594&72\\
+7&12&3923&3269&666&708&122\\
+8&11&4603&3836&786&921&167\\
+9&10&4624&3853&912&1006&141\\
+10&10&5476&4563&1110&1180&133\\
+11&10&5550&4625&1110&1358&158\\
+12&10&5918&4932&1158&1527&151\\
+13&10&6034&5028&1190&1642&144\\
+14&10&7808&6507&1549&1857&162\\
+15&10&7717&6431&1634&1968&161\\
+16&10&9754&8128&1939&2038&168\\
+17&10&10212&8510&2042&2136&172\\
+18&10&10769&8974&1917&2277&161\\
+19&10&10799&8999&1962&2418&163\\
+20&10&11090&9242&2315&2503&163\\
+21&10&11165&9304&2187&2627&162\\
+22&10&13757&11464&2891&2727&166\\
+23&10&13955&11629&2904&2805&171\\
+24&10&14347&11956&3158&2890&152\\
+\hline
+\end{tabular}
+\end{center}
+\label{tab::DSA_IW_PGLC24_k2_reinit}
+\end{table}
+
+\begin{table}
+\caption{DSA counts based on preconditioner type for the Iron-Water problem with $S_{24}^2$ quadrature, quadratic basis functions, and solution bootstrapping.}
+\begin{center}
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|c|c|c|}
+\hline
+& & \multicolumn{5}{c}{Preconditioner Type}\vline\\
+\hline
+Cycle & SI Iters. & None&Jacobi&SSOR& ILU& AGMG \\
+\hline
+0&17&432&518&47&109&19\\
+1&14&652&737&57&176&69\\
+2&12&801&1134&105&184&67\\
+3&10&929&1449&163&193&54\\
+4&10&1414&1987&205&254&50\\
+5&10&2103&2909&277&393&51\\
+6&8&1939&2784&350&416&48\\
+7&9&3089&3955&551&558&92\\
+8&8&3515&4215&544&703&121\\
+9&8&3884&5981&674&845&113\\
+10&7&4025&5614&843&867&93\\
+11&8&4662&6274&865&1141&126\\
+12&8&4971&7819&862&1283&121\\
+13&7&4435&7467&959&1207&101\\
+14&7&5739&7428&1037&1365&113\\
+15&7&5672&8906&928&1446&113\\
+16&7&7169&10259&1308&1498&118\\
+17&7&7506&10420&1381&1570&120\\
+18&7&7915&10927&1391&1674&113\\
+19&6&6803&10102&1349&1523&98\\
+20&6&6987&10368&1311&1577&98\\
+21&6&7034&10574&1619&1655&97\\
+22&6&8667&11796&1819&1718&100\\
+23&6&8792&10624&1290&1767&103\\
+24&5&7532&10376&756&1517&76\\
+\hline
+\end{tabular}
+\end{center}
+\label{tab::DSA_IW_PGLC24_k2_boot}
+\end{table}
+
 \begin{figure}
 \centering
 	\begin{subfigure}[b]{0.485\textwidth}
@@ -2090,10 +2418,6 @@ From the timing results of Figure \ref{fig::DSA_Vulcan_MIP_Timing}, one must won
 \label{fig::DSA_Vulcan_MIP_Timing}
 \end{figure}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSubSection -  Parametric HYPRE
-\subsubsection{Aggregation and Partitioning Effects on the HYPRE PCG Algorithm}
-\label{sec::DSA_Results_Scaling_Parametric}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2103,12 +2427,12 @@ From the timing results of Figure \ref{fig::DSA_Vulcan_MIP_Timing}, one must won
 
 We conclude the results of this chapter by presenting analysis on the ability to use DSA to accelerate the convergence of multigroup transport problems that are dominated by thermal neutron upscattering.
 
-\begin{figure}
-\centering
-\includegraphics[width=0.8\textwidth]{figures/sec_DSA/IM1_configuration_Rev1.png}
-\caption{Configuration of the IM1 problem with the outer layers of air removed.}
-\label{fig::IM1_config}
-\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSubSection - MG IM1 Fourier
+\subsubsection{Infinite Medium and Fourier Analysis}
+\label{sec::DSA_Results_IM1_Fourier}
+
+
 
 
 \begin{figure}
@@ -2135,6 +2459,27 @@ We conclude the results of this chapter by presenting analysis on the ability to
 \label{fig::IM1_mats_EC_Rich}
 \end{figure}
 
+\begin{table}
+\caption{Infinite medium spectral radii of the IM1 materials for the three thermal neutron upscattering methods. We include both the unaccelerated (U) and accelerated (A) cases.}
+\centering
+\def\arraystretch{1.2}
+\begin{tabular}{|c||c|c||c|c||c|c|}
+\hline
+Material  & U. TG & A. TG & U. MTG & A. MTG & U. MJA. & A. MJA. \\ \hline
+Graphite & 0.9883&0.4084&0.9993&0.9604&0.9993&0.9613\\
+HDPE &0.8916&0.4343&0.9918&0.7527&0.9943&0.8015\\
+B-HDPE &0.0258&0.0177&0.1331&0.1221&0.1336&0.1223 \\
+Wood & 0.9820&0.2101&0.9840&0.3836&0.9915&0.5326 \\
+AmBe  &0.4835&0.2724&0.5646&0.5554&0.7068&0.5596 \\
+Steel  & 0.6989&0.5809&0.9243&0.9215&0.9255&0.9215\\
+Boral  & 0.0023&0.0016&0.0782&0.0602&0.0782&0.0602 \\
+BF3   & 0.0008&0.0006&0.0351&0.0266&0.0351&0.0266 \\
+Air   &0.7580&0.5282&0.8121&0.7828&0.8845&0.7896\\
+\hline
+\end{tabular}
+\label{tab::IM1_inf_med_SR}
+\end{table}
+
 \begin{figure}
 \centering
 {
@@ -2156,6 +2501,34 @@ We conclude the results of this chapter by presenting analysis on the ability to
 \label{fig::IM1_TG_fourier_somemats}
 \end{figure}
 
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSubSection - MG IM1 2D
+\subsubsection{2D IM1 Results}
+\label{sec::DSA_Results_IM1_2D}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.55\textwidth]{figures/sec_DSA/2D_IM1_Variant_Layout.png}
+\caption{Configuration of the 2D variant of the IM1 problem.}
+\label{fig::IM1_config_2D}
+\end{figure}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSubSection - MG IM1 3D
+\subsubsection{3D IM1 Results}
+\label{sec::DSA_Results_IM1_3D}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/sec_DSA/IM1_configuration_Rev1.png}
+\caption{Configuration of the IM1 problem with the outer layers of air removed.}
+\label{fig::IM1_config_3D}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
