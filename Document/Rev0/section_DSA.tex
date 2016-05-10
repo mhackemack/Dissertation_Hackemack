@@ -1431,33 +1431,33 @@ Using the 3D PWL basis functions, which were previously used for SIP on 2D polyg
 	\begin{subfigure}[b]{0.5\textwidth}
 		\centering
 		\includegraphics[width=0.82\textwidth]{figures/sec_DSA/SIP_cart_lin_contour.png}
-		\caption{}
+		\caption{Cartesian}
 	\end{subfigure}
 	\vfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/sec_DSA/SIP_tri_lin_contour.png}
-		\caption{}
+		\caption{Triangular}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/sec_DSA/SIP_poly_lin_contour.png}
-		\caption{}
+		\caption{Random Polygons}
 	\end{subfigure}
 	\vfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/sec_DSA/SIP_sine_poly_lin_contour.png}
-		\caption{}
+		\caption{Sinusoid Polygons}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/sec_DSA/SIP_z_poly_lin_contour.png}
-		\caption{}
+		\caption{Polygonal Z-Mesh}
 	\end{subfigure}
-\caption{Axial slice showing the contours for the linear solution of the different mesh types: (a) cartesian, (b) ordered triangles, (c) random polygons, (d) sinusoidal polygons, and (e) polygonal z-mesh.}
+\caption{Axial slice showing the contours for the linear solution of the SIP diffusion form.}
 \label{fig::SIP_linear_sol}
 \end{figure}
 
@@ -1466,35 +1466,61 @@ Using the 3D PWL basis functions, which were previously used for SIP on 2D polyg
 \subsubsection{Method of Manufactured Solutions}
 \label{sec::DSA_Results_SIP_MMS}
 
-We next test to see if the SIP diffusion form can capture the appropriate second order convergencerates with the 3D PWL basis functions. These basis functions were previously shown to capture the appropriate convergence rates for the DGFEM transport equation on 3D hexahedral grids \cite{bailey2008phd}.
+We next test to see if the SIP diffusion form can capture the appropriate second order convergencerates with the 3D PWL basis functions. These basis functions were previously shown to capture the appropriate convergence rates for the DGFEM transport equation on 3D hexahedral grids \cite{bailey2008phd}. The convergence for the SIP diffusion form is similar to the DGFEM transport equation. Since there are no impositions on the regularity of the diffusion solution, then the SIP convergence rate in the $L_2$-norm can be given by
+
+\begin{equation}
+\label{eq::SIP_convergence_h}
+|| \Phi - \Phi_h ||_{L_2} \leq C h^{p+1}.
+\end{equation}
+
+\noindent In a similar manner to the DGFEM transport equation, we can express a proportional relation between the mesh cell diameters, $h$, and the number of degrees of freedom, $N_{dof}$: $N_{dof} \propto h^{-d}$. Therefore, the convergence rate of the SIP diffusion form can be expressed with the degrees of freedom as 
+
+\begin{equation}
+\label{eq::SIP_convergence_N}
+|| \Phi - \Phi_h ||_{L_2} \leq C N_{dof}^{-\frac{p+1}{d}}.
+\end{equation}
+
+\noindent Equation (\ref{eq::SIP_convergence_N}) states that for this 3D problem using linear basis functions, we expect the slope of our convergence rates to be $-2/3$.
+
+We test two different MMS solutions: 1) a pairwise quadratic function and 2) a product of the pairwise quadratic function and a localized Gaussian function. The quadratic and Gaussian functions are given by 
 
 \begin{equation}
 \label{eq::SIP_quad_mms_solution}
 \begin{aligned}
-\Phi^{quad} (x,y,z) = x(1-x)y(1-y)z(1-z) 
+\Phi^{quad} (x,y,z) = x(1-x)y(1-y)z(1-z) ,
 \end{aligned}
 \end{equation}
+
+\noindent and
 
 \begin{equation}
 \label{eq::SIP_gauss_mms_solution}
 \begin{aligned}
-\Phi^{gauss} (x,y,z) = \Phi^{quad} (x,y,z) \exp(- (\vec{r} - \vec{r}_0) \cdot (\vec{r} - \vec{r}_0)^{T}  )
+\Phi^{gauss} (x,y,z) = \Phi^{quad} (x,y,z) \exp(- (\vec{r} - \vec{r}_0) \cdot (\vec{r} - \vec{r}_0)^{T}  ),
 \end{aligned}
 \end{equation}
 
+\noindent respectively, where $\vec{r} = (x,y,z)$ and $\vec{r}_0 = (x_0,y_0,z_0)$. We plot the MMS error of the SIP diffusion form in Figure \ref{fig::SIP_mms_error_plot} for both the quadratic and Gaussian solutions. We also provide solutions using a CFEM diffusion form for comparison. In Figure \ref{fig::SIP_mms_error_plot}, we clearly see that SIP captures the proper convergence rate. It is also easy to see that the CFEM diffusion solutions provide reduced error based on the number of spatial degrees of freedom. This is an obvious result since SIP has multiple degrees of freedom for every vertex on the mesh whereas CFEM only has 1. However, we will be using the MIP DSA form as the low-order acceleration operator and not as a stand-alone diffusion solver. Therefore, this observed non-optimal convergence rate (as well as capturing the exactly-linear solution) is required (and satisfied).
 
 \begin{figure}
 \centering
-\includegraphics[width=\textwidth]{figures/sec_DSA/SIP_mms_3d_quad_full_paint.png}
-\caption{blah}
-\label{fig::SIP_mms_quad_error_plot}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{figures/sec_DSA/SIP_mms_3d_gauss_full_paint.png}
-\caption{blah}
-\label{fig::SIP_mms_gauss_error_plot}
+{
+	\begin{subfigure}[b]{0.95\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SIP_mms_3d_quad_full_paint.png}
+		\caption{Quadratic Solution}
+	\end{subfigure}
+}
+\vspace{3mm}
+{
+	\begin{subfigure}[b]{0.95\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SIP_mms_3d_gauss_full_paint.png}
+		\caption{Gaussian Solution}
+	\end{subfigure}
+}
+\caption{Error in the SIP diffusion form. Additional results using a CFEM diffusion form are provided for comparison.}
+\label{fig::SIP_mms_error_plot}
 \end{figure}
 
 
@@ -1504,37 +1530,81 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 \subsection{1 Group DSA Analysis}
 \label{sec::DSA_Results_1G}
 
+We now present our analysis of the 1-group MIP DSA scheme for simple 2D and 3D problems. First in Section \ref{sec::DSA_Results_1G_2DHomo}, we provide the analysis on 2D homogeneous configurations using all of the linear and quadratic basis functions presented in Chapter \ref{sec::BF}. Then in Section \ref{sec::DSA_Results_1G_3DHomo}, we provide the analysis on 3D homogeneous configurations using the 3D PWL basis functions. Finally, we provide analysis on 2D heterogeneous configurations in Section \ref{sec::DSA_Results_1G_PHI}.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection -  2D Homogeneous Medium
 \subsubsection{2D Homogeneous Medium Case}
 \label{sec::DSA_Results_1G_2DHomo}
 
+The first sets of analysis involving the 1-group DSA scheme involve 2D homogeneous configurations. Specifically, we will provide the Fourier Analysis of the different linear and quadratic polygonal basis functions for different homogeneous configurations.
+
 \begin{figure}
 \centering
-\includegraphics[width=0.75\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_Wachspress1_LS2,4,8,16.png}
-\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the linear Wachspress coordinates for the homogeneous infinite medium case as a function of the mesh optical thickness.}
-\label{fig::DSA_1G_Fourier_Wach1}
+	\begin{subfigure}[b]{0.80\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_UWACHSPRESS1_LS.eps}
+		%\caption{Linear}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.80\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_UWACHSPRESS2_LS.eps}
+		%\caption{}
+	\end{subfigure}
+\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the linear (top) and quadratic (bottom) Wachspress basis functions.}
+\label{fig::DSA_2D1G_Fourier_Wach}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.75\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_PWLD1_LS2,4,8,16.png}
-\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the linear PWL coordinates for the homogeneous infinite medium case as a function of the mesh optical thickness.}
-\label{fig::DSA_1G_Fourier_PWL1}
+	\begin{subfigure}[b]{0.80\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_PWLD1_LS.eps}
+		%\caption{Linear}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.80\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_UPWLD2_LS.eps}
+		%\caption{}
+	\end{subfigure}
+\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the linear (top) and quadratic (bottom) PWL basis functions.}
+\label{fig::DSA_2D1G_Fourier_PWL}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.75\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_MV1_LS2,4,8,16.png}
-\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the linear mean value coordinates for the homogeneous infinite medium case as a function of the mesh optical thickness.}
-\label{fig::DSA_1G_Fourier_MV1}
+	\begin{subfigure}[b]{0.80\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_UMV1_LS.eps}
+		%\caption{Linear}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.80\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_UMV2_LS.eps}
+		%\caption{}
+	\end{subfigure}
+\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the linear (top) and quadratic (bottom) mean value basis functions.}
+\label{fig::DSA_2D1G_Fourier_MV}
 \end{figure}
 
 \begin{figure}
 \centering
-\includegraphics[width=0.75\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_MAXENT1_LS2,4,8,16.png}
-\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the linear maximum entropy coordinates for the homogeneous infinite medium case as a function of the mesh optical thickness.}
-\label{fig::DSA_1G_Fourier_ME1}
+	\begin{subfigure}[b]{0.80\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_MAXENT1_LS.eps}
+		%\caption{Linear}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.80\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_quad_C=4_UMAXENT2_LS.eps}
+		%\caption{}
+	\end{subfigure}
+\caption{Fourier analysis of the 2D MIP form with $c=4$ and using the linear (top) and quadratic (bottom) maximum entropy basis functions.}
+\label{fig::DSA_2D1G_Fourier_ME}
 \end{figure}
 
 \begin{figure}
@@ -1580,7 +1650,7 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 		\caption{$10^{3}$ mfp}
 	\end{subfigure}
 	}
-\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL coordinates and LS2 quadrature.}
+\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL basis functions and LS2 quadrature.}
 \label{fig::2D_homo_dsa_wave_LS2}
 \end{figure}
 
@@ -1627,7 +1697,7 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 		\caption{$10^{3}$ mfp}
 	\end{subfigure}
 	}
-\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL coordinates and LS4 quadrature.}
+\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL basis functions and LS4 quadrature.}
 \label{fig::2D_homo_dsa_wave_LS4}
 \end{figure}
 
@@ -1674,7 +1744,7 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 		\caption{$10^{3}$ mfp}
 	\end{subfigure}
 	}
-\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL coordinates and LS8 quadrature.}
+\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL basis functions and LS8 quadrature.}
 \label{fig::2D_homo_dsa_wave_LS8}
 \end{figure}
 
@@ -1683,18 +1753,54 @@ We next test to see if the SIP diffusion form can capture the appropriate second
 \subsubsection{3D Homogeneous Medium Case}
 \label{sec::DSA_Results_1G_3DHomo}
 
+In this Section, we 
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.80\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_hex_C=1_PWLD_LS.eps}
+		%\caption{Linear}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.80\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_hex_C=4_PWLD_LS.eps}
+		%\caption{}
+	\end{subfigure}
+\caption{Fourier analysis of the 3D MIP form with $c=1$ (top) and $c=4$ (bottom).}
+\label{fig::DSA_3D1G_Fourier}
+\end{figure}
+
 \begin{figure}
 \centering
 \includegraphics[width=0.75\textwidth]{figures/sec_DSA/SI_MIP_hex_PWLD1_AR1.eps}
-\caption{Fourier spectral radii for MIP with 3D PWL coordinates with different aspect ratios and $c=1$.}
+\caption{Fourier spectral radii for MIP ($c=1$) with $LS_8$ quadrature on cells with different aspect ratios.}
 \label{fig::DSA_1G_Fourier_PWL_AR1}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.75\textwidth]{figures/sec_DSA/SI_MIP_hex_PWLD1_AR4.eps}
-\caption{Fourier spectral radii for MIP with 3D PWL coordinates with different aspect ratios and $c=4$.}
+\caption{Fourier spectral radii for MIP ($c=4$) with $LS_8$ quadrature on cells with different aspect ratios.}
 \label{fig::DSA_1G_Fourier_PWL_AR4}
+\end{figure}
+
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.80\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_hex_C=1_PWLD_LS_wNSR.eps}
+		%\caption{Linear}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.80\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_hex_C=4_PWLD_LS_wNSR.eps}
+		%\caption{}
+	\end{subfigure}
+\caption{Comparison between the numerical spectral radii and the theoretical Fourier Analysis spectral radii on the unit cube with $c=1$ (top) and $c=4$ (bottom).}
+\label{fig::DSA_3D1G_Fourier_NSR}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2448,14 +2554,14 @@ We conclude the results of this chapter by presenting analysis on the ability to
 		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IM1_EC_MTG.eps}
 		\caption{Modified Two-Grid}
 	\end{subfigure}
-\caption{Spectral shape of the infinite medium iteration matrices for the IM1 problem materials.}
+\caption{Spectral shape of the infinite medium iteration matrices of the IM1 problem materials for the TG and MTG schemes.}
 \label{fig::IM1_mats_EC_TGandMTG}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.75\textwidth]{figures/sec_DSA/IM1_EC_Rich.eps}
-\caption{Spectral shape of the infinite medium iteration matrices for the Multigroup Jacobi Acceleration Method for the IM1 problem materials.}
+\caption{Spectral shape of the infinite medium iteration matrices of the IM1 problem materials for the MJA scheme.}
 \label{fig::IM1_mats_EC_Rich}
 \end{figure}
 
@@ -2513,10 +2619,60 @@ Air   &0.7580&0.5282&0.8121&0.7828&0.8845&0.7896\\
 \begin{figure}
 \centering
 \includegraphics[width=0.55\textwidth]{figures/sec_DSA/2D_IM1_Variant_Layout.png}
-\caption{Configuration of the 2D variant of the IM1 problem.}
+\caption{Configuration of the 2D variant of the IM1 problem. The materials are restricted to only air, HDPE, graphite, and an AmBe source.}
 \label{fig::IM1_config_2D}
 \end{figure}
 
+
+\begin{table}
+\caption{Sweep count and timing data for the 2D IM1 variant problem using Two-Grid Acceleration.}
+\centering
+\def\arraystretch{1.2}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (min)  \\
+\hline \hline
+{SI} & {361}  &{185,422}  &  {486.50} \\ \hline
+SI+DSA & 55 & 35,699 &  96.48 \\ \hline
+GMRES & 38  & 41,575 &  128.63 \\ \hline
+GMRES+DSA & 14  & 19,053  & 57.92  \\ \hline
+\end{tabular}
+\label{tab::IM1_2D_TG}
+\end{table}
+
+
+\begin{table}
+\caption{Sweep count and timing data for the 2D IM1 variant problem using Modified Two-Grid Acceleration.}
+\centering
+\def\arraystretch{1.2}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (min)  \\
+\hline \hline
+{SI} & {536}  & {77,632} & {275.83}  \\ \hline
+SI+DSA & 73  & 10,846 &  40.60 \\ \hline
+GMRES & 78  & 4,845 &  25.82 \\ \hline
+GMRES+DSA & 26  & 1,881 & 11.09  \\ \hline
+\end{tabular}
+\label{tab::IM1_2D_MTG}
+\end{table}
+
+
+\begin{table}
+\caption{Sweep count and timing data for the 2D IM1 variant problem using Multigroup Jacobi Acceleration.}
+\centering
+\def\arraystretch{1.2}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (min)  \\
+\hline \hline
+{SI}  & {1,734} & {98,838} &  {111.07} \\ \hline
+SI+DSA  & 157 & 8,949 &  15.49 \\ \hline
+GMRES  & 118 & 6,726 &  8.65 \\ \hline
+{GMRES+DSA} &   {35} & {1,995} &  {4.16} \\ \hline
+\end{tabular}
+\label{tab::IM1_2D_MJA}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - MG IM1 3D
