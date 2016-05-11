@@ -22,7 +22,7 @@
 \section{Introduction}
 \label{sec::DSA_Introduction}
 
-In this chapter, we analyze the Modified Interior Penalty (MIP) form of the diffusion equation as a discretization scheme for use with Diffusion Synthetic Acceleration (DSA) of the DFEM $S_N$ transport equation on unstructured grids. Specifically, we wish to analyze its efficacy on massively-parallel computer architectures where scalability of solution times and memory footprints can become burdensome. This chapter is laid out in the following manner. The remainder of this Section will provide an overview of synthetic acceleration techniques as well as a review of DSA schemes. Section \ref{sec::DSA_DSA} provides the DSA methodologies that we will employ for 1-group and thermal neutron upscattering acceleration. We then present the discontinuous Symmetric Interior Penalty (SIP) form of the diffuion equation in Section \ref{sec::DSA_SIP} as well as the MIP variant that we will use for our DSA analysis in Section \ref{sec::DSA_MIP}. The numerical procedures that we will use to solve the diffusion system of equations is given in Section \ref{sec::DSA_Solving}. The theoretical Fourier analysis tool is given in Section \ref{sec::DSA_Fourier}. Results are provided in Section \ref{sec::DSA_Results} and we finish the chapter with some concluding remarks in Section \ref{sec::DSA_Conclusions}
+In this chapter, we analyze the Modified Interior Penalty (MIP) form of the diffusion equation as a discretization scheme for use with Diffusion Synthetic Acceleration (DSA) of the DFEM $S_N$ transport equation on unstructured grids. Specifically, we wish to analyze its efficacy on massively-parallel computer architectures where scalability of solution times and memory footprints can become burdensome. This chapter is laid out in the following manner. The remainder of this Section will provide an overview of synthetic acceleration techniques as well as a review of DSA schemes. Section \ref{sec::DSA_DSA} provides the DSA methodologies that we will employ for 1-group and thermal neutron upscattering acceleration. We then present the discontinuous Symmetric Interior Penalty (SIP) form of the diffuion equation in Section \ref{sec::DSA_SIP} as well as the MIP variant that we will use for our DSA analysis in Section \ref{sec::DSA_MIP}. The numerical procedures that we will use to solve the diffusion system of equations are given in Section \ref{sec::DSA_Solving}. The theoretical Fourier analysis tool is given in Section \ref{sec::DSA_Fourier}. Results are provided in Section \ref{sec::DSA_Results} and we finish the chapter with some concluding remarks in Section \ref{sec::DSA_Conclusions}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -30,9 +30,9 @@ In this chapter, we analyze the Modified Interior Penalty (MIP) form of the diff
 \subsection{Review of Diffusion Synthetic Accleration Schemes}
 \label{sec::DSA_Introduction_History}
 
-In Section \ref{sec::Sn_Solution_Spatial}, we described the full-domain transport sweep, and how it can efficiently invert the loss operator. We also provided the parallel implementation details that allow these full-domain transport sweeps to scale out to $O(10^6)$ processors. However, the ability to efficiently invert the transport (streaming and collision) operator does not necessarily mean that transport solutions can be easily obtained. In general, radiation transport solutions are obtained iteratively. The simplest and widely-used method is a fixed-point scheme ({\em i.e.,} Richardson iteration) ubiquitously called Source Iteration (SI) in the transport community. Unfortunately, the iteration process of SI can converge arbitrarily slowly if the problem is optically thick \cite{ref::adams_larsen_iter_methods}. This corresponds to long mean free paths for neutronics problems. This also corresponds to time steps and material heat capacities tending to infinity and zero, respectively, for thermal radiative transport (TRT) problems.
+In Section \ref{sec::Sn_Solution_Spatial}, we described the full-domain transport sweep, and how it can efficiently invert the loss operator. We also provided the parallel implementation details that allow these full-domain transport sweeps to scale out to $O(10^6)$ processors. However, the ability to efficiently invert the transport (streaming and collision) operator does not necessarily mean that transport solutions can be easily obtained. In general, radiation transport solutions are obtained iteratively. The simplest and most widely-used method is a fixed-point scheme ({\em i.e.,} Richardson iteration) ubiquitously called Source Iteration (SI) in the transport community. Unfortunately, the iteration process of SI can converge arbitrarily slowly if the problem is optically thick \cite{ref::adams_larsen_iter_methods}. This corresponds to long mean free paths for neutronics problems. This also corresponds to time steps and material heat capacities tending to infinity and zero, respectively, for thermal radiative transport (TRT) problems.
 
-For such regimes in which solution is prohibitively slow, additional steps should be taken to speed up, or accelerate, solution convergence \cite{ref::adams_larsen_iter_methods}. The most used methods to assist in solution convergence are often called synthetic acceleration techniques. These techniques were first introduced by Kopp \cite{kopp1963synthetic} and Lebedev \cite{lebedevI,lebedevII,lebedevIII,lebedevIV,lebedevV,lebedevVI,lebedevVII} in the 1960's. From Kopp's and Lebedev's work, Gelbard and Hageman then introduced two synthetic acceleration options for the low-order operator: diffusion and $S_2$ \cite{gelbard1969synthetic}. Their diffusion preconditioning led to efficient convergence properties on fine spatial meshes. Reed then showed that Gelbard and Hageman's diffusion preconditioning would yield a diverging system for coarse meshes \cite{reed1971effectiveness}. At this point in time, no one knew if an unconditionally efficient acceleration method could be derived.
+For such regimes in which solution is prohibitively slow, additional steps should be taken to speed up, or accelerate, solution convergence \cite{ref::adams_larsen_iter_methods}. The most-used methods to assist in solution convergence are often called synthetic acceleration techniques. These techniques were first introduced by Kopp \cite{kopp1963synthetic} and Lebedev \cite{lebedevI,lebedevII,lebedevIII,lebedevIV,lebedevV,lebedevVI,lebedevVII} in the 1960's. From Kopp's and Lebedev's work, Gelbard and Hageman then introduced two synthetic acceleration options for the low-order operator: diffusion and $S_2$ \cite{gelbard1969synthetic}. Their diffusion preconditioning led to efficient convergence properties on fine spatial meshes. Reed then showed that Gelbard and Hageman's diffusion preconditioning would yield a diverging system for coarse meshes \cite{reed1971effectiveness}. At this point in time, no one knew if an unconditionally efficient acceleration method could be derived.
 
 Then in 1976, Alcouffe proposed a remedy to Gelbard and Reed that he called diffusion synthetic acceleration (DSA) \cite{alcouffe1976stable,alcouffe1977DSA,alcouffe1977diffusion}. He showed that if you derived the diffusion operator consistently with the discretized transport operator, then SI could be accelerated with DSA in an efficient and robust manner. Larsen and McCoy then demonstrated that unconditional stability required that consistency be maintained in both spatial and angular discretization in their four-step procedure \cite{larsen1982unconditionally_I,larsen1982unconditionally_II}. However, Adams and Martin then showed that partially-consistent diffusion discretizations could effectively accelerate DFEM discretizations of the neutron transport equation \cite{ref::dsa_DFEM_adams_martin}. Their modified-four-step procedure (M4S), based on Larsen and McCoy's work, was shown to be unconditionally stable for regular geometries, but divergent for unstructured multi-dimensional meshes \cite{warsa2002fully}. In more recent years, alternate discretizations for the diffusion operator have been applied to unstructured multi-dimensional grids. These include the partially consistent Wareing-Larsen-Adams (WLA) DSA \cite{ref::WLA_DSA}, the fully consistent DSA (FCDSA) \cite{warsa2002fully}, and the partially consistent MIP DSA \cite{ref::DSA_wang_ragusa,wang2009adaptive,turcksin2014discontinuous}.
 
@@ -149,7 +149,7 @@ The new iterative procedure begins by simply taking the half-iterate of Eq. (\re
 \section{Diffusion Synthetic Acceleration Methodologies}
 \label{sec::DSA_DSA}
 
-The procedures outlined in Section \ref{sec::DSA_Introduction_SA} define a general methodology to perform synthetic acceleration on the transport equation. We could utilize any of the acceleration strategies that have been developed over the years including DSA, TSA, BPA, etc. The only difference arises in what form the low-order operator, ${\bf W}$, will take. We obviously are focusing on DSA for this dissertation work, and we do so by first describing in Section \ref{sec::DSA_DSA_1G} a simple 1-group, continuous specification of the synthetic acceleration methodology just presented. Then, we present a generalized description of the 1-group DSA strategy for the discretized transport equation in Section \ref{sec::DSA_DSA_Operator}. We also show how DSA acts a preconditioner for the iterative transport methods. We conclude this section on DSA methodologies by presenting different strategies that can be employed to accelerate thermal neutron upscattering in Section \ref{sec::DSA_DSA_MG}.
+The procedures outlined in Section \ref{sec::DSA_Introduction_SA} define a general methodology to perform synthetic acceleration on the transport equation. We could utilize any of the acceleration strategies that have been developed over the years including DSA, TSA, BPA, etc. The only difference arises in what form the low-order operator, ${\bf W}$, will take. We obviously are focusing on DSA for this dissertation work, and we do so by first describing in Section \ref{sec::DSA_DSA_1G} a simple 1-group, continuous specification of the synthetic acceleration methodology just presented. Then, we present a generalized description of the 1-group DSA strategy for the discretized transport equation in Section \ref{sec::DSA_DSA_Operator}. We also show how DSA acts as a preconditioner for the iterative transport methods. We conclude this section on DSA methodologies by presenting different strategies that can be employed to accelerate thermal neutron upscattering in Section \ref{sec::DSA_DSA_MG}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -317,7 +317,7 @@ Equation (\ref{eq::DSA_1G_diffeq_FINAL}) can then be represented as the low-orde
 \subsection{Generalized 1-Group DSA Operators}
 \label{sec::DSA_DSA_Operator}
 
-Section \ref{sec::DSA_DSA_1G} defined the DSA strategy for the simple case of the continuous, 1-group, isotropic transport equation. We now provide a detailed description of the DSA strategy for a generally-dscretized, 1-group transport problem using operator notation. We do this by again detailing how the error equation is formed from the discretized iterative equations. Then, we detail how the transport error equation can be restricted and prolongated from the coarse-grid, low-order diffusion operator. Finally, we combine all the operators into the appropriate correction equation, that is the discretized analogue to Eq. (\ref{eq::DSA_1G_update}).
+Section \ref{sec::DSA_DSA_1G} defined the DSA strategy for the simple case of the continuous, 1-group, isotropic transport equation. We now provide a detailed description of the DSA strategy for a generally-discretized, 1-group transport problem using operator notation. We do this by again detailing how the error equation is formed from the discretized iterative equations. Then, we detail how the transport error equation can be restricted and prolongated from the coarse-grid, low-order diffusion operator. Finally, we combine all the operators into the appropriate correction equation, that is the discretized analogue to Eq. (\ref{eq::DSA_1G_update}).
 
 Recall the operator form of the fully discretized transport equation as defined in Section \ref{sec::Sn_Solution_Iterative},
 
@@ -419,7 +419,7 @@ We now quickly show how the DSA iterative procedure given by Eq. (\ref{eq::DSA_o
  \left(  {\bf I}    - {\bf T} \right) {\bf \Phi} =   {\bf b} .
 \end{equation}
 
-\noindent This means that the DSA scheme is exactly a preconditioned Richardson iterative scheme where the operator $\left( {\bf I} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right)$ acts as a left-preconditioner. When Krylov schemes are used in place of Richardson iteration, Eq. (\ref{eq::DSA_ops_prec_rich}) will still describe our preconditioned transport equation. Recall from Section \ref{sec::Sn_Solution_Iterative_GMRES} that only minor changes need to made to existing source iteration routines to enable Krylov solvers to properly solve the transport equation. In particular, the subtle differences lie in applying the matrix-free transport sweep operator on some Krylov vector, ${\bf x}$ and in building the right-hand-side vector. We can show that we form the appropriate action of the matrix operator, which we denote as ${\bf Z}$, in an identical manner to unaccelerated Richardson iteration. Recall, that the unaccelerated matrix operator is computed by differencing the original Krylov vector by the vector following a transport sweep. Therefore, we compute this same difference with the results from our DSA accelerated transport sweep to form:
+\noindent This means that the DSA scheme is exactly a preconditioned Richardson iterative scheme where the operator $\left( {\bf I} + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \right)$ acts as a left-preconditioner. When Krylov schemes are used in place of Richardson iteration, Eq. (\ref{eq::DSA_ops_prec_rich}) will still describe our preconditioned transport equation. Recall from Section \ref{sec::Sn_Solution_Iterative_GMRES} that only minor changes need to made to existing source iteration routines to enable Krylov solvers to properly solve the transport equation. In particular, the subtle differences lie in applying the matrix-free transport sweep operator on some Krylov vector, ${\bf x}$ and in building the right-hand-side vector. We can show that we form the appropriate action of the matrix operator, which we denote as ${\bf Z}$, in an identical manner to unaccelerated Richardson iteration. Recall that the unaccelerated matrix operator is computed by differencing the original Krylov vector by the vector following a transport sweep. Therefore, we compute this same difference with the results from our DSA accelerated transport sweep to form:
 
 \begin{equation}
 \label{eq::DSA_krylov_sweep_op}
@@ -561,7 +561,7 @@ R_g^{(k+1/2)} = \sum_{g'=g+1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)}
 \left(  {\bf T} - {\bf S_{L,0}} - {\bf S_{D,0}} \right)^{-1} {\bf S_{U,0}} \xi = \rho \xi ,
 \end{equation}
 
-\noindent where ${\bf T}$ is the diagonal matrix of total cross sections and ${\bf S_{L,0}}$, ${\bf S_{D,0}}$, and ${\bf S_{U,0}}$ are restricted to the 0th-order moments of the scattering cross sections. Inserting the factorized error of Eq. (\ref{eq::DSA_TG_diff_err_full}) into Eq. (\ref{eq::DSA_TG_diff_err_full}) and summing over energy groups gives
+\noindent where ${\bf T}$ is the diagonal matrix of total cross sections and ${\bf S_{L,0}}$, ${\bf S_{D,0}}$, and ${\bf S_{U,0}}$ are restricted to the 0th-order moments of the scattering cross sections. Inserting the factorized error of Eq. (\ref{eq::DSA_TG_fact_err}) into Eq. (\ref{eq::DSA_TG_diff_err_full}) and summing over energy groups gives
 
 \begin{equation}
 \label{eq::DSA_TG_1G_err_eq_wdrift}
@@ -1199,7 +1199,7 @@ Besides Jacobi, SSOR and ILU preconditioning, we also seek to investigate multig
 
 With the acceleration methodologies and diffusion discretization scheme described in detail, we now present the Fourier Analysis (FA) tool. Fourier Analysis is commonly used to analyze the performance characteristics of acceleration schemes for the transport equation. It is a powerful tool because it allows us to decompose the iteration error into Fourier modes. Then, because of the orthogonality of the terms in the series, each Fourier mode can be analyzed independently. If these modes were not independent, then we would have no ability to simultaneously solve the infinite spectrum of Fourier modes except for an extremely small set of idealized problems where analytical analysis can be performed.
 
-For the Fourier Analysis of this work, we will only investigate geometries with tensor-based mesh cells (quadrilaterals and hexahedra). For completeness, some examples of 1D FA is provided in Appendix \ref{{sec::appendix_DSA}}. The FA domains are composed of regular Cartesian geometries defined by the global domain size and cell widths in each dimension. The domain size is given by ($X,Y$) in 2D and ($X,Y,Z$) in 3D. The cell layout is described by its $N_x$ cell widths ($\Delta x_{1}, \Delta x_{2}, ..., \Delta x_{N_x}$) in the $x$-dimension, its $N_y$ cell widths ($\Delta y_{1}, \Delta y_{2}, ..., \Delta y_{N_y}$) in the $y$-dimension, and its $N_z$ cell widths ($\Delta z_{1}, \Delta z_{2}, ..., \Delta z_{N_z}$) in the $z$-dimension. This simple, yet structured, geometric layout is shown in Figure \ref{fig::DSA_fourier_grid_layout} for a 2D domain. The analogous 3D geometric layout can be formed by extruding this 2D grid. For FA, periodic boundary conditions are applied on the domain boundary. A graphical depiction of periodic boundary conditions is given for a 2D, 2-cell domain in Figure \ref{fig::DSA_fourier_periodic_BC}. The periodic boundary conditions work by actually representing boundary faces as extensions to the interior faces. In other words, boundary faces are simply additional ``interior'' faces. Figure \ref{fig::DSA_fourier_periodic_BC} shows this with the translocations of the neighboring cells to the exterior. For example, the periodic condition for the left face of cell 1 states that the degrees of freedom that we employ actually come from cell 2 (which we denote as 2'). Likewise, the periodic condition for the right face of cell 2 states that the degrees of freedom that we employ actually come from cell 1 (which we denote as 1'). The cells 1' and 2' can be viewed as virtual cells for use as an implementation detail.
+For the Fourier Analysis of this work, we will only investigate geometries with tensor-based mesh cells (quadrilaterals and hexahedra). For completeness, some examples of 1D FA are provided in Appendix \ref{{sec::appendix_DSA}}. The FA domains are composed of regular Cartesian geometries defined by the global domain size and cell widths in each dimension. The domain size is given by ($X,Y$) in 2D and ($X,Y,Z$) in 3D. The cell layout is described by its $N_x$ cell widths ($\Delta x_{1}, \Delta x_{2}, ..., \Delta x_{N_x}$) in the $x$-dimension, its $N_y$ cell widths ($\Delta y_{1}, \Delta y_{2}, ..., \Delta y_{N_y}$) in the $y$-dimension, and its $N_z$ cell widths ($\Delta z_{1}, \Delta z_{2}, ..., \Delta z_{N_z}$) in the $z$-dimension. This simple, yet structured, geometric layout is shown in Figure \ref{fig::DSA_fourier_grid_layout} for a 2D domain. The analogous 3D geometric layout can be formed by extruding this 2D grid. For FA, periodic boundary conditions are applied on the domain boundary. A graphical depiction of periodic boundary conditions is given for a 2D, 2-cell domain in Figure \ref{fig::DSA_fourier_periodic_BC}. The periodic boundary conditions work by actually representing boundary faces as extensions to the interior faces. In other words, boundary faces are simply additional ``interior'' faces. Figure \ref{fig::DSA_fourier_periodic_BC} shows this with the translocations of the neighboring cells to the exterior. For example, the periodic condition for the left face of cell 1 states that the degrees of freedom that we employ actually come from cell 2 (which we denote as 2'). Likewise, the periodic condition for the right face of cell 2 states that the degrees of freedom that we employ actually come from cell 1 (which we denote as 1'). The cells 1' and 2' can be viewed as virtual cells for use as an implementation detail.
 
 \begin{figure}
 \centering
@@ -1538,7 +1538,9 @@ We now present our analysis of the 1-group MIP DSA scheme for simple 2D and 3D p
 \subsubsection{2D Homogeneous Medium Case}
 \label{sec::DSA_Results_1G_2DHomo}
 
-The first sets of analysis involving the 1-group DSA scheme involve 2D homogeneous configurations. Specifically, we will provide the Fourier Analysis of the different linear and quadratic polygonal basis functions for different homogeneous configurations.
+The first set of analysis involving the 1-group DSA scheme is over 2D homogeneous configurations. Specifically, we will provide the Fourier Analysis of the different linear and quadratic polygonal basis functions for different homogeneous configurations. For all the results obtained, a single quadrilateral mesh cell comprised of the unit square ($X=Y=1$) was used. We plot the FA results against the mesh cell size in terms of mean free paths by varying the total cross section. The scattering ratio ($\sigma_s / \sigma_t$) is always set to 0.9999 and scattering is also always isotropic. We also performed all of the analysis with the $S_2$, $S_4$, $S_8$, and $S_{16}$ level-symmetric quadrature sets. The constant in the MIP penalty coefficient, $c$, was always set to 4.
+
+The FA spectral radii for the linear and quadratic basis functions for the Wachspress, PWL, mean value, and maximum entropy coordinates are given in Figures \ref{fig::DSA_2D1G_Fourier_Wach}, \ref{fig::DSA_2D1G_Fourier_PWL}, \ref{fig::DSA_2D1G_Fourier_MV}, and \ref{fig::DSA_2D1G_Fourier_ME}, respectively. We can see from these figures that the MIP scheme is unconditionally stable for all of the linear and quadratic basis functions. Also, the spectral radii are all similar in their distributions except for the linear PWL basis functions. We conclude this analysis of the 2D homogeneous problems by providing some examples of the Fourier wave number distributions.
 
 \begin{figure}
 \centering
@@ -1651,7 +1653,7 @@ The first sets of analysis involving the 1-group DSA scheme involve 2D homogeneo
 		\caption{$10^{3}$ mfp}
 	\end{subfigure}
 	}
-\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL basis functions and LS2 quadrature.}
+\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL basis functions and $LS_{2}$ quadrature.}
 \label{fig::2D_homo_dsa_wave_LS2}
 \end{figure}
 
@@ -1698,7 +1700,7 @@ The first sets of analysis involving the 1-group DSA scheme involve 2D homogeneo
 		\caption{$10^{3}$ mfp}
 	\end{subfigure}
 	}
-\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL basis functions and LS4 quadrature.}
+\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL basis functions and $LS_{4}$ quadrature.}
 \label{fig::2D_homo_dsa_wave_LS4}
 \end{figure}
 
@@ -1745,60 +1747,112 @@ The first sets of analysis involving the 1-group DSA scheme involve 2D homogeneo
 		\caption{$10^{3}$ mfp}
 	\end{subfigure}
 	}
-\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL basis functions and LS8 quadrature.}
+\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL basis functions and $LS_{8}$ quadrature.}
 \label{fig::2D_homo_dsa_wave_LS8}
 \end{figure}
+
+\begin{figure}
+\centering
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS16_x=1e-2_dydx=1_contour.png}
+		\caption{$10^{-2}$ mfp}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS16_x=1e-1_dydx=1_contour.png}
+		\caption{$10^{-1}$ mfp}
+	\end{subfigure}
+	}
+	\vspace{0.5cm}
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS16_x=1_dydx=1_contour.png}
+		\caption{$10^{0}$ mfp}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS16_x=10_dydx=1_contour.png}
+		\caption{$10^{1}$ mfp}
+	\end{subfigure}
+	}
+	\vspace{0.5cm}
+	{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS16_x=100_dydx=1_contour.png}
+		\caption{$10^{2}$ mfp}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/SI_MIP_C=4_UPWLD1_LS16_x=1000_dydx=1_contour.png}
+		\caption{$10^{3}$ mfp}
+	\end{subfigure}
+	}
+\caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL basis functions and $LS_{16}$ quadrature.}
+\label{fig::2D_homo_dsa_wave_LS16}
+\end{figure}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection -  3D Homogeneous Medium
 \subsubsection{3D Homogeneous Medium Case}
 \label{sec::DSA_Results_1G_3DHomo}
 
-In this Section, we 
+
+In this Section, we perform similar analysis to that presented in Section \ref{sec::DSA_Results_1G_2DHomo}. We perform both Fourier and numerical analysis on the 3D MIP DSA scheme on homogeneous domains. The 3D PWL basis functions are used for all of the analysis presented here. First, we show results of Fourier Analysis performed on the unit cube ($X=Y=Z=1$) in Figure \ref{fig::DSA_3D1G_Fourier}. A single mesh cell is used, and the spectral radius of the FA is plotted against the cell size in terms of mean free paths. Since we only use the unit cube in this analysis, the cell sizes change by varying the total cross section. In Figure \ref{fig::DSA_3D1G_Fourier}, scattering is isotropic with a scattering ratio ($\sigma_s/\sigma_t$) of 0.9999. Level-symmetric quadrature of orders 2, 4, 8, and 16 was used and values of 1 and 4 were used for the constant in the MIP penalty coefficient, $c$. We can see from both the plots that the 3D MIP form is unconditionally stable between the two penalty coefficient constants. All spectral radii values are below 0.6 except for the case of $S_2$ quadrature with the penalty coefficient constant value of 1. This means that $c=1$ offers insufficient penalization and a higher value should be used.
 
 \begin{figure}
 \centering
 	\begin{subfigure}[b]{0.80\textwidth}
 		\centering
 		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_hex_C=1_PWLD_LS.eps}
-		%\caption{Linear}
 	\end{subfigure}
 	\vfill
 	\begin{subfigure}[b]{0.80\textwidth}
 		\centering
 		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_hex_C=4_PWLD_LS.eps}
-		%\caption{}
 	\end{subfigure}
-\caption{Fourier analysis of the 3D MIP form with $c=1$ (top) and $c=4$ (bottom).}
+\caption{Fourier spectral radius of the 3D MIP form with $c=1$ (top) and $c=4$ (bottom).}
 \label{fig::DSA_3D1G_Fourier}
 \end{figure}
 
-\begin{figure}
-\centering
-\includegraphics[width=0.75\textwidth]{figures/sec_DSA/SI_MIP_hex_PWLD1_AR1.eps}
-\caption{Fourier spectral radii for MIP ($c=1$) with $LS_8$ quadrature on cells with different aspect ratios.}
-\label{fig::DSA_1G_Fourier_PWL_AR1}
-\end{figure}
+Next, Figure \ref{fig::DSA_3D1G_Fourier_AR} provides the Fourier Analysis for cells having different aspect ratios. We change the aspect ratio by fixing $X=1$ and varying the values of $Y$ and $Z$. For these problems $Y=Z$, and we again analyze both $c=1$ and $c=4$. The aspect ratios had values of ($1/100,1/64,1/16,1,16,64,100$). Only $LS_8$ quadrature is used. We can see from the two figures that the MIP acceleration continues to be unconditionally stable on 3D hexahedral cells with high aspect ratios. 
 
 \begin{figure}
 \centering
-\includegraphics[width=0.75\textwidth]{figures/sec_DSA/SI_MIP_hex_PWLD1_AR4.eps}
-\caption{Fourier spectral radii for MIP ($c=4$) with $LS_8$ quadrature on cells with different aspect ratios.}
-\label{fig::DSA_1G_Fourier_PWL_AR4}
+	\begin{subfigure}[b]{0.80\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_hex_PWLD1_AR1.eps}
+		\caption{$c=1$}
+	\end{subfigure}
+	\vfill
+	\begin{subfigure}[b]{0.80\textwidth}
+		\centering
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_hex_PWLD1_AR4.eps}
+		\caption{$c=4$}
+	\end{subfigure}
+\caption{Fourier spectral radii for MIP form with $LS_8$ quadrature on cells with different aspect ratios.}
+\label{fig::DSA_3D1G_Fourier_AR}
 \end{figure}
+
+Finally, we present results that compare Fourier and numerical analyses. Figure \ref{fig::DSA_3D1G_Fourier_NSR} plots the $S_2$, $S_4$, and $S_8$ FA results from Figure \ref{fig::DSA_3D1G_Fourier} along with accompanying numerical results. The numerical problem analyzed is still the unit cube ($X=Y=Z=1$), but we now have 80 mesh cells in each dimension (as compared to Fourier Analysis which only had 1 mesh cell). We stress that a large number of mesh cells are required. Otherwise, the flux gradient at the boundary is poorly represented and additional leakage occurs. This additional leakage, which is solely due to the spatial discretization, would artifically lower the spectral radius of the numerical results. We can see from Figure \ref{fig::DSA_3D1G_Fourier_NSR} that our numerical analysis follows very closely with the results from Fourier Analysis. Discrepancies lie with quadrature sets higher than $S_2$ in the fine mesh limit, but these have been reported previously \cite{ref::DSA_wang_ragusa}.
 
 \begin{figure}
 \centering
 	\begin{subfigure}[b]{0.80\textwidth}
 		\centering
 		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_hex_C=1_PWLD_LS_wNSR.eps}
-		%\caption{Linear}
 	\end{subfigure}
 	\vfill
 	\begin{subfigure}[b]{0.80\textwidth}
 		\centering
 		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/SI_MIP_hex_C=4_PWLD_LS_wNSR.eps}
-		%\caption{}
 	\end{subfigure}
 \caption{Comparison between the numerical spectral radii and the theoretical Fourier Analysis spectral radii on the unit cube with $c=1$ (top) and $c=4$ (bottom).}
 \label{fig::DSA_3D1G_Fourier_NSR}
@@ -1987,7 +2041,7 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 \subsubsection{Performance of MIP DSA on Polygons with Adaptive Mesh Refinement}
 \label{sec::DSA_Results_1G_AMR}
 
-For the final theoretical analysis of DSA with the MIP form, we analyze the acceleration performance when AMR is utilized on a sufficiently optically thick transport with material discontinuities. The 2D transport problem that will be examined is similar to the Iron-Water problem \cite{khalil1985nodal}. It was modified by Wang and Ragusa for use with higher-order basis functions on triangular meshes with hanging nodes \cite{ref::DSA_wang_ragusa}. We will reexamine their work on degenarate polygonal grids and not use hanging nodes. The complete geometric desciption of our problem including boundary conditions and material distributions is given in Figure \ref{fig::DSA_IW_Description}. The material properties for each region which include the total cross section, scattering ratio, and source strength are given in Table \ref{tab::DSA_IW_mats}. Scattering is isotropic. 
+For the final theoretical analysis of DSA with the MIP form, we analyze the acceleration performance when AMR is utilized on a sufficiently optically thick transport with material discontinuities. The 2D transport problem that will be examined is similar to the Iron-Water problem \cite{khalil1985nodal}. It was modified by Wang and Ragusa for use with higher-order basis functions on triangular meshes with hanging nodes \cite{ref::DSA_wang_ragusa}. We will reexamine their work on degenarate polygonal grids and not use hanging nodes. The complete geometric desciption of our problem including boundary conditions and material distributions is given in Figure \ref{fig::DSA_IW_Description}. The material properties for each region which include the total cross section, scattering ratio ($c=\sigma_s/\sigma_t$), and source strength are given in Table \ref{tab::DSA_IW_mats}. Scattering is isotropic. 
 
 \begin{table}
 \caption{Material definitions and physical properties for the Iron-Water problem.}
@@ -2021,7 +2075,20 @@ III & 1.0 & 0.30 & 0.0\\
 \label{fig::DSA_IW_starting_mesh}
 \end{figure}
 
-For this analysis, we will test multiple problem configurations. All AMR histories will be calculated form an initial starting mesh provided in Figure \ref{fig::DSA_IW_starting_mesh} where the material regions are given by the different mesh cell colors. Both linear and quadratic basis functions will be analyzed, but we only use the 2D PWL coordinates.
+For this analysis, we will test multiple problem configurations. All AMR histories will be calculated form an initial starting mesh provided in Figure \ref{fig::DSA_IW_starting_mesh} where the material regions are given by the different mesh cell colors. Both linear and quadratic basis functions will be analyzed, but we only use the 2D PWL coordinates. Two different angular quadratures will be used: a $S_4$ level-symmetric (LS) quadrature and a $S_{24}^2$ PGLC quadrature. We expect additional solution discontinuities (besides those corresponding to the material discontinuities) to arise along the $S_N$ rays. Therefore, we are also performing runs using the PCLG quadrature with a high number of azimuthal angles to mitigate these $S_N$ discontinuities. We also investigate the effects of solution bootstrapping as well as the effectiveness of the five preconditioner types presented in Section \ref{sec::DSA_Solving}.
+
+We can summarize all the different problem permutations that will be analyzed:
+
+\begin{enumerate}
+\item Linear and quadratic PWL basis functions;
+\item Use of either $LS_4$ or $S_{24}^{2}$ PGLC angular quadrature;
+\item Bootstrappping or reinitialization of the solution at each AMR cycle;
+\item Use of five different preconditioner types: no preconditioning, Jacobi preconditioning, SSOR preconditioning, ILU preconditioning, and AGMG preconditioning.
+\end{enumerate}
+
+\noindent This means that there are four physical problem configurations (basis function order and angular quadrature). For each of these problem configurations, AMR refinement cycles either utilize solution bootstrapping or reinitialization (starting flux is all zero) and 1 of the 5 preconditioner types. Therefore, there are 40 total AMR runs required for this analysis.
+
+We first present the tabulated data 
 
 \begin{table}
 \caption{DSA counts based on preconditioner type for the Iron-Water problem with $LS_4$ quadrature, linear basis functions, and solution reinitialization.}
@@ -2188,7 +2255,7 @@ Cycle & SI Iters. & None&Jacobi&SSOR& ILU& AGMG \\
 \end{table}
 
 \begin{table}
-\caption{DSA counts based on preconditioner type for the Iron-Water problem with $S_{24}^2$ quadrature, linear basis functions, and solution reinitialization.}
+\caption{DSA counts based on preconditioner type for the Iron-Water problem with $S_{24}^2$ PGLC quadrature, linear basis functions, and solution reinitialization.}
 \begin{center}
 \def\arraystretch{1.25}
 \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -2229,7 +2296,7 @@ Cycle & SI Iters. & None&Jacobi&SSOR& ILU& AGMG \\
 \end{table}
 
 \begin{table}
-\caption{DSA counts based on preconditioner type for the Iron-Water problem with $S_{24}^2$ quadrature, linear basis functions, and solution bootstrapping.}
+\caption{DSA counts based on preconditioner type for the Iron-Water problem with $S_{24}^2$ PGLC quadrature, linear basis functions, and solution bootstrapping.}
 \begin{center}
 \def\arraystretch{1.25}
 \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -2270,7 +2337,7 @@ Cycle & SI Iters. & None&Jacobi&SSOR& ILU& AGMG \\
 \end{table}
 
 \begin{table}
-\caption{DSA counts based on preconditioner type for the Iron-Water problem with $S_{24}^2$ quadrature, quadratic basis functions, and solution reinitialization.}
+\caption{DSA counts based on preconditioner type for the Iron-Water problem with $S_{24}^2$ PGLC quadrature, quadratic basis functions, and solution reinitialization.}
 \begin{center}
 \def\arraystretch{1.25}
 \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -2311,7 +2378,7 @@ Cycle & SI Iters. & None&Jacobi&SSOR& ILU& AGMG \\
 \end{table}
 
 \begin{table}
-\caption{DSA counts based on preconditioner type for the Iron-Water problem with $S_{24}^2$ quadrature, quadratic basis functions, and solution bootstrapping.}
+\caption{DSA counts based on preconditioner type for the Iron-Water problem with $S_{24}^2$ PGLC quadrature, quadratic basis functions, and solution bootstrapping.}
 \begin{center}
 \def\arraystretch{1.25}
 \begin{tabular}{|c|c|c|c|c|c|c|}
