@@ -48,23 +48,23 @@ Synthetic acceleration techniques have been widely used in the nuclear engineeri
 
 \begin{equation}
 \label{eq::DSA_simple_trans_eq_w_ops}
-\left(  {\bf L} - {\bf B}  \right) \Psi = {\bf Q} ,
+\left(  {\bf L} - {\bf S}  \right) \Psi = {\bf Q} ,
 \end{equation}
 
-\noindent where ${\bf L}$ and ${\bf B}$ are both linear operators, $\Psi$ is the full angular flux solution in space, angle, and energy, and ${\bf Q}$ is the source or driving function. If we had the ability to efficiently invert $\left(  {\bf L} - {\bf B}  \right)$ directly, then $\Psi$ could be directly computed:
+\noindent where ${\bf L}$ and ${\bf S}$ are the loss and scattering operators, respectively, $\Psi$ is the full angular flux solution in space, angle, and energy, and ${\bf Q}$ is the source or driving function. If we had the ability to efficiently invert $\left(  {\bf L} - {\bf S}  \right)$ directly, then $\Psi$ could be directly computed:
 
 \begin{equation}
 \label{eq::DSA_simple_trans_eq_w_ops_inverted}
-\Psi = \left(  {\bf L} - {\bf B}  \right)^{-1} {\bf Q} .
+\Psi = \left(  {\bf L} - {\bf S}  \right)^{-1} {\bf Q} .
 \end{equation}
 
-\noindent However, since in practice the discretized version of $\left(  {\bf L} - {\bf B}  \right)$ is much more costly to directly invert than the discretized version of ${\bf L}$, we instead choose to iteratively solve for $\Psi$.
+\noindent However, since in practice the discretized version of $\left(  {\bf L} - {\bf S}  \right)$ is much more costly to directly invert than the discretized version of ${\bf L}$, we instead choose to iteratively solve for $\Psi$.
 
-To compute $\Psi$, the following iterative system of equations is usually employed,
+To compute $\Psi$, Source Iteration is employed to yield
 
 \begin{equation}
 \label{eq::DSA_simple_trans_eq_w_ops_iterates}
- {\bf L} \Psi^{(k+1)} ={\bf B}  \Psi^{(k)} + {\bf Q} ,
+ {\bf L} \Psi^{(k+1)} ={\bf S}  \Psi^{(k)} + {\bf Q} ,
 \end{equation}
 
 \noindent where directly solving for $\Psi^{(k+1)}$ yields the following:
@@ -74,7 +74,7 @@ To compute $\Psi$, the following iterative system of equations is usually employ
  \Psi^{(k+1)} =  {\bf L}^{-1} {\bf B}  \Psi^{(k)} +  {\bf L}^{-1} {\bf Q} .
 \end{equation}
 
-\noindent For brevity, we define a new operator ${\bf C} = {\bf L}^{-1} {\bf B}$ which is known as the iteration operator. The spectral radius, $\rho$, of this operator is simply the supremum of the absolute values of its eigenvalues. For this work, we assume that $\rho$ is less than unity to guarantee convergence. We next define the residual, $r^{(k)}$, as the difference between two successive solution iterates,
+\noindent The inversion of, ${\bf L}^{-1}$, is a transport sweep. For brevity, we define a new operator ${\bf C} = {\bf L}^{-1} {\bf S}$ which is known as the iteration operator. The spectral radius, $\rho$, of this operator is simply the supremum of the absolute values of its eigenvalues. For this work, we assume that $\rho$ is less than unity to guarantee convergence. We next define the residual, $r^{(k)}$, as the difference between two successive solution iterates,
 
 \begin{equation}
 \label{eq::DSA_synthetic_eq_residual}
@@ -113,10 +113,10 @@ With the iteration operator, ${\bf C}$, and the residual for iterate $k$ , $r^{(
 
 \begin{equation}
 \label{eq::DSA_synthetic_eq_true_sol_orig_ops}
-\Psi = \Psi^{(k)} + \left(  {\bf L} - {\bf B}   \right)^{-1} {\bf B} r^{(k)}.
+\Psi = \Psi^{(k)} + \left(  {\bf L} - {\bf S}   \right)^{-1} {\bf S} r^{(k)}.
 \end{equation}
 
-We would like to use the results of Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) to immediately compute our exact transport solution, $\Psi$. However, this would require the inversion of $\left(  {\bf L} - {\bf B}  \right)$ which we did not employ originally in Eq. (\ref{eq::DSA_simple_trans_eq_w_ops}) because of the difficulty. This means that, in its current form, Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) is no more useful to us than Eq. (\ref{eq::DSA_simple_trans_eq_w_ops}). This would then be an exercise in futility if we were restricted to only working with the $\left(  {\bf L} - {\bf B}  \right)$ operator. Instead, suppose that we could define an operator, ${\bf W}$, that closely approximates $\left(  {\bf L} - {\bf B}  \right)$ but it is easily invertible. If ${\bf W}$ efficiently approximates the slowest converging error modes of $\left(  {\bf L} - {\bf B}  \right)$, then Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) can be modified to form a new iterative procedure.
+We would like to use the results of Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) to immediately compute our exact transport solution, $\Psi$. However, this would require the inversion of $\left(  {\bf L} - {\bf S}  \right)$ which we did not employ originally in Eq. (\ref{eq::DSA_simple_trans_eq_w_ops}) because of the difficulty. This means that, in its current form, Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) is no more useful to us than Eq. (\ref{eq::DSA_simple_trans_eq_w_ops}). This would then be an exercise in futility if we were restricted to only working with the $\left(  {\bf L} - {\bf S}  \right)$ operator. Instead, suppose that we could define an operator, ${\bf W}$, that closely approximates $\left(  {\bf L} - {\bf S}  \right)$ but it is easily invertible. If ${\bf W}$ efficiently approximates the slowest converging error modes of $\left(  {\bf L} - {\bf S}  \right)$, then Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}) can be modified to form a new iterative procedure.
 
 The new iterative procedure begins by simply taking the half-iterate of Eq. (\ref{eq::DSA_simple_trans_eq_sol_w_ops_iterates}) instead of its full version: ${(k+1/2)}$ instead of {(k+1)}. This half-iterate has the form
 
@@ -129,17 +129,17 @@ The new iterative procedure begins by simply taking the half-iterate of Eq. (\re
 
 \begin{equation}
 \label{eq::DSA_synthetic_eq_half_it_correction}
-\Psi^{(k+1)} =\Psi^{(k+1/2)} + {\bf W}^{-1} {\bf B}  r^{(k+1/2)},
+\Psi^{(k+1)} =\Psi^{(k+1/2)} + {\bf W}^{-1} {\bf S}  r^{(k+1/2)},
 \end{equation}
 
 \noindent where $r^{(k+1/2)} = \Psi^{(k+1/2)} - \Psi^{(k)}$. We can also express Eq. (\ref{eq::DSA_synthetic_eq_half_it_correction}) in terms of just the previous iterate, $\Psi^{(k)}$, and a new operator:
 
 \begin{equation}
 \label{eq::DSA_synthetic_eq_new_algo}
-\Psi^{(k+1)} = \left[  {\bf I} - {\bf W}^{-1} \left(  {\bf L} - {\bf B}  \right)  \right] {\bf C} \Psi^{(k)} + \left({\bf I} + {\bf W}^{-1} {\bf B} \right) {\bf L}^{-1} {\bf Q} .
+\Psi^{(k+1)} = \left[  {\bf I} - {\bf W}^{-1} \left(  {\bf L} - {\bf S}  \right)  \right] {\bf C} \Psi^{(k)} + \left({\bf I} + {\bf W}^{-1} {\bf S} \right) {\bf L}^{-1} {\bf Q} .
 \end{equation}
 
-\noindent Observe in Eq. (\ref{eq::DSA_synthetic_eq_new_algo}) that as ${\bf W}$ more closely approximates $\left(  {\bf L} - {\bf B}  \right)$, the operator ${\bf W}^{-1} \left(  {\bf L} - {\bf B}  \right)$ converges to the identity matrix, ${\bf I}$. This means that the spectral radius of this new iteration matrix will approach zero as ${\bf W}$ gets closer to $\left(  {\bf L} - {\bf B}  \right)$ and therefore more quickly and efficiently converge to the true solution. 
+\noindent Observe in Eq. (\ref{eq::DSA_synthetic_eq_new_algo}) that as ${\bf W}$ more closely approximates $\left(  {\bf L} - {\bf S}  \right)$, the operator ${\bf W}^{-1} \left(  {\bf L} - {\bf S}  \right)$ converges to the identity matrix, ${\bf I}$. This means that the spectral radius of this new iteration matrix will approach zero as ${\bf W}$ gets closer to $\left(  {\bf L} - {\bf S}  \right)$ and therefore more quickly and efficiently converge to the true solution. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -173,7 +173,7 @@ Section \ref{sec::DSA_Introduction_SA} details the general methodology behind sy
 
 \noindent We could iterate on Eq. (\ref{eq::DSA_1G_SI}) continuously until we arrive at a converged solution. Each iteration simply adds the contribution of the scattering source from the previous iteration into the total source term. However, this process can be prohibitively slow if the problem is optically thick with little absorption. 
 
-Following the methodology of synthetic acceleration from Section \ref{sec::DSA_Introduction_SA}, we now need to determine a formulation for the iteration error of this transport problem so that we can employ the correction procedure of Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}). An exact definition for the iteration error can be obtained by taking the difference of Eq. (\ref{eq::DSA_1G_SI}) from Eq. (\ref{eq::DSA_1G_simple_trans_withc}). This forms the following error equation,
+Following the methodology of synthetic acceleration from Section \ref{sec::DSA_Introduction_SA}, we now need to determine a formulation for the iteration error of this transport problem so that we can employ the correction procedure of Eq. (\ref{eq::DSA_synthetic_eq_true_sol_orig_ops}). An exact definition for the iteration error can be obtained by taking the difference of Eq. (\ref{eq::DSA_1G_SI}) from Eq. (\ref{eq::DSA_1G_simple_trans}). This forms the following error equation,
 
 \begin{equation}
 \label{eq::DSA_1G_SI_err}
@@ -378,7 +378,7 @@ D_{p,n} \equiv \sum_{m=1}^M w_m Y_{p,n} (\vec{\Omega}_m) ,
  \delta {\bf \Phi}^{(k+1/2)}  = {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left( {\bf \Phi}^{(k+1/2)} - {\bf \Phi}^{(k)}  \right) ,
 \end{equation}
 
-\noindent where {\bf P} and {\bf X} are the prolongation and restriction operators, respectively. The restriction operator acts by limiting the contributions to the low-order residual to the 0th (and maybe 1st) moments. Then once the diffusion correction, $\delta {\bf \Phi}^{(k+1/2)}$, is calculated, the prolongation operator manipulates the error corrections onto the appropriate flux moments. With the definitions of the half-iterate solution and the diffusion correction given in Eqs. (\ref{eq::DSA_1G_trans_eq_ops_mom}) and (\ref{eq::DSA_ops_corr}), respectively, we can form the full-iterate operator:
+\noindent where ${\bf P}$ and ${\bf X}$ are the prolongation and restriction operators, respectively. The restriction operator, ${\bf X}$, acts by limiting the contributions to the low-order residual to the 0th and maybe 1st moments (filtering out the higher moments). Then once the diffusion correction, $\delta {\bf \Phi}^{(k+1/2)}$, is calculated, the prolongation operator, ${\bf P}$, manipulates the error corrections onto the appropriate flux moments. With the definitions of the half-iterate solution and the diffusion correction given in Eqs. (\ref{eq::DSA_1G_trans_eq_ops_mom}) and (\ref{eq::DSA_ops_corr}), respectively, we can form the full-iterate operator:
 
 \begin{equation}
 \label{eq::DSA_ops_update}
@@ -391,7 +391,7 @@ D_{p,n} \equiv \sum_{m=1}^M w_m Y_{p,n} (\vec{\Omega}_m) ,
 \end{aligned} .
 \end{equation}
 
-\noindent Equation (\ref{eq::DSA_ops_update}) provides the accelerated iteration scheme where the matrix operator $\left[ {\bf T}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) \right]$ is the corresponding iteration matrix for the DSA method. This matrix is in contrast to the unaccelerated iteration matrix, ${\bf T}$, given in Eq. (\ref{eq::DSA_1G_trans_eq_ops_mom_simple}). These accelerated and unaccelerated iteration matrices can be analyzed to obtain knowldege of how the transport solutions will converge.
+\noindent Equation (\ref{eq::DSA_ops_update}) provides the accelerated iteration scheme where the matrix operator $\left[ {\bf T}  + {\bf P} {\bf A}^{-1} {\bf X} {\bf \Sigma} \left(  {\bf T}    - {\bf I} \right) \right]$ is the corresponding iteration matrix for a preconditioned transport sweep. This matrix is in contrast to the unaccelerated iteration matrix, ${\bf T}$, given in Eq. (\ref{eq::DSA_1G_trans_eq_ops_mom_simple}). These accelerated and unaccelerated iteration matrices can be analyzed to obtain knowldege of how the transport solutions will converge.
 
 We now quickly show how the DSA iterative procedure given by Eq. (\ref{eq::DSA_ops_update}) is exactly a preconditioned Richardson iteration. We do this by first adding and subtracting ${\bf \Phi}^{(k)}$ to the final line of Eq. (\ref{eq::DSA_ops_update}) to form the following equivalent iteration scheme,
 
@@ -450,6 +450,7 @@ The first thermal neutron upscatter acceleration methodology that we will invest
 
 \begin{enumerate}
 \item Perform a Gauss-Seidel procedure in energy for all of the thermal groups and converge the inner iterations;
+\item Factorize the multigroup iteration error into a spatial component and a spectral component;
 \item Perform a spectral collapse of the transport iteration error into a 1-group diffusion equation;
 \item Solve the 1-group diffusion equation for the spatial variation of the transport iteration error;
 \item Interpolate the diffusion multigroup error back onto the transport solution.
@@ -553,7 +554,7 @@ R_g^{(k+1/2)} = \sum_{g'=g+1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)}
 \delta \phi_{g,0}^{(k+1/2)} = \xi_g \epsilon^{(k+1/2)} (\vec{r}), \qquad \sum_{g=1}^G \xi_g = 1,
 \end{equation}
 
-\noindent into a spatial component, $\epsilon^{(k+1/2)} (\vec{r})$, and an energy component, $\xi_g$. The spectral shape, $\xi_g$, is the eigenfunction corresponding to the largest eigenvalue of the infinite medium iteration matrix of Eq. (\ref{eq::DSA_TG_trans_it_eq_ops}) with no driving source term. This eigenvalue problem can be succinctly written as,
+\noindent into a spatial component, $\epsilon^{(k+1/2)} (\vec{r})$, and an energy component, $\xi_g$. The spectral shape, $\xi_g$, is the eigenfunction corresponding to the largest eigenvalue of the infinite medium iteration matrix of Eq. (\ref{eq::DSA_TG_trans_it_eq_ops}) with no driving source term. It is material dependent and can be computed once all the problem materials are known. This eigenvalue problem can be succinctly written as,
 
 \begin{equation}
 \label{eq::DSA_TG_eigenpprob}
@@ -948,8 +949,8 @@ a^{SIP}( b, \Phi) = b^{SIP}(b),
 \label{eq::SIP_bilinear_form}
 \begin{aligned}
 a^{SIP}( b, \Phi)  = \Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{\mathcal{D}} + \Big(  \sigma   b ,  \Phi  \Big)_{\mathcal{D}}  +  \frac{1}{2} \Big<    b , \Phi \Big>_{\partial \mathcal{D}^r}   \\
-+  \Big< \kappa_e^{SIP} [\![   b ]\!] , [\![  \Phi ]\!]\Big>_{E_h^i} + \Big<  [\![   b ]\!] , \{\!\{  D \partial_n \Phi \}\!\}\Big>_{E_h^i}  + \Big< \{\!\{  D \partial_n  b \}\!\} , [\![ \Phi ]\!]\Big>_{E_h^i} \\
-+ \Big< \kappa_e^{SIP}   b ,   \Phi \Big>_{\partial \mathcal{D}^d} - \Big<   b  ,  D \partial_n \Phi \Big>_{\partial \mathcal{D}^d} - \Big<   D 				\partial_n  b , \Phi \Big>_{\partial \mathcal{D}^d}  
++  \Big< \kappa_f^{SIP} [\![   b ]\!] , [\![  \Phi ]\!]\Big>_{E_h^i} + \Big<  [\![   b ]\!] , \{\!\{  D \partial_n \Phi \}\!\}\Big>_{E_h^i}  + \Big< \{\!\{  D \partial_n  b \}\!\} , [\![ \Phi ]\!]\Big>_{E_h^i} \\
++ \Big< \kappa_f^{SIP}   b ,   \Phi \Big>_{\partial \mathcal{D}^d} - \Big<   b  ,  D \partial_n \Phi \Big>_{\partial \mathcal{D}^d} - \Big<   D 				\partial_n  b , \Phi \Big>_{\partial \mathcal{D}^d}  
 \end{aligned} ,
 \end{equation}
 
@@ -958,7 +959,7 @@ a^{SIP}( b, \Phi)  = \Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{\mathc
 \begin{equation}
 \label{eq::SIP_linear_form}
 \begin{aligned}
-b^{SIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  - \Big<   b, J_{0}  \Big>_{\partial \mathcal{D}^n} +  2 \Big<  b, J^{inc}  \Big>_{\partial \mathcal{D}^r} \\ + \Big< \kappa_e^{SIP}  b, \Phi_0  \Big>_{\partial \mathcal{D}^d} - \Big<    D \partial_n b ,\Phi_0 \Big>_{\partial \mathcal{D}^d} 
+b^{SIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  - \Big<   b, J_{0}  \Big>_{\partial \mathcal{D}^n} +  2 \Big<  b, J^{inc}  \Big>_{\partial \mathcal{D}^r} \\ + \Big< \kappa_f^{SIP}  b, \Phi_0  \Big>_{\partial \mathcal{D}^d} - \Big<    D \partial_n b ,\Phi_0 \Big>_{\partial \mathcal{D}^d} 
 \end{aligned} .
 \end{equation}
 
@@ -973,7 +974,7 @@ b^{SIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  - \Big<   b, J_{0}  \Big>_{\part
 \label{eq::SIP_penalty_term}
 \end{equation}
 
-\noindent for interior, $E_h^i$, and boundary, $\partial \mathcal{D}$, faces respectively. In Eq. (\ref{eq::SIP_penalty_term}), $h^\pm$ is the orthogonal projection of the face, $f$, into the cells defined by the trace in Eq. (\ref{eq::solution_trace}). Turcksin and Ragusa, \cite{turcksin2014discontinuous}, defined $h^\pm$ for 2D polygons, whose definitions can be seen in Table \ref{tab::orth_proj_2D}. The orthogonal projection for both triangles and quadrilaterals can be explicitly defined from simple geometric relationships. However, for polygons with $>4$ faces, there is no explicit geometric relationship to define the orthogonal projection. Instead, the polygon is approximated as regular, and the orthogonal projection is no longer face-dependent. For polygons with an even number of faces greater than 4, the orthogonal projection is twice the apothem, which is the line segment between the polygon's center and the midpoint of each polygon's side. For odd number of faces greater than 4, the polygon's orthogonal projection becomes the sum of the apothem and the circumradius.
+\noindent for interior, $E_h^i$, and boundary, $\partial \mathcal{D}$, faces respectively. In Eq. (\ref{eq::SIP_penalty_term}), $h^\pm$ is the orthogonal projection of the face, $f$, into the cells defined by the trace in Eq. (\ref{eq::solution_trace}). The orthogonal projection, $h^\pm$, is the length of the cell in the direction orthogonal to the face $f$. Turcksin and Ragusa, \cite{turcksin2014discontinuous}, defined $h^\pm$ for 2D polygons, whose definitions can be seen in Table \ref{tab::orth_proj_2D}. The orthogonal projection for both triangles and quadrilaterals can be explicitly defined from simple geometric relationships. However, for polygons with $>4$ faces, there is no explicit geometric relationship to define the orthogonal projection. Instead, the polygon is approximated as regular, and the orthogonal projection is no longer face-dependent. For polygons with an even number of faces greater than 4, the orthogonal projection is twice the apothem, which is the line segment between the polygon's center and the midpoint of each polygon's side. For odd number of faces greater than 4, the polygon's orthogonal projection becomes the sum of the apothem and the circumradius.
 
  In a similar manner to the 2D orthogonal projections defined in Table \ref{tab::orth_proj_2D}, we define our choice for the extension of the orthogonal projections to 3D in Table \ref{tab::orth_proj_3D}. Like triangles and quadrilaterals in 2D, the orthogonal projections for tetrahedra and hexahedra can be explicitly defined from the volume equations for pyramids and parallelepipeds, respectively. For cells that are not tetrahedra or hexahedra, we introduce an approximation similar to 2D where we treat the cell as a regular polyhedron. In 3D there is no compact formula that can be given, unlike the definitions of the apothem and circumradius for 2D. Instead, we take the geometric limit of a polyhedra as the number of faces tends to infinity (a sphere). In this limiting case, the orthogonal projection simply becomes the sphere's diameter. We can then define the sphere's diameter with geometric information that would also be available to polyhedra by dividing a sphere's volume (the polyhedral volume) by its surface area (the sum of the areas of the polyhedral faces). While this leads to an approximation of the orthogonal projection for polyhedra that are not tetrahedra or hexahedra, it will provide appropriate geometric measure, especially for strictly convex polyhedra.
 
@@ -1011,14 +1012,14 @@ b^{SIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  - \Big<   b, J_{0}  \Big>_{\part
 \subsection{Elementary Stiffness Matrices}
 \label{sec::DSA_SIP_Stiffness}
 
-In Eqs. (\ref{eq::SIP_bilinear_form}) and (\ref{eq::SIP_linear_form}), there are two additional elementary matrix types required other than those presented in Chapter \ref{sec::Sn}. The first has the form of $\Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{K}$ and is referred to as the stiffness matrix \cite{akin1982application}. For a cell $K$, we define the stiffness matrix ${\bf S}$ as
+In Eqs. (\ref{eq::SIP_bilinear_form}) and (\ref{eq::SIP_linear_form}), there are two additional elementary matrix types required other than those presented in Chapter \ref{sec::Sn}. The first has the form of $\Big(  D \vec{\nabla}  b , \vec{\nabla} \Phi  \Big)_{K}$ and is referred to as the stiffness matrix \cite{akin1982application}. For a cell $K$ with $N_K$ basis functions, we define the stiffness matrix ${\bf S}$ as
 
 \begin{equation}
 \label{eq::DSA_stiffness_matrix_analytical}
 {\bf S}_K =    \int_K \vec{\nabla} {\bf b}_K \cdot \vec{\nabla} {\bf b}_K^T \, d r ,
 \end{equation}
 
-\noindent which has dimensionality $(N_K \text{x} N_K)$. Just like the cell-wise elementary matrices presented in Chapter \ref{sec::Sn}, it is possible that these integrals can be computed analytically, depending on the FEM basis functions used. However, for most of the 2D basis functions presented in Chapter \ref{sec::BF}, this cannot be done. Instead, we can again employ a numerical quadrature set, $\left\{  \vec{x}_q , w_q^{K}  \right\}_{q=1}^{N_q}$, for cell $K$, consisting of $N_q$ points, $\vec{x}_q$, and weights, $w_q^K$. Using this quadrature set, the stiffness matrix can be calculated by the following
+\noindent which has dimensionality $(N_K \text{x} N_K)$. The ${\bf b}_K$ basis functions are a column vector of length $N_K$. Just like the cell-wise elementary matrices presented in Chapter \ref{sec::Sn}, it is possible that these integrals can be computed analytically, depending on the FEM basis functions used. However, for most of the 2D basis functions presented in Chapter \ref{sec::BF}, this cannot be done. Instead, we can again employ a numerical quadrature set, $\left\{  \vec{x}_q , w_q^{K}  \right\}_{q=1}^{N_q}$, for cell $K$, consisting of $N_q$ points, $\vec{x}_q$, and weights, $w_q^K$. Using this quadrature set, the stiffness matrix can be calculated by the following
 
 \begin{equation}
 \label{eq::DSA_stiffness_matrix_numerical}
@@ -1129,8 +1130,8 @@ a^{MIP}( b, \delta \Phi) = b^{MIP}(b),
 \label{eq::MIP_bilinear_form}
 \begin{aligned}
 a^{MIP}(b, \delta \Phi)  = \Big(  D \vec{\nabla} b , \vec{\nabla} \delta \Phi  \Big)_{\mathcal{D}} + \Big(  \sigma b , \delta \Phi  \Big)_{\mathcal{D}}    \\
-+  \Big< \kappa_e^{MIP} [\![   b ]\!] , [\![  \delta \Phi ]\!]\Big>_{E_h^i} + \Big<  [\![  b ]\!] , \{\!\{  D \partial_n \delta \Phi \}\!\}\Big>_{E_h^i}  + \Big< \{\!\{  D \partial_n b \}\!\} , [\![ \delta \Phi ]\!]\Big>_{E_h^i} \\
-+ \Big< \kappa_e^{MIP}  b , \delta  \Phi \Big>_{\partial \mathcal{D}^d} - \frac{1}{2} \Big<  b ,  D \partial_n \delta \Phi \Big>_{\partial \mathcal{D}^d} - \frac{1}{2} \Big<   D \partial_n b , \delta \Phi \Big>_{\partial \mathcal{D}^d}  
++  \Big< \kappa_f^{MIP} [\![   b ]\!] , [\![  \delta \Phi ]\!]\Big>_{E_h^i} + \Big<  [\![  b ]\!] , \{\!\{  D \partial_n \delta \Phi \}\!\}\Big>_{E_h^i}  + \Big< \{\!\{  D \partial_n b \}\!\} , [\![ \delta \Phi ]\!]\Big>_{E_h^i} \\
++ \Big< \kappa_f^{MIP}  b , \delta  \Phi \Big>_{\partial \mathcal{D}^d} - \frac{1}{2} \Big<  b ,  D \partial_n \delta \Phi \Big>_{\partial \mathcal{D}^d} - \frac{1}{2} \Big<   D \partial_n b , \delta \Phi \Big>_{\partial \mathcal{D}^d}  
 \end{aligned} ,
 \end{equation}
 
@@ -1141,14 +1142,14 @@ a^{MIP}(b, \delta \Phi)  = \Big(  D \vec{\nabla} b , \vec{\nabla} \delta \Phi  \
 b^{MIP} (b) = \Big(  b, Q  \Big)_{\mathcal{D}}  + \Big< b, \delta  J^{inc}  \Big>_{\partial \mathcal{D}^{ref}} .
 \end{equation}
 
-\noindent The MIP penalty coefficient also needs to be of a different form than the one used for SIP. From Eq. (\ref{eq::SIP_penalty_term}), we can see that as the orthogonal projection, $h$, grows large compared to the diffusion coefficient, $D$, the SIP penalty coefficient can become arbitrarily small. Wang and Ragusa demonstrated in \cite{ragusa2010two} that if the penalty coefficient becomes too small, then MIP used as a DSA diffusion form becomes unstable. Instead, they limited $\kappa^{MIP}$ to the maximum of either $\kappa^{SIP}$ or $1/4$. The value of $1/4$ arises as the constant in the terms $\Big<  [\![   b ]\!] , [\![  \delta \Phi ]\!]\Big>_{E_h^i} $ and $\Big<  b , \delta  \Phi \Big>_{\partial \mathcal{D}^d}$ when the {\em diffusion conforming form} (DCF) of the diffusion equation is consistently derived from the DGFEM transport equation \cite{ref::DSA_wang_ragusa}. This new definition of $\kappa_e^{MIP}$ can be succinctly written as
+\noindent The MIP penalty coefficient also needs to be of a different form than the one used for SIP. From Eq. (\ref{eq::SIP_penalty_term}), we can see that as the orthogonal projection, $h$, grows large compared to the diffusion coefficient, $D$, the SIP penalty coefficient can become arbitrarily small. Wang and Ragusa demonstrated in \cite{ragusa2010two} that if the penalty coefficient becomes too small, then MIP used as a DSA acceleration form becomes unstable. Instead, they limited $\kappa^{MIP}$ to the maximum of either $\kappa^{SIP}$ or $1/4$. The value of $1/4$ arises as the constant in the terms $\Big<  [\![   b ]\!] , [\![  \delta \Phi ]\!]\Big>_{E_h^i} $ and $\Big<  b , \delta  \Phi \Big>_{\partial \mathcal{D}^d}$ when the {\em diffusion conforming form} (DCF) of the diffusion equation is consistently derived from the DGFEM transport equation \cite{ref::DSA_wang_ragusa}. This new definition of $\kappa_f^{MIP}$ can be succinctly written as
 
 \begin{equation}
 \label{eq::MIP_penalty_term}
-\kappa_e^{MIP} = \text{max} \left( \kappa_e^{SIP}, \frac{1}{4} \right).
+\kappa_f^{MIP} = \text{max} \left( \kappa_f^{SIP}, \frac{1}{4} \right).
 \end{equation}
 
-\noindent Just like the SIP penalty coefficient, this definition of $\kappa_e^{MIP}$ ensures that the MIP bilinear form of Eq. (\ref{eq::MIP_bilinear_form}) is SPD. We next describe the procedures used to efficiently solve the MIP system matrix for our work.
+\noindent Just like the SIP penalty coefficient, this definition of $\kappa_f^{MIP}$ ensures that the MIP bilinear form of Eq. (\ref{eq::MIP_bilinear_form}) is SPD. We next describe the procedures used to efficiently solve the MIP system matrix for our work.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1221,7 +1222,7 @@ Once the geometric domain is specified, we can then expand the solution vectors 
 \Psi^{(k)}  (\vec{r}, \vec{\Omega})=  \hat{\Psi}^{(k)} (\vec{\Omega}) \, e^{i \vec{\lambda} \cdot \vec{r}},
 \end{equation}
 
-\noindent where $i=\sqrt{-1}$.  Also, the error modes for the discretized angular flux along direction $m$ and the flux moments can be given by
+\noindent where $i=\sqrt{-1}$ and $\hat{\Psi}^{(k)} (\vec{\Omega})$ is the Fourier expansion coefficient for the angular flux.  Also, the error modes for the discretized angular flux along direction $m$ and the flux moments can be given by
 
 \begin{equation}
 \label{eq::fourier_ang_sol_disc}
@@ -1276,7 +1277,7 @@ Now that we have defined our periodic heterogeneous domain configuration and exp
 
 Once the FA iteration matrix is assembled for a given wave number, $\vec{\lambda}$, we compute all of its corresponding eigenvalues. The largest of these eigenvalues is the spectral radius for the given wave number. If we compute the spectral radii for all the possible wave numbers ({\em e.g.,} $[0,\frac{2 \pi}{X}) \otimes [0,\frac{2 \pi}{Y})$ in 2D) for a given problem configuration, then the maximum corresponds to the global spectral radius for the problem. For Richardson iteration in the asymptotic regime, we will converge to our transport solution more rapidly with a smaller spectral radius that is strictly less than 1. Likewise, our scheme would be unstable if the spectral radius is larger than 1. 
 
-For this work, all Fourier analysis was performed in MATLAB. All the eigenmodes corresponding to a Fourier wave number for a given iteration matrix can be easily computed with MATLAB's built-in {\em eig} function. The maximum eigenvalue is found over the wave number space by use of the Nelder-Mead simplex algorithm \cite{nelder1965simplex}. We stress that some sort of minimization algorithm must be employed because some problem configurations can have extremely narrow local maxima. These difficult to find local maxima can correspond to the global maximum which is our desired spectral radius that we wish to compute. 
+For this work, all Fourier analysis was performed in MATLAB. All the eigenmodes corresponding to a Fourier wave number for a given iteration matrix can be easily computed with MATLAB's built-in {\em eig} function. The maximum eigenvalue is found over the wave number space by use of the Nelder-Mead simplex algorithm \cite{nelder1965simplex}. We stress that some sort of minimization algorithm must be employed because some problem configurations can have extremely narrow local maxima. These difficult-to-find local maxima can correspond to the global maximum which is our desired spectral radius that we wish to compute. 
 
 We illustrate the necessity for a minimization algorithm in Figure \ref{fig::DSA_fourier_modes_showing_search_need}. We have modeled a single 2D square mesh cell with dimensions $X=1$ and $Y=1$. The total cross section, $\sigma_t$, is set to $10^{-2}$ and the scattering ratio, $c$, set to 0.9999. We use the $S4$ level-symmetric quadrature set. The left image of Figure \ref{fig::DSA_fourier_modes_showing_search_need} has the 2D Fourier wave number span the full domain space of $[\lambda_x,\lambda_y]=[0,2 \pi]^2$. The right image zooms in on the wave number ranging: $[\lambda_x,\lambda_y]=[0,1/4]^2$. From the right image, we can see two extremely narrow local maxima. We can qualitatively ascertain that these local maxima would be difficult to find if we had simply laid a grid of wave number points over $[0,2 \pi]^2$. It would require a very fine wave number grid that is both expensive to compute and not guaranteed to locate the maximum. Chang and Adams presented an even more extreme example of a difficult to find global maximum using transport synthetic acceleration \cite{chang2003analysis}.
 
@@ -1335,33 +1336,33 @@ Figure \ref{fig::SIP_mesh_slices} provides the 2D mesh types that will be utiliz
 	\begin{subfigure}[b]{0.5\textwidth}
 		\centering
 		\includegraphics[width=0.82\textwidth]{figures/sec_DSA/SIP_cart_mesh.png}
-		\caption{}
+		\caption{Cartesian}
 	\end{subfigure}
 	\vfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/sec_DSA/SIP_tri_mesh.png}
-		\caption{}
+		\caption{Triangular}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/sec_DSA/SIP_poly_mesh.png}
-		\caption{}
+		\caption{Random Polygons}
 	\end{subfigure}
 	\vfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/sec_DSA/SIP_sine_poly_mesh.png}
-		\caption{}
+		\caption{Sinusoid Polygons}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/sec_DSA/SIP_z_poly_mesh.png}
-		\caption{}
+		\caption{Polygonal Z-Mesh}
 	\end{subfigure}
-\caption{2D grids to be extruded of the different mesh types: (a) cartesian, (b) ordered triangles, (c) random polygons, (d) sinusoidal polygons, and (e) polygonal z-mesh.}
+\caption{2D polygonal grids to be extruded for the 3D SIP calculations.}
 \label{fig::SIP_mesh_slices}
 \end{figure}
 
@@ -1370,33 +1371,33 @@ Figure \ref{fig::SIP_mesh_slices} provides the 2D mesh types that will be utiliz
 	\begin{subfigure}[b]{0.5\textwidth}
 		\centering
 		\includegraphics[width=0.82\textwidth]{figures/sec_DSA/SIP_cart_extruded_mesh.png}
-		\caption{}
+		\caption{Cartesian}
 	\end{subfigure}
 	\vfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/sec_DSA/SIP_tri_extruded_mesh.png}
-		\caption{}
+		\caption{Triangular}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/sec_DSA/SIP_poly_extruded_mesh.png}
-		\caption{}
+		\caption{Random Polygons}
 	\end{subfigure}
 	\vfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/sec_DSA/SIP_sine_poly_extruded_mesh.png}
-		\caption{}
+		\caption{Sinusoid Polygons}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/sec_DSA/SIP_z_poly_extruded_mesh.png}
-		\caption{}
+		\caption{Polygonal Z-Mesh}
 	\end{subfigure}
-\caption{Extrusion of the different mesh types: (a) cartesian, (b) ordered triangles, (c) random polygons, (d) sinusoidal polygons, and (e) polygonal z-mesh.}
+\caption{Extrusion of the different polygonal meshes.}
 \label{fig::SIP_mesh_extruded}
 \end{figure}
 
@@ -1988,8 +1989,6 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 
 For the final theoretical analysis of DSA with the MIP form, we analyze the acceleration performance when AMR is utilized on a sufficiently optically thick transport with material discontinuities. The 2D transport problem that will be examined is similar to the Iron-Water problem \cite{khalil1985nodal}. It was modified by Wang and Ragusa for use with higher-order basis functions on triangular meshes with hanging nodes \cite{ref::DSA_wang_ragusa}. We will reexamine their work on degenarate polygonal grids and not use hanging nodes. The complete geometric desciption of our problem including boundary conditions and material distributions is given in Figure \ref{fig::DSA_IW_Description}. The material properties for each region which include the total cross section, scattering ratio, and source strength are given in Table \ref{tab::DSA_IW_mats}. Scattering is isotropic. 
 
-
-
 \begin{table}
 \caption{Material definitions and physical properties for the Iron-Water problem.}
 \centering
@@ -2021,6 +2020,8 @@ III & 1.0 & 0.30 & 0.0\\
 \caption{Initial mesh for the Iron-Water problem.}
 \label{fig::DSA_IW_starting_mesh}
 \end{figure}
+
+For this analysis, we will test multiple problem configurations. All AMR histories will be calculated form an initial starting mesh provided in Figure \ref{fig::DSA_IW_starting_mesh} where the material regions are given by the different mesh cell colors. Both linear and quadratic basis functions will be analyzed, but we only use the 2D PWL coordinates.
 
 \begin{table}
 \caption{DSA counts based on preconditioner type for the Iron-Water problem with $LS_4$ quadrature, linear basis functions, and solution reinitialization.}
