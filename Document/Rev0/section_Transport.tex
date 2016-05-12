@@ -1283,7 +1283,7 @@ This cell-by-cell inversion of the streaming operator is known as a {\em transpo
 
 We can gain knowledge of how our transport sweeps will perform by analyzing the streaming operator, ${\bf L}$, in space and angle. If ${\bf L}$ is strictly block-lower triangular for a given angular direction, then it is guaranteed that an ordering of the mesh cells can be represented by a Directed Acyclic Graph (DAG) \cite{gerasoulis1989static}. However, situations can arise where a cycle forms in the graph and a complete sweep for those directions becomes impossible. These situations include concave polytope elements that cause re-entrance, opposing reflecting boundary conditions, and extreme distortion of an $\mathbb{R}^3$ domain (regular mesh of hexahedral cells with 1 dimensional end twisted). Figure \ref{fig::Sn_Solution_Spatial_Sweeping_sweepNOcycle} shows a DAG without any cycles for the given direction. Figure \ref{fig::Sn_Solution_Spatial_Sweeping_sweepWcycle} then shows a graph with a cycle caused by a re-entrant quadrilateral mesh cell. There are methods to break these cycles and still perform transport sweeping, but we will not consider them for this work.
 
-Up to this point, we have provided the basic details on how a transport sweep is performed. We now switch 
+Up to this point, we have provided the basic details on how a transport sweep is performed. We now switch our discussion to recent developments involving provably optimal sweeping algorithms with high efficiencies out to $O(10^5)$ - $O(10^6)$ processors. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - AMR
