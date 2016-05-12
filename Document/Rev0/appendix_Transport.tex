@@ -13,7 +13,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \phantomsection
-\chapter{\uppercase{Addendum to Section \ref{sec::Sn}}}
+\chapter{\uppercase{Addendum to Chapter \ref{sec::Sn}}}
 \label{sec::appendix_SN}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -21,14 +21,165 @@
 \section{Detailed Description of the Spherical Harmonics Expansion of the Scattering Kernel}
 \label{sec::appendix_SN_Scattering}
 
+In Section \ref{sec::Sn_Angle}, we provided details on the angular discretization of the transport equation. Specifically, we mentioned that the scattering term is modified by series expanding the scattering cross sections in terms of Legendre polynomials, $P$, and series expanding the angular flux in terms of the spherical harmonics functions, $Y$ . We now go into further detail on the steps properly perform these exspansions for the scattering kernel.
+
+We first define the scattering kernel, and ignore energy and spatial position, as the following:
+
+\begin{equation}
+\label{eq::App_SN_scatt_kernel}
+\int\limits_{4 \pi} d \Omega' \, \sigma_s (\vec{\Omega}' \cdot \vec{\Omega}) \Psi (\vec{\Omega}') .
+\end{equation}
+
+\noindent We can then define the spherical harmonics as
+
+\begin{equation}
+\label{eq::App_SN_sph_harm_funcs}
+Y_{n,k} (\vec{\Omega}) = \sqrt{C_{n,k}} P_n^k (\mu) e^{i k \theta} ,
+\end{equation}
+
+\noindent where
+
+\begin{equation}
+\label{eq::App_SN_sph_harm_consts}
+C_{n,k} = \frac{(2n +1)(n-k)!}{4 \pi (n+k) !} ,
+\end{equation}
+
+\noindent and $\mu$ is the cosine of the polar angle, $\theta$ is the azimuthal angle, and $P_n^k$ are the associated Legendre polynomials. These associated Legendre polynomials have the following properties
+
+\begin{equation}
+\label{eq::App_SN_ass_leg_props}
+\begin{aligned}
+P_n^0 (\mu) &= P_n (\mu)  \\
+P_n^{-k} (\mu) &= (-1)^k \frac{(n-k)!}{(n+k) !} P_n^{k} (\mu)
+\end{aligned}
+\end{equation}
+
+\noindent where $P_n (\mu)$ are the Legendre polynomials. The first 5 orders of the Legendre polynomials are given in Figure \ref{fig::Legendre_Polynomials}. 
+
 \begin{figure}
-\label{fig::Legendre_Polynomials}
 \centering
-\includegraphics[width=\textwidth]{figures/appendices/legendre_polynomials.png}
+\includegraphics[width=\textwidth]{figures/appendices/LegPoly.eps}
 \caption{Legendre polynomials of degrees 0 through 5.}
+\label{fig::Legendre_Polynomials}
 \end{figure}
 
+An alternative definition for the spherical harmonics functions can be used that is more amenable to coding since there are no complex numbers involved. We can separate the spherical harmonics functions into their even ($Y_{n,k}^e  (\vec{\Omega}) $) and odd ($Y_{n,k}^o  (\vec{\Omega}) $) components. These definitions now have the form of 
+
+\begin{equation}
+\label{eq::App_SN_sharm_funcs}
+\begin{aligned}
+Y^e_{n,k} (\vec{\Omega}) &= \sqrt{C_{n,k}} P_n^k (\mu) \cos (k \theta), \qquad k=0,...,n  \\
+Y^o_{n,k} (\vec{\Omega}) &= \sqrt{C_{n,k}} P_n^k (\mu) \sin (k \theta) , \qquad k=1,...,n
+\end{aligned}
+\end{equation}
+
+\noindent where
+
+\begin{equation}
+\label{eq::App_SN_sharm_consts}
+C_{n,k} = \frac{(n-k)!}{4 \pi (n+k) !}( 2-  \delta_{k,0}).
+\end{equation}
+
+\noindent The orthogonality condition applies to these functions:
+
+\begin{equation}
+\label{eq::App_SN_sharm_orth}
+\begin{aligned}
+\int\limits_{4 \pi} Y^e_{n,k} (\vec{\Omega}) Y^e_{m,l} (\vec{\Omega}) &= \frac{4 \pi}{2n+1} \delta_{n,m} \delta_{k,l} \\ 
+\int\limits_{4 \pi} Y^o_{n,k} (\vec{\Omega}) Y^o_{m,l} (\vec{\Omega}) &= \frac{4 \pi}{2n+1} \delta_{n,m} \delta_{k,l} \\ 
+\int\limits_{4 \pi} Y^e_{n,k} (\vec{\Omega}) Y^o_{m,l} (\vec{\Omega}) &= 0
+\end{aligned} 
+\end{equation}
+
+\noindent The addition theory is
+
+\begin{equation}
+\label{eq::App_SN_sharm_addition}
+2 \pi P_n (\vec{\Omega}' \cdot \vec{\Omega}) = P_n (\mu_0) = \sum_{k=0}^{n} Y^e_{n,k} (\vec{\Omega}) Y^e_{n,k} (\vec{\Omega}') + \sum_{k=1}^{n} Y^o_{n,k} (\vec{\Omega}) Y^o_{n,k} (\vec{\Omega}') ,
+\end{equation}
+
+\noindent where
+
+\begin{equation}
+\label{eq::App_SN_mu_to_omegas}
+\mu_0 \equiv \vec{\Omega}' \cdot \vec{\Omega} .
+\end{equation}
+
+\noindent We can then define the following angular flux moments as
+
+\begin{equation}
+\label{eq::App_SN_sharm_fluxmom}
+\begin{aligned}
+\Phi_{n,k,e} &=\int\limits_{4 \pi}\Psi (\vec{\Omega})  Y^e_{n,k} (\vec{\Omega})   \\ 
+\Phi_{n,k,o} &=\int\limits_{4 \pi}\Psi (\vec{\Omega}) Y^o_{n,k} (\vec{\Omega}) 
+\end{aligned} .
+\end{equation}
+
+\noindent With these flux moments, the angular flux can then be approximately expanded with the spherical harmonics functions:
+
+\begin{equation}
+\label{eq::App_SN_sharm_flux_exp}
+\Psi(\vec{\Omega}) \approx \sum^{N_f}_{n=0} \frac{2n+1}{4 \pi} \left[ \sum_{k=0}^{n} \Phi_{n,k,e} Y^e_{n,k} (\vec{\Omega}) + \sum_{k=1}^{n} \Phi_{n,k,o} Y^o_{n,k} (\vec{\Omega})  \right] .
+\end{equation}
+
+\noindent where we have truncated the expansion to $N_f$. 
+
+Now, we define the expansion of the scattering cross section by use of the Legendre polynomials. If we truncate at the $N_s$ term, the scattering cross section can be expanded as the following:
+
+\begin{equation}
+\label{eq::App_SN_scatt_exp}
+\sigma_s (\mu_0) \approx \sum_{n=0}^{N_s} \frac{2n+1}{2} \sigma_{s,n} P_n (\mu_0) ,
+\end{equation}
+
+\noindent where 
+
+\begin{equation}
+\label{eq::App_SN_scatt_int}
+\sigma_{s,n} \equiv \int\limits_{-1}^{1} d \mu_0 \, \sigma_s (\mu_0) P_n (\mu_0).
+\end{equation}
+
+If we define the term $N_p$ is the minimum integer value between $N_s$ and $N_f$, then we can then insert Eqs. (\ref{eq::App_SN_sharm_flux_exp}) and (\ref{eq::App_SN_scatt_int}) into Eq. (\ref{eq::App_SN_scatt_kernel}) to yield the following
+
+\begin{equation}
+\label{eq::App_SN_scatt_kernel_inserted}
+\begin{aligned}
+&\int\limits_{4 \pi} d \Omega' \, \sigma_s (\vec{\Omega}' \cdot \vec{\Omega}) \Psi (\vec{\Omega}')\\
+= &\int\limits_{4 \pi} d \Omega'
+\left\{ \begin{aligned}
+&\left[\sum_{n=0}^{N_s} \frac{2n+1}{2} \sigma_{s,n} P_n (\vec{\Omega}' \cdot \vec{\Omega}) \right] \\
+  &\left[\sum^{N_f}_{m=0} \frac{2m+1}{4 \pi} \left( \sum_{l=0}^{m} \Phi_{m,l,e} Y^e_{m,l} (\vec{\Omega}') + \sum_{l=1}^{m} \Phi_{m,l,o} Y^o_{m,l} (\vec{\Omega}')  \right) \right]
+\end{aligned} \right\} \\
+= &\int\limits_{4 \pi} d \Omega'
+\left\{ \begin{aligned}
+&\left[\sum_{n=0}^{N_s} \frac{2n+1}{2} \sigma_{s,n}\left[ \sum_{k=0}^{n} Y^e_{n,k} (\vec{\Omega}) Y^e_{n,k} (\vec{\Omega}') + \sum_{k=1}^{n} Y^o_{n,k} (\vec{\Omega}) Y^o_{n,k} (\vec{\Omega}') \right] \right]\\
+  &\left[\sum^{N_f}_{m=0} \frac{2m+1}{4 \pi} \left( \sum_{l=0}^{m} \Phi_{m,l,e} Y^e_{m,l} (\vec{\Omega}') + \sum_{l=1}^{m} \Phi_{m,l,o} Y^o_{m,l} (\vec{\Omega}')  \right) \right]
+\end{aligned} \right\} \\
+=&\sum_{n=0}^{N_p} \frac{2n+1}{4 \pi}\sigma_{s,n} \left[  \sum_{k=0}^{n} \Phi_{n,k,e} Y^e_{n,k} (\vec{\Omega}) + \sum_{k=1}^{n} \Phi_{n,k,o} Y^o_{n,k} (\vec{\Omega})  \right]
+\end{aligned}
+\end{equation}
+
+\noindent To ease notation, let us define the following:
+
+\begin{equation}
+\label{eq::App_SN_sharm_flux_ease}
+\begin{aligned}
+Y_{n,k} (\vec{\Omega}) &\equiv Y_{n,k}^e (\vec{\Omega}), & k=0,...,n\\
+Y_{n,-k} (\vec{\Omega}) &\equiv Y_{n,k}^o (\vec{\Omega}), & k=1,...,n\\
+\Phi_{n,k} &\equiv \Phi_{n,k,e}, & k=0,...,n\\ 
+\Phi_{n,-k} &\equiv\Phi_{n,k,o}, & k=1,...,n
+\end{aligned} 
+\end{equation}
+
+\noindent With this simplication, we can write the final form for the scattering kernel:
+
+\begin{equation}
+\label{eq::App_SN_scatt_kernel_FINAL}
+\int\limits_{4 \pi} d \Omega' \, \sigma_s (\vec{\Omega}' \cdot \vec{\Omega}) \Psi (\vec{\Omega}')  = \sum_{n=0}^{N_p} \frac{2n+1}{4 \pi}\sigma_{s,n} \sum_{k=-n}^{n} \Phi_{n,k} Y_{n,k} (\vec{\Omega})
+\end{equation}
+
+
 % List of Spherical Harmonics Plots
+\iffalse
 \pagebreak
 
 \begin{figure}
@@ -143,3 +294,4 @@
 \caption{Spherical harmonic functions of degree 3: (a) $Y_{3}^{0}$, (b) $Y_{3}^{-1}$, (c) $Y_{3}^{1}$, (d) $Y_{3}^{-2}$, (e) $Y_{3}^{2}$, (f) $Y_{3}^{-3}$, and (g) $Y_{3}^{3}$.}
 \end{figure}
 
+\fi
