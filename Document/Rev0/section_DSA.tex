@@ -723,7 +723,7 @@ We now provide the full phase-space update equation in a like manner to TG. Just
 \subsubsection{Multigroup Jacobi Acceleration}
 \label{sec:DSA_DSA_MG_WGS}
 
-The third and final thermal neutron upscattering acceleration method that we will investigate is markedly different than the TG and MTG methods. With the increasing expansion of parallel computing resources, the sequential Gauss-Seidel approach for the thermal energy groups necessarily becomes a limiting bottleneck. Therefore, we have natural recourse to develop an alternate thermal upscattering acceleration method that can more effectively make use of parallel algorithms and architectures. Therefore, instead of sequentially marching through the thermal energy groups in a Gauss-Seidel, we solve them simultaneously at each outer iteration. This is achieved by placing all the thermal energy groups into a single group set. Then, each outer iteration performs one transport sweep where the thermal scattering source was generated from the sweep of the previous outer iteration. This procedure is identical to a block Jacobi iteration where a single inner iteration is performed for each thermal group. Therefore, we choose to call this methodology the Multigroup Jacobi Acceleration (MJA) method. This process of simultaneously solving all the thermal groups in a transport sweep yields the following iteration scheme:
+The third thermal neutron upscattering acceleration method that we will investigate is markedly different than the TG and MTG methods. With the increasing expansion of parallel computing resources, the sequential Gauss-Seidel approach for the thermal energy groups necessarily becomes a limiting bottleneck. Therefore, we have natural recourse to develop an alternate thermal upscattering acceleration method that can more effectively make use of parallel algorithms and architectures. Therefore, instead of sequentially marching through the thermal energy groups in a Gauss-Seidel, we solve them simultaneously at each outer iteration. This is achieved by placing all the thermal energy groups into a single group set. Then, each outer iteration performs one transport sweep where the thermal scattering source was generated from the sweep of the previous outer iteration. This procedure is identical to a block Jacobi iteration where a single inner iteration is performed for each thermal group. Therefore, we choose to call this methodology the Multigroup Jacobi Acceleration (MJA) method. This process of simultaneously solving all the thermal groups in a transport sweep yields the following iteration scheme:
 
 \begin{equation}
 \label{eq::DSA_WGS_trans_it_eq}
@@ -790,11 +790,41 @@ R_g^{(k+1/2)} = \sum_{g'=1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)} -
 \noindent where ${\bf F} \equiv {\bf D}{\bf L}^{-1} $ and we recall that ${\bf b} = {\bf D}{\bf L}^{-1}  {\bf Q}$. Equation (\ref{eq::DSA_WGS_op_update_simple}) provides the iteration matrix for the MJA method and its eigenspectrum can be analyzed to provide insight into the method.
 
 %%%%%%%%%%%%%
+%%%   SubSubSection - Jacobi acceleration
+\subsubsection{Multigroup Jacobi with Inner Acceleration}
+\label{sec:DSA_DSA_MG_MJIA}
+
+Up to this point, we have presented a two-grid-like methodology in the MJA method that is amenable to parallel computation. With modern transport codes that can solve energy groups simultaneously, the grind times for these multi-energy group set transport sweeps are significantly lower than single group sweeps. Therefore, it is possible to have ``worse'' theoretical convergence properties for MJA but still converge to a solution faster based on wallclock time (we demonstrate this in Sections \ref{sec::DSA_Results_IM1_2D} and \ref{sec::DSA_Results_IM1_3D}). However, like the MTG method, MJA does not converge the inner iterations. For graphite with $O(10^1)$ - $O(10^2)$ thermal groups, there can still be several within-group scattering ratios above 0.9. Therefore, there will be a large contribution to the iteration error from the non-convergence of the within-group iterations. We quickly note that as the number of thermal groups approaches infinity, this behavior will disappear. Because of this behavior of the scattering ratios, we then have recourse to 
+
+%%%% MORE DETAILS GO HERE!!!!
+
+\begin{enumerate}
+\item Solve for the fast energy groups.
+\item Build scattering source for the thermal groups.
+\item Perform transport sweep of all the thermal groups simultaneously in an identical manner to the MJA method.
+\item Perform $G$ distinct 1-group diffusion calculations for the within-group iteration error. The error residuals only contain the $g\rightarrow g$ scattering.
+\item Perform a single, energy-collapsed diffusion calculation for the group-to-group iteration error (this step is almost identical to MJA).
+\item Check for convergence. If we are not converged, then return to step 2.
+\end{enumerate}
+
+With this iterative scheme detailed, there only remains a discussion on the differences in the diffusion steps compared to the MJA method. Because there are now two diffusion steps in the MJIA method (we can view it as a V-cycle with 2 levels), we will use a modified form for the update equation, where the acceleration steps are at the ($k+1/3$) and ($k+2/3$) iterate steps. For each thermal group, $g$, we express this two-level update equation for the scalar flux as
+
+\begin{equation}
+\label{eq::DSA_MJIA_update_op}
+\begin{aligned}
+\phi_{g,0}^{(k+2/3)} &=  \phi_{g,0}^{(k+1/3)}  + \Delta \phi_{g,0}^{(k+1/3)} \\
+\phi_{g,0}^{(k+1)} &=  \phi_{g,0}^{(k+2/3)}  + \delta \phi_{g,0}^{(k+2/3)}
+\end{aligned} ,
+\end{equation}
+
+\noindent where $\phi_g^{(k+1/3)}$ corresponds to the solution after the transport sweep, $ \Delta \phi_g^{(k+1/3)}$ corresponds to the error from the $G$ separate within-group diffusion solves, and $\delta \phi_g^{(k+2/3)}$ corresponds to the error from the single, energy-collapsed diffusion solve. 
+
+%%%%%%%%%%%%%
 %%%   SubSubSection - Upscatter Summary
 \subsubsection{Summary of the Thermal Neutron Upscattering Acceleration Methods}
 \label{sec:DSA_DSA_MG_Summary}
 
-In this work, we have defined three different methodologies to accelerate thermal neutron upscattering: the Two-Grid method, the Modified Two-Grid method, and the Multigroup Jacobi method. These methods are similar in that we perform a single coarsening step for each iteration where a spectrally-collapsed, 1-group diffusion equation is the low-order error operator. However, there are key differences in the iterative procedures of the three methods. Both the TG and MTG methods perform a Gauss-Seidel procedure in energy where the thermal energy groups are solved sequentially. However, the inner iterations are not converged for any of the thermal groups with the MTG method. The Multigroup Jacobi method is different from the other two in that the thermal groups are iterated upon simultaneously. 
+In this work, we have defined four different methodologies to accelerate thermal neutron upscattering: the Two-Grid (TG) method, the Modified Two-Grid (MTG) method, the Multigroup Jacobi Acceleration (MJA) method, and the Multigroup Jacobi with Inner Acceleration (MJIA) method. These methods are similar in that we perform a single coarsening step for each iteration where a spectrally-collapsed, 1-group diffusion equation is the low-order error operator. However, there are key differences in the iterative procedures of the three methods. Both the TG and MTG methods perform a Gauss-Seidel procedure in energy where the thermal energy groups are solved sequentially. However, the inner iterations are not converged for any of the thermal groups with the MTG method. The Multigroup Jacobi method is different from the other two in that the thermal groups are iterated upon simultaneously. 
 
 For all three methods, we can define a general expression for the full phase-space solution at each iteration by the following,
 
@@ -1867,7 +1897,7 @@ When DSA is applied to multidimensional problems (2D and 3D), the preconditionin
 
 \begin{equation}
 \begin{aligned}
-\sigma_1 &= \sigma \\
+\sigma_1 &= 1 \\
 \sigma_2 &= \frac{1}{\sigma}
 \end{aligned}.
 \end{equation}
@@ -2670,7 +2700,7 @@ Before we perform any numerical analysis, we first analyze the theoretical limit
 
 Next, we provide a set of homogeneous Fourier Analysis results in Table \ref{tab::IM1_inf_med_SR}. For the TG, MTG, MJA, and MJIA methods, the table gives the infinite medium FA results for each IM1 material for both unaccelerated and accelerated cases. From this table, we can determine the theoretical convergence rates for each of the methods. We clearly see that the TG and MJIA methods have the best theoretical convergence properties because of their low spectral radii. However, even though the MTG and MJA methods yield less optimal spectral radii, they still decrease the graphite spectral radius from about 0.999 to about 0.96. From Table (\ref{tab::Sn_convergece_rates}) in Section \ref{sec::Sn_Solution_Iterative_SI},  this corresponds to an approximate decrease in Richardson iterations from about 2000 to less than 200. This still yields significant increase in performance with Richardson iteration. We also expect significant performance increases if Krylov iterative schemes are used. 
 
-We now briefly discuss an issue that may arise for some heterogeneous configurations. Section \ref{sec::DSA_Results_1G_PHI} detailed the PHI problem and demonstrated that the MIP DSA scheme can lose effectiveness for problems with large material discontinuities. From the materials in the IM1 experiment, we have several materials with thermal group total cross sections of $O(10^0)$ - $O(10^1)$, and air has thermal group total cross sections of $O(10^{-4})$. These cross section values are in the range of those presented in the PHI problem resutls. Therefore, we posit that this behavior could arise for these upscatter acceleration methods. We numerically verify this a little later in Sections \ref{sec::DSA_Results_IM1_2D} and \ref{sec::DSA_Results_IM1_3D}. However, we first provide a simple Fourier Analysis example to show that this behavior could arise. We ran a Phi-like TG problem with a$2 \times 2$ cell layout and a domain of $[0,1]^2$. The top two cells are air and the bottom two cells are HDPE. The spectral radius of this problem is about 0.98, which is converging to the unaccelerated TG results. Figure \ref{fig::IM1_TG_PHI} provides the Fourier wave number distribution for this problem.
+We now briefly discuss an issue that may arise for some heterogeneous configurations. Section \ref{sec::DSA_Results_1G_PHI} detailed the PHI problem and demonstrated that the MIP DSA scheme can lose effectiveness for problems with large material discontinuities. From the materials in the IM1 experiment, we have several materials with thermal group total cross sections of $O(10^0)$ - $O(10^1)$, and air has thermal group total cross sections of $O(10^{-4})$. These cross section values are in the range of those presented in the PHI problem resutls. Therefore, we posit that this behavior could arise for these upscatter acceleration methods. We numerically verify this a little later in Sections \ref{sec::DSA_Results_IM1_2D} and \ref{sec::DSA_Results_IM1_3D}. However, we first provide a simple Fourier Analysis example to show that this behavior could arise. We ran a Phi-like TG problem with a$2 \times 2$ cell layout and a domain of $[0,1]^2$. The top two cells are air and the bottom two cells are HDPE. The spectral radius of this problem is about 0.98, which is converging to the unaccelerated TG results. Figure \ref{fig::IM1_TG_PHI} provides the Fourier wave number distribution for this problem. We can see that this wave number distribution closely matches the results obtained in the PHI analysis.
 
 \begin{figure}
 \centering
