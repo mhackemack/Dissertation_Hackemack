@@ -56,6 +56,7 @@ The quadratic serendipity basis functions were formed by taking pairwise product
 For this work, our quadrature integration scheme on arbitrary polygons consisted of a simple triangulation scheme where each sub-triangle had points mapped onto it from the reference triangle. We did not focus on efficiency for this work, but instead simply used a high-order reference quadrature set. However, by performing our integration this way, the basis function values and gradients must be computed for each polygon in the mesh. This becomes computationally expensive for meshes with many cells containing polygons with large vertex counts. An alternative approach could consist of the use of Schwarz-Christoffel Conforming Maps (SCCM) \cite{driscoll2002schwarz,driscoll2005algorithm}. Generation of the polygonal basis functions and gradients could be computed on reference (regular) polygons and then conformally mapped to any arbitrary polygon for integration \cite{natarajan2009numerical}.
 \item {\em Mixed-mode parallelism with DSA preconditioning:} \\
 In this work, spatial parallelism was done with domain decomposition using the Message Passing Interface (MPI). No shared memory parallelism was utilized. A more advanced parallelization methodology involves the use of a mixed-mode parallel methodology. This would consist of a shared-memory location (an MPI rank) where several processes could operate concurrently in parallel. This methodology is currently being implemented in the sweep portion of the PDT code. To maximize the efficiency of modern computer architectures, the DSA calculations would also need to utilize this mixed-mode scheme. Scaling and performance would need to be reassessed.
+\iffalse
 \item {\em Further preconditioning the MJA method:} \\
 The Multigroup Jacobi Acceleration (MJA) method that we presented in Chapter \ref{sec::DSA} does not require the serialization of the energy group transport solves like the TG and MTG methods. This makes it more amenable to parallelizable computational transport methods. However, since the inner iterations are not converged with MJA, we see degradation of the iterative spectral radius compared to TG (~0.95 compared to ~0.4 for pure graphite). Therefore, an alternate strategy could be to do an additional DSA between the sweep and the 1-group, energy-collapsed DSA solve. In this step, each thermal group performs a 1-group inner acceleration solve. This step has the theoretical possiblity of being completely parallelizable across all the thermal energy groups. The new methodology for an additional inner acceleration step with MJA is given as follows:
 	\begin{enumerate}
@@ -94,4 +95,5 @@ BF3&0.0242&0.0086\\\hline
 \end{center}
 \label{tab::Conc_MJA_inners}
 \end{table}
+\fi
 \end{enumerate}

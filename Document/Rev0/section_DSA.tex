@@ -2544,12 +2544,60 @@ Cycle & SI Iters. & None&Jacobi&SSOR& ILU& AGMG \\
 
 So far, we have presented a detailed theoretical analysis of DSA preconditioning with the MIP diffusion form. We have shown that the different 2D and 3D basis functions provided in Chapter \ref{sec::BF} are robust and stable, even on mesh cells with high aspect ratios. We also demonstrated that problems with large heterogeneous configurations can diminish the effectiveness of MIP DSA.
 
-Now, we need to demonstrate the scalability of MIP DSA preconditioning onto large massively-parallel computer architectures. Our ability to utilize this transport acceleration form would be greatly minimized if the DSA solve times scaled at a much worse rate compared to the transport sweep times. We specifically use the low-order diffusion operator because it is supposed to be easier to invert than the full transport operator.
+Now, we need to demonstrate the scalability of MIP DSA preconditioning onto large massively-parallel computer architectures. Our ability to utilize this transport acceleration form would be greatly diminished if the DSA solve times scaled at a much worse rate compared to the transport sweep times. We specifically use the low-order diffusion operator because it is supposed to be easier to invert than the full transport operator.
 
 From the results of the Iron-Water problem in Section \ref{sec::DSA_Results_1G_AMR}, we observed that the PCG iteration counts did not appreciably grow when utilizing AMG as the preconditioner for the diffusion solve. This was in direct contrast to the simpler preconditioners (Jacobi, GS, and ILU) that had their iteration counts grow rapidly as the number of unknowns increased. Motivated by the efficiency of AMG methods with the MIP diffusion form for the simple Iron-Water AMR problem, we will continue to use AMG as the diffusion preconditioner for our massively-parallel calculations.
 
 We have implemented the 1-group and thermal upscattering DSA methodologies of Section \ref{sec::DSA_DSA} with the MIP form into Texas A\&M University's PDT code. It is a massively-parallel DGFEM $S_N$ transport code that has had good sweep scaling efficiency out to $O(10^5)-O(10^6)$ processes \cite{ref::eff_sweeps,adams2013provably}. BoomerAMG of the HYPRE library is used as the AMG diffusion preconditioner \cite{ref::hypre,yang2002boomeramg}. We next analyze the scalability of HYPRE's PCG solver with BoomerAMG preconditioning and how this performs in comparison to PDT's transport sweeping.
 
+We test MIP's scaling with HYPRE in PDT by analyzing a simple homogenized version of the Zerr scaling problem \cite{zerr2011solution}. The problem configuration is a 3D cube that spans $[0,16]^3$ in dimension and uses strictly orthogonal hexahedral mesh cells. The total cross section is set to $\sigma_t=10$ with a scattering ratio of $c=0.9999$ and a distributed source of 1 $\frac{n}{cm^3 \, s}$. Vacuum boundary conditions are used for all boundaries, and Richardson Iteration is performed. 
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_DSA/A128.eps}
+		\caption{128 angles and 512 cells per processor}
+	\end{subfigure}
+}
+	\vspace{1cm}
+{
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_DSA/A2048.eps}
+		\caption{2048 angles and 4096 cells per processor}
+	\end{subfigure}
+}
+\caption{Timing data for the MIP DSA implementation in PDT using HYPRE on VULCAN.}
+\label{fig::DSA_Scaling_Timing}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_DSA/C512.eps}
+		\caption{512 cells per processor}
+	\end{subfigure}
+}
+	\vspace{1cm}
+{
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		\includegraphics[width=\textwidth]{figures/sec_DSA/C4096.eps}
+		\caption{4096 cells per processor}
+	\end{subfigure}
+}
+\caption{Fraction of time spent performing DSA based on number of total angles.}
+\label{fig::DSA_Scaling_DSAFrac}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% COMMENTED OUT COMPLETELY!!!!!!
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\iffalse
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection -  Homo Zerr
 \subsubsection{Weak Scaling with a Homogeneous Zerr Problem}
@@ -2593,7 +2641,10 @@ From the timing results of Figure \ref{fig::DSA_Vulcan_MIP_Timing}, one must won
 \caption{blah}
 \label{fig::DSA_Vulcan_MIP_Timing}
 \end{figure}
-
+\fi
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% COMMENTED OUT COMPLETELY!!!!!!
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2601,15 +2652,21 @@ From the timing results of Figure \ref{fig::DSA_Vulcan_MIP_Timing}, one must won
 \subsection{Thermal Neutron Upscattering Acceleration}
 \label{sec::DSA_Results_IM1}
 
-We conclude the results of this chapter by presenting analysis on the ability to use DSA to accelerate the convergence of multigroup transport problems that are dominated by thermal neutron upscattering.
+We conclude the results of this chapter by presenting analysis on the ability to use DSA to accelerate the convergence of multigroup transport problems that are dominated by thermal neutron upscattering. All the results presented in this section center around the Impurity Model 1 (IM1) experiments perfomed by the Center for Exascale Radiation Transport (CERT) group at Texas A\&M University. The IM1 experiment seeks to quantify the amount of impurities present in a set of graphite bars by treating them as $1/E$ absorbers.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.85\textwidth]{figures/sec_DSA/IM1_configuration_Rev1.png}
+\caption{Configuration of the IM1 problem with the outer layers of air removed.}
+\label{fig::IM1_config_3D}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - MG IM1 Fourier
-\subsubsection{Infinite Medium and Fourier Analysis}
+\subsubsection{Fourier Analysis for the Upscatter Acceleration Methods}
 \label{sec::DSA_Results_IM1_Fourier}
 
-
-
+Before we perform any numerical analysis, we first analyze the theoretical limits of the different upscatter acceleration methods
 
 \begin{figure}
 \centering
@@ -2630,27 +2687,38 @@ We conclude the results of this chapter by presenting analysis on the ability to
 
 \begin{figure}
 \centering
-\includegraphics[width=0.75\textwidth]{figures/sec_DSA/IM1_EC_Rich.eps}
-\caption{Spectral shape of the infinite medium iteration matrices of the IM1 problem materials for the MJA scheme.}
-\label{fig::IM1_mats_EC_Rich}
+	\begin{subfigure}[b]{0.775\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IM1_EC_Rich.eps}
+		\caption{Multigroup Jacobi Acceleration}
+	\end{subfigure}
+	
+	\begin{subfigure}[b]{0.775\textwidth}
+		\centering
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IM1_EC_Rich.eps}
+		\caption{Multigroup Jacobi with Inner Acceleration}
+	\end{subfigure}
+\caption{Spectral shape of the infinite medium iteration matrices of the IM1 problem materials for the MJA and MJIA schemes.}
+\label{fig::IM1_mats_EC_TGandMTG}
 \end{figure}
+
 
 \begin{table}
 \caption{Infinite medium spectral radii of the IM1 materials for the three thermal neutron upscattering methods. We include both the unaccelerated (U) and accelerated (A) cases.}
 \centering
 \def\arraystretch{1.2}
-\begin{tabular}{|c||c|c||c|c||c|c|}
+\begin{tabular}{|c||c|c||c|c||c|c|c|}
 \hline
-Material  & U. TG & A. TG & U. MTG & A. MTG & U. MJA. & A. MJA. \\ \hline
-Graphite & 0.9883&0.4084&0.9993&0.9604&0.9993&0.9613\\
-HDPE &0.8916&0.4343&0.9918&0.7527&0.9943&0.8015\\
-B-HDPE &0.0258&0.0177&0.1331&0.1221&0.1336&0.1223 \\
-Wood & 0.9820&0.2101&0.9840&0.3836&0.9915&0.5326 \\
-AmBe  &0.4835&0.2724&0.5646&0.5554&0.7068&0.5596 \\
-Steel  & 0.6989&0.5809&0.9243&0.9215&0.9255&0.9215\\
-Boral  & 0.0023&0.0016&0.0782&0.0602&0.0782&0.0602 \\
-BF3   & 0.0008&0.0006&0.0351&0.0266&0.0351&0.0266 \\
-Air   &0.7580&0.5282&0.8121&0.7828&0.8845&0.7896\\
+Material  & U. TG & A. TG & U. MTG & A. MTG & U. MJA & A. MJA & A. MJIA \\ \hline
+Graphite & 0.9883&0.4084&0.9993&0.9604&0.9993&0.9613&0.4569\\
+HDPE &0.8916&0.4343&0.9918&0.7527&0.9943&0.8015&0.6326\\
+B-HDPE &0.0258&0.0177&0.1331&0.1221&0.1336&0.1223&0.0544 \\
+Wood & 0.9820&0.2101&0.9840&0.3836&0.9915&0.5326&0.4718 \\
+AmBe  &0.4835&0.2724&0.5646&0.5554&0.7068&0.5596&0.5082 \\
+Steel  & 0.6989&0.5809&0.9243&0.9215&0.9255&0.9215&0.7735\\
+Boral  & 0.0023&0.0016&0.0782&0.0602&0.0782&0.0602&0.0205 \\
+BF3   & 0.0008&0.0006&0.0351&0.0266&0.0351&0.0266&0.0086 \\
+Air     &0.7580&0.5282&0.8121&0.7828&0.8845&0.7896&0.7312\\
 \hline
 \end{tabular}
 \label{tab::IM1_inf_med_SR}
@@ -2659,25 +2727,23 @@ Air   &0.7580&0.5282&0.8121&0.7828&0.8845&0.7896\\
 \begin{figure}
 \centering
 {
-	\begin{subfigure}[b]{0.7\textwidth}
+	\begin{subfigure}[b]{0.73\textwidth}
 		\centering
-		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/P0_Unaccelerated_IM1_Fourier_TG.eps}
-		\caption{Gauss-Seidel}
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/MOD_PHI-EC_FULL.png}
+		\caption{$\vec{\lambda} = [0,2 \pi]^2$}
 	\end{subfigure}
 }
 	\vspace{1cm}
 {
-	\begin{subfigure}[b]{0.7\textwidth}
+	\begin{subfigure}[b]{0.75\textwidth}
 		\centering
-		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/P0_Accelerated_IM1_Fourier_TG.eps}
-		\caption{}
+		\includegraphics[width=0.95\textwidth]{figures/sec_DSA/MOD_PHI-EC_Zoom=01.png}
+		\caption{$\vec{\lambda} = [0,0.1]^2$}
 	\end{subfigure}
 }
-\caption{1D Fourier analysis for some IM1 materials of interest. (a) }
-\label{fig::IM1_TG_fourier_somemats}
+\caption{Fourier wave form distribution for a PHI-like problem of the TG method with Air and HDPE.}
+\label{fig::IM1_TG_PHI}
 \end{figure}
-
-
 
 
 
@@ -2686,13 +2752,14 @@ Air   &0.7580&0.5282&0.8121&0.7828&0.8845&0.7896\\
 \subsubsection{2D IM1 Results}
 \label{sec::DSA_Results_IM1_2D}
 
+We first wish to perform numerical testing of the upscatter acceleration methods on a simple 2D configuration. This simple problem seeks to emulate some of the geometric configuration of the experimental model. Figure \ref{fig::IM1_config_2D} provides the layout of this problem along with the mesh used. We restrict the IM1 materials to only graphite, HDPE, air, and the AmBe source. From the configuration, we 
+
 \begin{figure}
 \centering
 \includegraphics[width=0.55\textwidth]{figures/sec_DSA/2D_IM1_Variant_Layout.png}
 \caption{Configuration of the 2D variant of the IM1 problem. The materials are restricted to only air, HDPE, graphite, and an AmBe source.}
 \label{fig::IM1_config_2D}
 \end{figure}
-
 
 \begin{table}
 \caption{Sweep count and timing data for the 2D IM1 variant problem using Two-Grid Acceleration.}
@@ -2749,12 +2816,57 @@ GMRES  & 118 & 6,726 &  8.65 \\ \hline
 \subsubsection{3D IM1 Results}
 \label{sec::DSA_Results_IM1_3D}
 
-\begin{figure}
+
+
+\begin{table}
+\caption{Sweep count and timing data for the 3D brick IM1 problem using Two-Grid Acceleration.}
 \centering
-\includegraphics[width=0.8\textwidth]{figures/sec_DSA/IM1_configuration_Rev1.png}
-\caption{Configuration of the IM1 problem with the outer layers of air removed.}
-\label{fig::IM1_config_3D}
-\end{figure}
+\def\arraystretch{1.2}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (hr)  \\
+\hline \hline
+SI & - & -  & -  \\ \hline
+SI+DSA & -  & - & -  \\ \hline
+GMRES & -  & - & - \\ \hline
+{GMRES+DSA} & {14} &  {11,104}  &  {$32.5$}  \\ \hline
+\end{tabular}
+\label{tab::IM1_3Dbrick_TG}
+\end{table}
+
+
+\begin{table}
+\caption{Sweep count and timing data for the 3D brick IM1 problem using Modified Two-Grid Acceleration.}
+\centering
+\def\arraystretch{1.2}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (hr)  \\
+\hline \hline
+SI & - &  - & -  \\ \hline
+SI+DSA & -  & - & -  \\ \hline
+{GMRES} & {81}  & {4,617 }& {$14.2$} \\ \hline
+GMRES+DSA & 34 &  1,938  &  4.82  \\ \hline
+\end{tabular}
+\label{tab::IM1_3Dbrick_MTG}
+\end{table}
+
+
+\begin{table}
+\caption{Sweep count and timing data for the 3D brick IM1 problem using Multigroup Jacobi Acceleration.}
+\centering
+\def\arraystretch{1.2}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (hr)  \\
+\hline \hline
+SI &  - & - & -  \\ \hline
+SI+DSA & 256 &  14,592 & 11.2 \\ \hline
+{GMRES} & {120} & {6,840} & {4.93} \\ \hline
+{GMRES+DSA} & {31}& {1,767} & {1.76} \\ \hline
+\end{tabular}
+\label{tab::IM1_3Dbrick_MJA}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2764,4 +2876,7 @@ GMRES  & 118 & 6,726 &  8.65 \\ \hline
 \section{Conclusions}
 \label{sec::DSA_Conclusions}
 
-In this chapter, we analyzed the Modified Interior Penalty form of the diffusion equation for use as the diffusion solver for DSA preconditioning of the DGFEM $S_N$ transport equation.
+In this chapter, we analyzed the Modified Interior Penalty (MIP) form of the diffusion equation for use as the diffusion solver for DSA preconditioning of the DGFEM $S_N$ transport equation. The MIP scheme is an extension of the Symmetric Interior Penalty (SIP) diffusion form compatible with DSA schemes. We analyzed both a 1-group DSA scheme and a suite of two-grid methodologies to accelerate problems dominated by thermal neutron upscattering: the Two-Grid (TG) Acceleration scheme, the Modified Two-Grid (MTG) Acceleration scheme, the Multigroup Jacobi Acceleration (MJA), and the Multigroup Jacobi with Inner Acceleration (MJIA) scheme. Extensive Fourier Analysis was performed for the 1-group scheme in 2D and 3D configurations. All of the 2D linear and quadratic basis functions analyzed showed effective and robust behavior from the fine-mesh to the coarse-mesh limits.
+
+
+

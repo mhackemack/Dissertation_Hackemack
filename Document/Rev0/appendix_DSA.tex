@@ -27,21 +27,18 @@ In this appendix, we will perform some additional analysis of the MIP diffusion 
 \section{Extended Fourier Analysis Implementation for MIP in 1D}
 \label{sec::App_DSA_fourier}
 
-In this section, we give greater detail on how to implement discretized Fourier Analysis through the use of a 1D example.
+In this section, we give greater detail on how to implement discretized Fourier Analysis through the use of a 1D example. The 1D, isotropic scattering, continuous transport equation is given by
 
 \begin{equation}
 \label{eq::App_DSA_1D_transport_eq}
-\mu \frac{d }{d x} \psi (x,\mu) + \sigma_t (x) \psi(x,\mu) = \int\limits_{-1}^{1} d\mu'  \, \sigma_s (x) \psi(x,\mu') + \frac{Q(x)}{2}
+\mu \frac{d }{d x} \psi (x,\mu) + \sigma_t (x) \psi(x,\mu) = \frac{\sigma_s (x)}{2} \phi(x) + \frac{Q(x)}{2}.
 \end{equation}
 
 \noindent If we define a 1D angular quadrature, $\{  \mu_m, w_m \}_{m=1}^M$, suppress the spatial and angular parameters and apply SI, we can rewrite Eq. (\ref{eq::App_DSA_1D_transport_eq}) into
 
 \begin{equation}
 \label{eq::App_DSA_1D_transport_discangle}
-\begin{aligned}
-\mu_m \frac{d }{d x} \psi_m^{(k+1/2)} + \sigma_t \psi_m^{(k+1/2)} &= \frac{\sigma_s}{2} \sum_{m=1}^M w_m \psi_m^{(k)} + \frac{Q}{2} \\
-&= \frac{\sigma_s }{2} \phi^{(k)}  + \frac{Q}{2}
-\end{aligned} ,
+\mu_m \frac{d }{d x} \psi_m^{(k+1/2)} + \sigma_t \psi_m^{(k+1/2)} = \frac{\sigma_s }{2} \phi^{(k)}  + \frac{Q}{2},
 \end{equation}
 
 \noindent where
@@ -51,24 +48,68 @@ In this section, we give greater detail on how to implement discretized Fourier 
 \phi^{(k)} = \sum_{m=1}^M w_m \psi_m^{(k)},
 \end{equation}
 
-\noindent and we assume constant cross sections and a constant isotropic source.
+\noindent and we assume constant cross sections and a constant isotropic source. Applying a spatial discretization, we can express Eq. (\ref{eq::App_DSA_1D_transport_discangle}) in operator notation as 
 
 \begin{equation}
 \label{eq::App_DSA_1D_transport_ops}
-{\bf L} \Psi^{(k+1/2)} = {\bf M} {\bf S} \Phi^{(k)}  + {\bf Q}
+{\bf L} \Psi^{(k+1/2)} = \frac{1}{2} {\bf S} \Phi^{(k)}  + \frac{1}{2} {\bf Q}.
 \end{equation}
+
+\noindent If we perform a transport sweep and integrate over the angular quadrature, then we can write Eq. (\ref{eq::App_DSA_1D_transport_ops}) in terms of only the scalar fluxes as
+
+\begin{equation}
+\label{eq::App_DSA_1D_transport_phi_ops}
+\begin{aligned}
+ \Phi^{(k+1/2)} &= \frac{1}{2} {\bf D} {\bf L}^{-1} {\bf S} \Phi^{(k)}  + \frac{1}{2} {\bf D} {\bf L}^{-1} {\bf Q}. \\
+ \Phi^{(k+1/2)} &= {\bf T}\Phi^{(k)} + {\bf b}
+\end{aligned}.
+\end{equation}
+
+\noindent In Eq. (\ref{eq::App_DSA_1D_transport_phi_ops}), ${\bf T}=\frac{1}{2} {\bf D} {\bf L}^{-1} {\bf S}$ and ${\bf b} = \frac{1}{2} {\bf D} {\bf L}^{-1} {\bf Q}$.
+
+We now give the low-order diffusion equation for the transport error as 
 
 \begin{equation}
 \label{eq::App_DSA_1D_diff_eq}
-- \frac{d}{dx} D \frac{d }{dx} \delta \phi^{(k+1/2)}+ \sigma_a \delta \phi^{(k+1/2)} = \sigma_s \left(  \phi^{(k+1/2)} - \phi^{(k)} \right)
+- \frac{d}{dx} D \frac{d }{dx} \delta \phi^{(k+1/2)}+ \sigma_a \delta \phi^{(k+1/2)} = \sigma_s \left(  \phi^{(k+1/2)} - \phi^{(k)} \right) ,
 \end{equation}
+
+\noindent where the corresponding discretized operator notation is
 
 \begin{equation}
 \label{eq::App_DSA_1D_diff_ops}
-{\bf A} \Phi^{(k+1/2)} = {\bf S}\left( \Phi^{(k+1/2)} -  \Phi^{(k)}   \right)
+{\bf A} \delta \Phi^{(k+1/2)} = {\bf S}\left( \Phi^{(k+1/2)} -  \Phi^{(k)}   \right) .
 \end{equation}
 
-Using the 1D LD basis functions, the cell-wise elementary matrices for the mass, stiffness, and gradient matrices for a cell of width $h$ are
+\noindent Solving for the correction gives
+
+\begin{equation}
+\label{eq::App_DSA_1D_diff_corr}
+ \delta \Phi^{(k+1/2)} = {\bf A}^{-1} {\bf S}\left( \Phi^{(k+1/2)} -  \Phi^{(k)}   \right) .
+\end{equation}
+
+\noindent We now express the SI+DSA iteration as the following:
+
+\begin{equation}
+\label{eq::App_DSA_1D_iter}
+\begin{aligned}
+ \Phi^{(k+1)} &= \Phi^{(k+1/2)} +   \delta \Phi^{(k+1/2)}\\
+ &= {\bf T}\Phi^{(k)} + {\bf b} +  {\bf A}^{-1} {\bf S}\left( \Phi^{(k+1/2)} -  \Phi^{(k)}   \right) \\
+ &= {\bf T}\Phi^{(k)} + {\bf b} +  {\bf A}^{-1} {\bf S}\left( {\bf T}\Phi^{(k)} + {\bf b} -  \Phi^{(k)}   \right) \\
+  &= \left[  {\bf T} + {\bf A}^{-1} {\bf S}\left( {\bf T} -  {\bf I} \right)  \right] \Phi^{(k)} + \left( {\bf I} +  {\bf A}^{-1} {\bf S}  \right){\bf b}
+\end{aligned}
+\end{equation}
+
+\noindent Therefore, our FA iteration matrix to analyze is $\left[  {\bf T} + {\bf A}^{-1} {\bf S}\left( {\bf T} -  {\bf I} \right)  \right]$. We expand this iteration matrix back out and denote the terms that will require the Fourier transformation with the tilde, $\tilde{}$, to give
+
+\begin{equation}
+\label{eq::App_DSA_1D_FA_mat}
+\frac{1}{2} {\bf D} \tilde{{\bf L}}^{-1} \tilde{{\bf S}} + \tilde{{\bf A}}^{-1} \tilde{{\bf S}}\left( \frac{1}{2} {\bf D} \tilde{{\bf L}}^{-1} \tilde{{\bf S}} -  {\bf I} \right).
+\end{equation}
+
+\noindent Therefore, all that remains is to define each of these terms in terms of the appropriate elementary matrices and phase transformation matrices.
+
+For this analysis, we will only use a single mesh cell. It will have a cell width of $h$ which gives the physical domain of $[0,h]$. Using the 1D LD basis functions, the cell-wise elementary matrices for the mass, stiffness, and gradient matrices for a cell of width $h$ are
 
 \begin{equation}
 \label{eq::App_DSA_MIP_1D_cell_matrices}
@@ -91,6 +132,8 @@ Using the 1D LD basis functions, the cell-wise elementary matrices for the mass,
 \end{aligned}
 \end{equation}
 
+\noindent respectively. The values of the basis functions at the left face and right face are given by
+
 \begin{equation}
 \label{eq::App_DSA_MIP_1D_facemass_matrices}
 \begin{aligned}
@@ -106,6 +149,8 @@ Using the 1D LD basis functions, the cell-wise elementary matrices for the mass,
 	\end{array} \right] ,
 \end{aligned}
 \end{equation}
+
+\noindent respectively. Likewise, the gradients of the basis functions at the left face and the right face are given by
 
 \begin{equation}
 \label{eq::App_DSA_MIP_1D_facegrad_matrices}
@@ -125,17 +170,11 @@ Using the 1D LD basis functions, the cell-wise elementary matrices for the mass,
 
 \noindent respectively.
 
-
-\begin{equation}
-\label{eq::App_DSA_1D_transport_discrete}
-\mu_m \frac{\partial \psi}{\partial x} + \sigma_{t,j} \psi(x,\mu) = \frac{\sigma_s (x)}{2} \int_{-1}^{1} \psi(x,\mu') \, d\mu' + \frac{Q(x)}{2}
-\end{equation}
-
-We can write the phase matrices for inside the cell, for the left ghost cell, and for the right ghost cell as
+Now, we provide the simple definitions of the Fourier phase transformation matrices. Recall that when the matrix coupling is occurring across a boundary, the periodic boundaries enforce that the degrees of freedom from the other side of the domain be used. However, the Fourier phase that is used is that of the virtual cell just on the other side of the domain (we can view these virtual cells as ghost cells). Therefore, the ghost cell to the left of the domain spans $[-h,0]$, and the ghost cell to the right of the domain spans $[h,2h]$. We can write the phase matrices for inside the cell, for the left ghost cell, and for the right ghost cell as
 
 \begin{equation}
 \label{eq::App_DSA_1D_Pin}
-P_{in} = \left[ \begin{array}{cc}
+\mathbb{P}_{in} = \left[ \begin{array}{cc}
 	1 & 0 \\
 	0 & e^{i \lambda h}
 	\end{array} \right],
@@ -143,7 +182,7 @@ P_{in} = \left[ \begin{array}{cc}
 
 \begin{equation}
 \label{eq::App_DSA_1D_PL}
-P_L = \left[ \begin{array}{cc}
+\mathbb{P}_L = \left[ \begin{array}{cc}
 	e^{-i \lambda h} & 0 \\
 	0 & 1
 	\end{array} \right],
@@ -153,7 +192,7 @@ P_L = \left[ \begin{array}{cc}
 
 \begin{equation}
 \label{eq::App_DSA_1D_PR}
-P_R = \left[ \begin{array}{cc}
+\mathbb{P}_R = \left[ \begin{array}{cc}
 	e^{i \lambda h} & 0 \\
 	0 & e^{i \lambda 2h}
 	\end{array} \right],
@@ -161,60 +200,117 @@ P_R = \left[ \begin{array}{cc}
 
 \noindent respectively.
 
+We now go term-by-term and give the appropriate forms for each of the terms of Eq. (\ref{eq::App_DSA_1D_FA_mat}). Recall that all boundary faces in Fourier Analysis act as interior faces. The scattering term, $\tilde{{\bf S}}$, is solely within the domain and is given by
+
+\begin{equation}
+\label{eq::App_DSA_1D_FA_S}
+\tilde{{\bf S}} = \sigma_s \mathbb{M} \mathbb{P}_{in}
+\end{equation}
+
+\noindent The discretized transport loss operator, $\tilde{{\bf L}}$, is a block diagonal matrix where each block corresponds to an angular direction. If we isolate an angular direction $m$, the $m$ direction loss operator, $\tilde{L}_m$, is given by 
+
+\begin{equation}
+\label{eq::App_DSA_1D_L_neg}
+\tilde{L}_m = \left( \sigma_t \mathbb{M} - \mu_m \mathbb{S}  \right) \mathbb{P}_{in} + \mu_m \left( \mathbb{E}_R \mathbb{E}_L^T\mathbb{P}_{R}  - \mathbb{E}_L \mathbb{E}_L^T\mathbb{P}_{in} \right)
+\end{equation}
+
+\noindent for $\mu_m < 0$ and 
+
+\begin{equation}
+\label{eq::App_DSA_1D_L_pos}
+\tilde{L}_m =\left( \sigma_t \mathbb{M} - \mu_m \mathbb{S}  \right) \mathbb{P}_{in} + \mu_m \left( \mathbb{E}_R \mathbb{E}_R^T\mathbb{P}_{in}  - \mathbb{E}_L \mathbb{E}_R^T\mathbb{P}_{L} \right)
+\end{equation}
+
+\noindent for $\mu_m > 0$. Therefore, the $\tilde{{\bf T}}$ operator can be given by
+
+\begin{equation}
+\label{eq::App_DSA_1D_T}
+\tilde{{\bf T}} =\frac{1}{2} \sum_{m=1}^M w_m \tilde{L}_m^{-1} \tilde{{\bf S}}.
+\end{equation}
+
+\noindent This just leaves the discretization of $\tilde{{\bf A}}$. We choose to assign the face normal for the MIP matrix construction as strictly positive in the x-direction. This leads to $\tilde{{\bf A}}$ having the following definition,
+
+\begin{equation}
+\label{eq::App_DSA_1D_A}
+\begin{aligned}
+\tilde{{\bf A}} &= D \mathbb{K} \mathbb{P}_{in} + \sigma_a \mathbb{M} \mathbb{P}_{in} \\
+&+ \kappa^{MIP} \left( \mathbb{E}_L \mathbb{E}_L^T \mathbb{P}_{in} +   \mathbb{E}_R \mathbb{E}_R^T \mathbb{P}_{in} - \mathbb{E}_L \mathbb{E}_R^T \mathbb{P}_{L} - \mathbb{E}_R \mathbb{E}_L^T \mathbb{P}_{R} \right) \\
+&+  \frac{D}{2} \left( \mathbb{E}_L \mathbb{G}_L^T \mathbb{P}_{in} - \mathbb{E}_R \mathbb{G}_R^T \mathbb{P}_{in} + \mathbb{E}_L \mathbb{G}_R^T \mathbb{P}_{L} - \mathbb{E}_R \mathbb{G}_L^T \mathbb{P}_{R} \right) \\
+&+\frac{D}{2} \left(  \mathbb{G}_L \mathbb{E}_L^T \mathbb{P}_{in} - \mathbb{G}_R \mathbb{E}_R^T \mathbb{P}_{in} +  \mathbb{G}_L \mathbb{E}_R^T \mathbb{P}_{L} - \mathbb{G}_R \mathbb{E}_L^T \mathbb{P}_{R} \right)
+\end{aligned} ,
+\end{equation}
+
+\noindent where $\kappa^{MIP}$ is the MIP penalty coefficient. For this FA problem configuration, this penalty coefficient has the following form
+
+\begin{equation}
+\label{eq::App_DSA_MIP_penalty}
+\kappa^{MIP} = \max (\frac{1}{4} , \kappa^{SIP})
+\end{equation}
+
+\noindent where
+
+\begin{equation}
+\label{eq::App_DSA_IP_penalty}
+\kappa^{SIP} = c \frac{D}{h},
+\end{equation}
+
+\noindent and $c$ is the penalty constant that is variable.
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - 1D
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
 \section{1D MIP Fourier Analysis Results}
 \label{sec::App_DSA_resutls}
 
-For completeness with the 2D and 3D results presented in Chapter \ref{sec::DSA}, we now provide a set of Fourier Analysis results for the 1D MIP DSA scheme. For all the problems run, we analyze a single mesh cell with $h=1$. We simply vary the angular quadrature and the constant in the MIP penalty coefficient, $c$.
+For completeness with the 2D and 3D results presented in Chapter \ref{sec::DSA}, we now provide a set of Fourier Analysis results for the 1D MIP DSA scheme. For all the problems run, we analyze a single mesh cell with $h=1$ and vary the value of $\sigma_t$ to change the cell mean free paths. The scattering ratio is set to 0.9999. We also vary the angular quadrature and the constant in the MIP penalty coefficient, $c$. We present the FA results in Figures \ref{fig::1D_MIP_c=1}, \ref{fig::1D_MIP_c=2}, \ref{fig::1D_MIP_c=4}, \ref{fig::1D_MIP_c=8}, \ref{fig::1D_MIP_c=64}, and \ref{fig::1D_MIP_c=256} for MIP penalty coefficient constant values of 1, 2, 4, 8, 64, and 256, respectively. Like the 3D hexahedral FA results, a value of $c=1$ leads to under-penalization and a degradation of the MIP spectral radius. A value of $c=4$ gives the best spectral radius results just like 3D as well. However, as $c$ becomes large, too much penalization is achieved, and the spectral radius begins to approach unity. This makes the MIP scheme ineffectual in this case.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Begin: IP and MIP 1D Fourier Plots
+% Begin: MIP 1D Fourier Plots
 \newpage
 \begin{figure}
-\label{fig::1D_MIP_c=1}
 \centering
 \includegraphics[width=\textwidth]{figures/appendices/DSA_1D_SI_MIP_C=1.png}
 \caption{Spectral radius for the 1D MIP form using $c=1$.}
+\label{fig::1D_MIP_c=1}
 \end{figure}
 
 \begin{figure}
-\label{fig::1D_MIP_c=2}
 \centering
 \includegraphics[width=\textwidth]{figures/appendices/DSA_1D_SI_MIP_C=2.png}
 \caption{Spectral radius for the 1D MIP form using $c=2$.}
+\label{fig::1D_MIP_c=2}
 \end{figure}
 
 \begin{figure}
-\label{fig::1D_MIP_c=4}
 \centering
 \includegraphics[width=\textwidth]{figures/appendices/DSA_1D_SI_MIP_C=4.png}
 \caption{Spectral radius for the 1D MIP form using $c=4$.}
+\label{fig::1D_MIP_c=4}
 \end{figure}
 
 \begin{figure}
-\label{fig::1D_MIP_c=8}
 \centering
 \includegraphics[width=\textwidth]{figures/appendices/DSA_1D_SI_MIP_C=8.png}
 \caption{Spectral radius for the 1D MIP form using $c=8$.}
+\label{fig::1D_MIP_c=8}
 \end{figure}
 
 \begin{figure}
-\label{fig::1D_MIP_c=64}
 \centering
 \includegraphics[width=\textwidth]{figures/appendices/DSA_1D_SI_MIP_C=64.png}
 \caption{Spectral radius for the 1D MIP form using $c=64$.}
+\label{fig::1D_MIP_c=64}
 \end{figure}
 
 \begin{figure}
-\label{fig::1D_MIP_c=256}
 \centering
 \includegraphics[width=\textwidth]{figures/appendices/DSA_1D_SI_MIP_C=256.png}
 \caption{Spectral radius for the 1D MIP form using $c=256$.}
+\label{fig::1D_MIP_c=256}
 \end{figure}
 % End: IP and MIP 1D Fourier Plots
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
