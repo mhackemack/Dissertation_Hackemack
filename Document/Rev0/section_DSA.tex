@@ -2550,7 +2550,7 @@ From the results of the Iron-Water problem in Section \ref{sec::DSA_Results_1G_A
 
 We have implemented the 1-group and thermal upscattering DSA methodologies of Section \ref{sec::DSA_DSA} with the MIP form into Texas A\&M University's PDT code. It is a massively-parallel DGFEM $S_N$ transport code that has had good sweep scaling efficiency out to $O(10^5)-O(10^6)$ processes \cite{ref::eff_sweeps,adams2013provably}. BoomerAMG of the HYPRE library is used as the AMG diffusion preconditioner \cite{ref::hypre,yang2002boomeramg}. We next analyze the scalability of HYPRE's PCG solver with BoomerAMG preconditioning and how this performs in comparison to PDT's transport sweeping.
 
-We test MIP's scaling with HYPRE in PDT by analyzing a simple homogenized version of the Zerr scaling problem \cite{zerr2011solution}. The problem configuration is a 3D cube that spans $[0,16]^3$ in dimension and uses strictly orthogonal hexahedral mesh cells. The total cross section is set to $\sigma_t=10$ with a scattering ratio of $c=0.9999$ and a distributed source of 1 $\frac{n}{cm^3 \, s}$. Vacuum boundary conditions are used for all boundaries, and Richardson Iteration is performed. 
+We test MIP's scaling with HYPRE in PDT by analyzing a simple homogenized version of the Zerr weak-scaling problem \cite{zerr2011solution}. The problem configuration is a 3D cube that spans $[0,16]^3$ in dimension and uses strictly orthogonal hexahedral mesh cells. The total cross section is set to $\sigma_t=10$ with a scattering ratio of $c=0.9999$ and a distributed source of 1 $\frac{n}{cm^3 \, s}$. Vacuum boundary conditions are used for all boundaries, and Richardson Iteration is performed. We perform two different weak-scaling runsets. The first contains 512 spatial cells per processor, and the other contains 4096 spatial cells per processor. For each of these mesh cell numbers, we vary the number of angular directions performed in a sweep. For the 512 cell run, we analyze angular quadratures containing 128, 512, 2048, and 8192 directions. For the 4096 cell run, we analyze angular quadratures containing 128, 512, and 2048 directions. First, we present a pair of results from the extremes of these runsets. Figure \ref{fig::DSA_Scaling_Timing} provides the timing data for two cases. The first case is a 512 cell run with 128 angular directions. The second case is a 4096 cell run with 2048 angular directions. In each figure, we provide the timing results for the overall solve time, the sweep time, the overall DSA time, the time required to build the HYPRE matrix, the time to perform a HYPRE setup call, and the PCG iteration time. From both figures, we can clearly see that the DSA routines lose scaling efficiency at a faster rate than the transport sweep routines at high processor counts. However, we emphasize the results of the 4096 cell and 2048 direction run. We can see that as we give more work to the sweep algorithm, the fraction of time spent in the DSA routines is significantly reduced. This behavior is captured in Figure \ref{fig::DSA_Scaling_DSAFrac} for the fraction of time spent in DSA for all the runs. For a high-fidelity simulation that must mitigate ray effects ({\em i.e.,} requiring $O(10^3)$ - $O(10^5)$ angular directions), the time spent performing DSA routines will stay to a minimum even at high processor counts.
 
 \begin{figure}
 \centering
@@ -2652,7 +2652,7 @@ From the timing results of Figure \ref{fig::DSA_Vulcan_MIP_Timing}, one must won
 \subsection{Thermal Neutron Upscattering Acceleration}
 \label{sec::DSA_Results_IM1}
 
-We conclude the results of this chapter by presenting analysis on the ability to use DSA to accelerate the convergence of multigroup transport problems that are dominated by thermal neutron upscattering. All the results presented in this section center around the Impurity Model 1 (IM1) experiments perfomed by the Center for Exascale Radiation Transport (CERT) group at Texas A\&M University. The IM1 experiment seeks to quantify the amount of impurities present in a set of graphite bars by treating them as $1/E$ absorbers.
+We conclude the results of this chapter by presenting analysis on the ability to use DSA to accelerate the convergence of multigroup transport problems that are dominated by thermal neutron upscattering. All the results presented in this section center around the Impurity Model 1 (IM1) experiments perfomed by the Center for Exascale Radiation Transport (CERT) group at Texas A\&M University. The IM1 experiment seeks to quantify the amount of impurities present in a set of graphite bars by treating them as $1/E$ absorbers. The materials present in the experiment consist of graphite, air, wood, high-density polyethylene (HDPE), borated high-density polyethylene (B-HDPE), Steel, Boral, an AmBe source, and a BF3 detector. The experimental configuration can be seen in Figure \ref{fig::IM1_config_3D}. The AmBe source sits inside an HDPE cylinder surrounded by a B-HDPE shell. A graphite bar is placed above the HDPE cylinder and sits between the AmBe source and the BF3 detector. For these results, we first present the theoretical Fourier Analysis of the different upscattering acceleration methods in Section \ref{sec::DSA_Results_IM1_Fourier}. Then, numerical analysis of a simple 2D variant of the experimental setup is performed in Section \ref{sec::DSA_Results_IM1_2D} to yield a complete set of runs for the different methods. We analyze the iteration counts and timing statistics for the different methods. Finally, we conclude in Section \ref{sec::DSA_Results_IM1_3D} with a numerical analysis of the 3D configuration for an approximate hexahedral geometry and one formed by triangular prisms (extrusion of a 2D triangular mesh).
 
 \begin{figure}
 \centering
@@ -2666,7 +2666,7 @@ We conclude the results of this chapter by presenting analysis on the ability to
 \subsubsection{Fourier Analysis for the Upscatter Acceleration Methods}
 \label{sec::DSA_Results_IM1_Fourier}
 
-Before we perform any numerical analysis, we first analyze the theoretical limits of the different upscatter acceleration methods
+Before we perform any numerical analysis, we first analyze the theoretical limits of the different upscatter acceleration methods 
 
 \begin{figure}
 \centering
@@ -2752,7 +2752,15 @@ Air     &0.7580&0.5282&0.8121&0.7828&0.8845&0.7896&0.7312\\
 \subsubsection{2D IM1 Results}
 \label{sec::DSA_Results_IM1_2D}
 
-We first wish to perform numerical testing of the upscatter acceleration methods on a simple 2D configuration. This simple problem seeks to emulate some of the geometric configuration of the experimental model. Figure \ref{fig::IM1_config_2D} provides the layout of this problem along with the mesh used. We restrict the IM1 materials to only graphite, HDPE, air, and the AmBe source. From the configuration, we 
+We first wish to perform numerical testing of the upscatter acceleration methods on a simple 2D configuration. This simple problem seeks to emulate some of the geometric configuration of the experimental model. Figure \ref{fig::IM1_config_2D} provides the layout of this problem along with the mesh used. The left face is a reflecting boundary. We restrict the IM1 materials to only include graphite, HDPE, air, and the AmBe source. From Figure \ref{fig::IM1_config_2D}, we can see that the configuration mimics the radial nature of the IM1 experiment. Going outwards, we have the inner air gap with the AmBe source, a ``ring'' of HDPE, and an outer air ``ring''. A graphite brick sits on top of the configuration.
+
+For this problem, we analyzed the iteration and timing results for the TG, MTG, and MJA methodologies with both Richardson Iteration and GMRES. The outer iteration tolerance was set to $10^{-6}$, and the inner tolerance for the TG method was set to $10^{-7}$. 64 processors were used for all runs. Tables \ref{tab::IM1_2D_TG}, \ref{tab::IM1_2D_MTG}, and \ref{tab::IM1_2D_MJA} provide the full set of iteration and timing results for the TG, MTG, and MJA methods, respectively. For each of the upscatter acceleration methods, we performed accelerated and unaccelerated Richardson (SI) and GMRES runs. We can clearly see several results from the tables which we summarize as the following:
+
+\begin{enumerate}
+\item The MJA method provides the best performance characteristics in regards to solution times. The parallel nature of the transport sweeps with all sweeps in a group set provides significant time savings compared to the TG and MTG methods.
+\item There is a significant penalty for the serial-in-energy nature of the TG and MTG methods. Even when less transport sweeps are performed than MJA, it yields significantly longer wallclock times.
+\item A Krylov (GMRES) iteration scheme is needed to account for the PHI problem behavior and yield effective DSA preconditioning. This is easily visible because the SI runs require significantly more iterations (more than what infinite medium analysis predicts). Instead, the accelerated GMRES runs recover the theoretical convergence behaviors.
+\end{enumerate}
 
 \begin{figure}
 \centering
@@ -2764,7 +2772,7 @@ We first wish to perform numerical testing of the upscatter acceleration methods
 \begin{table}
 \caption{Sweep count and timing data for the 2D IM1 variant problem using Two-Grid Acceleration.}
 \centering
-\def\arraystretch{1.2}
+\def\arraystretch{1.25}
 \begin{tabular}{|c|c|c|c|}
 \hline
 Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (min)  \\
@@ -2775,13 +2783,12 @@ GMRES & 38  & 41,575 &  128.63 \\ \hline
 GMRES+DSA & 14  & 19,053  & 57.92  \\ \hline
 \end{tabular}
 \label{tab::IM1_2D_TG}
-\end{table}
-
-
-\begin{table}
+%\end{table}
+\vspace{1.5cm}
+%\begin{table}
 \caption{Sweep count and timing data for the 2D IM1 variant problem using Modified Two-Grid Acceleration.}
 \centering
-\def\arraystretch{1.2}
+\def\arraystretch{1.25}
 \begin{tabular}{|c|c|c|c|}
 \hline
 Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (min)  \\
@@ -2792,13 +2799,12 @@ GMRES & 78  & 4,845 &  25.82 \\ \hline
 GMRES+DSA & 26  & 1,881 & 11.09  \\ \hline
 \end{tabular}
 \label{tab::IM1_2D_MTG}
-\end{table}
-
-
-\begin{table}
+%\end{table}
+\vspace{1.5cm}
+%\begin{table}
 \caption{Sweep count and timing data for the 2D IM1 variant problem using Multigroup Jacobi Acceleration.}
 \centering
-\def\arraystretch{1.2}
+\def\arraystretch{1.25}
 \begin{tabular}{|c|c|c|c|}
 \hline
 Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (min)  \\
@@ -2816,12 +2822,15 @@ GMRES  & 118 & 6,726 &  8.65 \\ \hline
 \subsubsection{3D IM1 Results}
 \label{sec::DSA_Results_IM1_3D}
 
+We conclude the investigation of the thermal neutron upscattering methodologies by presenting the numerical results pertaining to analysis of the 3D configuration of the IM1 experiment. The runset for this analysis is similar to that performed for the 2D variant problem. Here, we provide two distinct runsets. The first runset utilizes a hexahedral (or brick) configuration of the IM1 problem. The domain is filled with Cartesian parallelepipeds and the curved surfaces are approximated. The second runset utilizes a more accurate geometry by use of triangular prisms. A triangular mesh (where curved surfaces are approximated by many-sided polygons) is constructed in 2D and then axially extruded along the z-dimension. The spherical AmBe detector is approximated by ``stair-stepping'', and volume-preserving algorithms are employed on any curved surface approximated by the polygons.
 
+We give the iteration and timing results for the brick IM1 problem in Tables \ref{tab::IM1_3Dbrick_TG}, \ref{tab::IM1_3Dbrick_MTG}, and \ref{tab::IM1_3Dbrick_MJA} for the TG, MTG, and MJA, respectively. We then give the iteration and timing results for the triangular prism IM1 problem in Tables \ref{tab::IM1_3Dtriangle_TG}, \ref{tab::IM1_3Dtriangle_MTG}, and \ref{tab::IM1_3Dtriangle_MJA} for the TG, MTG, and MJA, respectively. The brick runs were performed on 3496 processors while the triangular prism runs were performed on 16384 processors. We note that not all of the data points are populated due to prohibitive run times. This is why the 2D variant was essential to provide a complete set of results for all algorithm and method types. However, from the data points that were obtainable, we can determine that the results for the different algorithms and methodologies matches the 2D variant problem closely. The serial natures of the TG and MTG methods in their Gauss-Seidel process in energy are prohibitively slow for problems at these scales. Only the accelerated GMRES TG case could be completed as well as the unaccelerated and accelerated GMRES MTG cases. We can see similar convergence properties (similar iteration counts) to the 2D variant problem for all the methods and both algorithms. However, it is once again apparent that the 
 
+% BRICK RESULTS
 \begin{table}
 \caption{Sweep count and timing data for the 3D brick IM1 problem using Two-Grid Acceleration.}
 \centering
-\def\arraystretch{1.2}
+\def\arraystretch{1.25}
 \begin{tabular}{|c|c|c|c|}
 \hline
 Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (hr)  \\
@@ -2832,13 +2841,12 @@ GMRES & -  & - & - \\ \hline
 {GMRES+DSA} & {14} &  {11,104}  &  {$32.5$}  \\ \hline
 \end{tabular}
 \label{tab::IM1_3Dbrick_TG}
-\end{table}
-
-
-\begin{table}
+%\end{table}
+\vspace{1.5cm}
+%\begin{table}
 \caption{Sweep count and timing data for the 3D brick IM1 problem using Modified Two-Grid Acceleration.}
 \centering
-\def\arraystretch{1.2}
+\def\arraystretch{1.25}
 \begin{tabular}{|c|c|c|c|}
 \hline
 Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (hr)  \\
@@ -2849,13 +2857,12 @@ SI+DSA & -  & - & -  \\ \hline
 GMRES+DSA & 34 &  1,938  &  4.82  \\ \hline
 \end{tabular}
 \label{tab::IM1_3Dbrick_MTG}
-\end{table}
-
-
-\begin{table}
+%\end{table}
+\vspace{1.5cm}
+%\begin{table}
 \caption{Sweep count and timing data for the 3D brick IM1 problem using Multigroup Jacobi Acceleration.}
 \centering
-\def\arraystretch{1.2}
+\def\arraystretch{1.25}
 \begin{tabular}{|c|c|c|c|}
 \hline
 Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (hr)  \\
@@ -2866,6 +2873,55 @@ SI+DSA & 256 &  14,592 & 11.2 \\ \hline
 {GMRES+DSA} & {31}& {1,767} & {1.76} \\ \hline
 \end{tabular}
 \label{tab::IM1_3Dbrick_MJA}
+\end{table}
+
+% TRIANGLE RESULTS
+\begin{table}
+\caption{Sweep count and timing data for the 3D triangular prism IM1 problem using Two-Grid Acceleration.}
+\centering
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (hr)  \\
+\hline \hline
+SI & - & -  & -  \\ \hline
+SI+DSA & -  & - & -  \\ \hline
+GMRES & -  & - & - \\ \hline
+{GMRES+DSA} & {14} &  {11,104}  &  {$32.5$}  \\ \hline
+\end{tabular}
+\label{tab::IM1_3Dtriangle_TG}
+%\end{table}
+\vspace{1.5cm}
+%\begin{table}
+\caption{Sweep count and timing data for the 3D triangular prism IM1 problem using Modified Two-Grid Acceleration.}
+\centering
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (hr)  \\
+\hline \hline
+SI & - &  - & -  \\ \hline
+SI+DSA & -  & - & -  \\ \hline
+{GMRES} & {81}  & {4,617 }& {$14.2$} \\ \hline
+GMRES+DSA & 34 &  1,938  &  4.82  \\ \hline
+\end{tabular}
+\label{tab::IM1_3Dtriangle_MTG}
+%\end{table}
+\vspace{1.5cm}
+%\begin{table}
+\caption{Sweep count and timing data for the 3D triangular prism IM1 problem using Multigroup Jacobi Acceleration.}
+\centering
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (hr)  \\
+\hline \hline
+SI &  - & - & -  \\ \hline
+SI+DSA & 256 &  14,592 & 11.2 \\ \hline
+{GMRES} & {120} & {6,840} & {4.93} \\ \hline
+{GMRES+DSA} & {31}& {1,767} & {1.76} \\ \hline
+\end{tabular}
+\label{tab::IM1_3Dtriangle_MJA}
 \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
