@@ -411,11 +411,68 @@ w_i (\vec{x})  = m_i(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_i - \vec{x})).
 \rho_j (\vec{x}) = || \vec{x} - \vec{x}_j || + || \vec{x} - \vec{x}_{j+1} || - || \vec{x}_{j+1} - \vec{x}_j || ,
 \end{equation}
 
-\noindent and $\rho_j$ is the face weight function corresponding to face $e_j$. The weight function for face $e_j$ is identically zero along face $e_j$ and strictly positive elsewhere by the Triangle Inequality. This means that the product $\pi_i$ and the prior distribution $ m_i$ for vertex $i$ is zero on all faces that do not touch vertex $i$.
+\noindent and $\rho_j$ is the face weight function corresponding to face $e_j$. The weight function for face $e_j$ is identically zero along face $e_j$ and strictly positive elsewhere by the Triangle Inequality. This means that the product $\pi_i$ and the prior distribution $ m_i$ for vertex $i$ is zero on all faces that do not touch vertex $i$. We do not have an explicit proof that $\vec{\kappa}$ has a valid limit on the polygon boundary. However, through numerical testing we confirmed that $\vec{\kappa}$ does have a bounded limit on the polygon boundary. Therefore, the limit of $\exp(-  \vec{\kappa} \cdot (\vec{x}_i - \vec{x}))$ in Eq. (\ref{eq::App_BF_ME_weights}) is strictly bounded as well.
 
-We do not have an exact proof that 
+For the maximum entropy coordinates, we will only demonstrate the piecewise linearity property since the {\em Lagrange property} is satisfied by the limit at the face vertices. With the definition of the prior distributions and in the limit as a point, $\vec{x}$, approaches face $e_j$, the basis functions for the $j$ and $j+1$ vertices are given by
 
-For the maximum entropy coordinates, we will only demonstrate the piecewise linearity property since the {\em Lagrange property} is satisfied by the limit at the face vertices.
+\begin{equation}
+\label{eq::App_BF_MEBF_j}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j} \lambda_{j} (\vec{x}) = \frac{w_j  (\vec{x}) }{w_j  (\vec{x}) +w_{j+1}  (\vec{x}) },
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::App_BF_MEBF_j1}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j} \lambda_{j+1} (\vec{x}) = \frac{w_{j+1}  (\vec{x}) }{w_j  (\vec{x}) +w_{j+1}  (\vec{x}) },
+\end{equation}
+
+\noindent respectively. Dropping the spatial parameter, we write the $j$ basis functions as 
+
+\begin{equation}
+\label{eq::App_BF_MEBF_j_mod}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j} \lambda_{j}  = \frac{1 }{1 + \frac{w_{j+1}}{w_j} },
+\end{equation}
+
+\noindent where we now simply need to define $\frac{w_{j+1}}{w_j}$. From the linear precision property of the general barycentric coordinates, we can write the following:
+
+\begin{equation}
+\label{eq::App_BF_MEBF_j_mod}
+w_j  (\vec{x})  \left( \vec{x}_j - \vec{x} \right) + w_{j+1}  (\vec{x})  \left( \vec{x}_{j+1} - \vec{x} \right) = \vec{0}.
+\end{equation}
+
+\noindent If we take the norm of Eq. (\ref{eq::App_BF_MEBF_j_mod}) and rearrange terms, then we obtain
+
+\begin{equation}
+\label{eq::App_BF_MEBF_wj_wj1}
+\frac{w_{j+1}}{w_j} = \frac{|\vec{x}_j - \vec{x}| }{|\vec{x}_{j+1} - \vec{x}| }.
+\end{equation}
+
+\noindent Therefore, the limit of $\lambda_j$ can be written as 
+
+\begin{equation}
+\label{eq::App_BF_MEBF_j_mod2}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j} \lambda_{j}=\frac{|\vec{x}_{j+1} - \vec{x}|  }{|\vec{x}_{j+1} - \vec{x}_j| }.
+\end{equation}
+
+\noindent In a similar manner, the limit of $\lambda_{j+1}$ can be written as
+
+\begin{equation}
+\label{eq::App_BF_MEBF_j1_mod2}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j} \lambda_{j+1}=\frac{|\vec{x}_{j} - \vec{x}|  }{|\vec{x}_{j+1} - \vec{x}_j| }.
+\end{equation}
+
+\noindent Therefore, we can write the final results for the boundary analysis of the maximum entropy coordinates as 
+
+\begin{equation}
+\label{eq::App_BF_MV_faceFINAL}
+\lim\displaylimits_{\vec{x} \rightarrow \vec{x}^* \in e_j} \lambda_i (\vec{x}) = 
+\begin{cases}
+\frac{| \vec{x}_{j+1} - \vec{x} |}{| \vec{x}_{j+1} - \vec{x}_{j} |},&i=j\\
+\frac{| \vec{x}_{j} - \vec{x} |}{| \vec{x}_{j+1} - \vec{x}_{j} |},&i=j+1\\
+\,0,&\text{otherwise}
+\end{cases}
+\end{equation} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Jacobian
