@@ -794,7 +794,7 @@ R_g^{(k+1/2)} = \sum_{g'=1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)} -
 \subsubsection{Multigroup Jacobi with Inner Acceleration}
 \label{sec:DSA_DSA_MG_MJIA}
 
-Up to this point, we have presented a two-grid-like methodology in the MJA method that is amenable to parallel computation. With modern transport codes that can solve energy groups simultaneously, the grind times for these multi-energy group set transport sweeps are significantly lower than single group sweeps. Therefore, it is possible to have ``worse'' theoretical convergence properties for MJA but still converge to a solution faster based on wallclock time (we demonstrate this in Sections \ref{sec::DSA_Results_IM1_2D} and \ref{sec::DSA_Results_IM1_3D}). However, like the MTG method, MJA does not converge the inner iterations. For graphite with $O(10^1)$ - $O(10^2)$ thermal groups, there can still be several within-group scattering ratios above 0.9. Therefore, there will be a large contribution to the iteration error from the non-convergence of the within-group iterations. We quickly note that as the number of thermal groups approaches infinity, this behavior will disappear. Because of this behavior of the scattering ratios, we then have recourse to 
+Up to this point, we have presented a two-grid-like methodology in the MJA method that is amenable to parallel computation. With modern transport codes that can solve energy groups simultaneously, the grind times for these multi-energy group set transport sweeps are significantly lower than single group sweeps. Therefore, it is possible to have ``worse'' theoretical convergence properties for MJA (compared to TG) but still converge to a solution faster based on wallclock time (we demonstrate this in Sections \ref{sec::DSA_Results_IM1_2D} and \ref{sec::DSA_Results_IM1_3D}). However, like the MTG method, MJA does not converge the inner iterations. For graphite with $O(10^1)$ - $O(10^2)$ thermal groups, there can still be several within-group scattering ratios above 0.9. Therefore, there will be a large contribution to the iteration error from the non-convergence of the within-group iterations. We quickly note that as the number of thermal groups approaches infinity, this behavior will disappear. Because of this behavior of the scattering ratios, we then have recourse to 
 
 %%%% MORE DETAILS GO HERE!!!!
 
@@ -802,7 +802,7 @@ Up to this point, we have presented a two-grid-like methodology in the MJA metho
 \item Solve for the fast energy groups.
 \item Build scattering source for the thermal groups.
 \item Perform transport sweep of all the thermal groups simultaneously in an identical manner to the MJA method.
-\item Perform $G$ distinct 1-group diffusion calculations for the within-group iteration error. The error residuals only contain the $g\rightarrow g$ scattering.
+\item Perform $G$ distinct 1-group diffusion calculations for the within-group iteration error. The error residuals only contain the $g\rightarrow g$ scattering term.
 \item Perform a single, energy-collapsed diffusion calculation for the group-to-group iteration error (this step is almost identical to MJA).
 \item Check for convergence. If we are not converged, then return to step 2.
 \end{enumerate}
@@ -810,14 +810,64 @@ Up to this point, we have presented a two-grid-like methodology in the MJA metho
 With this iterative scheme detailed, there only remains a discussion on the differences in the diffusion steps compared to the MJA method. Because there are now two diffusion steps in the MJIA method (we can view it as a V-cycle with 2 levels), we will use a modified form for the update equation, where the acceleration steps are at the ($k+1/3$) and ($k+2/3$) iterate steps. For each thermal group, $g$, we express this two-level update equation for the scalar flux as
 
 \begin{equation}
-\label{eq::DSA_MJIA_update_op}
+\label{eq::DSA_MJIA_update}
 \begin{aligned}
 \phi_{g,0}^{(k+2/3)} &=  \phi_{g,0}^{(k+1/3)}  + \Delta \phi_{g,0}^{(k+1/3)} \\
 \phi_{g,0}^{(k+1)} &=  \phi_{g,0}^{(k+2/3)}  + \delta \phi_{g,0}^{(k+2/3)}
 \end{aligned} ,
 \end{equation}
 
-\noindent where $\phi_g^{(k+1/3)}$ corresponds to the solution after the transport sweep, $ \Delta \phi_g^{(k+1/3)}$ corresponds to the error from the $G$ separate within-group diffusion solves, and $\delta \phi_g^{(k+2/3)}$ corresponds to the error from the single, energy-collapsed diffusion solve. 
+\noindent where $\phi_{g,0}^{(k+1/3)}$ corresponds to the solution after the transport sweep, $ \Delta \phi_{g,0}^{(k+1/3)}$ corresponds to the error from the $G$ separate within-group diffusion solves, and $\delta \phi_{g,0}^{(k+2/3)}$ corresponds to the error from the single, energy-collapsed diffusion solve. In an operator format, this iteration scheme can be combined and given by
+
+\begin{equation}
+\label{eq::DSA_MJIA_update_op}
+{\bf \Phi}^{(k+1)} = {\bf \Phi}^{(k+1/3)} + \Delta {\bf \Phi}^{(k+1/3)} + \delta {\bf \Phi}^{(k+2/3)}.
+\end{equation}
+
+\noindent We now give the form for the within-group diffusion solves. For each of the $G$ thermal energy groups, we can write 
+
+\begin{equation}
+\label{eq::DSA_MJIA_WIG_diff}
+- \vec{\nabla} \cdot D_g \vec{\nabla} \Delta \phi_g^{(k+1/3)} + \sigma_{a,g} \Delta \phi_g^{(k+1/3)} = \sigma_{s,0}^{gg} \left(  \phi_g^{(k+1/3)} - \phi_g^{(k)} \right)
+\end{equation}
+
+\noindent From Eq. (\ref{eq::DSA_MJIA_WIG_diff}), we can clearly see the independent nature of these $G$ diffusion solves. Therefore, each of these within-group error correction terms can be calculated independently. 
+
+\begin{equation}
+\label{eq::DSA_MJIA_WIG_diff_op}
+{\bf B} \Delta {\bf \Phi}^{(k+1/3)} = {\bf X}_{\Delta} {\bf S_D} \left(  {\bf \Phi}^{(k+1/3)} - {\bf \Phi}^{(k)} \right)
+\end{equation}
+
+\begin{equation}
+\label{eq::DSA_MJIA_WIG_phiterm}
+ \Delta {\bf \Phi}^{(k+1/3)} = {\bf P}_{\Delta} {\bf B}^{-1} {\bf X}_{\Delta} {\bf S_D} \left(  {\bf \Phi}^{(k+1/3)} - {\bf \Phi}^{(k)} \right)
+\end{equation}
+
+\begin{equation}
+\label{eq::DSA_MJIA_EC_diff_eq}
+-\vec{\nabla} \cdot \big< D \big> \vec{\nabla} \epsilon^{(k+2/3)}  + \big< \sigma \big> \epsilon^{(k+2/3)}  = \big< R^{(k+2/3)} \big>
+\end{equation}
+
+\begin{equation}
+\label{eq::DSA_MJIA_eigenpprob}
+{\bf T}^{-1} \left( {\bf S_{L,0}} +  {\bf S_{U,0}} \right)\xi = \rho \xi ,
+\end{equation}
+
+\begin{equation}
+\label{eq::DSA_WGS_diff_residual}
+R_g^{(k+2/3)} = \sum_{g' \neq g} \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+2/3)} - \phi_{g',0}^{(k)} \right) .
+\end{equation}
+
+
+\begin{equation}
+\label{eq::DSA_MJIA_1G_err_eq_op}
+{\bf A} \epsilon^{(k+2/3)}  =  {\bf X}_{\delta}\left(   {\bf S_L} +  {\bf S_U} \right) \left(  {\bf \Phi}^{(k+2/3)} - {\bf \Phi}^{(k)}  \right),
+\end{equation}
+
+\begin{equation}
+\label{eq::DSA_MJIA_1G_solterm}
+  \delta {\bf \Phi}^{(k+2/3)}  ={\bf P}_{\delta}{\bf A}^{-1}  {\bf X}_{\delta}\left(   {\bf S_L} +  {\bf S_U} \right) \left(  {\bf \Phi}^{(k+2/3)} - {\bf \Phi}^{(k)}  \right),
+\end{equation}
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Upscatter Summary
@@ -840,7 +890,7 @@ For all three methods, we can define a general expression for the full phase-spa
 
 \begin{table}[hbt]
 \centering
-\caption{Iteration terms for the different thermal upscatter acceleration methods.}
+\caption{Iteration terms for the Two-Grid, Modified Two-Grid, and Multigroup Jacobi Acceleration methods.}
 \def\arraystretch{1.4}
 \begin{tabular}{|c||c|c|} \hline
 Method & ${\bf F}$ & ${\bf \Sigma}$ \\ \hline \hline
