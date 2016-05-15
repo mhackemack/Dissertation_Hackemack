@@ -15,7 +15,7 @@
 \label{sec::BF}
 
 
-In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various elementary matrices needed to form the full set of spatially-discretized PDEs. These included the mass, streaming, and surface matrices where the integrations on the element's domain and boundary require combinations of the basis functions' values and gradients. From FEM theory \cite{ern2013theory}, the basis functions act as interpolation functions with local measure on some subset of elements on a discretized mesh, $\mathbb{T}_h$. To achieve the maximum possible solution convergence rate from Section \ref{sec::Sn_Spatial_Convergence} of $p+1$, the interpolation functions must have polynomial completeness of at least order $p$. For 2D interpolants, the basis functions are linearly-complete ($p=1$) if they can exactly interpolate the $\{ 1, x, y \}$ span of functions. Likewise, 2D basis functions are said to be quadratically-complete if they can exactly interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions. This work seeks to analyze the use of the different linearly-complete polygonal basis functions with the DGFEM $S_N$ transport equation. We then seek to extend this analysis to quadratically-complete basis functions, thus achieving higher convergence rates (third-order). We will do this by utilizing the methodology developed by Rand et al. \cite{rand2014quadratic} on the different linearly-complete polygonal coordinates.
+In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various elementary matrices needed to form the full set of spatially-discretized PDEs. These included the mass, streaming, and surface matrices where the integrations on the element's domain and boundary require combinations of the basis functions' values and gradients. From FEM theory \cite{ern2013theory}, the basis functions act as interpolation functions with local measure on some subset of elements on a discretized mesh, $\mathbb{T}_h$. To achieve the maximum possible solution convergence rate for regular solutions of $p+1$, the basis functions must have polynomial completeness of at least order $p$. For 2D interpolants, the basis functions are linearly-complete ($p=1$) if they can exactly interpolate the $\{ 1, x, y \}$ span of functions. Likewise, 2D basis functions are said to be quadratically-complete if they can exactly interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions. This work seeks to analyze the use of the different linearly-complete polygonal basis functions with the DGFEM $S_N$ transport equation. We then seek to extend this analysis to quadratically-complete basis functions, thus achieving higher convergence rates (third-order). We will do this by utilizing the methodology developed by Rand et al. \cite{rand2014quadratic} on the different linearly-complete polygonal coordinates.
 
 The remainder of this chapter is organized as follows. In Section \ref{sec::BF_2DLinear}, we present the 2D, linearly-complete, barycentric, polygonal basis functions that we will analyze in this dissertation. We then present in Section \ref{sec::BF_2DQuadratic} the methodology to convert the barycentric polygonal basis functions presented in Section \ref{sec::BF_2DLinear} into a serendipity space of basis functions with quadratic-completeness. Section \ref{sec::BF_2DIntegration} provides the methodology that will be employed to generate spatial quadrature sets on 2D arbitrary polygons. Section \ref{sec::BF_3DLinear} then presents the 3D, linearly-complete, polyhedral basis functions that will be exclusively used in Chapter \ref{sec::DSA} for 3D DSA calculations. We then present numerical results pertaining to our linear and quadratic 2D basis functions in Section \ref{sec::BF_Results}. Section \ref{sec::BF_Conclusions} concludes with some closing remarks.
 
@@ -33,7 +33,7 @@ Figure \ref{fig::BF_2D_ref_polygon}, gives an image of a reference polygon along
 \label{fig::BF_2D_ref_polygon}
 \end{figure}
 
-We complete our geometric description for the polygonal coordinate system by analyzing a point $\vec{x}$ inside the polygon's domain, as also seen in Figure \ref{fig::BF_2D_ref_polygon}. $\alpha_j$ is the angle between the points ($\vec{x}_j, \vec{x}, \vec{x}_{j+1}$). Since element $K$ is defined by a closed set of $\mathbb{R}^2$ points, $\alpha_j$ is strongly bounded: ($[0, \pi]$). We conclude by defining $|\vec{u}|$ as the Euclidean distance of the vector $\vec{u}$. This means that $|\vec{x} - \vec{x}_j|$ is the distance between the points $\vec{x}$ and $\vec{x}_j$ and $|e_j|$ is the length of face $j$ between points $\vec{x}_j$ and $\vec{x}_{j+1}$.
+We complete our geometric description for the polygonal coordinate system by analyzing a point $\vec{x}$ inside the polygon's domain, as also seen in Figure \ref{fig::BF_2D_ref_polygon}. $\alpha_j$ is the angle between the points ($\vec{x}_j, \vec{x}, \vec{x}_{j+1}$).We conclude by defining $|\vec{u}|$ as the Euclidean distance of the vector $\vec{u}$. This means that $|\vec{x} - \vec{x}_j|$ is the distance between the points $\vec{x}$ and $\vec{x}_j$ and $|e_j|$ is the length of face $j$ between points $\vec{x}_j$ and $\vec{x}_{j+1}$.
 
 
 In this dissertation, all linearly-complete, 2D basis functions for an element $K$ will obey the properties for barycentric coordinates. If the element $K$ is composed of $N_K$ vertices, then it contains $N_K$ barycentric coordinates, where each one is located at a vertex. These barycentric coordinates will form a {\em partition of unity},
@@ -57,7 +57,7 @@ b_j (\vec{x}_i) = \delta_{ij}.
 \label{eq::BF_linear_interp_lagrange}
 \end{equation}
 
-\noindent They also have piecewise linearity on faces adjacent to their vertex. As an example of this, consider the coordinates at vertex $j$, $b_j$, along face $e_j$. Then the piecewise linearity of the coordinate on the face means that it can interpolate as
+\noindent They also have piecewise linearity on faces adjacent to their vertex. As an example of this, consider the function at vertex $j$, $b_j$, along face $e_j$. Then the piecewise linearity of the function on the face means that it can interpolate as
 
 \begin{equation}
 \label{eq::BF_linear_bound_interp}
@@ -101,7 +101,7 @@ The first linearly-complete polygonal coordinates that we will consider are the 
 
 \begin{equation}
 \label{eq::BF_wach_BF}
-b_{j}^{W} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum\displaylimits_{i} w_i (\vec{x})},
+b_{j}^{W} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum\limits_{i=1}^{N_K} w_i (\vec{x})},
 \end{equation}
 
 \noindent where the Wachspress weight function for vertex $j$, $w_j$, has the following definition:
@@ -424,7 +424,7 @@ At this point, we now introduce the first new polygonal basis set for use with t
 
 \begin{equation}
 \label{eq::BF_MV_BF}
-b_{j}^{MV} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})} ,
+b_{j}^{MV} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum\limits_{i=1}^{N_K} w_i (\vec{x})} ,
 \end{equation}
 
 \noindent where the mean value weight function for vertex $j$, $w_j$, has the following definition:
@@ -607,7 +607,7 @@ H(b, m) = - \sum\displaylimits_{j=1}^{N_K} b_j \log \left(  \frac{b_j}{m_j} \rig
 
 \begin{equation}
 \label{eq::BF_ME_BF}
-b_{j}^{ME} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})} .
+b_{j}^{ME} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum\limits_{i=1}^{N_K} w_i (\vec{x})} .
 \end{equation}
 
 \noindent In Eq. (\ref{eq::BF_ME_BF}), the maximum entropy weight function for vertex $j$, $w_j$, has the following definition,
@@ -617,18 +617,18 @@ b_{j}^{ME} (\vec{x}) = \frac{w_j (\vec{x}) }{\sum_i w_i (\vec{x})} .
 w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{x})),
 \end{equation}
 
-\noindent where $\vec{\kappa}$ is a vector value of dimension $d$ that will be explained shortly. In the context of Eq. (\ref{eq::BF_ME_weights}), the prior distribution, $m_j$, can be viewed as a weight function associated with vertex $j$. This means that there is variability that one can employ for these weight functions. These weight functions can then be tailored depending on the application and the numerical scheme employed. For FEM applications, an optimal functional form for the prior distribution is given by
+\noindent where $\vec{\kappa}$ is a vector value of dimension $d$ that will be explained shortly. In the context of Eq. (\ref{eq::BF_ME_weights}), the prior distribution, $m_j$, can be viewed as a weight function associated with vertex $j$. This means that there is variability that one can employ for these weight functions. These weight functions can then be tailored depending on the application and the numerical scheme employed. For FEM applications, an appropriate functional form for the prior distribution is given by
 
 \begin{equation}
 \label{eq::BF_ME_prior_funcs}
- m_j(\vec{x}) = \frac{\pi_j (\vec{x}) }{\sum_{k} \pi_k (\vec{x})},
+ m_j(\vec{x}) = \frac{\pi_j (\vec{x}) }{\sum\limits_{k=1}^{N_K} \pi_k (\vec{x})},
 \end{equation}
 
 \noindent where
 
 \begin{equation}
 \label{eq::BF_ME_prior_products}
-\pi_j (\vec{x}) = \prod\displaylimits_{k \neq j-1, j} \rho_k (\vec{x}),
+\pi_j (\vec{x}) = \prod\limits_{k \neq j-1, j}^{N_K} \rho_k (\vec{x}),
 \end{equation}
 
 \noindent and
@@ -638,7 +638,7 @@ w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{x})),
 \rho_j (\vec{x}) = || \vec{x} - \vec{x}_j || + || \vec{x} - \vec{x}_{j+1} || - || \vec{x}_{j+1} - \vec{x}_j || .
 \end{equation}
 
-\noindent In Eqs. (\ref{eq::BF_ME_prior_products}) and (\ref{eq::BF_ME_face_funcs}), we have defined a new weight function, $\rho_j$, that corresponds to face $j$ between vertices $j$ and $j+1$. These face functions are zero along face $j$, but strictly positive elsewhere due to the triangle inequality. This means that the vertex function $\pi_j$ is also non-negative and vanishes on all faces that are not adjacent to vertex $j$. This is important to ensure that each of the ME vertex functions are strictly zero on all non-adjacent faces. However, this also means that once again, the ME coordinates cannot be directly evaluated on the polygon's boundary. We show that the limits of these functions are bounded on the polygon's faces and vertices in Appendix \ref{sec::appendix_BF}.
+\noindent In Eqs. (\ref{eq::BF_ME_prior_products}) and (\ref{eq::BF_ME_face_funcs}), we have defined a new weight function, $\rho_j$, that corresponds to face $j$ between vertices $j$ and $j+1$. These face functions are zero along face $j$, but strictly positive elsewhere due to the triangle inequality. This means that the vertex function $\pi_j$ is also non-negative and vanishes on all faces that are not adjacent to vertex $j$. This is important so as to ensure that each of the ME vertex functions are strictly zero on all faces that are not connected to the vertex. However, this also means that once again, the ME coordinates cannot be directly evaluated on the polygon's boundary. We show that the limits of these functions are bounded on the polygon's faces and vertices in Appendix \ref{sec::appendix_BF}.
 
 Now that we have provided sufficient details for the basis functions and their weight functions, we can explain how the $\vec{\kappa}$ vector in Eq. (\ref{eq::BF_ME_weights}) is computed. We can see that once $\vec{\kappa}$ is known, the ME functions can be directly calculated. To do this, we solve the constrained optimization problem of Eq. (\ref{eq::BF_ME_cont_opt_probl}) through the use of Lagrange multipliers with a Newton's method. If we define $\kappa_0$ as the Lagrange multiplier for the constant constraint, then the Lagrangian for the problem of Eq. (\ref{eq::BF_ME_cont_opt_probl}) is given by
 
@@ -675,15 +675,15 @@ b_j (\vec{x}) = \frac{m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{
 
 \begin{enumerate}
 \item Compute and store $(\vec{x}_j - \vec{x})$ and the prior functions $m_j (\vec{x})$;
-\item Start with iteration counter at $k=0$ and initialize the Lagrange multiplier: $\vec{\kappa}_0 = \vec{0}$;
-\item Compute $g_k = \vec{\nabla}_{\kappa} F (\vec{\kappa}_k)$ and $H_k = \vec{\nabla}_{\kappa} \vec{\nabla}_{\kappa}  F (\vec{\kappa}_k)$;
+\item Start with iteration counter at $k=0$ and initialize the Lagrange multiplier: $\vec{\kappa}^0 = \vec{0}$;
+\item Compute the gradient of $F$, $\vec{g}_k = \vec{\nabla}_{\kappa} F (\vec{\kappa}^k)$, and its Hessian, $H_k = \vec{\nabla}_{\kappa} \vec{\nabla}_{\kappa}  F (\vec{\kappa}^k)$;
 \item Determine the Newton search direction: $\Delta \vec{\kappa}_k = - H_k^{-1} g_k$;
-\item Update the multiplier: $\vec{\kappa}_{k+1} =\vec{\kappa}_k + \alpha \Delta \vec{\kappa}_k$;
+\item Update the multiplier: $\vec{\kappa}^{k+1} =\vec{\kappa}^k + \alpha \Delta \vec{\kappa}^k$;
 \item Check convergence by testing if $|| g_{k+1} || > \epsilon$.
-\item Set $\vec{\kappa}^*$ = $\vec{\kappa}_{k+1}$ and compute $\vec{b} (\vec{x})$
+\item Set $\vec{\kappa}^*$ = $\vec{\kappa}^{k+1}$ and compute $\vec{b} (\vec{x})$
 \end{enumerate}
 
-In these computational procedures, $\alpha$ is the step size. If the error at iteration $k$, $|| g_{k} || $ is greater than $10^{-4}$, then a line search algorithm is used \cite{burden2001numerical}. Otherwise, $\alpha$ can be set to unity as the error decreases. We note that a line search algorithm must be used for certain classes of polygonal shapes. For extremely-distorted concave polygons, this Newton iteration procedure can be unstable without it. Due to the quadratic convergence of Newton's method in the vicinity of the final solution, only 3-7 Newton iterations should be required to obtain accuracies of at least $10^{-10}$. 
+In these computational procedures, $\alpha$ is the damping parameter. If the error at iteration $k$, $|| \vec{g}_{k} || $ is greater than $10^{-4}$, then a line search algorithm is used \cite{burden2001numerical}. Otherwise, $\alpha$ can be set to unity as the error decreases. We note that a line search algorithm must be used for certain classes of polygonal shapes. For extremely-distorted concave polygons, this Newton iteration procedure can be unstable without it. Due to the quadratic convergence of Newton's method in the vicinity of the final solution, only 3-7 Newton iterations should be required to obtain accuracies of at least $10^{-10}$. 
 
 We conclude our discussion of the maximum entropy coordinates by providing example plots over the same polygonal domains that we showed for the PWL and MV coordinates. First, we give the contour plots of the ME coordinates over the unit square in Figure \ref{fig::2D_MAXENT1_unit_square_basis_functions}. Similar to the Wachspress and MV coordinates, the maximum entropy coordinates are smoothly varying within the domain of the polygon and posess continuous derivatives (in contrast to the PWL coordinates). Next in Figure \ref{fig::2D_MAXENT1_deg_square_basis_functions}, we give the contour plots of the degenerate polygon. Finally, Figure \ref{fig::2D_MAXENT1_Ldom_basis_functions} gives the contour plots for the linear maximum entropy coordinates on the L-shaped domain. We can see that these coordinates can appropriately interpolate functions on concave polygons.
 
@@ -936,14 +936,14 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 \section{Converting the Linear Polygonal Basis Functions to the Quadratic Serendipity Space of Functions}
 \label{sec::BF_2DQuadratic}
 
-We have given complete details on the linearly-complete generalized barycentric coordinates that we will investigate for this work. Now we describe how to convert any generalized barycentric coordinate into the quadratic serendipity space of functions to yield quadratic (not linear) precision based on the work of Rand et al. \cite{rand2014quadratic}. The maximum entropy coordinates were independently converted into the quadratic space \cite{gonzalez2010higher,sukumar2013quadratic}. These 2D serendipity coordinates can exactly interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions, which can be shown with the first three levels of Pascal's triangle,
+We have given complete details on the linearly-complete generalized barycentric coordinates that we will investigate for this work. Now we describe how to convert any generalized barycentric coordinate into the quadratic serendipity space of functions to yield quadratic (not linear) precision based on the work of Rand et al. \cite{rand2014quadratic}. The maximum entropy coordinates were independently converted into the quadratic space \cite{gonzalez2010higher,sukumar2013quadratic}. These 2D serendipity coordinates can exactly interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions, which can be shown with the first three levels of Pascal's triangle:
 
 \begin{equation}
 \label{eq::BF_quad_pascal}
 \begin{array}{ccccc}
  & & 1 & & \\
  & x & & y & \\
- x^2 &  &xy & & y^2 .
+ x^2 &  &xy & & y^2 
 \end{array} \, 
 \end{equation}
 

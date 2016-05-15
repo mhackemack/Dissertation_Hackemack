@@ -47,14 +47,15 @@ We can summarize the benefits of using polytope meshes as the following:
 
 Higher-order FEM basis functions provide a two-fold benefit when used in conjunction with HPCs. First, they provide a richer interpolatory space for the FEM basis functions resulting in increased convergence rates for the discretized solution \cite{ern2013theory}. Second, they can maximize the parallel efficiency on these proposed exascale machines. Low-order spatial discretizations of the DGFEM transport equation may require more mesh cells in the computational domain compared to the number of mesh cells of high-order spatial discretizations. For the DGFEM $S_N$ method, this equates to a greater number of independent linear solves for the low-order discretizations. Since the current and future computational bottlenecks for neutron transport are memory-access related, then higher-order FEM basis functions will be more computationally efficient. This is because the higher-order basis functions can perform more on-process work before memory-access routines are needed.
 
-In this work, we will answer two specific open questions regarding solutions of the DGFEM $S_N$ transport equations:
+In this work, we will answer three specific open questions regarding solutions of the DGFEM $S_N$ transport equations:
 
 \begin{enumerate}
 \item Can higher-order 2D polygonal basis functions be used to solve the DGFEM transport equation?
 \item Can an efficient and robust DSA scheme be used on arbitrary grids while maintaining scalability to high process counts?
+\item Can a parallelizable form of the Two-Grid method be derived to accelerate problems dominated by thermal neutron upscattering?
 \end{enumerate}
 
-\noindent The methodology, implementation, and results pertaining to these two items are provided in Chapters \ref{sec::BF} and \ref{sec::DSA}, respectively.
+\noindent The methodology, implementation, and results pertaining to these three items are provided in Chapters \ref{sec::BF} and \ref{sec::DSA}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Current State of the Problem

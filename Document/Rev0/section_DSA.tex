@@ -22,7 +22,9 @@
 \section{Introduction}
 \label{sec::DSA_Introduction}
 
-In this chapter, we analyze the Modified Interior Penalty (MIP) form of the diffusion equation as a discretization scheme for use with Diffusion Synthetic Acceleration (DSA) of the DFEM $S_N$ transport equation on unstructured grids. Specifically, we wish to analyze its efficacy on massively-parallel computer architectures where scalability of solution times and memory footprints can become burdensome. This chapter is laid out in the following manner. The remainder of this Section will provide an overview of synthetic acceleration techniques as well as a review of DSA schemes. Section \ref{sec::DSA_DSA} provides the DSA methodologies that we will employ for 1-group and thermal neutron upscattering acceleration. We then present the discontinuous Symmetric Interior Penalty (SIP) form of the diffuion equation in Section \ref{sec::DSA_SIP} as well as the MIP variant that we will use for our DSA analysis in Section \ref{sec::DSA_MIP}. The numerical procedures that we will use to solve the diffusion system of equations are given in Section \ref{sec::DSA_Solving}. The theoretical Fourier analysis tool is given in Section \ref{sec::DSA_Fourier}. Results are provided in Section \ref{sec::DSA_Results} and we finish the chapter with some concluding remarks in Section \ref{sec::DSA_Conclusions}
+In this chapter, we present the theory, implementation, and analysis of Diffusion Synthetic Acceleration (DSA) schemes for the DGFEM $S_N$ transport equation compatible with arbitrary polytope meshes. The Modified Interior Penalty (MIP) form of the diffusion equation is used as the DSA discretization scheme \cite{ref::DSA_wang_ragusa,turcksin2014discontinuous}. There are three specific topics that we investigate in this chapter. First, we analyze the effectiveness of DSA schemes with the linear and quadratic basis functions presented in Chapter \ref{sec::BF}. Second, we seek to analyze the efficacy of MIP DSA for within-group acceleration for massively-parallel transport calculations. We do this by extending the previous analysis of MIP DSA to 3D configurations and analyzing the scalability of the method's implementation out to $O(10^5)$ processors. Finally, we present a novel scheme to accelerate the thermal neutron upscattering iterations that is compatible with massively-parallel transport sweeps. The method is fully-parallelizable and MIP is again used as the diffusion operator.
+
+This chapter is laid out in the following manner. The remainder of this Section will provide an overview of synthetic acceleration techniques as well as a review of DSA schemes. Section \ref{sec::DSA_DSA} provides the DSA methodologies that we will employ for 1-group and thermal neutron upscattering acceleration. We then present the discontinuous Symmetric Interior Penalty (SIP) form of the diffuion equation in Section \ref{sec::DSA_SIP} as well as the MIP variant that we will use for our DSA analysis in Section \ref{sec::DSA_MIP}. The numerical procedures that we will use to solve the diffusion system of equations are given in Section \ref{sec::DSA_Solving}. The theoretical Fourier analysis tool is given in Section \ref{sec::DSA_Fourier}. Results are provided in Section \ref{sec::DSA_Results} and we finish the chapter with some concluding remarks in Section \ref{sec::DSA_Conclusions}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -439,7 +441,7 @@ We now quickly show how the DSA iterative procedure given by Eq. (\ref{eq::DSA_o
 \subsection{DSA Acceleration Strategies for Thermal Neutron Upscattering}
 \label{sec::DSA_DSA_MG}
 
-We have just provided a detailed description of the DSA methodology for a single energy group. The transport and low-order diffusion operators were discretized, but left as arbitrary. If desired, this 1-group acceleration methodology could be utilized to precondition transport sweeps for a single group in a multigroup problem (if an energy group has a high scattering ratio). However, for a transport problem with many energy groups that need acceleration, there may be more efficient acceleration strategies that can be employed. In particular, it is difficult to converge the scattering source for transport problems that are dominated by thermal neutron upscattering. We next present four different DSA strategies to accelerate the neutron upscattering that we will analyze for this work.
+We have just provided a detailed description of the DSA methodology for a single energy group. The transport and low-order diffusion operators were discretized, but left as arbitrary. If desired, this 1-group acceleration methodology could be utilized to precondition transport sweeps for a single group in a multigroup problem (if an energy group has a high scattering ratio). However, for a transport problem with many energy groups that need acceleration, there may be more efficient acceleration strategies that can be employed. In particular, it is difficult to converge the scattering source for transport problems that are dominated by thermal neutron upscattering. We next present four different DSA strategies to accelerate the neutron upscattering that we will analyze for this work. The Two-Grid (TG) acceleration method, originally proposed in 1993, is presented in Section \ref{sec:DSA_DSA_MG_TG} \cite{adams1993two}. Next, we provide a Modified Two-Grid (MTG) acceleration scheme in Section \ref{sec:DSA_DSA_MG_MTG} that is a variant of the work presented in \cite{evans2010transport}. Following the presentation of those two schemes, we then present our novel scheme to perform parallel thermal neutron upscattering acceleration. Section \ref{sec:DSA_DSA_MG_WGS} gives the Multigroup Jacobi Acceleration (MJA) method which is a two-grid-like method similar to TG and MTG but executed in parallel. Finally in Section \ref{sec:DSA_DSA_MG_MJIA}, we propose a variant to the MJA method by performing an additional acceleration step to give a better estimate of the within-group scattering error. This additional step remains fully-parallelizable.
 
 %%%%%%%%%%%%%
 %%%   SubSubSection - Two-Grid
@@ -912,29 +914,9 @@ After the $G$ independent within-group error diffusion solves and their correspo
 \subsubsection{Summary of the Thermal Neutron Upscattering Acceleration Methods}
 \label{sec:DSA_DSA_MG_Summary}
 
-In this work, we have defined four different methodologies to accelerate thermal neutron upscattering: the Two-Grid (TG) method, the Modified Two-Grid (MTG) method, the Multigroup Jacobi Acceleration (MJA) method, and the Multigroup Jacobi with Inner Acceleration (MJIA) method. These methods are similar in that we perform a single coarsening step for each iteration where a spectrally-collapsed, 1-group diffusion equation is the low-order error operator. However, there are key differences in the iterative procedures of the four methods. Both the TG and MTG methods perform a Gauss-Seidel procedure in energy where the thermal energy groups are solved sequentially. However, the inner iterations are not converged for any of the thermal groups with the MTG method (we just perform a single sweep in this work). The MJA and MJIA methods are different from the other two in that the thermal groups are iterated upon in parallel. All thermal groups are solved simultaneously in the transport sweep. However, we perform an additional acceleration step in the MJIA method to provide a better estimate of the within-group scattering error. Before the spectrally-collapsed low-order calculation, we perform independent (and parallelizable) 1-group DSA calculations for each thermal group. In these 1-group calculations, we only accelerate the within-group 
+In this work, we have defined four different methodologies to accelerate thermal neutron upscattering: the Two-Grid (TG) method, the Modified Two-Grid (MTG) method, the Multigroup Jacobi Acceleration (MJA) method, and the Multigroup Jacobi with Inner Acceleration (MJIA) method. These methods are similar in that we perform a single coarsening step for each iteration where a spectrally-collapsed, 1-group diffusion equation is the low-order error operator. However, there are key differences in the iterative procedures of the four methods. Both the TG and MTG methods perform a Gauss-Seidel procedure in energy where the thermal energy groups are solved sequentially. However, the inner iterations are not converged for any of the thermal groups with the MTG method (we just perform a single sweep in this work). The MJA and MJIA methods are different from the other two in that the thermal groups are iterated upon in parallel. All thermal groups are solved simultaneously in the transport sweep. This means that neither method converges the within-group scattering for any of the thermal groups. To correct for this, we perform an additional acceleration step in the MJIA method to provide a better estimate of the within-group scattering error. Before the spectrally-collapsed low-order calculation, we perform independent (and parallelizable) 1-group DSA calculations for each thermal group. In these 1-group calculations, we only accelerate the within-group scattering.
 
-As it was stated, each of these acceleration methods contains a spectrally-collapse, 1-group diffusion operation. For materials with significant across-group scattering and minimal absorption, this diffusion equation eliminates the error mode corresponding to the thermal Maxwellian. The spectral shape to perform the enery collapse is calculated from the eigenproblem corresponding to the infinite medium iteration equations of the different acceleration methods. We give the appropriate eigenproblems for each of the acceleration methods in Table \ref{tab::DSA_DSA_MG_Summary_diffterms}.
-
-For the TG, MTG, and MJA methods, we can define a general expression for the full phase-space solution at each iteration by the following,
-
-\begin{equation}
-\label{eq::DSA_MG_Summary_form}
-\begin{aligned}
-{\bf \Phi}^{(k+1)} &= \left[ {\bf F} {\bf M} {\bf \Sigma} + {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma} \left(  {\bf F} {\bf M} {\bf \Sigma} - {\bf I} \right)  \right]   {\bf \Phi}^{(k)} \\
-&+ \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}  + {\bf I} \right) {\bf F} {\bf D}{\bf L}^{-1}  {\bf Q}
-\end{aligned} ,
-\end{equation}
-
-\noindent where the differences lie in the ${\bf F}$ and  ${\bf \Sigma}$ terms. These terms are given in Table \ref{tab::DSA_DSA_MG_Summary_diffterms}, and we can clearly see that the differences in the schemes arise from the ordering of the scattering operators. Because of the two-level nature of the MJIA method, 
-
-\begin{equation}
-\label{eq::DSA_MG_Summary_MJIA}
-\begin{aligned}
-{\bf \Phi}^{(k+1)} = & \left[ {\bf I} +\left[ {\bf I}+ {\bf P}_{\delta}{\bf A}^{-1}  {\bf X}_{\delta}\left(   {\bf S_L} +  {\bf S_U} \right) \right]    \left(  {\bf I} + {\bf P}_{\Delta} {\bf B}^{-1} {\bf X}_{\Delta} {\bf S_D} \right) \left(   {\bf F}  {\bf M} {\bf S}  - {\bf I} \right)   \right]{\bf \Phi}^{(k)} \\
-&+  \left[ {\bf I}+ {\bf P}_{\delta}{\bf A}^{-1}  {\bf X}_{\delta}\left(   {\bf S_L} +  {\bf S_U} \right) \right]  \left(  {\bf I} + {\bf P}_{\Delta} {\bf B}^{-1} {\bf X}_{\Delta} {\bf S_D} \right) {\bf b} \\
-\end{aligned} ,
-\end{equation}
+As it was stated, each of these acceleration methods contains a spectrally-collapsed, 1-group diffusion operation. For materials with significant across-group scattering and minimal absorption, this diffusion equation eliminates the error mode corresponding to the thermal Maxwellian. The spectral shape to perform the enery collapse is calculated from the eigenproblem corresponding to the infinite medium iteration equations of the different acceleration methods. We give the appropriate eigenproblems for each of the acceleration methods in Table \ref{tab::DSA_DSA_MG_Summary_diffterms}.
 
 \begin{table}
 \centering
@@ -950,6 +932,28 @@ Multigroup Jacobi with Inner & $\left(  {\bf T} - {\bf S_{D,0}} \right)^{-1} \le
 \label{tab::DSA_DSA_MG_Summary_diffterms}
 \end{table}
 
+We conclude by again summarizing the iteration matrices of each of these acceleration methods. For the TG, MTG, and MJA methods, we can define a general expression for the full phase-space solution at each iteration by the following,
+
+\begin{equation}
+\label{eq::DSA_MG_Summary_form}
+\begin{aligned}
+{\bf \Phi}^{(k+1)} &= \left[ {\bf F} {\bf M} {\bf \Sigma} + {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma} \left(  {\bf F} {\bf M} {\bf \Sigma} - {\bf I} \right)  \right]   {\bf \Phi}^{(k)} \\
+&+ \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}  + {\bf I} \right) {\bf F} {\bf D}{\bf L}^{-1}  {\bf Q}
+\end{aligned} ,
+\end{equation}
+
+\noindent where the differences lie in the ${\bf F}$ and  ${\bf \Sigma}$ terms. These terms are given in Table \ref{tab::DSA_DSA_MG_Summary_diffterms}, and we can clearly see that the differences in the schemes arise from the ordering of the scattering operators. The scattering operators are split based on which portion of the scattering matrix is converged at each iteration. The MJIA method has a different form than the other three methods because of its two-level nature. Through the careful algebraic manipulation provided in Section \ref{sec:DSA_DSA_MG_MJIA}, we can write the iteration matrix of the MJIA method as
+
+\begin{equation}
+\label{eq::DSA_MG_Summary_MJIA}
+\begin{aligned}
+{\bf \Phi}^{(k+1)} = & \left[ {\bf I} +\left[ {\bf I}+ {\bf P}_{\delta}{\bf A}^{-1}  {\bf X}_{\delta}\left(   {\bf S_L} +  {\bf S_U} \right) \right]    \left(  {\bf I} + {\bf P}_{\Delta} {\bf B}^{-1} {\bf X}_{\Delta} {\bf S_D} \right) \left(   {\bf F}  {\bf M} {\bf S}  - {\bf I} \right)   \right]{\bf \Phi}^{(k)} \\
+&+  \left[ {\bf I}+ {\bf P}_{\delta}{\bf A}^{-1}  {\bf X}_{\delta}\left(   {\bf S_L} +  {\bf S_U} \right) \right]  \left(  {\bf I} + {\bf P}_{\Delta} {\bf B}^{-1} {\bf X}_{\Delta} {\bf S_D} \right) {\bf b} \\
+\end{aligned} .
+\end{equation}
+
+\noindent In Eq. (\ref{eq::DSA_MG_Summary_MJIA}), we note that there are two sets of restriction (${\bf X}_{\delta}$ and ${\bf X}_{\Delta}$) and prolongation (${\bf P}_{\delta}$ and ${\bf P}_{\Delta}$) operators. These operators act to have the diffusion error equations only provide contributions to the 0th-order flux moment.
+
 \begin{table}
 \centering
 \caption{Iteration terms for the Two-Grid, Modified Two-Grid, and Multigroup Jacobi Acceleration methods.}
@@ -963,7 +967,7 @@ Multigroup Jacobi & ${\bf D}{\bf L}^{-1}$ & ${\bf S_{L}} + {\bf S_{D}} + {\bf S_
 \label{tab::DSA_DSA_MG_Summary_diffterms}
 \end{table}
 
-\iffalse
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1441,6 +1445,9 @@ We illustrate the necessity for a minimization algorithm in Figure \ref{fig::DSA
 \caption[2D Fourier wave form for MIP with the PWL coordinates]{2D Fourier wave form for MIP, with 1 square cell with 1e-2 mfp, with the PWL coordinates, with the LS4 quadrature, and where the wave numbers range from: (a) $[\lambda_x,\lambda_y]=[0,2 \pi]^2$ and (b) $[\lambda_x,\lambda_y]=[0,1/4]^2$.}
 \label{fig::DSA_fourier_modes_showing_search_need}
 \end{figure}
+
+
+\iffalse
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -3085,7 +3092,6 @@ In this chapter, we analyzed the Modified Interior Penalty (MIP) form of the dif
 The efficacy of the low-order diffusion operator for the use in massively-parallel transport calculations was also analyzed. The scalability of the MIP DSA form was studied on the VULCAN supercomputer. The methodology was implemented in the Texas A\&M University PDT code, and the HYPRE software was linked to solved the MIP equations. Scaling results demonstrated that the MIP diffusion form scales well out to $O(10^5)$ processors. When sufficient work is performed with the transport sweeps ({\em i.e.,} a large number of transport unknowns per processor), the fraction of time spent performing DSA operations can be as low as 10\% - 20\%. At high processor counts, the scaling of the MIP solves begins to degrade. Specifically, the HYPRE setup call time begins to grow at a high rate compared to the transport sweeps. The time per PCG solve grows as well but at a slower rate. We note that the time to build the MIP matrix in HYPRE remains flat in a weak scaling sense.
 
 Finally, we analyzed the theoretical and numerical performances of the different thermal neutron upscattering acceleration methodologies. Fourier analysis states that the TG and MJIA methods provide the optimal convergence properties. However, the TG method contains the serial treatment of the energy groups, whereas MJIA does not. The MJIA method is completely parallelizable and we predict its parallel concurrence will yield the maximum possible parallel efficiency. Numerical timing results of the TG, MTG, and MJA methods determined that MJA provides the best performance in terms of reduction in wall clock times (at the time of this work, the MJIA method had not been implemented in the PDT code). The TG and MTG methods pay a steep penalty with their serialization in energy with the Gauss-Seidel iterations. Even though less outer iterations are performed with TG and MTG compared to MJA, the MJA experienced up to factor of 3 speedups. Thus, the suite of MJA and MJIA methodologies constitutes the most efficient parallel upscatter acceleration schemes in a massively-parallel setting.
-
 
 
 \fi

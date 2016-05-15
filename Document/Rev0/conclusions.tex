@@ -37,7 +37,7 @@ Next, our conclusions for the DSA work on massively-parallel computer architectu
 \item The Symmetric Interior Penalty (SIP) discretization of the diffusion equation is an efficient solver for the 3D diffusion problem using DFEM. It is Symmetric Positive Definite (SPD), and its system matrix is easily solvable with a Preconditioned Conjugate Gradient Method (PCG). We demonstrated that linearly-complete polyhedral basis functions can capture exactly-linear diffusion solutions on arbitrary grids. We also showed that the proper second-order convergence is obtained in the $L_2$-norm.
 \item The Modified Interior Penalty (MIP) method is a modification to the SIP scheme that can be used as a DFEM diffusion form for DSA calculations. It is also SPD and easily solvable the same as SIP. Fourier and numerical analysis showed that it is efficient and robust on parallelipipeds, even those with high aspect ratios. However, this efficiency degrades with large discontinuities across material cross sections.
 \item MIP DSA was successfully implemented in the Texas A\&M University massively-parallel $S_N$ sweeping code: PDT. Scaling studies were performed on the VULCAN supercomputer out to $O(10^5)$ processes. It was shown that as the angular quadrature was refined to $O(10^3)$ number of angles, the DSA solve times became minimal compared to the sweep times. This means that for high-fidelity transport calculations involving $O(10^3) - O(10^4)$ and $O(10^2)$ energy groups, the DSA computational times become insignificant. Therefore, the use of DSA as the low-order accleration operator for massively-parallel transport problems is realizable.
-\item We tested three different thermal neutron upscattering acceleration schemes: the Two-Grid (TG) scheme, the Modified Two-Grid (MTG) scheme, and the Multigroup Jacobi Acceleration (MJA) scheme. Theoretical Fourier and numerical analysis was perfomed to understand the convergence properties of these methods for infinite medium and periodic domains. It was shown that TG provides the best spectral radius of all of the methods tested for several real-world materials. However, because of its serialization in energy using Gauss-Seidel along with the necessity to converge the inner iterations, it had the worst performance in terms of wall clock time. The MTG scheme had better run-time perfomance than TG because only sweep was performed for each energy group in the Gauss-Seidel iteration. However, MJA had the best run-time performance because the inversion of the thermal group loss operators could be done simultaneously with a single transport sweep.
+\item We tested four different thermal neutron upscattering acceleration schemes: the Two-Grid (TG) scheme, the Modified Two-Grid (MTG) scheme, the Multigroup Jacobi Acceleration (MJA) scheme, and the Multigroup Jacobi with Inner Acceleration (MJIA) scheme. The MJA and MJIA methods are fully-parallelizable in energy, whereas TG and MTG are serialized in energy. Theoretical Fourier and numerical analysis was perfomed to understand the convergence properties of these methods for infinite medium and periodic domains. It was shown that TG provides the best spectral radius of all of the methods tested for several real-world materials. However, because of its serialization in energy using Gauss-Seidel along with the necessity to converge the inner iterations, it had the worst performance in terms of wall clock time. The MTG scheme had better run-time perfomance than TG because only sweep was performed for each energy group in the Gauss-Seidel iteration. However, MJA had the best run-time performance because the inversion of the thermal group loss operators could be done simultaneously with a single transport sweep. No numerical results were presented for the MJIA method since its implementation in PDT had not been completed at the time of this work.
 \end{enumerate}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -51,49 +51,9 @@ While the work in this dissertation answered several open questions related to t
 \item {\em Quadratic serendipity basis functions on 3D polyhedra:} \\
 The direct extension of the work involving the 2D quadratic serendipity basis functions would be to form quadratically-complete, analogous serendipity coordinates for arbitrary 3D polyhedra. To maintain quadratic completeness in 3D, the coordinates would be beholden to the ten quadratic 3D constraints which would require exact interpolation of the $\{ 1,x,y,z,xy,xz,yz,x^2,y^2,z^2 \}$ span of functions. Along a polyhedral face, the methodology presented in Chapter \ref{sec::BF} has a direct 3D analogue. However, careful consideration is required to remove all of the diameter nodes within the polyhedron and is an open area of research in the applied mathematics community.
 \item {\em Higher-order 2D serendipity polygonal basis functions:} \\
-The quadratic serendipity basis functions were formed by taking pairwise products of the linear barycentric basis functions, followed by removal of the interior nodes. For a given polynomial order $p$, the monomials that the basis functions need to exactly interpolate are $x^\sigma y^\tau$, where $\sigma + \tau = p$. We can see that all of the higher-order functional spaces can be generated by taking pairwise products of terms from lower-order functions. Mukherjee and Webb have just recently developed a means to generate these higher-order polygonal finite elements through a hierarchical approach \cite{mukherjee2015hierarchical}.
+The quadratic serendipity basis functions were formed by taking pairwise products of the linear barycentric basis functions, followed by removal of the interior nodes. For a given polynomial order $p$, the monomials that the basis functions need to exactly interpolate are $x^\sigma y^\tau$, where $\sigma + \tau = p$. We can see that all of the higher-order functional spaces can be generated by taking pairwise products of terms from lower-order functions. Mukherjee and Webb have just recently developed a means to generate these higher-order polygonal finite elements through a hierarchical approach \cite{mukherjee2015hierarchical}. Their methodology can be immediately implemented and analyzed for the DGFEM $S_N$ transport equation. 
 \item {\em Alternate integration schemes on polygons:} \\
 For this work, our quadrature integration scheme on arbitrary polygons consisted of a simple triangulation scheme where each sub-triangle had points mapped onto it from the reference triangle. We did not focus on efficiency for this work, but instead simply used a high-order reference quadrature set. However, by performing our integration this way, the basis function values and gradients must be computed for each polygon in the mesh. This becomes computationally expensive for meshes with many cells containing polygons with large vertex counts. An alternative approach could consist of the use of Schwarz-Christoffel Conforming Maps (SCCM) \cite{driscoll2002schwarz,driscoll2005algorithm}. Generation of the polygonal basis functions and gradients could be computed on reference (regular) polygons and then conformally mapped to any arbitrary polygon for integration \cite{natarajan2009numerical}.
 \item {\em Mixed-mode parallelism with DSA preconditioning:} \\
 In this work, spatial parallelism was done with domain decomposition using the Message Passing Interface (MPI). No shared memory parallelism was utilized. A more advanced parallelization methodology involves the use of a mixed-mode parallel methodology. This would consist of a shared-memory location (an MPI rank) where several processes could operate concurrently in parallel. This methodology is currently being implemented in the sweep portion of the PDT code. To maximize the efficiency of modern computer architectures, the DSA calculations would also need to utilize this mixed-mode scheme. Scaling and performance would need to be reassessed.
-\iffalse
-\item {\em Further preconditioning the MJA method:} \\
-The Multigroup Jacobi Acceleration (MJA) method that we presented in Chapter \ref{sec::DSA} does not require the serialization of the energy group transport solves like the TG and MTG methods. This makes it more amenable to parallelizable computational transport methods. However, since the inner iterations are not converged with MJA, we see degradation of the iterative spectral radius compared to TG (~0.95 compared to ~0.4 for pure graphite). Therefore, an alternate strategy could be to do an additional DSA between the sweep and the 1-group, energy-collapsed DSA solve. In this step, each thermal group performs a 1-group inner acceleration solve. This step has the theoretical possiblity of being completely parallelizable across all the thermal energy groups. The new methodology for an additional inner acceleration step with MJA is given as follows:
-	\begin{enumerate}
-	\item Perform a single 1 group set transport sweep for all thermal groups.
-	\item For each thermal group, perform a 1-group DSA acceleration step for the within-group, 0th moment scattering residual. This corresponds to the following error equations ($g=1,...,G$):
-	        \begin{equation*}
-	        -\vec{\nabla} \cdot D_g \vec{\nabla} \delta \phi_g^{(k+1/2)} + \sigma_{a,g} \delta \phi_g^{(k+1/2)} = \sigma_{s,0}^{gg} \left( \phi_g^{(k+1/2)} - \phi_g^{(k)}\right)
-	        \end{equation*}
-	\item Perform a 1-group, energy-collapsed acceleration step done in accordance with the methodologies presented in Section \ref{sec::DSA_DSA_MG}. The spectral shape is given by,
-		\begin{equation*}
-	        {\bf T}^{-1} \left( {\bf S_{L,0}} + {\bf S_{U,0}} \right)\xi = \rho \xi ,
-	        \end{equation*}
-		  and the energy-collapsed residual is given by
-		  \begin{equation*}
-	        R^{(k+1/2)} = \sum_{g=1}^{G} \sum_{g' \neq g} \sigma_{s,0}^{gg'} \left( \phi_{g'}^{(k+1/2)} - \phi_{g'}^{(k)}\right).
-	        \end{equation*}
-	\end{enumerate}
-For the IM1 problem materials, we compare the infinite medium spectral radii of the MJA scheme and this proposed addition involving acceleration of the inner iterations in Table \ref{tab::Conc_MJA_inners}. We see from the results that we reduce the spectral radii even more. It is also clear that we significantly reduce the spectral radius of graphite which is our limiting material.
-\begin{table}
-\caption{Comparison of the infinite medium spectral radii between MJA and the proposed addition of the inner acceleration for the IM1 problem materials.}
-\begin{center}
-\def\arraystretch{1.6}
-\begin{tabular}{|c|c|c|}
-\hline
-Material & MJA & MJA + inners \\\hline \hline
-Graphite&0.9628&0.4569\\\hline
-Air&0.8014&0.7312\\\hline
-Wood&0.5299&0.4718\\\hline
-Boral&0.0300&0.0205\\\hline
-B-HDPE&0.1484&0.0544\\\hline
-HDPE&0.8015&0.6326\\\hline
-AmBe&0.5638&0.5082\\\hline
-Steel&0.9243&0.7735\\\hline
-BF3&0.0242&0.0086\\\hline
-\end{tabular}
-\end{center}
-\label{tab::Conc_MJA_inners}
-\end{table}
-\fi
 \end{enumerate}

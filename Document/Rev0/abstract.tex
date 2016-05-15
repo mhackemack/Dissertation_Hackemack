@@ -20,8 +20,10 @@
 \pagenumbering{roman} % Roman numerals
 \setcounter{page}{2}
 
-\indent In this dissertation, we
+\indent In this dissertation, we develop improvements to the discrete ordinates ($S_N$) neutron transport equation using a Discontinuous Galerkin Finite Element Method (DGFEM) spatial discretization on arbitrary polytope (polygonal and polyhedral) grids compatible for massively-parallel computer architectures. In particular, we focus on two topical areas of research. First, we discuss higher-order basis functions compatible to solve the DGFEM $S_N$ transport equation on arbitrary polygonal meshes. Second, we assess Diffusion Synthetic Acceleration (DSA) schemes compatible with polytope grids for massively-parallel transport problems.
 
- 
+We first utilize basis functions compatible with arbitrary polygonal grids for the DGFEM transport equation. We test four different basis functions that have linear completeness on polygons: the Wachspress rational functions, the PWL functions, the mean value coordinates, and the maximum entropy coordinates. We then describe the procedure to convert these polygonal linear basis functions into the quadratic serendipity space of functions. These basis functions can exactly interpolate monomial functions up to order 2.
+
+DSA methods have been critical for the acceleration of neutronics and Thermal Radiative Transfer (TRT) problems. 
 
 \pagebreak{}
