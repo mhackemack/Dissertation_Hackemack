@@ -794,7 +794,7 @@ R_g^{(k+1/2)} = \sum_{g'=1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)} -
 \subsubsection{Multigroup Jacobi with Inner Acceleration}
 \label{sec:DSA_DSA_MG_MJIA}
 
-Up to this point, we have presented a two-grid-like methodology in the MJA method that is amenable to parallel computation. With modern transport codes that can solve energy groups simultaneously, the grind times for these multi-energy group set transport sweeps are significantly lower than single group sweeps ({\em i.e.,} TG and MTG methods). Therefore, it is possible to have ``worse'' theoretical convergence properties for MJA (compared to TG) but still converge to a solution faster based on wallclock time (we demonstrate this in Sections \ref{sec::DSA_Results_IM1_2D} and \ref{sec::DSA_Results_IM1_3D}). However, like the MTG method, MJA does not converge the inner iterations. For graphite with $O(10^1)$ - $O(10^2)$ thermal groups, there can still be several within-group scattering ratios above 0.9. Therefore, there will be a large contribution to the iteration error from the non-convergence of the within-group iterations. We quickly note that as the number of thermal groups approaches infinity, this behavior will disappear. Because of this behavior of the scattering ratios, we then have recourse to provide a better estimate of the within-group scattering error before performing the spectrally-collapsed, 1-group diffusion correction. However, we still seek to continue the parallel nature of the MJA algorithm. Therefore, we propose an acceleration step before the spectrally-collapsed correction where we perform $G$ 1-group DSA calculations for the within-group error based on the methodology proposed in Section \ref{sec::DSA_DSA_Operator}. We choose to call this new scheme the Multigroup Jacobi with Inner Acceleration (MJIA) method and summarize it as follows:
+Up to this point, we have presented a two-grid-like methodology in the MJA method that is amenable to parallel computation. With modern transport codes that can solve energy groups simultaneously, the grind times for these multi-energy group set transport sweeps are significantly lower than single group sweeps ({\em i.e.,} TG and MTG methods). Therefore, it is possible to have ``worse'' theoretical convergence properties for MJA (compared to TG) but still converge to a solution faster based on wallclock time (we demonstrate this in Sections \ref{sec::DSA_Results_IM1_2D} and \ref{sec::DSA_Results_IM1_3D}). However, like the MTG method, MJA does not converge the inner iterations. For graphite with $O(10^1)$ - $O(10^2)$ thermal groups, there can still be several within-group scattering ratios above 0.9. Therefore, there will be a large contribution to the iteration error from the non-convergence of the within-group iterations. We quickly note that as the number of thermal groups approaches infinity, this behavior will disappear. Because of this behavior of the scattering ratios, we then have recourse to provide a better estimate of the within-group scattering error before performing the spectrally-collapsed, 1-group diffusion correction. However, we still seek to continue the parallel nature of the MJA algorithm. Therefore, we propose an acceleration step before the spectrally-collapsed correction where we perform $G$ 1-group DSA calculations for the within-group error based on the methodology proposed in Section \ref{sec::DSA_DSA_Operator}. These $G$ diffusion calculations are independent and thus parallelizable. We choose to call this new scheme the Multigroup Jacobi with Inner Acceleration (MJIA) method and summarize it as follows:
 
 %%%% MORE DETAILS GO HERE!!!!
 
@@ -912,9 +912,9 @@ After the $G$ independent within-group error diffusion solves and their correspo
 \subsubsection{Summary of the Thermal Neutron Upscattering Acceleration Methods}
 \label{sec:DSA_DSA_MG_Summary}
 
-In this work, we have defined four different methodologies to accelerate thermal neutron upscattering: the Two-Grid (TG) method, the Modified Two-Grid (MTG) method, the Multigroup Jacobi Acceleration (MJA) method, and the Multigroup Jacobi with Inner Acceleration (MJIA) method. These methods are similar in that we perform a single coarsening step for each iteration where a spectrally-collapsed, 1-group diffusion equation is the low-order error operator. However, there are key differences in the iterative procedures of the three methods. Both the TG and MTG methods perform a Gauss-Seidel procedure in energy where the thermal energy groups are solved sequentially. However, the inner iterations are not converged for any of the thermal groups with the MTG method. The Multigroup Jacobi method is different from the other two in that the thermal groups are iterated upon simultaneously. 
+In this work, we have defined four different methodologies to accelerate thermal neutron upscattering: the Two-Grid (TG) method, the Modified Two-Grid (MTG) method, the Multigroup Jacobi Acceleration (MJA) method, and the Multigroup Jacobi with Inner Acceleration (MJIA) method. These methods are similar in that we perform a single coarsening step for each iteration where a spectrally-collapsed, 1-group diffusion equation is the low-order error operator. However, there are key differences in the iterative procedures of the four methods. Both the TG and MTG methods perform a Gauss-Seidel procedure in energy where the thermal energy groups are solved sequentially. However, the inner iterations are not converged for any of the thermal groups with the MTG method (we just perform a single sweep in this work). The MJA and MJIA methods are different from the other two in that the thermal groups are iterated upon in parallel. All thermal groups are solved simultaneously in the transport sweep. However, we perform an additional acceleration step in the MJIA method to provide a better estimate of the within-group scattering error. Before the spectrally-collapsed low-order calculation, we perform independent (and parallelizable) 1-group DSA calculations for each thermal group. In these 1-group calculations, we only accelerate the within-group 
 
-
+As it was stated, each of these acceleration methods contains a spectrally-collapse, 1-group diffusion operation. For materials with significant across-group scattering and minimal absorption, this diffusion equation eliminates the error mode corresponding to the thermal Maxwellian. The spectral shape to perform the enery collapse is calculated from the eigenproblem corresponding to the infinite medium iteration equations of the different acceleration methods. We give the appropriate eigenproblems for each of the acceleration methods in Table \ref{tab::DSA_DSA_MG_Summary_diffterms}.
 
 For the TG, MTG, and MJA methods, we can define a general expression for the full phase-space solution at each iteration by the following,
 
@@ -926,12 +926,20 @@ For the TG, MTG, and MJA methods, we can define a general expression for the ful
 \end{aligned} ,
 \end{equation}
 
-\noindent where the differences lie in the ${\bf F}$ and  ${\bf \Sigma}$ terms. These terms are given in Table \ref{tab::DSA_DSA_MG_Summary_diffterms}, and we can clearly see that the differences in the schemes arise from the ordering of the scattering operators.
+\noindent where the differences lie in the ${\bf F}$ and  ${\bf \Sigma}$ terms. These terms are given in Table \ref{tab::DSA_DSA_MG_Summary_diffterms}, and we can clearly see that the differences in the schemes arise from the ordering of the scattering operators. Because of the two-level nature of the MJIA method, 
+
+\begin{equation}
+\label{eq::DSA_MG_Summary_MJIA}
+\begin{aligned}
+{\bf \Phi}^{(k+1)} = & \left[ {\bf I} +\left[ {\bf I}+ {\bf P}_{\delta}{\bf A}^{-1}  {\bf X}_{\delta}\left(   {\bf S_L} +  {\bf S_U} \right) \right]    \left(  {\bf I} + {\bf P}_{\Delta} {\bf B}^{-1} {\bf X}_{\Delta} {\bf S_D} \right) \left(   {\bf F}  {\bf M} {\bf S}  - {\bf I} \right)   \right]{\bf \Phi}^{(k)} \\
+&+  \left[ {\bf I}+ {\bf P}_{\delta}{\bf A}^{-1}  {\bf X}_{\delta}\left(   {\bf S_L} +  {\bf S_U} \right) \right]  \left(  {\bf I} + {\bf P}_{\Delta} {\bf B}^{-1} {\bf X}_{\Delta} {\bf S_D} \right) {\bf b} \\
+\end{aligned} ,
+\end{equation}
 
 \begin{table}
 \centering
 \caption{Eigenproblems to compute the spectral shape of each upscatter acceleration method.}
-\def\arraystretch{1.4}
+\def\arraystretch{1.5}
 \begin{tabular}{|c|c|} \hline
 Method &  Eigenproblem \\ \hline \hline
 Two-Grid & $\left(  {\bf T} - {\bf S_{L,0}} - {\bf S_{D,0}} \right)^{-1} {\bf S_{U,0}} \xi = \rho \xi$ \\ \hline
@@ -945,7 +953,7 @@ Multigroup Jacobi with Inner & $\left(  {\bf T} - {\bf S_{D,0}} \right)^{-1} \le
 \begin{table}
 \centering
 \caption{Iteration terms for the Two-Grid, Modified Two-Grid, and Multigroup Jacobi Acceleration methods.}
-\def\arraystretch{1.4}
+\def\arraystretch{1.5}
 \begin{tabular}{|c||c|c|} \hline
 Method & ${\bf F}$ & ${\bf \Sigma}$ \\ \hline \hline
 Two-Grid & $\left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \right]^{-1} {\bf D}{\bf L}^{-1}$ & ${\bf S_{U}}$ \\ \hline
