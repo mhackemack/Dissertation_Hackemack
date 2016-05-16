@@ -488,7 +488,115 @@ In Section \ref{sec::BF_2DIntegration}, we provided the details for numerically 
 \label{fig::App_BF_2D_tri_mapping}
 \end{figure}
 
+In general terms for a 2D problem with a reference space defined as ($r,s$), the Jacobian matrix can be written as the following
 
+\begin{equation}
+\label{eq::App_BF_2DJac}
+J = \left[
+\begin{array}{cc}
+\frac{\partial x}{\partial r} & \frac{\partial x}{\partial s} \\
+\frac{\partial y}{\partial r} & \frac{\partial y}{\partial s}
+\end{array}
+\right].
+\end{equation}
+
+\noindent The 2D reference coordinates can be written in terms of the global position coordinates as
+
+\begin{equation}
+\label{eq::App_BF_glob_to_ref}
+\vec{x} (r,s) = \sum\limits_{i=1} \vec{x}_i \hat{b}_i (r,s) ,
+\end{equation}
+
+\noindent where $\hat{b}_i$ are the reference triangle basis functions. For this work, we define the reference triangle basis functions and their gradients as
+
+\begin{equation}
+\label{eq::App_BF_2D_triref}
+\begin{aligned}
+	\hat{b}_1(r,s) & = 1-r-s \\
+	\hat{b}_2(r,s) & = r \\
+	\hat{b}_3(r,s) & = s 
+\end{aligned},
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::App_BF_2D_triref_grad}
+\vec{\nabla} \hat{b} (r,s)  = 
+\left[
+\begin{array}{cc}
+-1 & -1 \\
+1 & 0 \\
+0 & 1
+\end{array}
+\right],
+\end{equation}
+
+\noindent respectively. For completeness, we give the 3D reference basis functions and their constant gradients defined on a reference tetrahedron ($r,s,t$) as
+
+\begin{equation}
+\label{eq::3D_tetref_BF}
+\begin{aligned}
+	\hat{b}_1(r,s,t) & = 1-r-s-t \\
+	\hat{b}_2(r,s,t) & = r \\
+	\hat{b}_3(r,s,t) & = s \\
+	\hat{b}_4(r,s,t) & = t
+\end{aligned} ,
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::App_BF_3D_tetref_grad}
+\vec{\nabla} \hat{b} (r,s,t)  = 
+\left[
+\begin{array}{ccc}
+-1 & -1 & -1 \\
+1 & 0 & 0 \\
+0 & 1 & 0 \\
+0 & 0 & 1
+\end{array}
+\right] ,
+\end{equation}
+
+\noindent respectively. Therefore, we apply the partial derivate terms of Eq. (\ref{eq::App_BF_2DJac}) on the coordinates defined in Eq. (\ref{eq::App_BF_glob_to_ref}). Working through the derivatives yields a Jacobian matrix of the following form
+
+\begin{equation}
+\label{eq::App_BF_2DJac_MOD}
+J = \left[
+\begin{array}{cc}
+(x_2 - x_1) & (x_3 - x_1) \\
+(y_2 - y_1) & (y_3 - y_1)
+\end{array}
+\right].
+\end{equation}
+
+\noindent Likewise, the corresponding 3D Jacobian using the reference basis functions of Eq. (\ref{eq::3D_tetref_BF}) is given by 
+
+\begin{equation}
+\label{eq::App_BF_2DJac_MOD}
+J = \left[
+\begin{array}{ccc}
+(x_2 - x_1) & (x_3 - x_1)& (x_4 - x_1) \\
+(y_2 - y_1) & (y_3 - y_1)& (y_4 - y_1) \\
+(z_2 - z_1) & (z_3 - z_1)& (z_4 - z_1)
+\end{array}
+\right].
+\end{equation}
+
+\noindent The Jacobian can also be used to transform the gradients of the basis functions between the global and reference spaces. The gradient of the reference space can be computed in terms of the global space by,
+
+\begin{equation}
+\label{eq::App_BF_grad_ref}
+\nabla_{\hat{x}} = J^{T} \nabla_{x}  ,
+\end{equation}
+
+\noindent and the gradient of the global space can be computed in terms of the reference space by,
+
+\begin{equation}
+\label{eq::App_BF_grad_glob}
+\nabla_{x} = J^{-T} \nabla_{\hat{x}}  .
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Analytical PWL Integration
@@ -502,72 +610,100 @@ In Chapter \ref{sec::BF}, we provided the functional form for the Piecewise Line
 \subsection{2D PWL Basis Functions}
 \label{sec::appendix_BF_PWLInt_2D}
 
-In Section \ref{sec::BF_2DLinear_PWL}, we provided the functional form for the 2D Piecewise Linear (PWL) coordinates. We noted that of the linearly-complete 2D polygonal coordinates, PWL is the only one that can perform analytical integrations of the elementary matrices. We now describe the procedures to perform these analytical integrations of the elementary matrices.
+In Section \ref{sec::BF_2DLinear_PWL}, we provided the functional form for the 2D Piecewise Linear (PWL) coordinates. We noted that of the linearly-complete 2D polygonal coordinates, PWL is the only one that can perform analytical integrations of the elementary matrices. We now describe the procedures to perform these analytical integrations of the elementary matrices. The integral of the $b_i \, b_j$ term for the mass matrix and streaming matrix are given by 
 
 \begin{equation}
 \label{eq::App_BF_2D_triref_massterm}
 \begin{aligned}
 \int\displaylimits_K b_i b_j &= \int\displaylimits_K \left( t_i + \alpha_K t_c  \right) \left(  t_j + \alpha_K t_c \right) \\
 &= \int\displaylimits_K t_i t_j + \alpha_K \int\displaylimits_K t_i t_c + \alpha_K \int\displaylimits_K t_j t_c + \alpha_K^2 \int\displaylimits_K t_c t_c
-\end{aligned}
+\end{aligned},
 \end{equation}
+
+\noindent and
 
 \begin{equation}
 \label{eq::App_BF_2D_triref_gradterm}
 \begin{aligned}
 \int\displaylimits_K \vec{\nabla} b_i \,  b_j &= \int\displaylimits_K \left( \vec{\nabla} t_i + \alpha_K \vec{\nabla} t_c  \right) \left(  t_j + \alpha_K t_c \right) \\
 &= \int\displaylimits_K \vec{\nabla} t_i \,t_j + \alpha_K \int\displaylimits_K \vec{\nabla} t_i\, t_c + \alpha_K \int\displaylimits_K t_j \vec{\nabla} t_c + \alpha_K^2 \int\displaylimits_K \vec{\nabla} t_c \, t_c
-\end{aligned}
+\end{aligned} ,
 \end{equation}
 
-
-\begin{equation}
-\label{eq::App_BF_2D_triref}
-\begin{aligned}
-	\hat{b}_1(r,s) & = 1-r-s \\
-	\hat{b}_2(r,s) & = r \\
-	\hat{b}_3(r,s) & = s 
-\end{aligned}
-\end{equation}
+\noindent respectively. The $t_i$ function only has local measure on two sub-triangles of the polygon corresponding to ($\vec{x}_{i-1}, \vec{x}_i, \vec{r}_c$) and ($\vec{x}_{i}, \vec{x}_{i+1}, \vec{r}_c$). The $t_c$ function has measure everywhere in the polygon. Therefore, we can loop through the sub-triangles and add contributions of the integral to elementary matrices for the polygon. Specifically, we can make use of the reference basis functions and the Jacobian transformations of Section \ref{sec::appendix_BF_Jac}. If we transform the $t_i$, $t_j$, and $t_c$ basis functions into the $\hat{b}_1$, $\hat{b}_2$, and $\hat{b}_3$ reference functions on the sub-triangle $k$, then the mass 
 
 \begin{equation}
-\label{eq::App_BF_2D_triref_grad}
-\vec{\nabla} \hat{b} (r,s)  = 
-\left[
-\begin{array}{cc}
--1 & -1 \\
-1 & 0 \\
-0 & 1
-\end{array}
-\right]
+\label{eq::App_BF_2D_massterm_trans}
+\int\displaylimits_k b_i b_j =\int\displaylimits_{\hat{K}} \hat{b}_1 \hat{b}_2 |J_k| + \alpha_K \int\displaylimits_{\hat{K}} \hat{b}_1 \hat{b}_3 |J_k| + \alpha_K \int\displaylimits_{\hat{K}} \hat{b}_2 \hat{b}_3 |J_k| + \alpha_K^2 \int\displaylimits_{\hat{K}} \hat{b}_3 \hat{b}_3 |J_k| .
 \end{equation}
+
+\noindent This integral on the sub-triangle can then be written into a $(3 \times 3)$ matrix
+
+\begin{equation}
+\label{eq::App_BF_2D_massterm_littlemat}
+\int\displaylimits_k b_i b_j =\left[
+\begin{array}{ccc}
+\int\limits_{\hat{K}} \hat{b}_1 \hat{b}_1 |J_k| & \int\limits_{\hat{K}} \hat{b}_1 \hat{b}_2 |J_k| & \alpha_K \int\limits_{\hat{K}} \hat{b}_1 \hat{b}_3 |J_k| \\
+\int\limits_{\hat{K}} \hat{b}_2 \hat{b}_1 |J_k| & \int\limits_{\hat{K}} \hat{b}_2 \hat{b}_2 |J_k| & \alpha_K \int\limits_{\hat{K}} \hat{b}_2 \hat{b}_3 |J_k|  \\
+\alpha_K \int\limits_{\hat{K}} \hat{b}_3 \hat{b}_1 |J_k| &\alpha_K  \int\limits_{\hat{K}} \hat{b}_3\hat{b}_2 |J_k| & \alpha_K^2 \int\limits_{\hat{K}} \hat{b}_3 \hat{b}_3 |J_k| 
+\end{array} \right] .
+\end{equation}
+
+\noindent This sub-matrix defined on sub-triangle $k$ is then added into the global mass matrix for element $K$. Likewise, the integral of the streaming term on the sub-triangle $k$ can be written as
+
+\begin{equation}
+\label{eq::App_BF_2D_streamterm_littlemat}
+\int\displaylimits_k \vec{\nabla} b_i b_j =\left[
+\begin{array}{ccc}
+\int\limits_{\hat{K}} J^{-T}\vec{\nabla}  \hat{b}_1 \hat{b}_1 |J_k| & \int\limits_{\hat{K}}J^{-T}\vec{\nabla} \hat{b}_1 \hat{b}_2 |J_k| & \alpha_K \int\limits_{\hat{K}} J^{-T}\vec{\nabla}\hat{b}_1 \hat{b}_3 |J_k| \\
+\int\limits_{\hat{K}} J^{-T}\vec{\nabla}\hat{b}_2 \hat{b}_1 |J_k| & \int\limits_{\hat{K}}J^{-T}\vec{\nabla} \hat{b}_2 \hat{b}_2 |J_k| & \alpha_K \int\limits_{\hat{K}} J^{-T}\vec{\nabla} \hat{b}_2 \hat{b}_3 |J_k|  \\
+\alpha_K \int\limits_{\hat{K}} J^{-T}\vec{\nabla}\hat{b}_3 \hat{b}_1 |J_k| &\alpha_K  \int\limits_{\hat{K}}J^{-T}\vec{\nabla} \hat{b}_3\hat{b}_2 |J_k| & \alpha_K^2 \int\limits_{\hat{K}} J^{-T}\vec{\nabla} \hat{b}_3 \hat{b}_3 |J_k| 
+\end{array} \right] .
+\end{equation}
+
+\noindent Again, this sub-matrix can be added into the global streaming matrix for element $K$.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%  Sub Section - 3D integration
 \subsection{3D PWL Basis Functions}
 \label{sec::appendix_BF_PWLInt_3D}
 
-
+The integrations of the 3D PWL basis functions on an arbitrary 3D polyhedra can be performed in a similar manner to the integrations of the 2D PWL basis functions. The integral of the $b_i \, b_j$ term for the mass matrix and streaming matrix are given by 
 
 \begin{equation}
-\label{eq::3D_tetref_BF}
+\label{eq::App_BF_3D_triref_massterm}
 \begin{aligned}
-	\hat{b}_1(r,s,t) & = 1-r-s-t \\
-	\hat{b}_2(r,s,t) & = r \\
-	\hat{b}_3(r,s,t) & = s \\
-	\hat{b}_4(r,s,t) & = t
-\end{aligned}
+\int\displaylimits_K b_i b_j &= \int\displaylimits_K \left( t_i +\sum_{f=1}^{F_i} \beta_f^i  t_f + \alpha_K t_c  \right) \left(  t_j+\sum_{g=1}^{F_j} \beta_g^j  t_g  + \alpha_K t_c \right) \\
+&= \int\displaylimits_K t_i t_j +\sum_{g=1}^{F_j} \beta_g^j  \int\displaylimits_K t_i t_g + \alpha_K \int\displaylimits_K t_i t_c  \\
+&+  \sum_{f=1}^{F_i} \beta_f^i \int\displaylimits_K t_f t_j   + \sum_{f=1}^{F_i} \sum_{g=1}^{F_j} \beta_f^i    \int\displaylimits_K  t_f t_g+ \sum_{f=1}^{F_i} \beta_f^i \alpha_K \int\displaylimits_K t_f t_c \\
+&+  \alpha_K \int\displaylimits_K  t_c t_j + \sum_{g=1}^{F_j}\beta_g^j  \alpha_K  \int\displaylimits_K t_c t_g   +  \alpha_K^2  \int\displaylimits_K t_c t_c
+\end{aligned},
 \end{equation}
 
+\noindent and
+
 \begin{equation}
-\label{eq::App_BF_3D_tetref_grad}
-\vec{\nabla} \hat{b} (r,s,t)  = 
-\left[
-\begin{array}{ccc}
--1 & -1 & -1 \\
-1 & 0 & 0 \\
-0 & 1 & 0 \\
-0 & 0 & 1
-\end{array}
-\right]
+\label{eq::App_BF_3D_triref_gradterm}
+\begin{aligned}
+\int\displaylimits_K\vec{\nabla} b_i b_j &= \int\displaylimits_K \left(\vec{\nabla} t_i +\sum_{f=1}^{F_i} \beta_f^i  \vec{\nabla}t_f + \alpha_K \vec{\nabla} t_c  \right) \left(  t_j+\sum_{g=1}^{F_j} \beta_g^j  t_g  + \alpha_K t_c \right) \\
+&= \int\displaylimits_K\vec{\nabla} t_i t_j +\sum_{g=1}^{F_j} \beta_g^j  \int\displaylimits_K  \vec{\nabla} t_i t_g + \alpha_K \int\displaylimits_K  \vec{\nabla}t_i t_c  \\
+&+  \sum_{f=1}^{F_i} \beta_f^i \int\displaylimits_K\vec{\nabla} t_f t_j   + \sum_{f=1}^{F_i} \sum_{g=1}^{F_j} \beta_f^i    \int\displaylimits_K  \vec{\nabla} t_f t_g+ \sum_{f=1}^{F_i} \beta_f^i \alpha_K \int\displaylimits_K \vec{\nabla} t_f t_c \\
+&+  \alpha_K \int\displaylimits_K \vec{\nabla} t_c t_j + \sum_{g=1}^{F_j}\beta_g^j  \alpha_K  \int\displaylimits_K \vec{\nabla} t_c t_g   +  \alpha_K^2  \int\displaylimits_K \vec{\nabla} t_c t_c
+\end{aligned},
 \end{equation}
+
+\noindent respectively. In Eqs. (\ref{eq::App_BF_3D_triref_massterm}) and (\ref{eq::App_BF_3D_triref_gradterm}), $t_f$ and $t_g$ are the face tent functions. We then define the su-tetrahedron $k$ corresponding to two vertices on a face (counter-clockwise orientation), the face center, and the polyhedron center. We tranform the $t_j$, $t_j$, $t_f$, and $t_c$ basis functions into the $\hat{b}_1$, $\hat{b}_2$, $\hat{b}_3$, and $\hat{b}_4$ reference functions on the sub-tetrahedron $k$. We can write the $(4 \times 4)$ sub-matrix contribution for the sub-tetrahedron $k$ into the global mass matrix of element $K$ as
+
+\begin{equation}
+\label{eq::App_BF_3D_massterm_littlemat}
+\left[
+\begin{array}{cccc}
+\int\limits_{\hat{K}} \hat{b}_1 \hat{b}_1 |J_k| & \int\limits_{\hat{K}} \hat{b}_1 \hat{b}_2 |J_k|& \beta_f \int\limits_{\hat{K}} \hat{b}_1 \hat{b}_3 |J_k| & \alpha_K \int\limits_{\hat{K}} \hat{b}_1 \hat{b}_4 |J_k| \\
+\int\limits_{\hat{K}} \hat{b}_2 \hat{b}_1 |J_k| & \int\limits_{\hat{K}} \hat{b}_2 \hat{b}_2 |J_k| & \beta_f \int\limits_{\hat{K}} \hat{b}_2 \hat{b}_3 |J_k| & \alpha_K \int\limits_{\hat{K}} \hat{b}_2 \hat{b}_4 |J_k|  \\
+\beta_f \int\limits_{\hat{K}} \hat{b}_3 \hat{b}_1 |J_k| &\beta_f  \int\limits_{\hat{K}} \hat{b}_3\hat{b}_2 |J_k| & \beta_f^2 \int\limits_{\hat{K}} \hat{b}_3 \hat{b}_3 |J_k| & \beta_f \alpha_K \int\limits_{\hat{K}} \hat{b}_3 \hat{b}_4 |J_k|  \\
+\alpha_K \int\limits_{\hat{K}} \hat{b}_4 \hat{b}_1 |J_k| &\alpha_K  \int\limits_{\hat{K}} \hat{b}_4\hat{b}_2 |J_k| &  \beta_f \alpha_K \int\limits_{\hat{K}} \hat{b}_4 \hat{b}_3 |J_k| + & \alpha_K^2 \int\limits_{\hat{K}} \hat{b}_4 \hat{b}_4 |J_k| 
+\end{array} \right] .
+\end{equation}
+
+\noindent The streaming matrix contribution can be computed in an identical manner as Eq. (\ref{eq::App_BF_2D_streamterm_littlemat}).
+

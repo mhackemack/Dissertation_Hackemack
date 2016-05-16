@@ -1447,8 +1447,6 @@ We illustrate the necessity for a minimization algorithm in Figure \ref{fig::DSA
 \end{figure}
 
 
-\iffalse
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Results
@@ -2018,7 +2016,7 @@ When DSA is applied to multidimensional problems (2D and 3D), the preconditionin
 
 \begin{equation}
 \begin{aligned}
-\sigma_1 &= 1 \\
+\sigma_1 &= \sigma \\
 \sigma_2 &= \frac{1}{\sigma}
 \end{aligned}.
 \end{equation}
@@ -2803,7 +2801,7 @@ From the timing results of Figure \ref{fig::DSA_Vulcan_MIP_Timing}, one must won
 \subsection{Thermal Neutron Upscattering Acceleration}
 \label{sec::DSA_Results_IM1}
 
-We conclude the results of this chapter by presenting analysis on the ability to use DSA to accelerate the convergence of multigroup transport problems that are dominated by thermal neutron upscattering. All the results presented in this section center around the Impurity Model 1 (IM1) experiments perfomed by the Center for Exascale Radiation Transport (CERT) group at Texas A\&M University. The IM1 experiment seeks to quantify the amount of impurities present in a set of graphite bars by treating them as $1/E$ absorbers. The materials present in the experiment consist of graphite, air, wood, high-density polyethylene (HDPE), borated high-density polyethylene (B-HDPE), Steel, Boral, an AmBe source, and a BF3 detector. The experimental configuration can be seen in Figure \ref{fig::IM1_config_3D}. The AmBe source sits inside an HDPE cylinder surrounded by a B-HDPE shell. A graphite bar is placed above the HDPE cylinder and sits between the AmBe source and the BF3 detector. For these results, we first present the theoretical Fourier Analysis of the different upscattering acceleration methods in Section \ref{sec::DSA_Results_IM1_Fourier}. Then, numerical analysis of a simple 2D variant of the experimental setup is performed in Section \ref{sec::DSA_Results_IM1_2D} to yield a complete set of runs for the different methods. We analyze the iteration counts and timing statistics for the different methods. Finally, we conclude in Section \ref{sec::DSA_Results_IM1_3D} with a numerical analysis of the 3D configuration for an approximate hexahedral geometry and one formed by triangular prisms (extrusion of a 2D triangular mesh).
+We conclude the results of this chapter by presenting analysis on the ability to use DSA to accelerate the convergence of multigroup transport problems that are dominated by thermal neutron upscattering. All the results presented in this section center around the Impurity Model 1 (IM1) experiments perfomed by the Center for Exascale Radiation Transport (CERT) group at Texas A\&M University. The IM1 experiment seeks to quantify the amount of impurities present in a set of graphite bars by treating them as $1/E$ absorbers. The materials present in the experiment consist of graphite, air, wood, high-density polyethylene (HDPE), borated high-density polyethylene (B-HDPE), Steel, Boral, an AmBe source, and a BF3 detector. The experimental configuration can be seen in Figure \ref{fig::IM1_config_3D}. The AmBe source sits inside an HDPE cylinder surrounded by a B-HDPE shell. A graphite bar is placed above the HDPE cylinder and sits between the AmBe source and the BF3 detector. A 99 energy group structure with 42 fast and 57 thermal groups is used. For these results, we first present the theoretical Fourier Analysis of the different upscattering acceleration methods in Section \ref{sec::DSA_Results_IM1_Fourier}. Then, numerical analysis of a simple 2D variant of the experimental setup is performed in Section \ref{sec::DSA_Results_IM1_2D} to yield a complete set of runs for the different methods. We analyze the iteration counts and timing statistics for the different methods. Finally, we conclude in Section \ref{sec::DSA_Results_IM1_3D} with a numerical analysis of the 3D configuration for an approximate hexahedral geometry and one formed by triangular prisms (extrusion of a 2D triangular mesh).
 
 \begin{figure}
 \centering
@@ -3042,7 +3040,7 @@ Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (hr)  \\
 SI & - & -  & -  \\ \hline
 SI+DSA & -  & - & -  \\ \hline
 GMRES & -  & - & - \\ \hline
-{GMRES+DSA} & {14} &  {11,104}  &  {$32.5$}  \\ \hline
+{GMRES+DSA} & {17} &  {15,289}  &  {$36.1$}  \\ \hline
 \end{tabular}
 \label{tab::IM1_3Dtriangle_TG}
 %\end{table}
@@ -3057,8 +3055,8 @@ Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (hr)  \\
 \hline \hline
 SI & - &  - & -  \\ \hline
 SI+DSA & -  & - & -  \\ \hline
-{GMRES} & {81}  & {4,617 }& {$14.2$} \\ \hline
-GMRES+DSA & 34 &  1,938  &  4.82  \\ \hline
+{GMRES} & {92}  & {5,244 }& {$16.1$} \\ \hline
+GMRES+DSA & 41 &  2.337  &  6.19  \\ \hline
 \end{tabular}
 \label{tab::IM1_3Dtriangle_MTG}
 %\end{table}
@@ -3072,9 +3070,9 @@ GMRES+DSA & 34 &  1,938  &  4.82  \\ \hline
 Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (hr)  \\
 \hline \hline
 SI &  - & - & -  \\ \hline
-SI+DSA & 256 &  14,592 & 11.2 \\ \hline
-{GMRES} & {120} & {6,840} & {4.93} \\ \hline
-{GMRES+DSA} & {31}& {1,767} & {1.76} \\ \hline
+SI+DSA & 271 &  15,447 & 12.6 \\ \hline
+{GMRES} & {131} & {7,467} & {5.78} \\ \hline
+{GMRES+DSA} & {34}& {1,938} & {2.08} \\ \hline
 \end{tabular}
 \label{tab::IM1_3Dtriangle_MJA}
 \end{table}
@@ -3093,5 +3091,3 @@ The efficacy of the low-order diffusion operator for the use in massively-parall
 
 Finally, we analyzed the theoretical and numerical performances of the different thermal neutron upscattering acceleration methodologies. Fourier analysis states that the TG and MJIA methods provide the optimal convergence properties. However, the TG method contains the serial treatment of the energy groups, whereas MJIA does not. The MJIA method is completely parallelizable and we predict its parallel concurrence will yield the maximum possible parallel efficiency. Numerical timing results of the TG, MTG, and MJA methods determined that MJA provides the best performance in terms of reduction in wall clock times (at the time of this work, the MJIA method had not been implemented in the PDT code). The TG and MTG methods pay a steep penalty with their serialization in energy with the Gauss-Seidel iterations. Even though less outer iterations are performed with TG and MTG compared to MJA, the MJA experienced up to factor of 3 speedups. Thus, the suite of MJA and MJIA methodologies constitutes the most efficient parallel upscatter acceleration schemes in a massively-parallel setting.
 
-
-\fi
