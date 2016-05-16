@@ -1689,7 +1689,7 @@ We now present our analysis of the 1-group MIP DSA scheme for simple 2D and 3D p
 
 The first set of analysis involving the 1-group DSA scheme is over 2D homogeneous configurations. Specifically, we will provide the Fourier Analysis of the different linear and quadratic polygonal basis functions for different homogeneous configurations. For all the results obtained, a single quadrilateral mesh cell comprised of the unit square ($X=Y=1$) was used. We plot the FA results against the mesh cell size in terms of mean free paths by varying the total cross section. The scattering ratio ($\sigma_s / \sigma_t$) is always set to 0.9999 and scattering is also always isotropic. We also performed all of the analysis with the $S_2$, $S_4$, $S_8$, and $S_{16}$ level-symmetric quadrature sets. The constant in the MIP penalty coefficient, $c$, was always set to 4.
 
-The FA spectral radii for the linear and quadratic basis functions for the Wachspress, PWL, mean value, and maximum entropy coordinates are given in Figures \ref{fig::DSA_2D1G_Fourier_Wach}, \ref{fig::DSA_2D1G_Fourier_PWL}, \ref{fig::DSA_2D1G_Fourier_MV}, and \ref{fig::DSA_2D1G_Fourier_ME}, respectively. We can see from these figures that the MIP scheme is unconditionally stable for all of the linear and quadratic basis functions. Also, the spectral radii are all similar in their distributions except for the linear PWL basis functions. We conclude this analysis of the 2D homogeneous problems by providing some examples of the Fourier wave number distributions. In these examples, we use a fine grid of Fourier wave numbers ($\vec{\lambda}=[\lambda_x, \lambda_y]$) and calculate their associated spectral radii. Then, contour plots can be generated of these spectral radii distributions. Figures \ref{fig::2D_homo_dsa_wave_LS2}, \ref{fig::2D_homo_dsa_wave_LS4}, \ref{fig::2D_homo_dsa_wave_LS8}, and \ref{fig::2D_homo_dsa_wave_LS16} give these spectral radii distributions for the 2D PWL coordinates on the unit square for the $LS_2$, $LS_4$, $LS_8$, and $LS_{16}$ quadratures. In each figure, we provide six wave number distributions correspdoning to different cell mean free path values of $10^{-2}$, $10^{-1}$, $10^0$, $10^1$, $10^2$, and $10^3$. In the fine mesh limit examples (mean free path values of $10^{-2}$ and $10^{-1}$), we can clearly see the effects of the individual quadrature angles.
+The FA spectral radii for the linear and quadratic basis functions for the Wachspress, PWL, mean value, and maximum entropy coordinates are given in Figures \ref{fig::DSA_2D1G_Fourier_Wach}, \ref{fig::DSA_2D1G_Fourier_PWL}, \ref{fig::DSA_2D1G_Fourier_MV}, and \ref{fig::DSA_2D1G_Fourier_ME}, respectively. We can see from these figures that the MIP scheme is unconditionally stable for all of the linear and quadratic basis functions. Also, the spectral radii are all similar in their distributions except for the linear PWL basis functions. We conclude this analysis of the 2D homogeneous problems by providing some examples of the Fourier wave number distributions. In these examples, we use a fine grid of Fourier wave numbers ($\vec{\lambda}=[\lambda_x, \lambda_y]$) and calculate their associated spectral radii. Then, contour plots can be generated of these spectral radii distributions. Figures \ref{fig::2D_homo_dsa_wave_LS2}, \ref{fig::2D_homo_dsa_wave_LS4}, \ref{fig::2D_homo_dsa_wave_LS8}, and \ref{fig::2D_homo_dsa_wave_LS16} give these spectral radii distributions for the 2D PWL coordinates on the unit square for the $LS_2$, $LS_4$, $LS_8$, and $LS_{16}$ quadratures. In each figure, we provide six wave number distributions corresponding to different cell mean free path values of $10^{-2}$, $10^{-1}$, $10^0$, $10^1$, $10^2$, and $10^3$. In the fine mesh limit examples (mean free path values of $10^{-2}$ and $10^{-1}$), we can clearly see the effects of the individual quadrature angles.
 
 \begin{figure}
 \centering
@@ -1990,7 +1990,7 @@ Next, Figure \ref{fig::DSA_3D1G_Fourier_AR} provides the Fourier Analysis for ce
 \label{fig::DSA_3D1G_Fourier_AR}
 \end{figure}
 
-Finally, we present results that compare Fourier and numerical analyses. Figure \ref{fig::DSA_3D1G_Fourier_NSR} plots the $S_2$, $S_4$, and $S_8$ FA results from Figure \ref{fig::DSA_3D1G_Fourier} along with accompanying numerical results. The numerical problem analyzed is still the unit cube ($X=Y=Z=1$), but we now have 80 mesh cells in each dimension (as compared to Fourier Analysis which only had 1 mesh cell). We stress that a large number of mesh cells are required. Otherwise, the flux gradient at the boundary is poorly represented and additional leakage occurs. This additional leakage, which is solely due to the spatial discretization, would artifically lower the spectral radius of the numerical results. We can see from Figure \ref{fig::DSA_3D1G_Fourier_NSR} that our numerical analysis follows very closely with the results from Fourier Analysis. Discrepancies lie with quadrature sets higher than $S_2$ in the fine mesh limit, but these have been reported previously \cite{ref::DSA_wang_ragusa}.
+Finally, we present results that compare Fourier and numerical analyses. Figure \ref{fig::DSA_3D1G_Fourier_NSR} plots the $S_2$, $S_4$, and $S_8$ FA results from Figure \ref{fig::DSA_3D1G_Fourier} along with accompanying numerical results. The numerical problem analyzed is still the unit cube ($X=Y=Z=1$), but we now have 80 mesh cells in each dimension (as compared to Fourier Analysis which only had 1 mesh cell). We stress that a large number of mesh cells are required. Otherwise, the flux gradient at the boundary is poorly represented and additional leakage occurs. This additional leakage, which is solely due to the spatial discretization, would artifically lower the spectral radius of the numerical results. We can see from Figure \ref{fig::DSA_3D1G_Fourier_NSR} that our numerical analysis follows very closely with the results from Fourier Analysis. Discrepancies between the Fourier and numerical spectral radii arise for cell sizes in the fine mesh limit, but these have been reported previously \cite{ref::DSA_wang_ragusa}.
 
 \begin{figure}
 \centering
@@ -2012,16 +2012,7 @@ Finally, we present results that compare Fourier and numerical analyses. Figure 
 \subsubsection{Periodic Horizontal Interface Problem}
 \label{sec::DSA_Results_1G_PHI}
 
-When DSA is applied to multidimensional problems (2D and 3D), the preconditioning of the transport operators can degrade in the presence of heterogeneous configurations with large material discontinuities \cite{azmy2002unconditionally}. The Periodic Horizontal Interface (PHI) problem is considered a litmus test for heterogeneous DSA techniques. This problem consists of horizontal strips of alternating optically thick and optically thin materials that are 1 cell in depth. We define $\sigma_1$ as the optically thick total cross section and $\sigma_2$ as the optically thin total cross section. We then define a tuning parameter, $\sigma$, and allow the region cross sections to have the following form:
-
-\begin{equation}
-\begin{aligned}
-\sigma_1 &= \sigma \\
-\sigma_2 &= \frac{1}{\sigma}
-\end{aligned}.
-\end{equation}
-
-\noindent We can see that increasing the value of $\sigma$ will increase the magnitude of difference between the two region cross sections. Therefore, as $\sigma$ grows large, the material discontinuities will grow which could potentially reduce the performance of our DSA scheme.
+When DSA is applied to multidimensional problems (2D and 3D), the preconditioning of the transport operators can degrade in the presence of heterogeneous configurations with large material discontinuities \cite{azmy2002unconditionally}. The Periodic Horizontal Interface (PHI) problem is considered a litmus test for heterogeneous DSA techniques. This problem consists of horizontal strips of alternating optically thick and optically thin materials that are 1 cell in depth. We define $\sigma_1$ as the optically thick total cross section and $\sigma_2$ as the optically thin total cross section. We analyze a slightly modified form of the standard PHI problem and fix $\sigma_1 = 1$. We then define a tuning parameter, $\sigma$, so that $\sigma_2=1 / \sigma$. Therefore, increasing the value of $\sigma$ will increase the magnitude of difference between the two region cross sections. Therefore, as $\sigma$ grows large, the material discontinuities will grow which could potentially reduce the performance of our DSA scheme.
 
 From the analysis presented in Section \ref{sec::DSA_Results_1G_2DHomo}, we showed that our different 2D linear and quadratic basis functions were robust and stable, even for mesh cells with large aspect ratios. For this PHI analysis, we concentrate on analyzing just the linear PWL coordinates as our basis functions. Just like before, we will also examine different level-symmetric quadrature sets and their effects problems with varying optical thickness. The optical thickness and diffusivity of the problem is increased by varying both $\sigma$ and the scattering ratio, $c$. This study was conducted with the sequence, $\sigma = \left[ 10, 20, 40, 80, 160, 320, 640  \right]$, and with following scattering ratios: $c = \left[ 0.9,0.99,0.999,0.9999,0.99999,0.999999  \right]$.
 
@@ -2048,9 +2039,9 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 \end{tabular}
 \end{center}
 \label{tab::DSA_2DPHI_LS2}
-\end{table}
-
-\begin{table}
+%\end{table}
+\vspace{2cm}
+%\begin{table}
 \caption{Spectral radius for the 2D PHI problem with the PWL basis functions and LS4 quadrature.}
 \begin{center}
 \def\arraystretch{1.6}
@@ -2094,9 +2085,9 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 \end{tabular}
 \end{center}
 \label{tab::DSA_2DPHI_LS8}
-\end{table}
-
-\begin{table}
+%\end{table}
+\vspace{2cm}
+%\begin{table}
 \caption{Spectral radius for the 2D PHI problem with the PWL basis functions and LS16 quadrature.}
 \begin{center}
 \def\arraystretch{1.6}
@@ -2124,13 +2115,13 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 	{
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
-		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS2_sigt=10_c=9_contour.png}
+		\includegraphics[width=\textwidth]{figures/sec_DSA/MODPHI_SI_MIP_C=4_UPWLD1_ncells=2_LS2_sigt=10_c=9_contour.png}
 		\caption{LS2}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
-		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS4_sigt=10_c=9_contour.png}
+		\includegraphics[width=\textwidth]{figures/sec_DSA/MODPHI_SI_MIP_C=4_UPWLD1_ncells=2_LS4_sigt=10_c=9_contour.png}
 		\caption{LS4}
 	\end{subfigure}
 	}
@@ -2138,13 +2129,13 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 	{
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
-		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS8_sigt=10_c=9_contour.png}
+		\includegraphics[width=\textwidth]{figures/sec_DSA/MODPHI_SI_MIP_C=4_UPWLD1_ncells=2_LS8_sigt=10_c=9_contour.png}
 		\caption{LS8}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
-		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS16_sigt=10_c=9_contour.png}
+		\includegraphics[width=\textwidth]{figures/sec_DSA/MODPHI_SI_MIP_C=4_UPWLD1_ncells=2_LS16_sigt=10_c=9_contour.png}
 		\caption{LS16}
 	\end{subfigure}
 	}
@@ -2157,13 +2148,13 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 	{
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
-		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS2_sigt=640_c=9999_contour.png}
+		\includegraphics[width=\textwidth]{figures/sec_DSA/MODPHI_SI_MIP_C=4_UPWLD1_ncells=2_LS2_sigt=10000_c=9999_contour.png}
 		\caption{LS2}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
-		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS4_sigt=640_c=9999_contour.png}
+		\includegraphics[width=\textwidth]{figures/sec_DSA/MODPHI_SI_MIP_C=4_UPWLD1_ncells=2_LS4_sigt=10000_c=9999_contour.png}
 		\caption{LS4}
 	\end{subfigure}
 	}
@@ -2171,13 +2162,13 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 	{
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
-		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS8_sigt=640_c=9999_contour.png}
+		\includegraphics[width=\textwidth]{figures/sec_DSA/MODPHI_SI_MIP_C=4_UPWLD1_ncells=2_LS8_sigt=10000_c=9999_contour.png}
 		\caption{LS8}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
-		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/PHI_SI_MIP_C=4_UPWLD1_LS16_sigt=640_c=9999_contour.png}
+		\includegraphics[width=\textwidth]{figures/sec_DSA/MODPHI_SI_MIP_C=4_UPWLD1_ncells=2_LS16_sigt=10000_c=9999_contour.png}
 		\caption{LS16}
 	\end{subfigure}
 	}
@@ -2192,7 +2183,22 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 
 For the final theoretical analysis of DSA with the MIP form, we analyze the acceleration performance when AMR is utilized on a sufficiently optically thick transport with material discontinuities. The 2D transport problem that will be examined is similar to the Iron-Water problem \cite{khalil1985nodal}. It was modified by Wang and Ragusa for use with higher-order basis functions on triangular meshes with hanging nodes \cite{ref::DSA_wang_ragusa}. We will reexamine their work on degenarate polygonal grids and not use hanging nodes. The complete geometric desciption of our problem including boundary conditions and material distributions is given in Figure \ref{fig::DSA_IW_Description}. The material properties for each region which include the total cross section, scattering ratio ($c=\sigma_s/\sigma_t$), and source strength are given in Table \ref{tab::DSA_IW_mats}. Scattering is isotropic. 
 
-\begin{table}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.60\textwidth]{figures/sec_DSA/IW_Description.png}
+\caption{Geometry description for the Iron-Water problem.}
+\label{fig::DSA_IW_Description}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.50\textwidth]{figures/sec_DSA/IW_starting_mesh.png}
+\caption{Initial mesh for the Iron-Water problem.}
+\label{fig::DSA_IW_starting_mesh}
+\end{figure}
+
+\begin{table}[hbt]
 \caption{Material definitions and physical properties for the Iron-Water problem.}
 \centering
 \def\arraystretch{1.2}
@@ -2209,20 +2215,6 @@ III & 1.0 & 0.30 & 0.0\\
 \end{tabular}
 \label{tab::DSA_IW_mats}
 \end{table}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.60\textwidth]{figures/sec_DSA/IW_Description.png}
-\caption{Geometry description for the Iron-Water problem.}
-\label{fig::DSA_IW_Description}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.50\textwidth]{figures/sec_DSA/IW_starting_mesh.png}
-\caption{Initial mesh for the Iron-Water problem.}
-\label{fig::DSA_IW_starting_mesh}
-\end{figure}
 
 For this analysis, we will test multiple problem configurations. All AMR histories will be calculated form an initial starting mesh provided in Figure \ref{fig::DSA_IW_starting_mesh} where the material regions are given by the different mesh cell colors. Both linear and quadratic basis functions will be analyzed, but we only use the 2D PWL coordinates. Two different angular quadratures will be used: a $S_4$ level-symmetric (LS) quadrature and a $S_{24}^2$ PGLC quadrature. We expect additional solution discontinuities (besides those corresponding to the material discontinuities) to arise along the $S_N$ rays. Therefore, we are also performing runs using the PCLG quadrature with a high number of azimuthal angles to mitigate these $S_N$ discontinuities. We also investigate the effects of solution bootstrapping as well as the effectiveness of the five preconditioner types presented in Section \ref{sec::DSA_Solving}.
 
