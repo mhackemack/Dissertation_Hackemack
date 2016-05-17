@@ -1,0 +1,237 @@
+\pdfminorversion=4
+\documentclass[compress,10pt]{beamer}
+%For no animations, add handout to [] options
+%For no figures or top banner, add draft to [] options
+%apsectratio=169 (16:9) or 54 (5:4) or 43 (4:3) or 32 (3:2)
+
+%Load the myriad packages
+\usepackage{color}
+\usepackage{amssymb,amsmath}
+\usepackage{textcomp}
+\usepackage{graphicx}
+\usepackage{tikz}
+%\usepackage[numbers, super]{natbib}
+\usepackage{grffile} %spaces in file names
+\usepackage{parskip}
+%\usepackage[T1]{fontenc} %for sc and bf
+%\usepackage{times}
+\usepackage{wasysym}
+\usepackage{bigstrut}
+\usepackage{epstopdf}
+%\usepackage[dvipsnames]{xcolor}
+%\usepackage{enumitem}
+%\setlist{nolistsep} % or \setlist{noitemsep} to leave space around whole list
+% Load some optional sub-parts of PGF
+%\usetikzlibrary{decorations.pathmorphing}
+%\usetikzlibrary{positioning}
+%\usetikzlibrary{calc}
+%\usetikzlibrary{shapes.geometric}
+%\usepackage{pgfplots}
+%\usepackage{rotating}
+%\usepackage[no-math]{fontspec}
+%\usepackage{xltxtra}
+%\usepackage{xunicode}
+%\defaultfontfeatures{Mapping=tex-text}
+%%\setsansfont[Mapping=tex-text]{Optima}
+%\setsansfont[Mapping=tex-text]{Helvetica Neue}
+% Optional for code samples
+%
+%singular
+\newcommand{\fref}[1]{Fig.~\ref{fig:#1}}
+\newcommand{\Fref}[1]{Figure~\ref{fig:#1}}
+\newcommand{\eref}[1]{Eq.~(\ref{eq:#1})}
+\newcommand{\Eref}[1]{Equation~(\ref{eq:#1})}
+\newcommand{\tref}[1]{Table~\ref{tab:#1}}
+%plural
+\newcommand{\frefs}[2]{Figs.~\ref{fig:#1} and \ref{fig:#2}}
+\newcommand{\Frefs}[2]{Figures~\ref{fig:#1} and \ref{fig:#2}}
+\newcommand{\erefs}[2]{Eqs.~(\ref{eq:#1}) and (\ref{eq:#2})}
+\newcommand{\Erefs}[2]{Equations~(\ref{eq:#1}) and (\ref{eq:#2})}
+\newcommand{\trefs}[2]{Tables~\ref{tab:#1} and \ref{tab:#2}}
+%range
+\newcommand{\frefss}[2]{Figs.~\ref{fig:#1} - \ref{fig:#2}}
+\newcommand{\Frefss}[2]{Figures~\ref{fig:#1} - \ref{fig:#2}}
+\newcommand{\erefss}[2]{Eqs.~(\ref{eq:#1}) - (\ref{eq:#2})}
+\newcommand{\Erefss}[2]{Equations~(\ref{eq:#1}) - (\ref{eq:#2})}
+\newcommand{\trefss}[2]{Tables~\ref{tab:#1} - \ref{tab:#2}}
+%misc.
+\newcommand{\nn}[1]{\ensuremath{^{#1}}} %[1] is # of commands
+\newcommand{\keff}{\ensuremath{{k_\mathrm{eff}}}}
+\newcommand{\kinf}{\ensuremath{{k_\infty}}}
+\newcommand{\alphaT}{\ensuremath{{\alpha_{_T}}}}
+\newcommand{\SN}{\ensuremath{{\text{S}_\text{N}}}}
+\newcommand{\order}[1]{\ensuremath{\mathcal{O}\left(#1\right)}}
+%Note: tarticle has ``several'' changes from article
+%in this vein.
+% some simplifying commands
+\newcommand{\eg}{{\it e.g.}}
+\newcommand{\ie}{{\it i.e.}}
+\newcommand{\etal}{{\it et al.}}
+\newcommand{\acite}[1]{{\bf(Add Citation: #1)}}
+\newcommand{\E}{\mathcal{E}}
+% derivative - d
+\newcommand{\ud}{\,\mathrm{d}}
+% bold unit vector n-hat
+\newcommand{\nhat}{\hat{\bf n}}
+\newcommand{\tensor}[1]{\mathcal{#1}}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\newcommand{\om}{\boldsymbol{\Omega}}
+%
+
+%Don't number backup slides
+\newcommand{\backupbegin}{
+    \newcounter{finalframe}
+    \setcounter{finalframe}{\value{framenumber}}
+}
+\newcommand{\backupend}{
+    \setcounter{framenumber}{\value{finalframe}}
+}
+
+%Colors!
+\definecolor{maroon}{rgb}{0.5,0,0}
+\definecolor{darkgreen}{rgb}{0,0.5,0}
+\definecolor{amber}{rgb}{1.0, 0.49, 0.0}
+
+%Get rid of navigation icons
+\setbeamertemplate{navigation symbols}{}
+\useoutertheme{infolines}
+
+\setbeamercovered{transparent}
+\usepackage{lipsum}
+
+%Aggie-themed
+\pgfdeclareimage[height=0.1in]{TAMUlogo}{images/tamu_engineering.png}
+\pgfdeclareimage[height=0.15in]{DOElogo}{images/DOE_logo.png}
+\logo{\raisebox{-8pt}{\pgfuseimage{TAMUlogo} \hspace{1pt} \pgfuseimage{DOElogo}}}
+\titlegraphic{\includegraphics[height=0.15\textheight]{images/seal.png}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Optional packages, used to show off certain tricks
+
+\newlength \figwidth
+\setlength \figwidth {0.5\textwidth}
+
+\setlength{\leftmargin}{-2cm}
+\setlength{\rightmargin}{-2cm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mode<presentation>
+{
+    \usepackage[english]{babel}
+    \usetheme{Frankfurt}
+
+    %Make it Aggie Maroon
+    \usecolortheme[RGB={80,0,0}]{structure}
+
+    % This will typeset only the frames (or slides) that have the given label ("current" in this case).
+    %  \includeonlyframes{current}
+}
+
+\title[Polytope DGFEM Transport]{Higher-Order DGFEM Transport Calculations on Polytope Meshes for Massively-Parallel Architectures}
+
+\author[Hackemack]{{\Large Michael W. Hackemack} \vspace{0.35cm} \\ Chair: {\small Jean C. Ragusa} \\ Committee Members: {\small Marvin L. Adams, Jim E. Morel, Nancy M. Amato } \\ External Advisor: {\small Troy Becker}}
+
+%TAMU
+\institute[Texas A\&M University]{\scriptsize Department of Nuclear Engineering\\
+Texas A\&M University \\
+College Station, TX, USA 77843\\[1ex]
+\href{mailto:mike\_hack@tamu.edu}{mike\_hack@tamu.edu}}
+
+\date[May 06, 2016]
+
+% You can override the default acknowledgment, and address if you want
+%\acknowledgement{*Submitted in partial fulfillment of the requirements of NUEN 610 \\
+%(Nuclear Reactor Design)}
+%\address{Nuclear Engineering Department \\
+%            Texas A\&M University \\
+%            College Station, TX 77843-3133}}
+
+% If you don't want the menu section outline above the title, do this:
+%\setbeamertemplate{headline}{}
+
+\renewcommand{\ss}{ss}
+\vfuzz=2pt
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%  All this typeout stuff simply gets printed to the screen as the document
+% is compiled.  It helps get stuff working
+\typeout{***********************************************************************************}
+\typeout{titlepage}
+
+\begin{frame}[label=title,plain]
+    \titlepage
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{TOC}
+
+\begin{frame}[shrink,label=toc,plain]%[plain]
+    \frametitle{Outline}
+    \vspace{1.1mm}
+    \tableofcontents
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+\section{Motivation}
+\subsection{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{We have reached the end}
+
+\begin{frame}[plain]
+   \frametitle{Thank you!}
+
+\vspace{25mm}
+
+\begin{columns}[b]
+
+\column{0.7\textwidth}
+
+\centering
+
+{\Large Questions?}
+
+\vspace{9mm}
+\footnotesize
+A special acknowledgment to the Department of Energy Rickover Fellowship Program in Nuclear Engineering, which provides strong support to its fellows and their professional development.
+
+\end{columns}
+
+\vspace{10mm}
+
+\begin{columns}[b]
+
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.35\figwidth]{images/DOE_logo.png}\\
+
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.70\figwidth]{images/tamu_engineering.png}\\
+
+\end{columns}
+
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\backupbegin
+\appendix
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\typeout{***********************************************************************************}
+\typeout{Backup Slides}
+\section{Backup Slides}
+
+\backupend
+
+\end{document}
+
