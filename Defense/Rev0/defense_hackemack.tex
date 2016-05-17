@@ -76,6 +76,10 @@
 \newcommand{\tensor}[1]{\mathcal{#1}}
 \renewcommand{\vec}[1]{\mathbf{#1}}
 \newcommand{\om}{\boldsymbol{\Omega}}
+
+\newcommand{\tcr}[1]{\textcolor{red}{#1}}
+\newcommand{\tcb}[1]{\textcolor{blue}{#1}}
+\newcommand{\tcm}[1]{\textcolor{magenta}{#1}}
 %
 
 %Don't number backup slides
@@ -185,7 +189,77 @@ College Station, TX, USA 77843\\[1ex]
 \section{Motivation}
 \subsection{}
 % --------------------------------------------
+\begin{frame}[t]\frametitle{Higher-Fidelity Transport Solutions}
 
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{The Continuous-Energy Transport Equation} \vspace{-2.5mm}
+\begin{block}{Transport Equation}{\footnotesize
+\begin{equation*}
+\left[ { \bf \Omega} \cdot {\bf \nabla}  + \sigma_t ({\bf r}, E) \right] \psi ({\bf r}, E, {\bf \Omega}) = \int\displaylimits_{4 \pi} \int\displaylimits_{0}^{\infty}  \, \sigma_s ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega}) \psi ({\bf r}, E', {\bf \Omega}') d E'  d \Omega'+ Q ({\bf r}, E, {\bf \Omega})
+\end{equation*}
+}\end{block} \vspace{-1.0mm}
+\begin{block}{Boundary Conditions}{\footnotesize
+\begin{equation*}
+\psi ({\bf r}, E, {\bf \Omega}) = \psi^{inc} ({\bf r}, E, {\bf \Omega}) +  \int\displaylimits_{\vec{\Omega}' \cdot \vec{n} < 0} \int\displaylimits_{0}^{\infty} \beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega}) \psi ({\bf r}, E', {\bf \Omega}') d E'  d \Omega'
+\end{equation*}
+}\end{block} \vspace{-1.0mm}
+\begin{block}{Term Definitions} {\footnotesize
+${\bf r}$ -  neutron position \\
+$E$ -  neutron energy \\
+${\bf \Omega}$ - neutron solid angle \\
+$\psi  ({\bf r}, E, {\bf \Omega})$ - angular flux  \\
+$Q  ({\bf r}, E, {\bf \Omega})$ - distributed neutron source \\
+$\sigma_t ({\bf r}, E)$ - total macroscopic cross section \\
+$\sigma_s ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - total macroscopic scattering cross section\\
+$\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo 
+}\end{block}
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Multigroup DGFEM $S_N$ Transport Equation}
+
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Topics of this Dissertation Work}
+
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Polytope Meshes}
+         \begin{block}{}{\footnotesize
+			\begin{itemize}
+				\item <1-> Other physics communities are now employing polytope grids due to decreased cell/face counts (CFD in particular)
+				\item <2-> They allow for transition elements between different domain regions
+				\item <3-> Hanging nodes from non-conforming meshes are not necessary
+				\item <4-> Independently-generated simplicial grids ({\em i.e.} created in parallel) can be stitched together with polytopes without communicating the whole mesh across processors
+			\end{itemize}}
+         \end{block}
+\centering
+\only<1>{
+\vspace{0.5cm}
+{}\includegraphics[width=0.45\columnwidth]{images/Polymesh_sized.jpg}
+}
+\only<2>{
+\vspace{0.4cm}
+{}\includegraphics[width=0.4\columnwidth]{images/transition_elements_rev1.png}
+}
+\only<3>{
+\vspace{0.5cm}
+{}\includegraphics[width=0.65\columnwidth]{images/locally_refined_nodes.png}
+}
+\only<4>{
+\centering
+{}\includegraphics[width=0.52\columnwidth]{images/IM1_30_rot.eps} \hspace{1.0cm}
+{}\includegraphics[width=0.345\columnwidth]{images/IM1_zoom.eps}
+}
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Higher-Order FEM Basis functions}
+
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Diffusion Synthetic Acceleration}
+
+\end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -195,10 +269,68 @@ College Station, TX, USA 77843\\[1ex]
 % POLYFEM SECTION
 \section{POLYFEM}
 %%%%%%%%%%%%%%%%%%%
+\subsection{}
+%%%%%%%%%%%%%%%%%%%
+%---------------------------
+\setbeamerfont{frametitle}{size=\normalsize}
+\begin{frame}[t]\frametitle{Polytope Finite Elements}
+\centering
+\begin{block}{2D arbitrary convex/concave polygons}
+\centering
+\includegraphics[width=0.70\textwidth]{images/arbitrary_polygons.png}
+\end{block}
+\vspace{0.5cm}
+\begin{block}{3D convex polyhedra}
+\centering
+\includegraphics[width=0.70\textwidth]{images/arbitrary_polyhedra.png}
+\end{block}
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Finite element architecture}
+\begin{block}{Mass Matrix - element $K$}
+\begin{equation*}
+{\bf M}^K = \int_{K} d\vec{r} \, \lambda (\vec{x}) \, \lambda^T (\vec{x})  =  \sum\displaylimits_{q=1}^{N_q^K} w_q^K \, \lambda (\vec{x}_q^K) \, \lambda^T (\vec{x}_q^K) 
+\end{equation*}
+\end{block}
+\begin{block}{Advection Matrix - element $K$}
+\begin{equation*}
+{\bf G}^K = \int_{K} d\vec{r} \, \vec{\nabla} \lambda (\vec{x}) \, \lambda^T (\vec{x}) = \sum\displaylimits_{q=1}^{N_q^K}  w_q^K \, \vec{\nabla} \lambda (\vec{x}_q^K) \, \lambda^T (\vec{x}_q^K) 
+\end{equation*}
+\end{block}
+\begin{block}{Surface Matrix - face $f$ for element $K$}
+\begin{equation*}
+{\bf N}_f^K = \int_{f} ds \, \lambda (\vec{x}) \, \lambda^T (\vec{x})  = \sum\displaylimits_{q=1}^{N_f}  w_q^f \, \lambda (\vec{x}_q^f) \, \lambda^T (\vec{x}_q^f) 
+\end{equation*}
+\end{block}
+\end{frame}
+% --------------------------------------------
+%%%%%%%%%%%%%%%%%%%
 \subsection{Linear Basis Functions on Polygons}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
+\begin{frame}[t]\frametitle{Generalized Barycentric Coordinates}
 
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Wachspress Rational Functions}
+
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Piecewise Linear Functions}
+
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Mean Value Coordinates}
+
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Maximum Entropy Coordinates}
+
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Summary of the Linear Basis Functions}
+
+\end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
 \subsection{Quadratic Basis Functions on Polygons}
@@ -216,7 +348,130 @@ College Station, TX, USA 77843\\[1ex]
 \subsection{Results}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
+\begin{frame}[t]\frametitle{Results Summary}
+\begin{block}{}
+\begin{enumerate}
+\item Linear and quadratic basis functions capture the thick diffusion limit.
+\item Linear basis functions capture exactly-linear transport solutions.
+\item Quadratic basis functions capture exactly-quadratic transport solutions.
+\item 
+\item 
+\end{enumerate}
+\end{block}
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Thick Diffusion Limit}
 
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Exactly-Linear Transport Solutions}
+
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Exactly-Quadratic Transport Solutions}
+
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]
+\only<1>
+{
+\frametitle{Convergence Rate Analysis by MMS}
+{\small
+\begin{block}{Sinusoid Solution}
+\begin{equation*}
+\begin{aligned}
+\Psi_s (x,y) = &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}) \\ 
+\Phi_s (x,y) = 2 \pi &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y})
+\end{aligned} 
+\end{equation*}
+\begin{itemize}
+\item Cartesian, triangular and Voronoi polygon meshes
+\item Wachspress, PWL, MV, and MAXENT
+\end{itemize}
+\end{block}
+\begin{block}{Localized Gaussian Solution}
+\begin{equation*}
+\begin{aligned}
+\Psi_g (x,y) = & \frac{x (L_x - x)}{L_x^2} \frac{y (L_y - y)}{L_y^2} \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{L_x L_y}) \\ 
+\Phi_g (x,y) = 2 \pi &\frac{x (L_x - x)}{L_x^2} \frac{y (L_y - y)}{L_y^2} \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{L_x L_y})
+\end{aligned} 
+\end{equation*}
+\begin{itemize}
+\item Use spatial Adaptive Mesh Refinement (AMR)
+\item PWL, MV, and MAXENT
+\end{itemize}
+\end{block}
+}
+}
+\only<2>
+{
+\frametitle{Cartesian Sinusoid Solution Results}
+}
+\only<3>
+{
+\frametitle{Triangular Sinusoid Solution Results}
+}
+\only<4>
+{
+\frametitle{Polygonal Sinusoid Solution Results}
+}
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]
+\only<1>
+{
+\frametitle{Purely-Absorbing Material Problem}
+\begin{block}{Problem Configuration}
+\begin{enumerate}
+\item Level-Symmetric $S_4$ quadrature
+\end{enumerate}
+\end{block}
+\begin{block}{Geometry Configuration}
+\begin{enumerate}
+\item Unit square domain
+\end{enumerate}
+\end{block}
+}
+\only<2>
+{
+\frametitle{Incident Flux Configuration}
+\vspace{1cm}
+\hspace*{2.75cm}
+{}\includegraphics[width=0.45\textwidth]{images/PA_Shading.png}
+}
+\only<3>
+{
+\frametitle{Non-Aligned Meshes}
+\vspace{0.75cm}
+\hspace*{0.25cm}
+{}\includegraphics[width=0.475\textwidth]{images/PAMesh_Cart.png} 
+{}\includegraphics[width=0.475\textwidth]{images/PAMesh_Poly.png}
+}
+\only<4>
+{
+\frametitle{Aligned Meshes}
+\vspace{0.75cm}
+\hspace*{0.25cm}
+{}\includegraphics[width=0.475\textwidth]{images/PAMesh_Tri.png} 
+{}\includegraphics[width=0.475\textwidth]{images/PAMesh_SplitPoly.png}
+}
+\only<5>
+{
+\frametitle{Left-Face Incidence Solutions}
+\vspace{0.75cm}
+\hspace*{0.25cm}
+{}\includegraphics[width=0.475\textwidth]{images/PALeftSol_Poly.png} 
+{}\includegraphics[width=0.475\textwidth]{images/PALeftSol_SplitPoly.png}
+}
+\only<6>
+{
+\frametitle{Left-Face and Top-Face Incidence Solutions}
+\vspace{0.75cm}
+\hspace*{0.25cm}
+{}\includegraphics[width=0.475\textwidth]{images/PALeftTopSol_Poly.png} 
+{}\includegraphics[width=0.475\textwidth]{images/PALeftTopSol_SplitPoly.png}
+}
+\end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -225,9 +480,161 @@ College Station, TX, USA 77843\\[1ex]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MIP SECTION
 \section[MIP Form]{DFEM Discretization of the Diffusion Equation}
+%%%%%%%%%%%%%%%%%%%
 \subsection{}
+%%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
+\begin{frame}[t]\frametitle{Synthetic Acceleration}
+\begin{block}{Transport sweep and iteration error}{\small
+\begin{columns}
+\column{0.60\textwidth}
+\begin{equation*}
+\begin{aligned}
+{\bf L} \psi^{\tcr{(\ell+1/2)}} &= {\bf M\Sigma} \phi^{\tcb{(\ell)}} +{\bf Q} \\ \vspace{1mm}
+{\bf L} \delta \psi^{\tcr{(\ell+1/2)}} &= {\bf M\Sigma} \delta \phi^{\tcr{(\ell+1/2)}} + \underbrace{{\bf M\Sigma} (\phi^{\tcr{(\ell+1/2)}}-\phi^{\tcb{(\ell)}})}_{{\bf R}^{\tcr{(\ell+1/2)}}} 
+\end{aligned}
+\end{equation*}
+\column{0.40\textwidth}
+\begin{equation*}
+\begin{aligned}
+\delta \psi^{\tcr{(\ell+1/2)}} &\equiv \psi - \psi^{\tcr{(\ell+1/2)}} \\
+\delta \phi^{\tcr{(\ell+1/2)}} &\equiv {\bf D} \delta \psi^{\tcr{(\ell+1/2)}}
+\end{aligned}
+\end{equation*}
+\end{columns}
+}
+\end{block}
+\vspace{-1.5mm}
+\begin{block}{Error approximation and update}{\small
+If we could exactly solve for the error, then the solution could be obtained immediately:
+\begin{equation*}
+\phi^{(\ell+1)} = \phi^{\tcr{(\ell+1/2)}} + \delta \phi^{\tcr{(\ell+1/2)}}
+\end{equation*}
+However, this is just as difficult as the original transport problem. Instead, we estimate the error using low-order operators:
+\begin{equation*}
+\tilde{{\bf A}} \delta \phi^{\tcr{(\ell+1/2)}} = \tilde{{\bf R}}^{\tcr{(\ell+1/2)}}
+\end{equation*}
+$\tilde{{\bf A}}$ is a low-order diffusion operator.
+}
+\end{block}
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Various DSA Implementations}
+\begin{block}{Historical DSA Work}
+\begin{itemize}
+	\item Kopp \& Lebedev - independently proposed method
+	\item Gelbard and Hageman (G\&B) - efficient convergence on fine meshes
+	\item Reed - showed that G\&B diverged for coarse meshes
+	\item Alcouffe - consistency yields efficiency and robustness
+\end{itemize}
+\end{block}
+\onslide<2->{
+\begin{block}{Fully-consistent DSA schemes}
+\begin{itemize}
+	\item Larsen fully-consistent four step
+	\item Fully-consistent DSA (FCDSA)
+\end{itemize}
+\end{block}
+\begin{block}{Partially-consistent DSA schemes}
+\begin{itemize}
+	\item Modified four step (M4S)
+	\item Waering-Larsen-Adams (WLA)
+	\item Modified Interior Penalty DSA (MIP)
+\end{itemize}
+\end{block}
+}
+\end{frame}
+% --------------------------------------------
+%%%%%%%%%%%%%%%%%%%
+\subsection{Symmetric Interior Penalty Method}
+%%%%%%%%%%%%%%%%%%%
+%---------------------------
+\begin{frame}[t]\frametitle{Symmetric Interior Penalty (SIP) Form [1]}
+\begin{block}{Bilinear Form}{\small
+\begin{equation*}
+\begin{aligned}
+a( \Phi, b)  &= \Big<  D \vec{\nabla}  \Phi , \vec{\nabla} b  \Big>_{\mathcal{D}} + \Big<  \sigma   \Phi ,  b  \Big>_{\mathcal{D}}    \\
+&+  \tcr{\Big\{ \kappa_e^{SIP} [\![   \Phi ]\!] , [\![  b ]\!]\Big\}_{E_h^i}} - \tcr{\Big\{  [\![   \Phi ]\!] , \{\!\{  D \partial_n b \}\!\}\Big\}_{E_h^i}} -\tcr{\Big\{ \{\!\{  D \partial_n  \Phi \}\!\} , [\![ b ]\!]\Big\}_{E_h^i}} \\
+&+ \tcb{\Big\{ \kappa_e^{SIP}   \Phi ,   b \Big\}_{\partial \mathcal{D}^d}} - \tcb{\Big\{   \Phi  ,  D \partial_n b \Big\}_{\partial \mathcal{D}^d}} - \tcb{\Big\{   D \partial_n  \Phi ,   b \Big\}_{\partial \mathcal{D}^d}}  +  \tcb{\frac{1}{2} \Big\{    \Phi ,   b \Big\}_{\partial \mathcal{D}^r}}
+\end{aligned}
+\end{equation*} }
+\end{block}
+\begin{block}{Linear Form}{\small
+\begin{align*}
+\ell (b) = \Big<  q, b  \Big>_{\mathcal{D}}  - \tcb{\Big\{   J_{0}, b  \Big\}_{\partial \mathcal{D}^n}} +  \tcb{2 \Big\{   J_{inc}, b  \Big\}_{\partial \mathcal{D}^r}} \\ + \tcb{\Big\{ \kappa_e^{SIP}   \Phi_0 ,   b \Big\}_{\partial \mathcal{D}^d}} - \tcb{\Big\{   \Phi_0  ,  D \partial_n b \Big\}_{\partial \mathcal{D}^d} }
+\end{align*} }
+\end{block}
+\begin{block}{}{\footnotesize
+[1] D.N. Arnold. ``An interior penalty finite element method with discontinuous elements.'' {\em SIAM J. Numer. Anal.}, 19:742-760, (1982).
+}\end{block}
+\end{frame}
+%---------------------------
+\begin{frame}[t]\frametitle{SIP Penalty Coefficient}
+\begin{block}{}{
+	\begin{equation*}
+		\kappa_e^{SIP} \equiv 
+		\begin{cases}
+		\frac{C_B}{2} \left(  \frac{D^+}{h^+} + \frac{D^-}{h^-}  \right) & , e \in E_h^i \\
+		C_B \frac{D^-}{h^-}  & , e \in \partial \mathcal{D}
+		\end{cases}
+	\end{equation*}}
+	\begin{equation*}
+		C_B = c p (p+1)
+	\end{equation*}
+\end{block}
+\begin{block}{}
+$c$ - user defined constant ($c \geq 1$) \\
+$p$ - polynomial order of the finite element basis ($1,2,3,...$) \\
+$D^{(+/-)}$ - diffusion coefficient defined on the positive/negative side of a face\\
+$h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a face
+\end{block}
+\begin{block}{}
+	\begin{equation*}
+		u^{\pm} = \lim_{s \rightarrow 0^{\pm}} u ({\bf r} + s {\bf n})
+	\end{equation*}
+\end{block}
+\end{frame}
+%---------------------------
+%%%%%%%%%%%%%%%%%%%
+\subsection{Modified Interior Penalty Method}
+%%%%%%%%%%%%%%%%%%%
+%---------------------------
+\begin{frame}[t]\frametitle{Modified Interior Penalty (MIP) Form}
 
+Recall the DSA equation:
+\begin{equation*}
+{\bf \tilde{A}} \tcr{\delta \phi}^{(\ell+1/2)} = \tilde{{\bf R}}^{(\ell+1/2)}
+\end{equation*}
+
+\begin{block}{Diffusion Form}{\footnotesize
+\begin{gather*}
+\Big<  D \vec{\nabla} \tcr{\delta \Phi} , \vec{\nabla} b  \Big>_{\mathcal{D}} 
++ \Big<  \sigma \tcr{\delta  \Phi} ,  b  \Big>_{\mathcal{D}}    \\
++ \Big\{ \kappa_e^{MIP} [\![ \tcr{\delta  \Phi} ]\!] , [\![  b ]\!]\Big\}_{E_h^i} 
+- \Big\{  [\![  \tcr{\delta \Phi} ]\!] , \{\!\{  D \partial_n b \}\!\}\Big\}_{E_h^i} 
+- \Big\{ \{\!\{  D \partial_n \tcr{\delta \Phi} \}\!\} , [\![ b ]\!]\Big\}_{E_h^i} \\
++ \Big\{ \kappa_e^{MIP} \tcr{\delta \Phi} ,   b \Big\}_{\partial \mathcal{D}^{vac}} -  \frac{1}{2} \Big\{  \tcr{\delta \Phi}  ,  D \partial_n b \Big\}_{\partial \mathcal{D}^{vac}} -  \frac{1}{2} \Big\{   D \partial_n \tcr{\delta \Phi} ,   b \Big\}_{\partial \mathcal{D}^{vac}}  \\
+ = \Big<  R , b  \Big>_{\mathcal{D}}  +  \Big\{  \tcr{\delta J_{inc}}, b  \Big\}_{\partial \mathcal{D}^{ref}}
+\end{gather*} }
+\end{block}
+	\begin{block}{MIP Penalty Term}{\footnotesize
+		\begin{align*}
+			\kappa_e^{MIP} = \max(\frac{1}{4},  \kappa_e^{SIP})
+		\end{align*} }
+	\end{block}
+\end{frame}
+%---------------------------
+%%%%%%%%%%%%%%%%%%%
+\subsection{Results}
+%%%%%%%%%%%%%%%%%%%
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Analytical/Numerical 3D Results}
+
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{MIP Scaling Results}
+
+\end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -246,7 +653,70 @@ College Station, TX, USA 77843\\[1ex]
 \subsection{IM1 Results}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
+\begin{frame}[t]\frametitle{IM1 Problem}
 
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Fourier Results}
+
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{2D Variant Results}{\footnotesize
+\only<1>
+{
+\hspace*{1.75cm}
+{}\includegraphics[width=0.60\textwidth]{images/2D_IM1_Variant_Layout.png}
+}
+\only<2>
+{
+\begin{block}{Two-Grid Results - $10^{-7}$ inner tolerance}
+\begin{table}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Problem & Outer Iter. & Inner Iter. & 1-Group Sweeps & Solve Time (min)  \\
+\hline \hline
+\tcr{SI} & \tcr{361} & \tcr{185,422} &\tcr{185,422}  &  \tcr{486.50} \\ \hline
+SI+DSA & 55 & 35,699 & 35,699 &  96.48 \\ \hline
+GMRES & 38 & 41,575 & 41,575 &  128.63 \\ \hline
+GMRES+DSA & 14 & 19,053 & 19,053  & 57.92  \\ \hline
+\end{tabular}
+\end{table}
+\end{block}
+\vspace{-3mm}
+\begin{block}{Modified Two-Grid Results}
+\begin{table}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Problem & Outer Iter. & Inner Iter. & 1-Group Sweeps & Solve Time (min)  \\
+\hline \hline
+\tcr{SI} & \tcr{536} & \tcr{77,632} & \tcr{77,632} & \tcr{275.83}  \\ \hline
+SI+DSA & 73 & 10,846 & 10,846 &  40.60 \\ \hline
+GMRES & 78 & 4,845 & 4,845 &  25.82 \\ \hline
+GMRES+DSA & 26 & 1,881 & 1,881 & 11.09  \\ \hline
+\end{tabular}
+\end{table}
+\end{block}
+\vspace{-3mm}
+\begin{block}{Multigroup Richardson Results}
+\begin{table}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Problem & Outer Iter. & Inner Iter. & 1-Group Sweeps & Solve Time (min)  \\
+\hline \hline
+\tcr{SI} & \tcr{1} & \tcr{1,734} & \tcr{98,838} &  \tcr{111.07} \\ \hline
+SI+DSA & 1 & 157 & 8,949 &  15.49 \\ \hline
+GMRES & 1 & 118 & 6,726 &  8.65 \\ \hline
+\tcb{GMRES+DSA} &  \tcb{1}& \tcb{35} & \tcb{1,995} &  \tcb{4.16} \\ \hline
+\end{tabular}
+\end{table}
+\end{block}
+}
+}
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{3D IM1 Results}
+
+\end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -258,17 +728,35 @@ College Station, TX, USA 77843\\[1ex]
 \subsection{}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Conclusions}
-\begin{block}{}
+\begin{block}{POLYFEM Conclusions}
 \begin{enumerate}
+\item
+\item
+\item
+\item
+\end{enumerate}
+\end{block}
+\begin{block}{DSA Conclusions}
+\begin{enumerate}
+\item
+\item
+\item
 \item
 \end{enumerate}
 \end{block}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Open Items}
-\begin{block}{}
+\begin{block}{POLYFEM Open Items}
 \begin{enumerate}
-\item
+\item Quadratic serendipity basis functions on 3D polyhedra
+\item Higher-order 2D serendipigy polygonal basis functions
+\item Alternative integration schemes on polygons
+\end{enumerate}
+\end{block}
+\begin{block}{DSA Open Items}
+\begin{enumerate}
+\item Mixed-mode parallelism with DSA preconditioning
 \end{enumerate}
 \end{block}
 \end{frame}
@@ -323,7 +811,17 @@ A special acknowledgment to the Department of Energy Rickover Fellowship Program
 \typeout{***********************************************************************************}
 \typeout{Backup Slides}
 \section{Backup Slides}
+%%%%%%%%%%%%%%%%%%%
+\subsection{Additional POLYFEM Results}
+% --------------------------------------------
 
+% --------------------------------------------
+%%%%%%%%%%%%%%%%%%%
+\subsection{Additional MIP Slides}
+%%%%%%%%%%%%%%%%%%%
+% --------------------------------------------
+
+% --------------------------------------------
 \backupend
 
 \end{document}
