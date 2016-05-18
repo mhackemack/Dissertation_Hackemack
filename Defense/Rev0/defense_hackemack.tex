@@ -336,13 +336,95 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \subsection{Quadratic Basis Functions on Polygons}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
-
+\begin{frame}[t]\frametitle{Quadratic Serendipity Basis Functions on 2D Polygons}
+\begin{block}{}
+\begin{enumerate}
+	\item <1-> Form the linear barycentric functions - \{$\lambda_i$\}
+	\item <2-> Construct the pairwise products -  \{$\mu_{ab}$\}
+	\item <3-> Eliminate the interior nodes to form a serendipity basis - \{$\xi_{ij}$\}
+\end{enumerate}
+\end{block}
+\vspace{1cm}
+\begin{columns}[c]
+\column{0.28\textwidth}
+\centering
+\only<1-3>{
+{}\includegraphics[width=0.9\columnwidth]{images/rand_linear.png} \\
+\{$\lambda_i$\} \\
+Linear
+}
+\column{0.08\textwidth}
+\only<2-3>{
+$\longrightarrow$
+}
+\column{0.28\textwidth}
+\centering
+\only<2-3>{
+{}\includegraphics[width=0.9\columnwidth]{images/rand_quadratic.png} \\
+\{$\mu_{ab}$\} \\
+Quadratic
+}
+\column{0.08\textwidth}
+\only<3>{
+$\longrightarrow$
+}
+\column{0.28\textwidth}
+\centering
+\only<3>{
+{}\includegraphics[width=0.9\columnwidth]{images/rand_serendipity.png} \\
+\{$\xi_{ij}$\} \\
+Serendipity
+}
+\end{columns}
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Pairwise products of the barycentric basis functions - $\mu_{ab} = \lambda_a \lambda_b$}
+\only<1>{
+\centering
+{}\includegraphics[width=0.75\columnwidth]{images/rand_quad_ab.png} 
+}
+\only<2>{
+\begin{block}{Necessary Constraints}
+\begin{columns}
+\column{0.62\textwidth}
+\begin{equation*}
+\sum_{aa \in V} \mu_{aa} + \sum_{ab \in E \cup D} 2 \mu_{ab} = 1
+\end{equation*}
+\begin{equation*}
+\sum_{aa \in V} \vec{x}_{aa} \mu_{aa} + \sum_{ab \in E \cup D} 2 \vec{x}_{ab} \mu_{ab} = \vec{x}
+\end{equation*}
+\begin{equation*}
+\sum_{aa \in V} \vec{x}_{a} \vec{x}_{a}^T \mu_{aa} + \sum_{ab \in E \cup D} \left(  \vec{x}_{a} \vec{x}_{b}^T + \vec{x}_{b} \vec{x}_{a}^T  \right) \mu_{ab} = \vec{x} \vec{x}^{T}
+\end{equation*}
+\column{0.03\textwidth}
+\column{0.35\textwidth}
+{\small
+$V$ - vertex nodes \\
+$E$ - face midpoint nodes \\
+$D$ - interior diagonal nodes \\ \vspace{3mm}
+$V+E+D = n + n + \frac{n(n-3)}{2}$
+}
+\end{columns}
+\end{block}
+\begin{block}{Further Notation/Notes}
+\begin{equation*}
+\vec{x}_{ab} = \frac{\vec{x}_{a} + \vec{x}_{b}}{2}, \qquad \mu_{ab} = \lambda_a \lambda_b
+\end{equation*}
+\vspace{0.4cm}
+\begin{equation*}
+\mu^{K}_{ab}(\vec{r}) = 0, \qquad \left\{ ab \in D , \, \vec{r} \in \partial K  \right\}
+\end{equation*}
+\end{block}
+}
+\end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
 \subsection{Linear Basis Functions on Polyhedra}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
+\begin{frame}[t]\frametitle{3D Piecewise Linear Basis Functions}
 
+\end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
 \subsection{Results}
@@ -627,6 +709,14 @@ Recall the DSA equation:
 %%%%%%%%%%%%%%%%%%%
 \subsection{Results}
 %%%%%%%%%%%%%%%%%%%
+% --------------------------------------------
+\begin{frame}[t]\frametitle{2D Fourier Results}
+
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{DSA and AMR on Polygonal Grids}
+
+\end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Analytical/Numerical 3D Results}
 
