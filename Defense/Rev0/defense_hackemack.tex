@@ -193,6 +193,10 @@ College Station, TX, USA 77843\\[1ex]
 
 \end{frame}
 % --------------------------------------------
+\begin{frame}[t]\frametitle{Topics of this Dissertation Work}
+
+\end{frame}
+% --------------------------------------------
 \begin{frame}[t]\frametitle{The Continuous-Energy Transport Equation} \vspace{-2.5mm}
 \begin{block}{Transport Equation}{\footnotesize
 \begin{equation*}
@@ -217,10 +221,6 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Multigroup DGFEM $S_N$ Transport Equation}
-
-\end{frame}
-% --------------------------------------------
-\begin{frame}[t]\frametitle{Topics of this Dissertation Work}
 
 \end{frame}
 % --------------------------------------------
@@ -308,8 +308,36 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \subsection{Linear Basis Functions on Polygons}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Generalized Barycentric Coordinates}
-
+\begin{frame}[t]\frametitle{Linear Basis Functions - Generalized Barycentric Coordinates}
+\centering
+\includegraphics[width=0.35\textwidth]{images/ref_polygon.png}
+\only<1>{
+\begin{block}{Basis Function Properties - Barycentric Coordinates}{\small
+$\lambda_i$ - linear basis function located at vertex $i$ \vspace{0.25cm}
+\vspace{-1mm}
+	\begin{enumerate}
+	\item Positivity*: $\lambda_i \geq 0$ \vspace{1mm}
+	\item Partition of Unity: $\sum_i \lambda_i = 1$ \vspace{1mm}
+	\item Affine combination: $\sum_i \vec{x}_i \lambda_i (\vec{x}) = \vec{x}$ \vspace{1mm}
+	\item Lagrange property: $\lambda_i (\vec{x}_j) = \delta_{ij}$ 
+	\item Piecewise boundary linearity: $\lambda_j ((1-\mu ) \vec{x}_j  + \mu \vec{x}_{j+1})  = (1-\mu ) \lambda_j (\vec{x}_j ) + \mu \lambda_j (\vec{x}_{j+1} )$
+	\end{enumerate}
+\vspace{1mm}
+*convex polygons
+}\end{block}
+}
+\only<2>{
+\begin{block}{Linear basis functions that we consider}
+	\begin{enumerate}
+	\item Wachspress rational coordinates*
+	\item Piecewise linear (PWL) coordinates*
+	\item Mean value coordinates
+	\item Maximum entropy coordinates
+	\end{enumerate}
+\vspace{2mm}
+*have been previously analyzed for transport problems
+\end{block}
+}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Wachspress Rational Functions}
@@ -418,12 +446,40 @@ $V+E+D = n + n + \frac{n(n-3)}{2}$
 }
 \end{frame}
 % --------------------------------------------
+\begin{frame}[t]\frametitle{Eliminate interior nodes to form Serendipity basis}
+
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Example Images}
+
+\end{frame}
+% --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
 \subsection{Linear Basis Functions on Polyhedra}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
-\begin{frame}[t]\frametitle{3D Piecewise Linear Basis Functions}
-
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}[t]{Linear Basis Functions on 3D Polyhedra}
+\begin{block}{Linear basis functions and convex polyhedra only for 3D}{\small
+\begin{itemize}
+\item The 2D quadratic serendipity formulation is more arduous in 3D
+\item Intercell coupling is not straightforward for concave polyhedra
+\item Focus on 3D PWL functions
+\item Focus on 3D parallelepipeds and extruded convex polygons (convex prisms)
+\end{itemize}}
+\end{block}
+\begin{block}{3D PWL basis functions}{\small
+\begin{equation*}
+b_i (\vec{x})  = t_i  (\vec{x})  + \sum_{f=1}^{F_i} \beta_f^i  t_f (\vec{x}) + \alpha_i t_c  (\vec{x}) 
+\end{equation*}
+}\end{block}
+\begin{block}{}{\footnotesize
+$t_i$ - standard 3D linear function for a tet $(i,i+1,f_c,K_c)$; 1 at vertex $i$, linearly decreases to 0 to the cell center, each adjoining face center, and each adjoining vertex\\ \vspace{0.5mm}
+$t_c$ - 3D tent function; 1 at cell center, linearly decreases to 0 at all vertices and face centers \\ \vspace{0.5mm}
+$t_f$ - face tent function; 1 at face center, linearly decreases to 0 at each face vertex and cell center\\ \vspace{0.5mm}
+$\alpha_i = \frac{1}{N_V}$ - weight parameter for vertex $i$\\ \vspace{0.5mm}
+$\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
+}\end{block}
 \end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
@@ -436,8 +492,8 @@ $V+E+D = n + n + \frac{n(n-3)}{2}$
 \item Linear and quadratic basis functions capture the thick diffusion limit.
 \item Linear basis functions capture exactly-linear transport solutions.
 \item Quadratic basis functions capture exactly-quadratic transport solutions.
-\item 
-\item 
+\item Convergence rate analysis using the Method of Manufactured Solutions. 
+\item Convergence rate analysis bound by the solution regularity.
 \end{enumerate}
 \end{block}
 \end{frame}
@@ -487,15 +543,68 @@ $V+E+D = n + n + \frac{n(n-3)}{2}$
 }
 \only<2>
 {
-\frametitle{Cartesian Sinusoid Solution Results}
+\frametitle{Cartesian Sinusoid MMS Results}
+\vspace{1.5cm}
+\begin{columns}
+\column{0.40\textwidth}
+{}\includegraphics[width=0.8\columnwidth]{images/cart_mesh.jpg}
+\column{0.60\textwidth}
+{}\includegraphics[width=0.9\columnwidth]{images/TransMMS_Sine_cart_err.eps}
+\end{columns}
 }
 \only<3>
 {
-\frametitle{Triangular Sinusoid Solution Results}
+\frametitle{Triangular Sinusoid MMS Results}
+\vspace{1.5cm}
+\begin{columns}
+\column{0.40\textwidth}
+{}\includegraphics[width=0.8\columnwidth]{images/tri_mesh.jpg}
+\column{0.60\textwidth}
+{}\includegraphics[width=0.9\columnwidth]{images/TransMMS_Sine_tri_err.eps}
+\end{columns}
 }
 \only<4>
 {
-\frametitle{Polygonal Sinusoid Solution Results}
+\frametitle{Polygonal Sinusoid MMS Results}
+\vspace{1.5cm}
+\begin{columns}
+\column{0.40\textwidth}
+{}\includegraphics[width=0.8\columnwidth]{images/PolyMesh_mesh.eps}
+\column{0.60\textwidth}
+{}\includegraphics[width=0.9\columnwidth]{images/TransMMS_Sine_poly_err.eps}
+\end{columns}
+}
+\only<5>
+{
+\frametitle{\footnotesize Gaussian AMR - Linear ME cycle 15 (left) and quadratic ME cycle 08 (right)}
+\begin{columns}
+\column{0.50\textwidth}
+\centering
+{}\includegraphics[width=0.70\columnwidth]{images/ME1_cart_Irr=1_tol=0.2_cyc15_mesh.eps} \\
+{}\includegraphics[width=0.70\columnwidth]{images/ME1_cart_Irr=1_tol=0.2_cyc15_sol.eps}
+\column{0.50\textwidth}
+\centering
+{}\includegraphics[width=0.70\columnwidth]{images/ME2_cart_Irr=1_tol=0.1_cyc08_mesh.eps} \\
+{}\includegraphics[width=0.70\columnwidth]{images/ME2_cart_Irr=1_tol=0.1_cyc08_sol.eps}
+\end{columns}
+}
+\only<6>
+{
+\frametitle{Gaussian MMS Results - PWL}
+\hspace*{1.25cm}
+{}\includegraphics[width=0.75\columnwidth]{images/TransportMMS_Gauss2D_PWL_Err.eps}
+}
+\only<7>
+{
+\frametitle{Gaussian MMS Results - mean value}
+\hspace*{1.25cm}
+{}\includegraphics[width=0.75\columnwidth]{images/TransportMMS_Gauss2D_MV_Err.eps}
+}
+\only<8>
+{
+\frametitle{Gaussian MMS Results - maximum entropy}
+\hspace*{1.25cm}
+{}\includegraphics[width=0.75\columnwidth]{images/TransportMMS_Gauss2D_MAXENT_Err.eps}
 }
 \end{frame}
 % --------------------------------------------
@@ -511,6 +620,7 @@ $V+E+D = n + n + \frac{n(n-3)}{2}$
 \begin{block}{Geometry Configuration}
 \begin{enumerate}
 \item Unit square domain
+\item Cartesian, Triangular, Polygonal, and Split-Polygonal Meshes
 \end{enumerate}
 \end{block}
 }
@@ -552,6 +662,10 @@ $V+E+D = n + n + \frac{n(n-3)}{2}$
 \hspace*{0.25cm}
 {}\includegraphics[width=0.475\textwidth]{images/PALeftTopSol_Poly.png} 
 {}\includegraphics[width=0.475\textwidth]{images/PALeftTopSol_SplitPoly.png}
+}
+\only<7>
+{
+\frametitle{convergence rate plots go here...}
 }
 \end{frame}
 % --------------------------------------------
@@ -710,8 +824,35 @@ Recall the DSA equation:
 \subsection{Results}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
-\begin{frame}[t]\frametitle{2D Fourier Results}
-
+\begin{frame}[t]
+\only<1>
+{
+\frametitle{\small 2D Unit Square Fourier Results - linear (left) and quadratic (right) Wachspress}
+\vspace{1cm}
+\includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_UWACHSPRESS1_LS.eps}
+\includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_UWACHSPRESS2_LS.eps}
+}
+\only<2>
+{
+\frametitle{\small 2D Unit Square Fourier Results - linear (left) and quadratic (right) PWL}
+\vspace{1cm}
+\includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_PWLD1_LS.eps}
+\includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_UPWLD2_LS.eps}
+}
+\only<3>
+{
+\frametitle{\small 2D Unit Square Fourier Results - linear (left) and quadratic (right) Mean Value}
+\vspace{1cm}
+\includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_UMV1_LS.eps}
+\includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_UMV2_LS.eps}
+}
+\only<4>
+{
+\frametitle{\small 2D Unit Square Fourier Results - linear (left) and quadratic (right) Maximum Entropy}
+\vspace{1cm}
+\includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_MAXENT1_LS.eps}
+\includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_UMAXENT2_LS.eps}
+}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{DSA and AMR on Polygonal Grids}
@@ -737,7 +878,9 @@ Recall the DSA equation:
 \subsection{Overview of Methods}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
+\begin{frame}[t]\frametitle{Overview of Methods}
 
+\end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
 \subsection{IM1 Results}
@@ -747,8 +890,80 @@ Recall the DSA equation:
 
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Fourier Results}
-
+\begin{frame}[t]
+\only<1>
+{
+\frametitle{IM1 Two-Grid Spectral Shapes}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_EC_TG.eps}
+}
+\only<2>
+{
+\frametitle{IM1 Modified Two-Grid Spectral Shapes}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_EC_MTG.eps}
+}
+\only<3>
+{
+\frametitle{IM1 Multigroup Jacobi Acceleration Spectral Shapes}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_EC_Rich.eps}
+}
+\only<4>
+{
+\frametitle{IM1 Multigroup Jacobi with Inner Acceleration Spectral Shapes}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_EC_MJIA.eps}
+}
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Infinite Medium Fourier Results}{\small
+\vspace{0.85cm}
+\begin{table}
+\centering
+\def\arraystretch{1.2}
+\begin{tabular}{|c||c|c||c|c||c|c|c|}
+\hline
+Material  & U. TG & A. TG & U. MTG & A. MTG & U. MJA & A. MJA & A. MJIA \\ \hline
+\tcr{Graphite} & \tcr{0.9883}&\tcb{0.4084}&\tcr{0.9993}&\tcr{0.9604}&\tcr{0.9993}&\tcr{0.9613}&\tcm{0.6462}\\
+\tcr{HDPE} &\tcr{0.8916}&\tcb{0.4343}&\tcr{0.9918}&\tcr{0.7527}&\tcr{0.9943}&\tcr{0.8015}&\tcm{0.6631}\\
+B-HDPE &0.0258&0.0177&0.1331&0.1221&0.1336&0.1223&0.0639 \\
+Wood & 0.9820&0.2101&0.9840&0.3836&0.9915&0.5326&0.4684 \\
+AmBe  &0.4835&0.2724&0.5646&0.5554&0.7068&0.5596&0.4947 \\
+Steel  & 0.6989&0.5809&0.9243&0.9215&0.9255&0.9215&0.7547\\
+Boral  & 0.0023&0.0016&0.0782&0.0602&0.0782&0.0602&0.0039 \\
+BF3   & 0.0008&0.0006&0.0351&0.0266&0.0351&0.0266&0.0086 \\
+Air     &0.7580&0.5282&0.8121&0.7828&0.8845&0.7896&0.7166\\
+\hline
+\end{tabular}
+\end{table}
+}\end{frame}
+% --------------------------------------------
+\begin{frame}[t]
+\only<1>
+{
+\frametitle{\small Graphite Two-Grid Flat Mode Eigenvalues}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_Graph_FA_TG.eps}
+}
+\only<2>
+{
+\frametitle{\small Graphite Modified Two-Grid Flat Mode Eigenvalues}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_Graph_FA_MTG.eps}
+}
+\only<3>
+{
+\frametitle{\small Graphite Multigroup Jacobi Acceleration Flat Mode Eigenvalues}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_Graph_FA_MJA.eps}
+}
+\only<4>
+{
+\frametitle{\small Graphite Multigroup Jacobi with Inner Acceleration Flat Mode Eigenvalues}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_Graph_FA_MJIA.eps}
+}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{2D Variant Results}{\footnotesize
@@ -804,8 +1019,50 @@ GMRES & 1 & 118 & 6,726 &  8.65 \\ \hline
 }
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{3D IM1 Results}
-
+\begin{frame}[t]\frametitle{3D IM1 Results}{\footnotesize
+\vspace{-2mm}
+\begin{block}{Two-Grid Results}
+\begin{table}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (hr)  \\
+\hline \hline
+SI & - & -  & -  \\ \hline
+SI+DSA & -  & - & -  \\ \hline
+GMRES & -  & - & - \\ \hline
+\tcr{GMRES+DSA} & \tcr{14} &  \tcr{11,104}  &  \tcr{$32.5^*$}  \\ \hline
+\end{tabular}
+\end{table}
+\end{block}
+\vspace{-2mm}
+\begin{block}{Modified Two-Grid Results}
+\begin{table}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (hr)  \\
+\hline \hline
+SI & - &  - & -  \\ \hline
+SI+DSA & -  & - & -  \\ \hline
+\tcr{GMRES} & \tcr{81}  & \tcr{4,617 }& \tcr{$14.2^*$} \\ \hline
+GMRES+DSA & 34 &  1,938  &  4.82  \\ \hline
+\end{tabular}
+\end{table}
+\end{block}
+\vspace{-2mm}
+\begin{block}{Multigroup Richardson Results}
+\begin{table}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter. & 1-Group Sweeps & Solve Time (hr)  \\
+\hline \hline
+SI &  - & - & -  \\ \hline
+SI+DSA & 256 &  14,592 & 11.2 \\ \hline
+\tcm{GMRES} & \tcm{120} & \tcm{6,840} & \tcm{4.93} \\ \hline
+\tcb{GMRES+DSA} & \tcb{31}& \tcb{1,767} & \tcb{1.76} \\ \hline
+\end{tabular}
+\end{table}
+\end{block}
+}
 \end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

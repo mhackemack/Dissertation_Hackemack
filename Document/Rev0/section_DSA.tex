@@ -2014,9 +2014,9 @@ Finally, we present results that compare Fourier and numerical analyses. Figure 
 
 When DSA is applied to multidimensional problems (2D and 3D), the preconditioning of the transport operators can degrade in the presence of heterogeneous configurations with large material discontinuities \cite{azmy2002unconditionally}. The Periodic Horizontal Interface (PHI) problem is considered a litmus test for heterogeneous DSA techniques. This problem consists of horizontal strips of alternating optically thick and optically thin materials that are 1 cell in depth. We define $\sigma_1$ as the optically thick total cross section and $\sigma_2$ as the optically thin total cross section. We analyze a slightly modified form of the standard PHI problem and fix $\sigma_1 = 1$. We then define a tuning parameter, $\sigma$, so that $\sigma_2=1 / \sigma$. Therefore, increasing the value of $\sigma$ will increase the magnitude of difference between the two region cross sections. Therefore, as $\sigma$ grows large, the material discontinuities will grow which could potentially reduce the performance of our DSA scheme.
 
-From the analysis presented in Section \ref{sec::DSA_Results_1G_2DHomo}, we showed that our different 2D linear and quadratic basis functions were robust and stable, even for mesh cells with large aspect ratios. For this PHI analysis, we concentrate on analyzing just the linear PWL coordinates as our basis functions. Just like before, we will also examine different level-symmetric quadrature sets and their effects problems with varying optical thickness. The optical thickness and diffusivity of the problem is increased by varying both $\sigma$ and the scattering ratio, $c$. This study was conducted with the sequence, $\sigma = \left[ 10, 20, 40, 80, 160, 320, 640  \right]$, and with following scattering ratios: $c = \left[ 0.9,0.99,0.999,0.9999,0.99999,0.999999  \right]$.
+From the analysis presented in Section \ref{sec::DSA_Results_1G_2DHomo}, we showed that our different 2D linear and quadratic basis functions were robust and stable, even for mesh cells with large aspect ratios. For this PHI analysis, we concentrate on analyzing just the linear PWL coordinates as our basis functions. Just like before, we will also examine different level-symmetric quadrature sets and their effects problems with varying optical thickness. The optical thickness and diffusivity of the problem is increased by varying both $\sigma$ and the scattering ratio, $c$. This study was conducted with the sequence, $\sigma = \left[ 10^1, 10^2, 10^3, 10^4, 10^5, 10^6,  \right]$, and with following scattering ratios: $c = \left[ 0.9,0.99,0.999,0.9999,0.99999,0.999999  \right]$.
 
-The full results of this PHI analysis are presented in Tables \ref{tab::DSA_2DPHI_LS2} - \ref{tab::DSA_2DPHI_LS16} for the LS2, LS4, LS8, and LS16 quadratures, respectively. From these tables, we can see that MIP DSA loses its effectiveness as the heterogeneity and overall diffusivity of the problem increases. The theoretical spectral radii are greater than any of the values presented for the homogeneous cases. This result is true even for the example with the smallest heterogeneity and smallest diffusivity ($\sigma=10$ and $c=0.9$). We can gain some more knowledge of the DSA degradation by observing the eigenvalue dependency on the Fourier wave numbers for our problems. Figure \ref{fig::PHI_sig=10_c=0.9} provides the eigenvalue distribution based off the Fourier wave numbers for the different quadrature sets for $\sigma=10$ and $c=0.9$. Figure \ref{fig::PHI_sig=640_c=0.9999} then provides the same information for $\sigma=640$ and $c=0.9999$.
+The full results of this PHI analysis are presented in Tables \ref{tab::DSA_2DPHI_LS2} - \ref{tab::DSA_2DPHI_LS16} for the LS2, LS4, LS8, and LS16 quadratures, respectively. From these tables, we can see that MIP DSA loses its effectiveness as the heterogeneity and overall diffusivity of the problem increases. The theoretical spectral radii are greater than any of the values presented for the homogeneous cases. This result is true even for the example with the smallest heterogeneity and smallest diffusivity ($\sigma=10$ and $c=0.9$). We can gain some more knowledge of the DSA degradation by observing the eigenvalue dependency on the Fourier wave numbers for our problems. Figure \ref{fig::PHI_sig=10_c=0.9} provides the eigenvalue distribution based off the Fourier wave numbers for the different quadrature sets for $\sigma=10$ and $c=0.9$. Figure \ref{fig::PHI_sig=10000_c=0.9999} then provides the same information for $\sigma=10^4$ and $c=0.9999$.
 
 \begin{table}
 \caption{Spectral radius for the 2D PHI problem with the PWL basis functions and LS2 quadrature.}
@@ -2028,13 +2028,12 @@ The full results of this PHI analysis are presented in Tables \ref{tab::DSA_2DPH
 \hline
 $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 \hline
-10  &0.77091&0.89908&0.91279&0.91417&0.91431&0.91432 \\
-20  &0.82038&0.94425&0.95859&0.96003&0.96018&0.96019  \\
-40  &0.84803&0.96525&0.97982&0.98129&0.98144&0.98145  \\
-80  &0.86188&0.97491&0.98955&0.99102&0.99117&0.99119  \\
-160&0.87134&0.98003&0.99409&0.99557&0.99571&0.99573  \\
-320&0.87833&0.98353&0.99626&0.99774&0.99789&0.99790  \\
-640&0.88187&0.98533&0.99732&0.99880&0.99894&0.99896  \\
+$10^1$&0.60142&0.66600&0.67251&0.67316&0.67322&0.67323\\
+$10^2$&0.75689&0.90833&0.94287&0.95227&0.95508&0.95596\\
+$10^3$&0.85933&0.97258&0.99038&0.99413&0.99512&0.99542\\
+$10^4$&0.88808&0.98554&0.99729&0.99907&0.99944&0.99954\\
+$10^5$&0.89629&0.98868&0.99855&0.99973&0.99991&0.99994\\
+$10^6$&0.89883&0.98959&0.99887&0.99985&0.99997&0.99999\\
 \hline
 \end{tabular}
 \end{center}
@@ -2051,13 +2050,12 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 \hline
 $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 \hline
-10  &0.74609&0.87284&0.88970&0.89148&0.89166&0.89167\\
-20  &0.81135&0.93358&0.95001&0.95179&0.95197&0.95199\\
-40  &0.84353&0.96104&0.97612&0.97781&0.97799&0.97800\\
-80  &0.85865&0.97342&0.98785&0.98943&0.98960&0.98961\\
-160&0.86998&0.97913&0.99335&0.99482&0.99497&0.99499\\
-320&0.87767&0.98307&0.99593&0.99739&0.99753&0.99755\\
-640&0.88166&0.98500&0.99717&0.99863&0.99878&0.99879\\
+$10^1$&0.43185&0.56089&0.60118&0.61387&0.61788&0.61915\\
+$10^2$&0.75639&0.90612&0.94056&0.94998&0.95281&0.95369\\
+$10^3$&0.85852&0.97206&0.99004&0.99386&0.99488&0.99518\\
+$10^4$&0.88779&0.98542&0.99723&0.99904&0.99942&0.99952\\
+$10^5$&0.89619&0.98864&0.99854&0.99972&0.99990&0.99994\\
+$10^6$&0.89880&0.98958&0.99886&0.99985&0.99997&0.99999\\
 \hline
 \end{tabular}
 \end{center}
@@ -2074,13 +2072,12 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 \hline
 $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 \hline
-10  &0.75532&0.87917&0.89780&0.89989&0.90010&0.90012\\
-20  &0.81754&0.93694&0.95380&0.95581&0.95602&0.95604\\
-40  &0.84681&0.96337&0.97793&0.97969&0.97988&0.97990\\
-80  &0.86032&0.97459&0.98898&0.99042&0.99057&0.99058\\
-160&0.86980&0.98007&0.99394&0.99540&0.99554&0.99556\\
-320&0.87795&0.98354&0.99623&0.99768&0.99783&0.99784\\
-640&0.88204&0.98524&0.99732&0.99878&0.99892&0.99894\\
+$10^1$&0.44705&0.54910&0.58578&0.59782&0.60166&0.60288\\
+$10^2$&0.75183&0.90261&0.93769&0.94734&0.95024&0.95114\\
+$10^3$&0.85724&0.97143&0.98966&0.99356&0.99460&0.99491\\
+$10^4$&0.88744&0.98528&0.99717&0.99899&0.99939&0.99949\\
+$10^5$&0.89608&0.98860&0.99852&0.99972&0.99990&0.99994\\
+$10^6$&0.89877&0.98957&0.99886&0.99985&0.99997&0.99999\\
 \hline
 \end{tabular}
 \end{center}
@@ -2097,13 +2094,12 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 \hline
 $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 \hline
-10  &0.75796&0.88052&0.89888&0.90097&0.90119&0.90121\\
-20  &0.81903&0.93790&0.95455&0.95651&0.95671&0.95673\\
-40  &0.84758&0.96387&0.97842&0.98015&0.98033&0.98035\\
-80  &0.86070&0.97485&0.98924&0.99069&0.99083&0.99085\\
-160&0.87025&0.98029&0.99407&0.99553&0.99567&0.99569\\
-320&0.87817&0.98365&0.99629&0.99775&0.99790&0.99791\\
-640&0.88216&0.98530&0.99735&0.99881&0.99896&0.99897\\
+$10^1$&0.46168&0.55373&0.57370&0.58286&0.58604&0.58707\\
+$10^2$&0.74842&0.89889&0.93453&0.94440&0.94738&0.94830\\
+$10^3$&0.85588&0.97073&0.98923&0.99322&0.99429&0.99461\\
+$10^4$&0.88705&0.98513&0.99710&0.99896&0.99935&0.99946\\
+$10^5$&0.89597&0.98856&0.99851&0.99971&0.99990&0.99994\\
+$10^6$&0.89873&0.98955&0.99885&0.99985&0.99997&0.99999\\
 \hline
 \end{tabular}
 \end{center}
@@ -2172,8 +2168,8 @@ $\sigma$ & 0.9 & 0.99& 0.999& 0.9999& 0.99999& 0.99999 \\
 		\caption{LS16}
 	\end{subfigure}
 	}
-\caption{Fourier wave number distribution for the 2D PHI problem with $\sigma=640$ and $c=0.9999$ and different level-symmetric quadratures.}
-\label{fig::PHI_sig=640_c=0.9999}
+\caption{Fourier wave number distribution for the 2D PHI problem with $\sigma=10^4$ and $c=0.9999$ and different level-symmetric quadratures.}
+\label{fig::PHI_sig=10000_c=0.9999}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2840,7 +2836,7 @@ We now briefly discuss an issue that may arise for some heterogeneous configurat
 	
 	\begin{subfigure}[b]{0.775\textwidth}
 		\centering
-		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IM1_EC_Rich.eps}
+		\includegraphics[width=0.975\textwidth]{figures/sec_DSA/IM1_EC_MJIA.eps}
 		\caption{Multigroup Jacobi with Inner Acceleration}
 	\end{subfigure}
 \caption{Spectral shape of the infinite medium iteration matrices of the IM1 problem materials for the MJA and MJIA schemes.}
