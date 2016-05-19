@@ -205,7 +205,7 @@ College Station, TX, USA 77843\\[1ex]
 }\end{block} \vspace{-1.0mm}
 \begin{block}{Boundary Conditions}{\footnotesize
 \begin{equation*}
-\psi ({\bf r}, E, {\bf \Omega}) = \psi^{inc} ({\bf r}, E, {\bf \Omega}) +  \int\displaylimits_{\vec{\Omega}' \cdot \vec{n} < 0} \int\displaylimits_{0}^{\infty} \beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega}) \psi ({\bf r}, E', {\bf \Omega}') d E'  d \Omega'
+\psi ({\bf r}, E, {\bf \Omega}) = \psi^{inc} ({\bf r}, E, {\bf \Omega}) +  \int\displaylimits_{\vec{\Omega}' \cdot \vec{n} > 0} \int\displaylimits_{0}^{\infty} \beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega}) \psi ({\bf r}, E', {\bf \Omega}') d E'  d \Omega'
 \end{equation*}
 }\end{block} \vspace{-1.0mm}
 \begin{block}{Term Definitions} {\footnotesize
@@ -222,6 +222,38 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Multigroup DGFEM $S_N$ Transport Equation}
 
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Iterative Procedure}
+
+\begin{block}{Source Iteration} {\small
+\begin{equation*}
+\begin{aligned}
+ \psi^{(\ell+1)} &= {\bf L}^{-1} \left( {\bf M} {\bf \Sigma} \phi^{(\ell)}  +  {\bf Q} \right) \\
+\phi^{(\ell+1)} &= {\bf D}  \psi^{(\ell+1)}
+\end{aligned}
+\end{equation*}
+The operation ${\bf L}^{-1}$ is a transport sweep.\\
+}
+\end{block}
+
+\begin{block}{Operator Terms} {\small
+\begin{tabular}{ll}
+${\bf L}$ - streaming + collision operator & ${\bf L } = diag(L_1, \ldots, L_{n_\Omega})$ \\
+${\bf M}$ - moment-to-discrete operator &
+${\bf D}$ - discrete-to-moment operator \\
+${\bf \Sigma}$ - scattering operator &
+${\bf Q}$ - source operator \\
+\end{tabular}
+}
+\end{block}
+
+\begin{block}{Flux Moment Equivalent Linear System} {\small
+\[
+{\bf  ( I - DL^{-1} M\Sigma) \Phi = D L^{-1} Q}
+\]
+}
+\end{block}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Polytope Meshes}
@@ -458,7 +490,10 @@ $\longrightarrow$
 }
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Summary of the Linear Basis Functions}
+\begin{frame}[t]
+\only<1>
+{
+\frametitle{Summary of the Linear Basis Functions}
 \centering
 \vspace{1cm}
 \begin{table}
@@ -479,6 +514,61 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative***\\ \hline
 ** - mean value 3D analogue only applicable triangular-faceted polyhedra \\
 *** - maximum entropy minimization solved via Newton's Method 
 \end{block}
+}
+\only<2>
+{
+\frametitle{Basis Functions on the Unit Square}
+\begin{columns}
+\column{0.50\textwidth}
+\centering
+{}\includegraphics[width=0.55\columnwidth]{images/square_WACHSPRESS1_contour_b4.png} \\
+Wachspress\\ \vspace{3mm}
+{}\includegraphics[width=0.55\columnwidth]{images/square_MV1_contour_b4.png} \\
+Mean Value
+\column{0.50\textwidth}
+\centering
+{}\includegraphics[width=0.55\columnwidth]{images/square_PWLD1_contour_b4.png} \\
+PWL\\ \vspace{3mm}
+{}\includegraphics[width=0.55\columnwidth]{images/square_MAXENT1_contour_b4.png} \\
+Maximum Entropy
+\end{columns}
+}
+\only<3>
+{
+\frametitle{Basis Functions on the Degenerate Pentagon}
+\begin{columns}
+\column{0.50\textwidth}
+\centering
+{}\includegraphics[width=0.55\columnwidth]{images/deg_square_WACHSPRESS1_contour_b5.png} \\
+Wachspress\\ \vspace{3mm}
+{}\includegraphics[width=0.55\columnwidth]{images/deg_square_MV1_contour_b5.png} \\
+Mean Value
+\column{0.50\textwidth}
+\centering
+{}\includegraphics[width=0.55\columnwidth]{images/deg_square_PWLD1_contour_b5.png} \\
+PWL\\ \vspace{3mm}
+{}\includegraphics[width=0.55\columnwidth]{images/deg_square_MAXENT1_contour_b5.png} \\
+Maximum Entropy
+\end{columns}
+}
+\only<4>
+{
+\frametitle{Basis Functions on the Degenerate Pentagon}
+\begin{columns}
+\column{0.50\textwidth}
+\centering
+{}\includegraphics[width=0.55\columnwidth]{images/deg_square_WACHSPRESS1_contour_b4.png} \\
+Wachspress\\ \vspace{3mm}
+{}\includegraphics[width=0.55\columnwidth]{images/deg_square_MV1_contour_b4.png} \\
+Mean Value
+\column{0.50\textwidth}
+\centering
+{}\includegraphics[width=0.55\columnwidth]{images/deg_square_PWLD1_contour_b4.png} \\
+PWL\\ \vspace{3mm}
+{}\includegraphics[width=0.55\columnwidth]{images/deg_square_MAXENT1_contour_b4.png} \\
+Maximum Entropy
+\end{columns}
+}
 \end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
@@ -968,6 +1058,52 @@ $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a f
 \end{block}
 \end{frame}
 %---------------------------
+\begin{frame}[t]
+\frametitle{Orthogonal Projection}
+\only<1>
+{
+\vspace{1cm}
+{}\includegraphics[width=0.425\textwidth]{images/Orth_proj_square.png} \hfill
+{}\includegraphics[width=0.425\textwidth]{images/Orth_proj_pentagon.png}
+}
+\only<2>
+{
+\begin{block}{2D Orthogonal Projections}
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+	\hline
+	Number of Vertices & 3 & 4 & $>4$ and even& $>4$ and odd \\
+	\hline
+	$h$ & $2 \frac{A_K}{L_f}$ & $\frac{A_K}{L_f}$ & $4 \frac{A_K}{P_K}$ & $2 \frac{A_K}{P_K} + \sqrt{\frac{2 A_K}{N_K \sin(\frac{2 \pi}{N_K})}}$ \\
+	\hline
+\end{tabular}
+\end{table}
+\vspace{3mm}
+$N_K$ - \# of vertices for polygon $K$\\
+$A_K$ - Area of polygon $K$\\
+$L_f$  - Length of face $f$\\
+$P_K$ - Perimeter for polygon $K$
+\end{block}
+\begin{block}{3D Orthogonal Projections}
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|}
+	\hline
+	Number of Faces & 4 & 6 & otherwise \\
+	\hline
+	$h$ & $3 \frac{V_K}{A_f}$ & $\frac{V_K}{A_f}$ & $6 \frac{V_K}{SA_K}$  \\ [1ex]
+	\hline
+\end{tabular}
+\end{table}
+\vspace{3mm}
+$V_K$  - Volume of polyhedron $K$\\
+$A_f$   - Area of face $f$\\
+$SA_K$ - Surface area of polyhedron $K$
+\end{block}
+}
+\end{frame}
+%---------------------------
 %%%%%%%%%%%%%%%%%%%
 \subsection{Modified Interior Penalty Method}
 %%%%%%%%%%%%%%%%%%%
@@ -1040,14 +1176,83 @@ Recall the DSA equation:
 }
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Analytical/Numerical 3D Results}
-
-\end{frame}
-% --------------------------------------------
-\begin{frame}[t]\frametitle{MIP Scaling Results}
+\begin{frame}[t]
 \only<1>
 {
+\frametitle{Unit Cube PWL Fourier Analysis}
+\vspace{1cm}
+\begin{columns}
+\column{0.5\textwidth}
+\centering
+\includegraphics[width=\textwidth]{images/SI_MIP_hex_C=1_PWLD_LS.eps}\\
+$c=1$
+\column{0.5\textwidth}
+\centering
+\includegraphics[width=\textwidth]{images/SI_MIP_hex_C=4_PWLD_LS.eps}\\
+$c=4$
+\end{columns}
+}
+\only<2>
+{
+\frametitle{3D PWL Fourier Analysis - Aspect Ratios}
+\vspace{1cm}
+\begin{columns}
+\column{0.5\textwidth}
+\centering
+\includegraphics[width=\textwidth]{images/SI_MIP_hex_PWLD1_AR1.eps}\\
+$c=1,$ $S_8$
+\column{0.5\textwidth}
+\centering
+\includegraphics[width=\textwidth]{images/SI_MIP_hex_PWLD1_AR4.eps}\\
+$c=4,$ $S_8$
+\end{columns}
+}
+\only<3>
+{
+\frametitle{Numerical 3D PWL Results}
+\vspace{1cm}
+\begin{columns}
+\column{0.5\textwidth}
+\centering
+\includegraphics[width=\textwidth]{images/SI_MIP_hex_C=1_PWLD_LS_wNSR.eps}\\
+$c=1$
+\column{0.5\textwidth}
+\centering
+\includegraphics[width=\textwidth]{images/SI_MIP_hex_C=4_PWLD_LS_wNSR.eps}\\
+$c=4$
+\end{columns}
+}
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]
+\only<1>
+{
+\frametitle{MIP Scaling Results}
 
+}
+\only<2>
+{
+\frametitle{512 cells/processor and 16 angles/octant}
+\centering
+\includegraphics[width=\textwidth]{images/A128.eps}
+}
+\only<3>
+{
+\frametitle{4096 cells/processor and 256 angles/octant}
+\centering
+\includegraphics[width=\textwidth]{images/A2048.eps}
+}
+\only<4>
+{
+\frametitle{DSA Timing Fraction - 512 cells/processor}
+\centering
+\includegraphics[width=\textwidth]{images/C512.eps}
+}
+\only<5>
+{
+\frametitle{DSA Timing Fraction - 4096 cells/processor}
+\centering
+\includegraphics[width=\textwidth]{images/C4096.eps}
 }
 \end{frame}
 % --------------------------------------------
@@ -1065,8 +1270,12 @@ Recall the DSA equation:
 \begin{frame}[t]\frametitle{Need for Upscatter Acceleration}
 \begin{columns}
 \column{0.65\textwidth}
-\begin{block}{}
-
+\begin{block}{Slow Convergence Rates}
+\begin{itemize}
+\item
+\item
+\item
+\end{itemize}
 \end{block}
 \column{0.35\textwidth}
 \centering
