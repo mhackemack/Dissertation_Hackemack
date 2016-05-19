@@ -134,7 +134,7 @@
 
 \title[Polytope DGFEM Transport]{Higher-Order DGFEM Transport Calculations on Polytope Meshes for Massively-Parallel Architectures}
 
-\author[Hackemack]{{\Large Michael W. Hackemack} \vspace{0.35cm} \\ Chair: {\small Jean C. Ragusa} \\ Committee Members: {\small Marvin L. Adams, Jim E. Morel, Nancy M. Amato } \\ External Advisor: {\small Troy Becker}}
+\author[Hackemack]{{\Large Michael W. Hackemack} \vspace{0.35cm} \\ Chair: {\small Jean C. Ragusa} \\ Committee Members: {\small Marvin L. Adams, Jim E. Morel, Nancy M. Amato } \\ External Committee Member: {\small Troy Becker}}
 
 %TAMU
 \institute[Texas A\&M University]{\scriptsize Department of Nuclear Engineering\\
@@ -341,23 +341,144 @@ $\lambda_i$ - linear basis function located at vertex $i$ \vspace{0.25cm}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Wachspress Rational Functions}
-
+\centering
+\includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
+\vspace{0.3cm}
+\begin{block}{}
+\begin{equation*}
+\lambda_i^W (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = \frac{A(\vec{x}_{j-1}, \vec{x}_{j}, \vec{x}_{j+1})}{A(\vec{x}, \vec{x}_{j-1}, \vec{x}_{j}) \, A(\vec{x}, \vec{x}_{j}, \vec{x}_{j+1})}
+\end{equation*}
+\end{block}
+\begin{block}{}
+\begin{equation*}
+A(\vec{x}_1, \vec{x}_{2}, \vec{x}_{3}) = \frac{1}{2} \left|
+\begin{array}{ccc}
+1 & 1 & 1 \\
+x_1 & x_2 & x_3 \\
+y_1 & y_2 & y_3
+\end{array} \right|
+\end{equation*}
+\end{block}
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Piecewise Linear Functions}
-
+\begin{frame}[t]\frametitle{Piecewise Linear (PWL) Functions}
+\centering
+\includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
+\vspace{0.3cm}
+\begin{block}{}
+\begin{equation*}
+\lambda_i^{PWL} (\vec{x}) =  t_i (\vec{x}) + \alpha_i t_c (\vec{x})
+\end{equation*}
+\end{block}
+\begin{block}{}
+$t_i $ - standard 2D linear function for a triangle $(i,i+1,C)$; 1 at vertex $i$ that linearly decreases to 0 to the cell center and the adjoining vertices \\ \vspace{1mm}
+$t_c$ - 2D tent function; 1 at cell center and linearly decreases to 0 to each cell vertex \\ \vspace{1mm}
+$\alpha_i = \frac{1}{N_V}$ - weight parameter for vertex $i$ \\ \vspace{1mm}
+$N_V$ - number of cell vertices
+\end{block}
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Mean Value Coordinates}
-
+\begin{frame}[t]\frametitle{Mean Value (MV) Coordinates}
+\centering
+\includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
+\vspace{0.3cm}
+\only<1>{
+\begin{block}{Preserve piecewise linear harmonic maps over triangulations}
+\begin{equation*}
+\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} = 0, \qquad u(\vec{r}) = u_0 , \, \vec{r} \in \partial \mathcal{D} 
+\end{equation*} \\
+\vspace{1.0cm}
+$u(\vec{r})$ - piecewise linear function on the cell boundary
+\end{block}
+}
+\only<2>{
+\begin{block}{}
+\begin{equation*}
+\lambda_i^{MV} (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{x}_j - \vec{x}|}
+\end{equation*}
+\end{block}
+\begin{block}{Limit as $\vec{x} \rightarrow \vec{x}_j$}
+\vspace{-0.25cm}
+\begin{columns}
+\column{0.5\textwidth}
+\centering
+\begin{equation*}
+\lim_{\vec{x} \rightarrow \vec{x}_j} \tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2) = 0
+\end{equation*}
+\column{0.1\textwidth}
+\centering
+$\longrightarrow$
+\column{0.4\textwidth}
+\centering
+\begin{equation*}
+\lim_{\vec{x} \rightarrow \vec{x}_j}  w_j (\vec{x}) = 1
+\end{equation*}
+\end{columns}
+\end{block}
+}
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Maximum Entropy Coordinates}
-
+\begin{frame}[t]\frametitle{Maximum Entropy (ME) Coordinates}
+\centering
+\includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
+\vspace{0.3cm}
+\only<1>{
+\begin{block}{Constrained optimization problem - Shannon Entropy}
+\begin{equation*}
+\max\displaylimits_{\lambda(\vec{x})}  H(\lambda, m), \qquad  H(\lambda, m) = - \sum\displaylimits_{i} \lambda_i (\vec{x}) \ln \left(   \frac{\lambda_i(\vec{x})}{m_i(\vec{x})} \right)
+\end{equation*} \\ \vspace{3mm}
+\begin{equation*}
+\sum\displaylimits_{i} \lambda_i (\vec{x}) = 1, \qquad \sum\displaylimits_{i} \lambda_i (\vec{x}) ( \vec{x}_i - \vec{x} ) = \vec{0}
+\end{equation*}
+\end{block}
+}
+\only<2>{
+\begin{block}{}
+\begin{equation*}
+\lambda_i^{ME} (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = m_j(\vec{x}) \exp(- \omega^* \cdot (\vec{x}_j - \vec{x}))
+\end{equation*}
+\end{block}
+\begin{block}{}{\small
+\begin{equation*}
+\mathcal{L} (\lambda, \omega_0, \omega) = - \sum\displaylimits_{i} \lambda_i (\vec{x}) \ln \left(   \frac{\lambda_i(\vec{x})}{m_i(\vec{x})} \right) - \omega_0 \left(  \sum\displaylimits_{i}  \lambda_i (\vec{x}) -1  \right) - \omega \cdot  \left(  \sum\displaylimits_{i}  \lambda_i (\vec{x}) (\vec{x}_i - \vec{x})  \right)
+\end{equation*}}
+\end{block}
+}
+\only<3>{
+\begin{block}{}
+\begin{equation*}
+\lambda_i^{ME} (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = m_j(\vec{x}) \exp(- \omega^* \cdot (\vec{x}_j - \vec{x}))
+\end{equation*}
+\end{block}
+\begin{block}{}
+\begin{equation*}
+\omega^* = \text{argmin} \, F(\omega, \vec{x})  \qquad F(\omega, \vec{x}) = \ln \left(  \sum_j w_j (\vec{x})  \right)
+\end{equation*}
+\end{block}
+}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Summary of the Linear Basis Functions}
-
+\centering
+\vspace{1cm}
+\begin{table}
+\footnotesize
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Basis Function & Dimension & Polytope Types & Integration & Direct/Iterative \\
+\hline \hline
+Wachspress	&2D/3D&	Convex*&	Numerical	&Direct\\ \hline
+PWL&	1D/2D/3D&	Convex/Concave&	Analytical	&Direct\\ \hline
+Mean Value&	2D**&	Convex/Concave&	Numerical	&Direct\\ \hline
+Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative***\\ \hline
+\end{tabular}
+\end{table}
+\vspace{0.5cm}
+\begin{block}{}
+* - weak convexity for Wachspress coordinates does not cause blow up\\
+** - mean value 3D analogue only applicable triangular-faceted polyhedra \\
+*** - maximum entropy minimization solved via Newton's Method 
+\end{block}
 \end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
@@ -665,7 +786,63 @@ $\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
 }
 \only<7>
 {
-\frametitle{convergence rate plots go here...}
+\frametitle{Mesh-Aligned - Left-Face Incidence}
+\vspace{1.00cm}
+\begin{columns}[c]
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=\textwidth]{images/PAErr_Left_SplitPoly_sig1.eps} \\
+$\sigma_t = 1$
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=\textwidth]{images/PAErr_Left_SplitPoly_sig50.eps} \\
+$\sigma_t = 50$
+\end{columns}
+}
+\only<8>
+{
+\frametitle{NOT Mesh-Aligned - Left-Face Incidence}
+\vspace{1.00cm}
+\begin{columns}[c]
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=\textwidth]{images/PAErr_Left_Poly_sig1.eps} \\
+$\sigma_t = 1$
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=\textwidth]{images/PAErr_Left_Poly_sig50.eps} \\
+$\sigma_t = 50$
+\end{columns}
+}
+\only<9>
+{
+\frametitle{Mesh-Aligned - Left-Face and Top-Face Incidence}
+\vspace{1.00cm}
+\begin{columns}[c]
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=\textwidth]{images/PAErr_LeftTop_SplitPoly_sig1.eps} \\
+$\sigma_t = 1$
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=\textwidth]{images/PAErr_LeftTop_SplitPoly_sig50.eps} \\
+$\sigma_t = 50$
+\end{columns}
+}
+\only<10>
+{
+\frametitle{NOT Mesh-Aligned -  Left-Face and Top-Face Incidence}
+\vspace{1.00cm}
+\begin{columns}[c]
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=\textwidth]{images/PAErr_LeftTop_Poly_sig1.eps} \\
+$\sigma_t = 1$
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=\textwidth]{images/PAErr_LeftTop_Poly_sig50.eps} \\
+$\sigma_t = 50$
+\end{columns}
 }
 \end{frame}
 % --------------------------------------------
@@ -824,39 +1001,43 @@ Recall the DSA equation:
 \subsection{Results}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
+\begin{frame}[t]\frametitle{MIP Results Summary}
+\begin{block}{}
+\begin{enumerate}
+\item
+\end{enumerate}
+\end{block}
+\end{frame}
+% --------------------------------------------
 \begin{frame}[t]
 \only<1>
 {
-\frametitle{\small 2D Unit Square Fourier Results - linear (left) and quadratic (right) Wachspress}
+\frametitle{\small 2D Unit Square Fourier Results - linear (left) and quadratic (right) \tcr{Wachspress}}
 \vspace{1cm}
 \includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_UWACHSPRESS1_LS.eps}
 \includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_UWACHSPRESS2_LS.eps}
 }
 \only<2>
 {
-\frametitle{\small 2D Unit Square Fourier Results - linear (left) and quadratic (right) PWL}
+\frametitle{\small 2D Unit Square Fourier Results - linear (left) and quadratic (right) \tcr{PWL}}
 \vspace{1cm}
 \includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_PWLD1_LS.eps}
 \includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_UPWLD2_LS.eps}
 }
 \only<3>
 {
-\frametitle{\small 2D Unit Square Fourier Results - linear (left) and quadratic (right) Mean Value}
+\frametitle{\small 2D Unit Square Fourier Results - linear (left) and quadratic (right) \tcr{Mean Value}}
 \vspace{1cm}
 \includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_UMV1_LS.eps}
 \includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_UMV2_LS.eps}
 }
 \only<4>
 {
-\frametitle{\small 2D Unit Square Fourier Results - linear (left) and quadratic (right) Maximum Entropy}
+\frametitle{\small 2D Unit Square Fourier Results - linear (left) and quadratic (right) \tcr{Maximum Entropy}}
 \vspace{1cm}
 \includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_MAXENT1_LS.eps}
 \includegraphics[width=0.495\textwidth]{images/SI_MIP_quad_C=4_UMAXENT2_LS.eps}
 }
-\end{frame}
-% --------------------------------------------
-\begin{frame}[t]\frametitle{DSA and AMR on Polygonal Grids}
-
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Analytical/Numerical 3D Results}
@@ -864,7 +1045,10 @@ Recall the DSA equation:
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{MIP Scaling Results}
+\only<1>
+{
 
+}
 \end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -878,8 +1062,89 @@ Recall the DSA equation:
 \subsection{Overview of Methods}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Overview of Methods}
+\begin{frame}[t]\frametitle{Need for Upscatter Acceleration}
+\begin{columns}
+\column{0.65\textwidth}
+\begin{block}{}
 
+\end{block}
+\column{0.35\textwidth}
+\centering
+\includegraphics[width=0.9\textwidth]{images/Sparsity_Graphite.eps} \\
+\includegraphics[width=0.9\textwidth]{images/Sparsity_HDPE.eps}
+\end{columns}
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{Overview of Methods}
+\begin{block}{Gauss-Seidel in Energy}
+
+\end{block}
+\begin{block}{Jacobi in Energy}
+
+\end{block}
+\end{frame}
+%---------------------------
+\begin{frame}[t]\frametitle{Three two-grid-like acceleration methodologies (implemented in PDT)}{\footnotesize
+\vspace{-2.5mm}
+\begin{block}{Standard Two-Grid Acceleration (TG) - Morel 1993}
+\begin{itemize}
+\item Gauss Seidel in energy - converging the within-group inner iterations
+\end{itemize}
+\begin{equation*}
+{\bf L_{gg}} \psi_g^{(k+1)} = {\bf M} \sum_{g'=1}^{\tcb{g}} {\bf \Sigma}_{g g'} \phi_{g'}^{(k+1)} + {\bf M} \sum_{g'=\tcr{g+1}}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
+\end{equation*}
+\end{block}
+\vspace{-2.5mm}
+\begin{block}{Modified Two-Grid Acceleration (MTG)}
+\begin{itemize}
+\item Do NOT converge the inner iterations
+\begin{equation*}
+{\bf L_{gg}} \psi_g^{(k+1)} = {\bf M} \sum_{g'=1}^{\tcm{g-1}} {\bf \Sigma}_{g g'} \phi_{g'}^{(k+1)} + {\bf M} \sum_{g'=\tcb{g}}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
+\end{equation*}
+\end{itemize}
+\end{block}
+\vspace{-2.5mm}
+\begin{block}{Mulitgroup Jacobi Acceleration (MJA)}
+\begin{itemize}
+\item Jacobi iterations in energy for some set of energy groups
+\end{itemize}
+\begin{equation*}
+{\bf L_{gg}} \psi_g^{(k+1)} = {\bf M} \sum_{g'=1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g
+\end{equation*}
+\end{block}
+\vspace{-2.5mm}
+\begin{block}{Acceleration Step}
+\begin{itemize}
+\item Each of these methods uses a 1-Group energy-collapsed acceleration step.
+\end{itemize}
+\end{block}
+}
+\end{frame}
+%---------------------------
+\begin{frame}[t]\frametitle{1-group Energy-Collapsed Diffusion Equation}
+\vspace{-3mm}
+\begin{block}{1G Correction System}{\small
+\begin{itemize}
+\item Factorize the error: $\delta \Phi_{g}^{(k+1/2)} = \tcr{\xi_g} \tcb{\epsilon^{(k+1/2)}}$
+\item MG Solution Update:  $ \Phi_{g}^{(k+1)} =  \Phi_{g}^{(k+1/2)} + \tcr{\xi_g} \tcb{\epsilon^{(k+1/2)}}, \qquad \sum\displaylimits_{g=1}^{G} \tcr{\xi_g} = 1 $ 
+\end{itemize}
+\vspace{4mm}
+\begin{equation*}
+-\vec{\nabla} \cdot \Big< D \Big> \vec{\nabla} \tcb{\epsilon} + \Big< \sigma \Big> \tcb{\epsilon} = \Big< R \Big>
+\end{equation*}
+}\end{block}
+\begin{block}{Spectral Distribution}{\small
+\begin{columns}
+\column{0.35\textwidth}
+TG Acceleration:  \\ \vspace{3mm}
+MTG Acceleration:  \\ \vspace{3mm}
+MG Jacobi Acceleration:  \\
+\column{0.63\textwidth}
+$\left(  {\bf \Sigma_t} - {\bf S_{L}} - {\bf S_{D}} \right)^{-1} {\bf S_{U}} {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}}$ \\ \vspace{3mm}
+$\left(  {\bf \Sigma_t} - {\bf S_{L}}  \right)^{-1} \left( {\bf S_{D}} + {\bf S_{U}} \right) {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}}$ \\ \vspace{3mm}
+${\bf \Sigma_t}^{-1} \left( {\bf S_L} + {\bf S_D} +{\bf S_U} \right) {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}}$ \\
+\end{columns}
+}\end{block}
 \end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
@@ -887,34 +1152,32 @@ Recall the DSA equation:
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
 \begin{frame}[t]\frametitle{IM1 Problem}
-
+\begin{block}{Iterative Procedures}
+\begin{itemize}
+	\item Brick grids
+	\item 99 energy groups - 42 fast and 57 thermal
+	\item Fast groups organized into 11 group sets to maximize downscatter
+	\item Gauss-Seidel iterations (TG and MTG)
+	\begin{itemize}
+		\item Outer iterations march through thermal groups 1 at a time
+		\item No thermal group parallelization
+		\item Acceleration after each outer iteration
+	\end{itemize}
+	\item Jacobi iterations (MG Jacobi)
+	\begin{itemize}
+		\item All thermal groups in 1 group set
+		\item No outer iterations (no iterative upscattering)
+		\item Concurrent sweeping of all thermal groups
+		\item Acceleration after each sweep of thermal group set
+	\end{itemize}
+\end{itemize}
+\end{block}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]
-\only<1>
-{
 \frametitle{IM1 Two-Grid Spectral Shapes}
 \hspace*{1.1cm}
 \includegraphics[width=0.75\textwidth]{images/IM1_EC_TG.eps}
-}
-\only<2>
-{
-\frametitle{IM1 Modified Two-Grid Spectral Shapes}
-\hspace*{1.1cm}
-\includegraphics[width=0.75\textwidth]{images/IM1_EC_MTG.eps}
-}
-\only<3>
-{
-\frametitle{IM1 Multigroup Jacobi Acceleration Spectral Shapes}
-\hspace*{1.1cm}
-\includegraphics[width=0.75\textwidth]{images/IM1_EC_Rich.eps}
-}
-\only<4>
-{
-\frametitle{IM1 Multigroup Jacobi with Inner Acceleration Spectral Shapes}
-\hspace*{1.1cm}
-\includegraphics[width=0.75\textwidth]{images/IM1_EC_MJIA.eps}
-}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Infinite Medium Fourier Results}{\small
@@ -1097,7 +1360,7 @@ SI+DSA & 256 &  14,592 & 11.2 \\ \hline
 \begin{block}{POLYFEM Open Items}
 \begin{enumerate}
 \item Quadratic serendipity basis functions on 3D polyhedra
-\item Higher-order 2D serendipigy polygonal basis functions
+\item Higher-order 2D serendipity polygonal basis functions
 \item Alternative integration schemes on polygons
 \end{enumerate}
 \end{block}
@@ -1168,6 +1431,37 @@ A special acknowledgment to the Department of Energy Rickover Fellowship Program
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
 
+% --------------------------------------------
+%%%%%%%%%%%%%%%%%%%
+\subsection{Additional Upscatter Slides}
+%%%%%%%%%%%%%%%%%%%
+% --------------------------------------------
+\begin{frame}[t]
+\only<1>
+{
+\frametitle{IM1 Two-Grid Spectral Shapes}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_EC_TG.eps}
+}
+\only<2>
+{
+\frametitle{IM1 Modified Two-Grid Spectral Shapes}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_EC_MTG.eps}
+}
+\only<3>
+{
+\frametitle{IM1 Multigroup Jacobi Acceleration Spectral Shapes}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_EC_Rich.eps}
+}
+\only<4>
+{
+\frametitle{IM1 Multigroup Jacobi with Inner Acceleration Spectral Shapes}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_EC_MJIA.eps}
+}
+\end{frame}
 % --------------------------------------------
 \backupend
 
