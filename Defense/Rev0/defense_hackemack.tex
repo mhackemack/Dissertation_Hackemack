@@ -190,7 +190,35 @@ College Station, TX, USA 77843\\[1ex]
 \subsection{}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Higher-Fidelity Transport Solutions}
-
+\centering
+\begin{block}{}
+\begin{itemize}
+\item <1-> Seek computational methods to more accurately and efficiently model radiation transport.
+\item <2-> Within the paradigm of Department of Energy's exascale initiative.
+\item <3-> Specifically focus on the use of unstructured meshes.
+\end{itemize}
+\end{block}
+\only<2>
+{
+\centering
+\vspace{5mm}
+%{}\includegraphics[width=0.90\columnwidth]{images/titan.jpg}
+}
+\only<1>
+{
+\centering
+\vspace{2mm}
+%{}\includegraphics[width=0.350\columnwidth]{images/C5G7_fast.png} \hspace*{3mm}
+%{}\includegraphics[width=0.350\columnwidth]{images/C5G7_thermal.png}
+}
+\only<3>
+{
+\centering
+%{}\includegraphics[width=0.70\columnwidth]{images/kitware-cmb-nuke.jpg}
+\begin{block}{}{\footnotesize
+https://afinemesh.files.wordpress.com/2015/07/kitware-cmb-nuke.jpg
+}\end{block}
+}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Topics of this Dissertation Work}
@@ -248,11 +276,10 @@ ${\bf Q}$ - source operator \\
 }
 \end{block}
 
-\begin{block}{Flux Moment Equivalent Linear System} {\small
-\[
+\begin{block}{Flux Moment Equivalent Linear System}
+\begin{equation*}
 {\bf  ( I - DL^{-1} M\Sigma) \Phi = D L^{-1} Q}
-\]
-}
+\end{equation*}
 \end{block}
 \end{frame}
 % --------------------------------------------
@@ -285,12 +312,63 @@ ${\bf Q}$ - source operator \\
 }
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Higher-Order FEM Basis functions}
-
+\begin{frame}[t]\frametitle{Higher-Order FEM Basis Functions}
+\begin{block}{}
+\begin{itemize}
+\item <1->
+\item <2->
+\end{itemize}
+\end{block}
+\centering
+\only<1>
+{
+\centering
+\begin{columns}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.75\columnwidth]{images/ref_tri_dofs_k1.png}\\
+Linear
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.75\columnwidth]{images/ref_tri_dofs_k2.png} \\
+Quadratic
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.75\columnwidth]{images/ref_tri_dofs_k3.png} \\
+Cubic
+\end{columns}
+}
+\only<2>
+{
+{}\includegraphics[width=0.475\columnwidth]{images/hConverge.eps} \hspace*{1mm}
+{}\includegraphics[width=0.475\columnwidth]{images/NConverge.eps}
+}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Diffusion Synthetic Acceleration}
-
+\only<1-2>{
+\begin{block}{Source Iteration Approximate Spectral Radius}
+\begin{equation*}
+\rho^{(k+1)} \approx \frac{||  \phi^{(k+1)} -  \phi^{(k)} ||}{||  \phi^{(k)} -  \phi^{(k-1)}  ||} 
+\end{equation*}
+\end{block}
+\begin{block}{Optically Thick Cases - leakage/absorption does not dominate}{\small
+\begin{itemize}
+	\item $\sigma_s^{g \rightarrow g} / {\sigma_{t,g}} \approx  1$ and $\left( \sigma_{t,g} \cdot \text{diam} (\mathcal{D}) \right) \gg 1$
+	\item Thermal upscattering into higher energy groups is significant
+\end{itemize}}
+\end{block}
+}
+\onslide<2->{
+\begin{block}{Answer - Precondition the transport sweep}{\small
+\begin{itemize}
+	\item Diffusion Synthetic Acceleration (DSA)
+	\item Transport Synthetic Acceleration (TSA)
+	\item Boundary Projection Acceleration (BPA)
+	\item etc.
+\end{itemize}
+}\end{block}
+}
 \end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -569,6 +647,31 @@ PWL\\ \vspace{3mm}
 Maximum Entropy
 \end{columns}
 }
+\only<5>
+{
+\frametitle{Basis Functions on the L-Shaped Domain}
+%\vspace{1cm}
+\begin{columns}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.85\columnwidth]{images/L-domain_PWLD1_contour_b4.png} \\
+\vspace{3mm}
+{}\includegraphics[width=0.85\columnwidth]{images/L-domain_PWLD1_contour_b6.png}\\
+PWL\\ 
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.85\columnwidth]{images/L-domain_MV1_contour_b4.png} \\
+\vspace{3mm}
+{}\includegraphics[width=0.85\columnwidth]{images/L-domain_MV1_contour_b6.png}\\
+Mean Value
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.85\columnwidth]{images/L-domain_MAXENT1_contour_b4.png} \\
+\vspace{3mm}
+{}\includegraphics[width=0.85\columnwidth]{images/L-domain_MAXENT1_contour_b6.png} \\
+Maximum Entropy
+\end{columns}
+}
 \end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
@@ -661,8 +764,67 @@ $V+E+D = n + n + \frac{n(n-3)}{2}$
 
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Example Images}
-
+\begin{frame}[t]
+\only<1>
+{
+\frametitle{Quadratic Basis Functions on the Unit Square}
+\begin{columns}
+\column{0.50\textwidth}
+\centering
+{}\includegraphics[width=0.55\columnwidth]{images/square_WACHSPRESS2_contour_b4.png} \\
+Wachspress\\ \vspace{3mm}
+{}\includegraphics[width=0.55\columnwidth]{images/square_MV2_contour_b4.png} \\
+Mean Value
+\column{0.50\textwidth}
+\centering
+{}\includegraphics[width=0.55\columnwidth]{images/square_PWLD2_contour_b4.png} \\
+PWL\\ \vspace{3mm}
+{}\includegraphics[width=0.55\columnwidth]{images/square_MAXENT2_contour_b4.png} \\
+Maximum Entropy
+\end{columns}
+}
+\only<2>
+{
+\frametitle{Quadratic Basis Functions on the Unit Square}
+\begin{columns}
+\column{0.50\textwidth}
+\centering
+{}\includegraphics[width=0.55\columnwidth]{images/square_WACHSPRESS2_contour_b8.png} \\
+Wachspress\\ \vspace{3mm}
+{}\includegraphics[width=0.55\columnwidth]{images/square_MV2_contour_b8.png} \\
+Mean Value
+\column{0.50\textwidth}
+\centering
+{}\includegraphics[width=0.55\columnwidth]{images/square_PWLD2_contour_b8.png} \\
+PWL\\ \vspace{3mm}
+{}\includegraphics[width=0.55\columnwidth]{images/square_MAXENT2_contour_b8.png} \\
+Maximum Entropy
+\end{columns}
+}
+\only<3>
+{
+\frametitle{Quadratic Basis Functions on the Degenerate Pentagon}
+\begin{columns}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.85\columnwidth]{images/deg_square_PWLD2_contour_b5.png} \\
+\vspace{3mm}
+{}\includegraphics[width=0.85\columnwidth]{images/deg_square_PWLD2_contour_b9.png} \\
+PWL\\ 
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.85\columnwidth]{images/deg_square_MV2_contour_b5.png} \\
+\vspace{3mm}
+{}\includegraphics[width=0.85\columnwidth]{images/deg_square_MV2_contour_b9.png} \\
+Mean Value
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.85\columnwidth]{images/deg_square_MAXENT2_contour_b5.png} \\
+\vspace{3mm}
+{}\includegraphics[width=0.85\columnwidth]{images/deg_square_MAXENT2_contour_b9.png} \\
+Maximum Entropy
+\end{columns}
+}
 \end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
@@ -709,15 +871,93 @@ $\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
 \end{block}
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Thick Diffusion Limit}
+\begin{frame}[t]
+\only<1>
+{
+\frametitle{Thick Diffusion Limit}
+\begin{block}{Sufficient Basis Function Properties for Full Resolution}
+\begin{itemize}
+\item Locality of basis function integration on faces
+\item Surface matching of basis functions across faces
+\end{itemize}
+\end{block}
+\begin{block}{}
 
+\end{block}
+}
+\only<2>
+{
+\frametitle{Thick Diffusion Limit}
+
+}
+\only<3>
+{
+\frametitle{Cartesian Mesh Convergence Rate}
+\centering
+{}\includegraphics[width=0.80\columnwidth]{images/DLConvergenceError_Cartesian.eps}
+}
+\only<4>
+{
+\frametitle{Polygonal Mesh Convergence Rate}
+\centering
+{}\includegraphics[width=0.80\columnwidth]{images/DLConvergenceError_SqPoly.eps}
+}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Exactly-Linear Transport Solutions}
-
+\only<1>
+{
+\begin{block}{MMS Solution}
+\begin{equation*}
+\mu \frac{\partial \psi}{\partial x} + \eta \frac{\partial \psi}{\partial y} + \sigma_t \psi = Q(x,y, \mu, \eta)
+\end{equation*}
+\vspace{5mm}
+\begin{equation*}
+\begin{aligned}
+\psi (x,y,\mu,\eta) &= ax + by + c \mu + d\eta + e\\
+\phi (x,y) &= 2 \pi \left( ax + by  + e \right)
+\end{aligned} 
+\end{equation*}
+\end{block}
+\begin{block}{Forcing Function}
+\begin{equation*}
+Q(x,y,\mu,\eta) = a \mu + b \eta + \sigma_t \left(  c \mu + d \eta \right) + \sigma_t \left( ax +by + e   \right)
+\end{equation*}
+\vspace{3mm}
+\begin{equation*}
+\sigma_t = a = c = d = e = 1.0 \qquad b=1.5
+\end{equation*}
+\end{block}
+}
+\only<2>
+{
+\centering
+\begin{columns}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/tri_MAXENT_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/cart_MAXENT_k1.eps}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/shes_poly_MAXENT_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/smooth_poly_MAXENT_k1.eps} 
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/z_quad_MAXENT_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/z_poly_MAXENT_k1.eps} 
+\end{columns}
+}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Exactly-Quadratic Transport Solutions}
+\only<1>
+{
+
+
+}
 
 \end{frame}
 % --------------------------------------------
@@ -801,19 +1041,19 @@ $\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
 }
 \only<6>
 {
-\frametitle{Gaussian MMS Results - PWL}
+\frametitle{Gaussian MMS Results - \tcr{PWL}}
 \hspace*{1.25cm}
 {}\includegraphics[width=0.75\columnwidth]{images/TransportMMS_Gauss2D_PWL_Err.eps}
 }
 \only<7>
 {
-\frametitle{Gaussian MMS Results - mean value}
+\frametitle{Gaussian MMS Results - \tcr{Mean Value}}
 \hspace*{1.25cm}
 {}\includegraphics[width=0.75\columnwidth]{images/TransportMMS_Gauss2D_MV_Err.eps}
 }
 \only<8>
 {
-\frametitle{Gaussian MMS Results - maximum entropy}
+\frametitle{Gaussian MMS Results - \tcr{Maximum Entropy}}
 \hspace*{1.25cm}
 {}\includegraphics[width=0.75\columnwidth]{images/TransportMMS_Gauss2D_MAXENT_Err.eps}
 }
@@ -823,6 +1063,9 @@ $\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
 \only<1>
 {
 \frametitle{Purely-Absorbing Material Problem}
+\begin{block}{Solution Regularity Constraint}
+
+\end{block}
 \begin{block}{Problem Configuration}
 \begin{enumerate}
 \item Level-Symmetric $S_4$ quadrature
@@ -936,6 +1179,7 @@ $\sigma_t = 50$
 }
 \end{frame}
 % --------------------------------------------
+\iffalse
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \typeout{***********************************************************************************}
@@ -1575,6 +1819,7 @@ SI+DSA & 256 &  14,592 & 11.2 \\ \hline
 \end{block}
 \begin{block}{DSA Open Items}
 \begin{enumerate}
+\item Numerical verification of the MJIA method
 \item Mixed-mode parallelism with DSA preconditioning
 \end{enumerate}
 \end{block}
@@ -1622,6 +1867,10 @@ A special acknowledgment to the Department of Energy Rickover Fellowship Program
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\fi
+
+
+
 \backupbegin
 \appendix
 
@@ -1633,7 +1882,96 @@ A special acknowledgment to the Department of Energy Rickover Fellowship Program
 %%%%%%%%%%%%%%%%%%%
 \subsection{Additional POLYFEM Results}
 % --------------------------------------------
-
+\begin{frame}[t]\frametitle{Exactly-Linear Transport Solutions}
+\only<1>
+{
+\frametitle{Exactly-Linear Transport Solutions - \tcr{Wachspress}}
+\centering
+\begin{columns}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/tri_WACHSPRESS_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/cart_WACHSPRESS_k1.eps}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/shes_poly_WACHSPRESS_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/smooth_poly_WACHSPRESS_k1.eps} 
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/z_quad_WACHSPRESS_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/z_poly_WACHSPRESS_k1.eps} 
+\end{columns}
+}
+\only<2>
+{
+\frametitle{Exactly-Linear Transport Solutions - \tcr{PWL}}
+\centering
+\begin{columns}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/tri_PWLD_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/cart_PWLD_k1.eps}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/shes_poly_PWLD_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/smooth_poly_PWLD_k1.eps} 
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/z_quad_PWLD_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/z_poly_PWLD_k1.eps} 
+\end{columns}
+}
+\only<3>
+{
+\frametitle{Exactly-Linear Transport Solutions - \tcr{Mean Value}}
+\centering
+\begin{columns}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/tri_MV_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/cart_MV_k1.eps}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/shes_poly_MV_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/smooth_poly_MV_k1.eps} 
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/z_quad_MV_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/z_poly_MV_k1.eps} 
+\end{columns}
+}
+\only<4>
+{
+\frametitle{Exactly-Linear Transport Solutions - \tcr{MAXENT}}
+\centering
+\begin{columns}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/tri_MAXENT_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/cart_MAXENT_k1.eps}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/shes_poly_MAXENT_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/smooth_poly_MAXENT_k1.eps} 
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.95\columnwidth]{images/z_quad_MAXENT_k1.eps} \\
+\vspace{3mm}
+{}\includegraphics[width=0.95\columnwidth]{images/z_poly_MAXENT_k1.eps} 
+\end{columns}
+}
+\end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
 \subsection{Additional MIP Slides}
@@ -1648,25 +1986,25 @@ A special acknowledgment to the Department of Energy Rickover Fellowship Program
 \begin{frame}[t]
 \only<1>
 {
-\frametitle{IM1 Two-Grid Spectral Shapes}
+\frametitle{\small IM1 Two-Grid Spectral Shapes}
 \hspace*{1.1cm}
 \includegraphics[width=0.75\textwidth]{images/IM1_EC_TG.eps}
 }
 \only<2>
 {
-\frametitle{IM1 Modified Two-Grid Spectral Shapes}
+\frametitle{\small IM1 Modified Two-Grid Spectral Shapes}
 \hspace*{1.1cm}
 \includegraphics[width=0.75\textwidth]{images/IM1_EC_MTG.eps}
 }
 \only<3>
 {
-\frametitle{IM1 Multigroup Jacobi Acceleration Spectral Shapes}
+\frametitle{\small IM1 Multigroup Jacobi Acceleration Spectral Shapes}
 \hspace*{1.1cm}
 \includegraphics[width=0.75\textwidth]{images/IM1_EC_Rich.eps}
 }
 \only<4>
 {
-\frametitle{IM1 Multigroup Jacobi with Inner Acceleration Spectral Shapes}
+\frametitle{\small IM1 Multigroup Jacobi with Inner Acceleration Spectral Shapes}
 \hspace*{1.1cm}
 \includegraphics[width=0.75\textwidth]{images/IM1_EC_MJIA.eps}
 }
