@@ -248,9 +248,42 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 }\end{block}
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Multigroup DGFEM $S_N$ Transport Equation}
-
-\end{frame}
+\begin{frame}[t]\frametitle{Multigroup DGFEM $S_N$ Transport Equation}{\small
+\begin{block}{The multigroup $S_N$ equations}
+\begin{equation*}
+\vec{\Omega}_m \cdot \vec{\nabla} \psi_{m,g} + \sigma_{t,g} \psi_{m,g} = \sum_{g'=1}^{G} \sum_{n=0}^{N_a} \frac{2n+1}{4 \pi} \sigma_{s,n}^{g' \rightarrow g} \sum_{k=-n}^{n} \phi_{g',n,k} Y_{n,k} (\vec{\Omega}_m) + Q_{m,g}
+\end{equation*}
+\end{block}
+\onslide<2->
+{
+\begin{block}{DGFEM spatial discretization}
+\begin{equation*}
+- \left( \vec{\Omega}_m \cdot  \vec{\nabla} b_m, \psi_{m} \right)_{K} + \Big(  \sigma_{t} b_m ,   \psi_{m} \Big)_{K}  + \sum_{f=1}^{N_f^K} \Big< ( \vec{\Omega}_m \cdot \vec{n}_f ) \, b_m, \tilde{\psi}_m  \Big>_{f}  = \left(  b_m ,   Q_m \right)_{K}
+\end{equation*}
+\end{block}
+\begin{block}{The upwind scheme}{\small
+\vspace{-2mm}
+\begin{columns}
+\column{0.48\textwidth}
+\centering
+\begin{equation*}
+\tilde{\psi}_m (\vec{r})  = 
+\begin{cases}
+\psi_m^{-} , & \partial K^+ \\
+\psi_m^{-}, & \partial K^- \backslash \partial \mathcal{D} \\
+\psi_m^{inc}, & \partial K^- \cap \partial \mathcal{D}^d \\
+\psi_{m'}^{-}, & \partial K^- \cap \partial \mathcal{D}^r
+\end{cases}
+\end{equation*}
+\column{0.48\textwidth}
+\centering
+\begin{equation*}
+\psi_m^{\pm} (\vec{r}) \equiv \lim_{s \rightarrow 0^{\pm}} \psi_m \Big( \vec{r} + s (\vec{\Omega}_m \cdot \vec{n}) \vec{n} \Big)
+\end{equation*}
+\end{columns}
+}\end{block}
+}
+}\end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Iterative Procedure}
 
@@ -684,7 +717,7 @@ Maximum Entropy
 \subsection{Quadratic Basis Functions on Polygons}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Quadratic Serendipity Basis Functions on 2D Polygons}
+\begin{frame}[t]\frametitle{Quadratic Serendipity Basis Functions on 2D Polygons [1]}
 \begin{block}{}
 \begin{enumerate}
 	\item <1-> Form the linear barycentric functions - \{$\lambda_i$\}
@@ -724,6 +757,10 @@ $\longrightarrow$
 Serendipity
 }
 \end{columns}
+\vspace{2mm}
+\begin{block}{}{\footnotesize
+[1] A. Rand, A. Gillette, and C. Bajaj, ``Quadratic serendipity finite elements on polygons using generalized barycentric coordinates,'' {\em Mathematics of computation}, {\bf 83}, {\em 290}, 2691-2716 (2014).
+}\end{block}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Pairwise products of the barycentric basis functions - $\mu_{ab} = \lambda_a \lambda_b$}
@@ -739,10 +776,10 @@ Serendipity
 \sum_{aa \in V} \mu_{aa} + \sum_{ab \in E \cup D} 2 \mu_{ab} = 1
 \end{equation*}
 \begin{equation*}
-\sum_{aa \in V} \vec{x}_{aa} \mu_{aa} + \sum_{ab \in E \cup D} 2 \vec{x}_{ab} \mu_{ab} = \vec{x}
+\sum_{a \in V} \vec{x}_{a} \mu_{aa} + \sum_{ab \in E \cup D} 2 \vec{x}_{ab} \mu_{ab} = \vec{x}
 \end{equation*}
 \begin{equation*}
-\sum_{aa \in V} \vec{x}_{a} \vec{x}_{a}^T \mu_{aa} + \sum_{ab \in E \cup D} \left(  \vec{x}_{a} \vec{x}_{b}^T + \vec{x}_{b} \vec{x}_{a}^T  \right) \mu_{ab} = \vec{x} \vec{x}^{T}
+\sum_{a \in V} \vec{x}_{a} \vec{x}_{a}^T \mu_{aa} + \sum_{ab \in E \cup D} \left(  \vec{x}_{a} \vec{x}_{b}^T + \vec{x}_{b} \vec{x}_{a}^T  \right) \mu_{ab} = \vec{x} \vec{x}^{T}
 \end{equation*}
 \column{0.03\textwidth}
 \column{0.35\textwidth}
@@ -767,9 +804,151 @@ $V+E+D = n + n + \frac{n(n-3)}{2}$
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Eliminate interior nodes to form Serendipity basis}
-
+\only<1>
+{
+\centering
+{}\includegraphics[width=0.75\columnwidth]{images/rand_ser_numbering.png} 
+}
+\only<2>
+{
+\begin{block}{Necessary Serendipity Constraints}{\small
+\begin{columns}
+\column{0.50\textwidth}
+\begin{equation*}
+\sum_{ii \in V} \xi_{ii} + \sum_{i(i+1) \in E} 2 \xi_{i(i+1)} = 1
+\end{equation*}
+\begin{equation*}
+\sum_{ii \in V} \vec{x}_{ii} \xi_{ii} + \sum_{i(i+1) \in E} 2 \vec{x}_{i(i+1)} \xi_{i(i+1)} = \vec{x}
+\end{equation*}
+\begin{equation*}
+\sum_{ii \in V} \vec{x}_{i} \vec{x}_{i}^T \xi_{ii} + \sum_{i(i+1) \in E} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) \xi_{i(i+1)} = \vec{x} \vec{x}^{T}
+\end{equation*}
+\column{0.03\textwidth}
+\column{0.35\textwidth}
+$\xi_{ii}$ - basis function at vertex $i$\\ \vspace{1mm}
+$\xi_{i(i+1)}$ - basis function at face midpoint between vertices ($i, i+1$)
+\end{columns}
+}\end{block}
+\begin{block}{Reduction Problem - $\left[ \xi \right] := \mathbb{A}  \left[ \mu \right]$}{\small
+\begin{equation*}
+\mathbb{A} = 
+\left[
+\begin{array}{ccccc}
+c_{11}^{11} & \ldots & c_{ab}^{11} & \ldots & c_{(n-2)n}^{11} \\
+\ldots&\ddots&\vdots&\ddots&\vdots \\
+c_{11}^{ij} & \ldots & c_{ab}^{ij} & \ldots & c_{(n-2)n}^{ij} \\
+\ldots&\ddots&\vdots&\ddots&\vdots \\
+c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)} 
+\end{array}
+\right]
+\end{equation*}
+}\end{block}
+}
+\only<3>
+{
+\vspace{-3mm}
+\begin{block}{Constant Constraint}{\footnotesize
+\begin{equation*}
+\begin{aligned}
+\sum\displaylimits_{ii \in V} c_{aa}^{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{aa}^{i(i+1)} &= 1 , \qquad \forall aa \in V \\
+\sum\displaylimits_{ii \in V} c_{ab}^{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} &= 2 , \qquad \forall ab \in E \cup D
+\end{aligned}
+\end{equation*}
+}\end{block}
+\begin{block}{Linear Constraint}{\footnotesize
+\begin{equation*}
+\begin{aligned}
+\sum\displaylimits_{ii \in V} c_{aa}^{ii} \vec{x}_{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{aa}^{i(i+1)} \vec{x}_{i (i+1)} &= \vec{x}_{aa} , \qquad \forall aa \in V \\
+\sum\displaylimits_{ii \in V} c_{ab}^{ii} \vec{x}_{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} \vec{x}_{i (i+1)} &= 2 \vec{x}_{ab} , \qquad \forall ab \in E \cup D
+\end{aligned}
+\end{equation*}
+}\end{block}
+\begin{block}{Quadratic Constraint}{\footnotesize
+\begin{equation*}
+\begin{aligned}
+\sum\displaylimits_{ii \in V} c_{aa}^{ii} \vec{x}_{i} \vec{x}_{i}^T + \sum\displaylimits_{i(i+1) \in E} c_{aa}^{i(i+1)} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) &= \vec{x}_{a} \vec{x}_{a}^T , \qquad &\forall aa \in V \\
+\sum\displaylimits_{ii \in V} c_{ab}^{ii} \vec{x}_{i} \vec{x}_{i}^T + \sum\displaylimits_{i(i+1) \in E} c_{ab}^{i(i+1)} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) &= \vec{x}_{a} \vec{x}_{b}^T + \vec{x}_{b} \vec{x}_{a}^T, \qquad &\forall ab \in E \cup D
+\end{aligned}
+\end{equation*}
+}\end{block}
+}
+\only<4>
+{
+\begin{block}{}
+\begin{equation*}
+\mathbb{A} = \left[  \mathbb{I} | \mathbb{A}' \right]
+\end{equation*}
+\end{block}
+}
 \end{frame}
-% --------------------------------------------
+%---------------------------
+\begin{frame}[t]{Special case - bilinear coordinates on the unit square}
+\vspace{-0.2cm}
+\begin{block}{Bilinear coordinates and quadratic extension}{\footnotesize
+\vspace{-0.15cm}
+\begin{columns}
+\column{0.3\textwidth}
+\begin{equation*}
+\begin{aligned}
+\lambda_1 &= (1-x)(1-y)  \\
+\lambda_2 &= x(1-y) \\
+\lambda_3 &= xy  \\
+\lambda_4 &= (1-x)y
+\end{aligned}
+\end{equation*}
+\column{0.1\textwidth}
+\column{0.6\textwidth}
+\begin{equation*}
+\begin{aligned}
+\mu_{11} &= (1-x)^2 (1-y)^2&   &\mu_{12} = (1-x)x(1-y)^2 \\
+\mu_{22} &= x^2 (1-y)^2&  &\mu_{23} = x^2y(1-y) \\
+\mu_{33} &= x^2 y^2&  &\mu_{34} = (1-x)xy^2 \\
+\mu_{44} &= (1-x)^2 y^2&  &\mu_{41} = (1-x)^2y(1-y) \\
+\mu_{13} &= (1-x)x (1-y)y& &\mu_{24} = (1-x)x (1-y)y
+\end{aligned}
+\end{equation*}
+\end{columns}
+}\end{block}
+\vspace{-0.3cm}
+\begin{columns}
+\column{0.58\textwidth}
+\centering
+\begin{block}{Reduction matrix}{\scriptsize
+\begin{equation*}
+\mathbb{A} = 
+\left[
+\begin{array}{cccccccccc}
+1&0&0&0&0&0&0&0&-1&0 \\
+0&1&0&0&0&0&0&0&0&-1\\
+0&0&1&0&0&0&0&0&-1&0 \\
+0&0&0&1&0&0&0&0&0&-1 \\
+0&0&0&0&1&0&0&0&1/2&1/2 \\
+0&0&0&0&0&1&0&0&1/2&1/2 \\
+0&0&0&0&0&0&1&0&1/2&1/2 \\
+0&0&0&0&0&0&0&1&1/2&1/2 
+\end{array}
+\right]
+\end{equation*}
+}\end{block}
+\column{0.38\textwidth}
+\centering
+\begin{block}{Serendipity coordinates}{\scriptsize
+\begin{equation*}
+\begin{aligned}
+\xi_{11} &= (1-x) (1-y)(1-x-y) \\
+\xi_{22} &= x(1-y)(x-y)\\
+\xi_{33} &= x y(-1+x+y) \\
+\xi_{44} &= (1-x) y(y-x) \\
+\xi_{12} &= (1-x)x(1-y) \\
+\xi_{23} &= xy(1-y) \\
+\xi_{34} &= (1-x)xy \\
+\xi_{41} &= (1-x)y(1-y) 
+\end{aligned}
+\end{equation*}
+}\end{block}
+\end{columns}
+\end{frame}
+%---------------------------
 \begin{frame}[t]
 \only<1>
 {
@@ -834,34 +1013,6 @@ Maximum Entropy
 \end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
-\subsection{Linear Basis Functions on Polyhedra}
-%%%%%%%%%%%%%%%%%%%
-% --------------------------------------------
-\setbeamerfont{frametitle}{size=\large}
-\begin{frame}[t]{Linear Basis Functions on 3D Polyhedra}
-\begin{block}{Linear basis functions and convex polyhedra only for 3D}{\small
-\begin{itemize}
-\item The 2D quadratic serendipity formulation is more arduous in 3D
-\item Intercell coupling is not straightforward for concave polyhedra
-\item Focus on 3D PWL functions
-\item Focus on 3D parallelepipeds and extruded convex polygons (convex prisms)
-\end{itemize}}
-\end{block}
-\begin{block}{3D PWL basis functions}{\small
-\begin{equation*}
-b_i (\vec{x})  = t_i  (\vec{x})  + \sum_{f=1}^{F_i} \beta_f^i  t_f (\vec{x}) + \alpha_i t_c  (\vec{x}) 
-\end{equation*}
-}\end{block}
-\begin{block}{}{\footnotesize
-$t_i$ - standard 3D linear function for a tet $(i,i+1,f_c,K_c)$; 1 at vertex $i$, linearly decreases to 0 to the cell center, each adjoining face center, and each adjoining vertex\\ \vspace{0.5mm}
-$t_c$ - 3D tent function; 1 at cell center, linearly decreases to 0 at all vertices and face centers \\ \vspace{0.5mm}
-$t_f$ - face tent function; 1 at face center, linearly decreases to 0 at each face vertex and cell center\\ \vspace{0.5mm}
-$\alpha_i = \frac{1}{N_V}$ - weight parameter for vertex $i$\\ \vspace{0.5mm}
-$\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
-}\end{block}
-\end{frame}
-% --------------------------------------------
-%%%%%%%%%%%%%%%%%%%
 \subsection{Results}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
@@ -880,18 +1031,20 @@ $\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
 \begin{frame}[t]
 \only<1>
 {
-\frametitle{Thick Diffusion Limit}
+\frametitle{\small Thick Diffusion Limit}{\small
+\vspace{-3mm}
 \begin{block}{Sufficient Basis Function Properties for Full Resolution}
 \begin{itemize}
 \item Locality of basis function integration on faces
 \item Surface matching of basis functions across faces
 \end{itemize}
 \end{block}
+\vspace{-3mm}
 \begin{block}{Test Problem}
 \begin{equation*}
 \vec{\Omega} \cdot \vec{\nabla} \psi + \frac{1}{\epsilon} \psi =  \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\phi}{4 \pi} +  \frac{\epsilon}{4 \pi},  \qquad \frac{\epsilon}{3} {\nabla}^2 \phi + \epsilon  \phi =  \epsilon
 \end{equation*}
-\vspace{3mm}
+\vspace{1mm}
 \begin{equation*}
 \begin{aligned}
 	\sigma_t &\rightarrow \frac{1}{\epsilon}  \qquad
@@ -900,26 +1053,83 @@ $\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
 	\frac{Q_0}{4 \pi} &\rightarrow  \frac{\epsilon}{4 \pi}
 \end{aligned}
 \end{equation*}
-\vspace{2mm}
+\vspace{-1mm}
 \begin{itemize}
-\item 
-\item 
-\item 
+\item Vacuum boundaries
+\item $S_8$ level-symmetric quadrature
+\item CFEM diffusion with ``standard'' stiffness matrix
+\end{itemize}
+\end{block}
+\vspace{-3mm}
+\begin{block}{Convergence}
+\begin{itemize}
+\item $|| \phi_D - \phi_T||_{L_2} \propto \epsilon$
+\item PWL converges to an alternate diffusion solution
 \end{itemize}
 \end{block}
 }
+}
 \only<2>
 {
-\frametitle{Thick Diffusion Limit}
-
+\frametitle{Thick Diffusion Limit - \tcr{$\epsilon = 10^{-1}$}}
+\begin{columns}
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1_ep=1e-1.png}\\
+Transport, $p=1$
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2_ep=1e-1.png}\\
+Transport, $p=2$
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1.png}\\
+Diffusion, $p=1$
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2.png}\\
+Diffusion, $p=2$
+\end{columns}
 }
 \only<3>
 {
-\frametitle{Cartesian Mesh Convergence Rate}
+\frametitle{Thick Diffusion Limit - \tcr{$\epsilon = 10^{-3}$}}
+\begin{columns}
+\column{0.5\textwidth}
 \centering
-{}\includegraphics[width=0.80\columnwidth]{images/DLConvergenceError_Cartesian.eps}
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1_ep=1e-3.png}\\
+Transport, $p=1$
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2_ep=1e-3.png}\\
+Transport, $p=2$
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1.png}\\
+Diffusion, $p=1$
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2.png}\\
+Diffusion, $p=2$
+\end{columns}
 }
 \only<4>
+{
+\frametitle{Thick Diffusion Limit - \tcr{$\epsilon = 10^{-5}$}}
+\begin{columns}
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1_ep=1e-5.png}\\
+Transport, $p=1$
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2_ep=1e-5.png}\\
+Transport, $p=2$
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1.png}\\
+Diffusion, $p=1$
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2.png}\\
+Diffusion, $p=2$
+\end{columns}
+}
+%\only<5>
+%{
+%\frametitle{Cartesian Mesh Convergence Rate}
+%\centering
+%{}\includegraphics[width=0.80\columnwidth]{images/DLConvergenceError_Cartesian.eps}
+%}
+\only<5>
 {
 \frametitle{Polygonal Mesh Convergence Rate}
 \centering
@@ -927,9 +1137,10 @@ $\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
 }
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Exactly-Linear Transport Solutions}
+\begin{frame}[t]
 \only<1>
 {
+\frametitle{Exactly-Linear Transport Solutions}
 \begin{block}{MMS Solution}
 \begin{equation*}
 \mu \frac{\partial \psi}{\partial x} + \eta \frac{\partial \psi}{\partial y} + \sigma_t \psi = Q(x,y, \mu, \eta)
@@ -954,6 +1165,7 @@ Q(x,y,\mu,\eta) = a \mu + b \eta + \sigma_t \left(  c \mu + d \eta \right) + \si
 }
 \only<2>
 {
+\frametitle{Exactly-Linear Transport Solutions - linear PWL}
 \centering
 \begin{columns}
 \column{0.333\textwidth}
@@ -975,16 +1187,83 @@ Q(x,y,\mu,\eta) = a \mu + b \eta + \sigma_t \left(  c \mu + d \eta \right) + \si
 }
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Exactly-Quadratic Transport Solutions}
+\begin{frame}[t]
 \only<1>
 {
-
-
+\frametitle{Exactly-Quadratic Transport Solutions}
+\begin{block}{$\{  1,x,y,x^2,xy,y^2 \}$}
+\begin{equation*}
+\begin{aligned}
+\psi_q (x,y,\mu,\eta) &= a + bx + c y+ d xy + e x^2 + fy^2 \\
+\phi_q (x,y) &= 2 \pi \left(  a + bx + c y+ d xy + e x^2 + fy^2 \right)
+\end{aligned} 
+\end{equation*}
+\begin{itemize}
+\item $L_X=L_y=1.0$
+\item $\sigma_t=a=b=c=d=e=f=1.0$
+\item Quadratic serendipity functions span space
+\end{itemize}
+\end{block}
+\begin{block}{$\{  1,x,y,x^2,xy,y^2,x^2 y, x y^2, x^2 y^2 \}$}
+\begin{equation*}
+\begin{aligned}
+\psi_{x2y2} (x,y,\mu,\eta) &= x \left(L_x - x \right) y \left(L_y - y \right) \\
+\phi_{x2y2} (x,y) &= 2 \pi x \left(L_x - x \right) y \left(L_y - y \right) 
+\end{aligned} 
+\end{equation*}
+\begin{itemize}
+\item $L_X=L_y=1.0$
+\item Quadratic serendipity functions do NOT span space
+\end{itemize}
+\end{block}
 }
 \only<2>
 {
-
-
+\frametitle{$\{  1,x,y,x^2,xy,y^2 \}$}
+\centering
+\begin{table}
+\begin{center}
+\def\arraystretch{1.6}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+& \multicolumn{4}{c}{Basis Functions}\vline\\
+\hline
+Mesh Type & Wachspress & PWL& Mean Value& Max. Entropy \\
+\hline
+Cartesian&2.23e-13&7.25e-13&5.68e-14&5.65e-14\\
+Triangular&7.85e-14&1.46e-13&2.52e-14&2.54e-13\\
+Shes. Poly&1.14e-14&6.82e-14&5.75e-14&1.25e-13\\
+Sine Poly&2.56e-13&4.15e-13&3.25e-13&6.37e-13\\
+Z-Poly&5.24e-14&5.35e-14&1.68e-13&5.19e-14\\
+Z-Quad&6.64e-14&4.42e-14&8.29e-14&6.82e-13\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+}
+\only<3>
+{
+\frametitle{$\{  1,x,y,x^2,xy,y^2,x^2 y, x y^2, x^2 y^2 \}$}
+\centering
+\begin{table}
+\begin{center}
+\def\arraystretch{1.6}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+& \multicolumn{4}{c}{Basis Functions}\vline\\
+\hline
+Mesh Type & Wachspress & PWL& Mean Value& Max. Entropy \\
+\hline
+Cartesian&3.50e-06&2.72e-05&8.29e-06&3.86e-05\\
+Triangular&5.13e-05&5.13e-05&5.13e-05&5.13e-05\\
+Shes. Poly&3.97e-04&3.37e-04&2.81e-04&3.91e-04\\
+Sine Poly&3.75e-05&1.22e-04&7.62e-05&1.39e-04\\
+Z-Poly&2.93e-05&3.07e-05&2.59e-05&3.46e-05\\
+Z-Quad&2.98e-05&8.73e-05&5.08e-05&1.17e-04\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
 }
 \end{frame}
 % --------------------------------------------
@@ -996,8 +1275,8 @@ Q(x,y,\mu,\eta) = a \mu + b \eta + \sigma_t \left(  c \mu + d \eta \right) + \si
 \begin{block}{Sinusoid Solution}
 \begin{equation*}
 \begin{aligned}
-\Psi_s (x,y) = &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}) \\ 
-\Phi_s (x,y) = 2 \pi &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y})
+\psi_s (x,y) = &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}) \\ 
+\phi_s (x,y) = 2 \pi &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y})
 \end{aligned} 
 \end{equation*}
 \begin{itemize}
@@ -1008,8 +1287,8 @@ Q(x,y,\mu,\eta) = a \mu + b \eta + \sigma_t \left(  c \mu + d \eta \right) + \si
 \begin{block}{Localized Gaussian Solution}
 \begin{equation*}
 \begin{aligned}
-\Psi_g (x,y) = & \frac{x (L_x - x)}{L_x^2} \frac{y (L_y - y)}{L_y^2} \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{L_x L_y}) \\ 
-\Phi_g (x,y) = 2 \pi &\frac{x (L_x - x)}{L_x^2} \frac{y (L_y - y)}{L_y^2} \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{L_x L_y})
+\psi_g (x,y) = & \frac{x (L_x - x)}{L_x^2} \frac{y (L_y - y)}{L_y^2} \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{L_x L_y}) \\ 
+\phi_g (x,y) = 2 \pi &\frac{x (L_x - x)}{L_x^2} \frac{y (L_y - y)}{L_y^2} \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{L_x L_y})
 \end{aligned} 
 \end{equation*}
 \begin{itemize}
@@ -1091,11 +1370,19 @@ Q(x,y,\mu,\eta) = a \mu + b \eta + \sigma_t \left(  c \mu + d \eta \right) + \si
 {
 \frametitle{Purely-Absorbing Material Problem}
 \begin{block}{Solution Regularity Constraint}
-
+\begin{equation*}
+||\phi - \phi_h||_{L_2} = C\frac{h^q}{(p+1)^{q}}, \qquad q = \min (p+1, r)
+\end{equation*}
+$r$ - solution regularity
 \end{block}
 \begin{block}{Problem Configuration}
 \begin{enumerate}
 \item Level-Symmetric $S_4$ quadrature
+\item Incident boundary flux $45^{\circ}$-downwards
+	\begin{enumerate}
+	\item First configuration: left-face incidence only
+	\item Second configuration: left-face and top-face incidence
+	\end{enumerate}
 \end{enumerate}
 \end{block}
 \begin{block}{Geometry Configuration}
@@ -1130,7 +1417,7 @@ Q(x,y,\mu,\eta) = a \mu + b \eta + \sigma_t \left(  c \mu + d \eta \right) + \si
 }
 \only<5>
 {
-\frametitle{Left-Face Incidence Solutions}
+\frametitle{Left-Face Incidence Solutions - $H^{1/2} (\mathcal{D})$}
 \vspace{0.75cm}
 \hspace*{0.25cm}
 {}\includegraphics[width=0.475\textwidth]{images/PALeftSol_Poly.png} 
@@ -1138,7 +1425,7 @@ Q(x,y,\mu,\eta) = a \mu + b \eta + \sigma_t \left(  c \mu + d \eta \right) + \si
 }
 \only<6>
 {
-\frametitle{Left-Face and Top-Face Incidence Solutions}
+\frametitle{Left-Face and Top-Face Incidence Solutions -  $H^{3/2} (\mathcal{D})$}
 \vspace{0.75cm}
 \hspace*{0.25cm}
 {}\includegraphics[width=0.475\textwidth]{images/PALeftTopSol_Poly.png} 
@@ -1146,7 +1433,7 @@ Q(x,y,\mu,\eta) = a \mu + b \eta + \sigma_t \left(  c \mu + d \eta \right) + \si
 }
 \only<7>
 {
-\frametitle{Mesh-Aligned - Left-Face Incidence}
+\frametitle{Mesh-Aligned - Left-Face Incidence: $H^{p+1} (\mathcal{D})$}
 \vspace{1.00cm}
 \begin{columns}[c]
 \column{0.5\textwidth}
@@ -1161,7 +1448,7 @@ $\sigma_t = 50$
 }
 \only<8>
 {
-\frametitle{NOT Mesh-Aligned - Left-Face Incidence}
+\frametitle{NOT Mesh-Aligned - Left-Face Incidence: $H^{1/2} (\mathcal{D})$}
 \vspace{1.00cm}
 \begin{columns}[c]
 \column{0.5\textwidth}
@@ -1176,7 +1463,7 @@ $\sigma_t = 50$
 }
 \only<9>
 {
-\frametitle{Mesh-Aligned - Left-Face and Top-Face Incidence}
+\frametitle{Mesh-Aligned - Left-Face and Top-Face Incidence: $H^{p+1} (\mathcal{D})$}
 \vspace{1.00cm}
 \begin{columns}[c]
 \column{0.5\textwidth}
@@ -1191,7 +1478,7 @@ $\sigma_t = 50$
 }
 \only<10>
 {
-\frametitle{NOT Mesh-Aligned -  Left-Face and Top-Face Incidence}
+\frametitle{NOT Mesh-Aligned -  Left-Face and Top-Face Incidence: $H^{3/2} (\mathcal{D})$}
 \vspace{1.00cm}
 \begin{columns}[c]
 \column{0.5\textwidth}
@@ -1206,7 +1493,7 @@ $\sigma_t = 50$
 }
 \end{frame}
 % --------------------------------------------
-\iffalse
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \typeout{***********************************************************************************}
@@ -1283,7 +1570,7 @@ $\tilde{{\bf A}}$ is a low-order diffusion operator.
 \subsection{Symmetric Interior Penalty Method}
 %%%%%%%%%%%%%%%%%%%
 %---------------------------
-\begin{frame}[t]\frametitle{Symmetric Interior Penalty (SIP) Form [1]}
+\begin{frame}[t]\frametitle{Symmetric Interior Penalty (SIP) Form [2]}
 \begin{block}{Bilinear Form}{\small
 \begin{equation*}
 \begin{aligned}
@@ -1299,7 +1586,7 @@ a( \Phi, b)  &= \Big<  D \vec{\nabla}  \Phi , \vec{\nabla} b  \Big>_{\mathcal{D}
 \end{align*} }
 \end{block}
 \begin{block}{}{\footnotesize
-[1] D.N. Arnold. ``An interior penalty finite element method with discontinuous elements.'' {\em SIAM J. Numer. Anal.}, 19:742-760, (1982).
+[2] D.N. Arnold. ``An interior penalty finite element method with discontinuous elements.'' {\em SIAM J. Numer. Anal.}, 19:742-760, (1982).
 }\end{block}
 \end{frame}
 %---------------------------
@@ -1404,6 +1691,34 @@ Recall the DSA equation:
 	\end{block}
 \end{frame}
 %---------------------------
+%%%%%%%%%%%%%%%%%%%
+%\subsection{Linear Basis Functions on Polyhedra}
+%%%%%%%%%%%%%%%%%%%
+% --------------------------------------------
+\setbeamerfont{frametitle}{size=\large}
+\begin{frame}[t]{Linear Basis Functions on 3D Polyhedra}
+\begin{block}{Linear basis functions and convex polyhedra only for 3D}{\small
+\begin{itemize}
+\item The 2D quadratic serendipity formulation is more arduous in 3D
+\item Intercell coupling is not straightforward for concave polyhedra
+\item Focus on 3D PWL functions
+\item Focus on 3D parallelepipeds and extruded convex polygons (convex prisms)
+\end{itemize}}
+\end{block}
+\begin{block}{3D PWL basis functions}{\small
+\begin{equation*}
+b_i (\vec{x})  = t_i  (\vec{x})  + \sum_{f=1}^{F_i} \beta_f^i  t_f (\vec{x}) + \alpha_i t_c  (\vec{x}) 
+\end{equation*}
+}\end{block}
+\begin{block}{}{\footnotesize
+$t_i$ - standard 3D linear function for a tet $(i,i+1,f_c,K_c)$; 1 at vertex $i$, linearly decreases to 0 to the cell center, each adjoining face center, and each adjoining vertex\\ \vspace{0.5mm}
+$t_c$ - 3D tent function; 1 at cell center, linearly decreases to 0 at all vertices and face centers \\ \vspace{0.5mm}
+$t_f$ - face tent function; 1 at face center, linearly decreases to 0 at each face vertex and cell center\\ \vspace{0.5mm}
+$\alpha_i = \frac{1}{N_V}$ - weight parameter for vertex $i$\\ \vspace{0.5mm}
+$\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
+}\end{block}
+\end{frame}
+% --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
 \subsection{Results}
 %%%%%%%%%%%%%%%%%%%
@@ -1745,7 +2060,7 @@ GMRES+DSA & 26 & 1,881 & 1,881 & 11.09  \\ \hline
 \end{table}
 \end{block}
 \vspace{-3mm}
-\begin{block}{Multigroup Richardson Results}
+\begin{block}{Multigroup Jacobi Results}
 \begin{table}
 \begin{tabular}{|c|c|c|c|c|}
 \hline
@@ -1792,7 +2107,7 @@ GMRES+DSA & 34 &  1,938  &  4.82  \\ \hline
 \end{table}
 \end{block}
 \vspace{-2mm}
-\begin{block}{Multigroup Richardson Results}
+\begin{block}{Multigroup Jacobi Results}
 \begin{table}
 \begin{tabular}{|c|c|c|c|}
 \hline
@@ -1818,22 +2133,28 @@ SI+DSA & 256 &  14,592 & 11.2 \\ \hline
 \subsection{}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Conclusions}
+\only<1-2>
+{
 \begin{block}{POLYFEM Conclusions}
 \begin{enumerate}
-\item
-\item
-\item
-\item
+\item Investigated four linearly-complete polygonal basis functions: Wachspress, PWL, Mean Value, and Maximum Entropy
+\item Conversion to quadratic serendipity space of functions
+\item Captures the thick diffusion limit
+\item 
 \end{enumerate}
 \end{block}
+}
+\onslide<2->
+{
 \begin{block}{DSA Conclusions}
 \begin{enumerate}
-\item
-\item
-\item
-\item
+\item MIP scheme - SPD and efficiently solved with PCG and AMG preconditioning
+\item MIP is efficient and robust
+\item Scaling 
+\item 
 \end{enumerate}
 \end{block}
+}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Open Items}
@@ -1893,8 +2214,6 @@ A special acknowledgment to the Department of Energy Rickover Fellowship Program
 \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\fi
 
 
 
