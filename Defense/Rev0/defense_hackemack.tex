@@ -315,20 +315,26 @@ ${\bf Q}$ - source operator \\
 \begin{frame}[t]\frametitle{Higher-Order FEM Basis Functions}
 \begin{block}{}
 \begin{itemize}
-\item <1->
-\item <2->
+\item <1-> More processor work per element solve in tranpsort sweep.
+\item <2-> Increased convergence rates:
+{
+\begin{equation*}
+|| u - u_h ||_{L_2} = C \, h^{p+1}, \qquad || u - u_h ||_{L_2} = C \, N_{dof}^{-\frac{p+1}{d}}
+\end{equation*}
+}
 \end{itemize}
 \end{block}
 \centering
 \only<1>
 {
+\vspace{3mm}
 \centering
 \begin{columns}
 \column{0.333\textwidth}
 \centering
 {}\includegraphics[width=0.75\columnwidth]{images/ref_tri_dofs_k1.png}\\
 Linear
-\column{0.333\textwidth}
+\column{0.333\textwidth} 
 \centering
 {}\includegraphics[width=0.75\columnwidth]{images/ref_tri_dofs_k2.png} \\
 Quadratic
@@ -340,8 +346,8 @@ Cubic
 }
 \only<2>
 {
-{}\includegraphics[width=0.475\columnwidth]{images/hConverge.eps} \hspace*{1mm}
-{}\includegraphics[width=0.475\columnwidth]{images/NConverge.eps}
+{}\includegraphics[width=0.45\columnwidth]{images/hConverge.eps} \hspace*{1mm}
+{}\includegraphics[width=0.45\columnwidth]{images/NConverge.eps}
 }
 \end{frame}
 % --------------------------------------------
@@ -881,8 +887,25 @@ $\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
 \item Surface matching of basis functions across faces
 \end{itemize}
 \end{block}
-\begin{block}{}
-
+\begin{block}{Test Problem}
+\begin{equation*}
+\vec{\Omega} \cdot \vec{\nabla} \psi + \frac{1}{\epsilon} \psi =  \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\phi}{4 \pi} +  \frac{\epsilon}{4 \pi},  \qquad \frac{\epsilon}{3} {\nabla}^2 \phi + \epsilon  \phi =  \epsilon
+\end{equation*}
+\vspace{3mm}
+\begin{equation*}
+\begin{aligned}
+	\sigma_t &\rightarrow \frac{1}{\epsilon}  \qquad
+	\sigma_a &\rightarrow \epsilon  \qquad
+	\sigma_s &\rightarrow \left( \frac{1}{\epsilon} - \epsilon   \right)  \qquad
+	\frac{Q_0}{4 \pi} &\rightarrow  \frac{\epsilon}{4 \pi}
+\end{aligned}
+\end{equation*}
+\vspace{2mm}
+\begin{itemize}
+\item 
+\item 
+\item 
+\end{itemize}
 \end{block}
 }
 \only<2>
@@ -958,7 +981,11 @@ Q(x,y,\mu,\eta) = a \mu + b \eta + \sigma_t \left(  c \mu + d \eta \right) + \si
 
 
 }
+\only<2>
+{
 
+
+}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]
