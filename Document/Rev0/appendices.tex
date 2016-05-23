@@ -14,6 +14,8 @@
 \titleformat{\chapter}{\centering\normalsize}{APPENDIX \thechapter}{0em}{\vskip .5\baselineskip\centering}
 \renewcommand{\appendixname}{APPENDIX}
 
+\addtocontents{toc}{\protect\renewcommand{\protect\cftchapaftersnum}{}}
+
 \input{appendix_Transport}
 \input{appendix_BF}
 \input{appendix_DSA}

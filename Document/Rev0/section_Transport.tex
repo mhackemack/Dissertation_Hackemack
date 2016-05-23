@@ -754,14 +754,14 @@ We can now deal with the boundary fluxes, $\tilde{\Psi}_m$, by enforcing the ubi
 \begin{equation}
 \label{eq::Sn_DGFEM_trans_eq_cellK_complete}
 \begin{aligned}
--  \Big( \vec{\Omega}_m \cdot  & \vec{\nabla} b_m, \Psi_{m} \Big)_{K}   + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K} +  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m^{-}, {\Psi}_m^{-}  \Big>_{\partial K^+}  \\
-  + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m^{+}, {\Psi}_m^{-}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m^{-}, {\Psi}^{-}_{m'}  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
+-  \Big( \vec{\Omega}_m \cdot  & \vec{\nabla} b_m, \Psi_{m} \Big)_{K}   + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K} +  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{-}  \Big>_{\partial K^+}  \\
+  + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{-}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}^{-}_{m'}  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
 = & \sum_{p=0}^{N_P} \sum_{n=-p}^{p} \frac{2p + 1}{4 \pi}  Y_{p,n} (  \vec{\Omega}_m ) \left[ \Big( \sigma_{s,p} \, b_m,  \Phi_{p,n,} \Big)_{K}  + \left(  b_m ,   Q_{p,n} \right)_{K} \right] \\
-- & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m^{-}, {\Psi}_m^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}^d}
+- & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, {\Psi}_m^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}^d}
 \end{aligned} .
 \end{equation} 
 
-\noindent We note that fluxes without the trace superscript corresponding to the volumetric terms are all within the cell. By completely defining our mathematical formulation for an arbitrary spatial cell, it is easy to see that the full set of equations to define our discretized solution space for a single angle and energy group comprises of a simple double integration loop. The full set of equations can be formed by looping over all spatial cells, $\mathcal{D} = \bigcup_{K \in \mathbb{T}_h} K$, while further looping over all faces within each cell, $\partial \mathcal{D}_K = \bigcup_{ f \in N_f^K} f$. 
+\noindent We note that fluxes without the trace superscript are all within the cell. By completely defining our mathematical formulation for an arbitrary spatial cell, it is easy to see that the full set of equations to define our discretized solution space for a single angle and energy group comprises of a simple double integration loop. The full set of equations can be formed by looping over all spatial cells, $\mathcal{D} = \bigcup_{K \in \mathbb{T}_h} K$, while further looping over all faces within each cell, $\partial \mathcal{D}_K = \bigcup_{ f \in N_f^K} f$. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Convergence
@@ -906,11 +906,11 @@ C(p) =  \frac{p^{\frac{q+1/2}{d}}}{(p+1)^q}.
 \centering
 	\begin{subfigure}[b]{0.495\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/sec_Sn/hconv_larger.eps}
+		\includegraphics[width=\textwidth]{figures/sec_Sn/hConverge.eps}
 	\end{subfigure}
 	\begin{subfigure}[b]{0.495\textwidth}
 		\centering
-		\includegraphics[width=\textwidth]{figures/sec_Sn/Nconv_larger.eps}
+		\includegraphics[width=\textwidth]{figures/sec_Sn/NConverge.eps}
 	\end{subfigure}
 \caption[$L_2$ transport convergence rates]{Example of the theoretical convergence rates for a DGFEM transport problem that is not bound by solution regularity in terms of the maximum element diameter (left) and number of degrees of freedom (right).}
 \label{fig::Sn_Spatial_Convergence}
@@ -1234,7 +1234,7 @@ Source iteration is not the only iterative technique that can be employed to inv
 $\frac{||{\bf b} - ({\bf I} - {\bf T}) {\bf x} ||_2}{||{\bf b}||_2} < \text{tol}$.
 \end{enumerate}
 
-Combined with the appropriate linear algebra operations, these three small alterations are all that are required to properly utilize the Krylov solver for the transport equation. It is not immediately obvious how one would precondition the Krylov iterations in the context of transport sweeping. However, just like the Richardson iteration scheme, we will provide the implementation of DSA preconditioning for Krylov in Chapter \ref{sec::DSA}.
+Combined with the appropriate linear algebra operations, these three small alterations are all that is required to properly utilize the Krylov solver for the transport equation. It is not immediately obvious how one would precondition the Krylov iterations in the context of transport sweeping. However, just like the Richardson iteration scheme, we will provide the implementation of DSA preconditioning for Krylov in Chapter \ref{sec::DSA}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Spatial Solution Procedures
@@ -1283,7 +1283,7 @@ This cell-by-cell inversion of the streaming operator is known as a {\em transpo
 
 We can gain knowledge of how our transport sweeps will perform by analyzing the streaming operator, ${\bf L}$, in space and angle. If ${\bf L}$ is strictly block-lower triangular for a given angular direction, then it is guaranteed that an ordering of the mesh cells can be represented by a Directed Acyclic Graph (DAG) \cite{gerasoulis1989static}. However, situations can arise where a cycle forms in the graph and a complete sweep for those directions becomes impossible. These situations include concave polytope elements that cause re-entrance, opposing reflecting boundary conditions, and extreme distortion of an $\mathbb{R}^3$ domain (regular mesh of hexahedral cells with 1 dimensional end twisted). Figure \ref{fig::Sn_Solution_Spatial_Sweeping_sweepNOcycle} shows a DAG without any cycles for the given direction. Figure \ref{fig::Sn_Solution_Spatial_Sweeping_sweepWcycle} then shows a graph with a cycle caused by a re-entrant quadrilateral mesh cell. There are methods to break these cycles and still perform transport sweeping, but we will not consider them for this work.
 
-Up to this point, we have provided the basic details on how a transport sweep is performed. We now switch our discussion to recent developments involving provably optimal sweeping algorithms with high efficiencies out to $O(10^5)$ - $O(10^6)$ processors. For over a decade, the Koch-Baker-Alcouffe (KBA) parallel sweeping algorithm was the most prevalent in the computational transport community \cite{ref::KBA,baker1998s}. The KBA algorithm spatially partitions the problem by assigning each processor a column of cells. During a transport sweep, the cell-by-cell solution of each angular direction is represented as a Task Dependence Graph (TDG). KBA operates by initializing a new TDG as soon as it completes a previous TDG for all directions in an octant-pair. This consecutive execution of TDGs is known as ``'pipelining''. Unfortunately, KBA's pipelining penalty grows with processor counts but the TDG width grows only as $P^{2/3}$. Therefore, KBA eventually runs out of parallelism which led to the common belief that transport sweeps would not scale beyond $O(10^3)$ - $O(10^4)$ processing units.
+Up to this point, we have provided the basic details on how a transport sweep is performed. We now switch our discussion to recent developments involving provably optimal sweeping algorithms with high efficiencies out to $O(10^5)$ - $O(10^6)$ processors. For over a decade, the Koch-Baker-Alcouffe (KBA) parallel sweeping algorithm was the most prevalent in the computational transport community \cite{ref::KBA,baker1998s}. The KBA algorithm spatially partitions the problem by assigning each processor a column of cells. During a transport sweep, the cell-by-cell solution of each angular direction is represented as a Task Dependence Graph (TDG). KBA operates by initializing a new TDG as soon as it completes a previous TDG for all directions in an octant-pair. This consecutive execution of TDGs is known as ``pipelining''. Unfortunately, KBA's pipelining penalty grows with processor counts but the TDG width grows only as $P^{2/3}$. Therefore, KBA eventually runs out of parallelism which led to the common belief that transport sweeps would not scale beyond $O(10^3)$ - $O(10^4)$ processing units.
 
 Now we give an overview of a provably-optimal sweeping algorithm that will be utilized in this work \cite{ref::eff_sweeps,adams2013provably}. Consider a transport problem with a ($N_x \times N_y \times N_z $) spatial grid of Cartesian mesh cells and a ($P_x \times P_y \times P_z $) processor layout. Assume that $N_x/P_x$, $N_y/P_y$, and $N_z/P_z$ are all integer values. Now suppose a group set that we wish to sweep has $G$ groups and $M$ angular directions per octant. This means that each processor must perform $(8 M G N_x N_y N_z)/(P_x P_y P_z)$ total calculations for the transport sweep. We then aggregate these calculations into tasks with each task containing $A_g$ groups, $A_M$ directions and $A_x A_y A_z$ spatial cells. Therefore, each processor must perform $N_{tasks}$ number of tasks which can be given by
 
@@ -1322,14 +1322,14 @@ N_{idle}^{min} = P_x + \delta_x - 2  P_y + \delta_y - 2 + N_k ( P_z + \delta_z -
 
 \begin{equation}
 \label{sec::Sn_Solution_Spatial_Nmin}
-N_{stages}^{min} = N_{idle}^{min} + \frac{8 M G N_k}{A_M A_G}
+N_{stages}^{min} = N_{idle}^{min} + \frac{8 M G N_k}{A_M A_g}
 \end{equation}
 
 \noindent If the minimum stage count could be achieved, then the optimal parallel efficiency, $\epsilon_{opt}$, can be given by the following
 
 \begin{equation}
 \label{sec::Sn_Solution_Spatial_epopt}
-\epsilon_{opt} = \frac{1}{\left[ 1+\frac{(P_x + \delta_x) + (P_x + \delta_x) - 4 + N_k ( P_z + \delta_z - 2)}{{8 M G N_k} / {(A_M A_G)}} \right] \, \left[ 1+\frac{T_{comm}}{T_{task}} \right]} .
+\epsilon_{opt} = \frac{1}{\left[ 1+\frac{(P_x + \delta_x) + (P_x + \delta_x) - 4 + N_k ( P_z + \delta_z - 2)}{{8 M G N_k} / {(A_M A_g)}} \right] \, \left[ 1+\frac{T_{comm}}{T_{task}} \right]} .
 \end{equation}
 
 
@@ -1439,7 +1439,7 @@ Once a mesh element from level $r$ has been refined, we need to incorporate its 
 \label{fig::Sn_Solution_Spatial_AMR_tree}
 \end{figure}
 
-Following a refinement cycle, we have a new adapted mesh, $\mathbb{T}_h^{r+1}$, but our current solution lives on $\mathbb{T}_h^{r}$. This means that the solution lives on a lower-dimensional space than the adapted mesh. To solve for the transport solution on $\mathbb{T}_h^{r+1}$, we could simply reinitialize our solution vectors to zero and follow the procedures in Algorithm \ref{alg::Sn_Linear_Transport_Solve}. However, this means that the solution from mesh $\mathbb{T}_h^{r}$ would simply be discarded. This would discount all the work performed to compute the solution on level $r$. Furthermore, if there is little difference in the functional space between the two refinement cycles, then the calculated solution at level $r$ would be a good initial guess for the solution to be calculated for level $r+1$. For this reason, we define the concept of {\em bootstrapping}, which is the projection of the solution from $\mathbb{T}_h^{r}$ onto $\mathbb{T}_h^{r+1}$. Figure \ref{fig::Sn_Solution_Spatial_AMR_bootstrapping} provides an example of bootstrapping by refining a single unit square element onto the four identical daughter elements with $\frac{1}{4}$ the area as the parent element. Figure \ref{fig::Sn_Solution_Spatial_AMR_BS_before} shows a linear planar solution on a single unit square parent element. Then, after this element is refined, its solution is projected onto its four identical daughter elements. Figure \ref{fig::Sn_Solution_Spatial_AMR_BS_after} shows this bootstrapped solution onto the refined mesh, where we can clearly see that the projected solution lives in the dimensional space of the daughter elements but still lives in the functional space of the parent element.
+Following a refinement cycle, we have a new adapted mesh, $\mathbb{T}_h^{r+1}$, but our current solution lives on $\mathbb{T}_h^{r}$. This means that the solution lives on a lower-dimensional space than the next solution on the newly adapted mesh. To solve for the transport solution on $\mathbb{T}_h^{r+1}$, we could simply reinitialize our solution vectors to zero and follow the procedures in Algorithm \ref{alg::Sn_Linear_Transport_Solve}. However, this means that the solution from mesh $\mathbb{T}_h^{r}$ would simply be discarded. This would discount all the work performed to compute the solution on level $r$. Furthermore, if there is little difference in the functional space between the two refinement cycles, then the calculated solution at level $r$ would be a good initial guess for the solution to be calculated for level $r+1$. For this reason, we define the concept of {\em bootstrapping}, which is the projection of the solution from $\mathbb{T}_h^{r}$ onto $\mathbb{T}_h^{r+1}$. Figure \ref{fig::Sn_Solution_Spatial_AMR_bootstrapping} provides an example of bootstrapping by refining a single unit square element onto the four identical daughter elements with $\frac{1}{4}$ the area as the parent element. Figure \ref{fig::Sn_Solution_Spatial_AMR_BS_before} shows a linear planar solution on a single unit square parent element. Then, after this element is refined, its solution is projected onto its four identical daughter elements. Figure \ref{fig::Sn_Solution_Spatial_AMR_BS_after} shows this bootstrapped solution onto the refined mesh, where we can clearly see that the projected solution lives in the dimensional space of the daughter elements but still lives in the functional space of the parent element.
 
 \begin{figure}
 \centering

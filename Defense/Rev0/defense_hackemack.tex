@@ -202,19 +202,19 @@ College Station, TX, USA 77843\\[1ex]
 {
 \centering
 \vspace{5mm}
-%{}\includegraphics[width=0.90\columnwidth]{images/titan.jpg}
+{}\includegraphics[width=0.90\columnwidth]{images/titan.jpg}
 }
 \only<1>
 {
 \centering
 \vspace{2mm}
-%{}\includegraphics[width=0.350\columnwidth]{images/C5G7_fast.png} \hspace*{3mm}
-%{}\includegraphics[width=0.350\columnwidth]{images/C5G7_thermal.png}
+{}\includegraphics[width=0.350\columnwidth]{images/C5G7_fast.png} \hspace*{3mm}
+{}\includegraphics[width=0.350\columnwidth]{images/C5G7_thermal.png}
 }
 \only<3>
 {
 \centering
-%{}\includegraphics[width=0.70\columnwidth]{images/kitware-cmb-nuke.jpg}
+{}\includegraphics[width=0.70\columnwidth]{images/kitware-cmb-nuke.jpg}
 \begin{block}{}{\footnotesize
 https://afinemesh.files.wordpress.com/2015/07/kitware-cmb-nuke.jpg
 }\end{block}
@@ -873,8 +873,9 @@ c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)}
 \end{equation*}
 }\end{block}
 }
-\only<4>
-{
+\end{frame}
+%---------------------------
+\begin{frame}[t]\frametitle{Eliminate interior nodes to form Serendipity basis}
 {\small
 \vspace{-3mm}
 \begin{block}{Reduction Problem}
@@ -889,6 +890,8 @@ $\mathbb{A}'$ - $(2n \times \frac{n(n-3)}{2})$ constraint matrix
 \end{itemize}
 \end{block}
 \vspace{-3mm}
+\onslide<2->
+{
 \begin{block}{Column $ab$ of $\mathbb{A}'$ - underdeterminded system}
 \begin{equation*}
 \begin{aligned}
@@ -1880,9 +1883,10 @@ $c=4$
 \column{0.65\textwidth}
 \begin{block}{Slow Convergence Rates}
 \begin{itemize}
-\item
-\item
-\item
+\item Some materials ({\em e.g.,} graphite and heavy water) have significant thermal neutron upscattering with little absorption
+\item Can also still have high within-group scattering ratios for $O(10^1)$ - $O(10^2)$ thermal groups
+\item Simple Gauss-Seidel (in energy) scheme converges slowly
+\item Need to accelerate outer iterations
 \end{itemize}
 \end{block}
 \column{0.35\textwidth}
@@ -1894,10 +1898,33 @@ $c=4$
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Overview of Methods}
 \begin{block}{Gauss-Seidel in Energy}
-
+\begin{itemize}
+\item Serial iterations of thermal groups - NOT parallelizable over energy
+\item Energy-collapsed acceleration step
+\item Two-Grid (TG) Acceleration
+	\begin{itemize}
+	\item Converge the within-group inner iteration
+	\end{itemize}
+\item Modified Two-Grid (MTG) Acceleration
+	\begin{itemize}
+	\item Do NOT converge the within-group inner iterations
+	\end{itemize}
+\end{itemize}
 \end{block}
 \begin{block}{Jacobi in Energy}
-
+\begin{itemize}
+\item Energy groups solved simultaneously in transport sweep
+\item Multigroup Jacobi Acceleration (MJA)
+	\begin{itemize}
+	\item Do NOT converge the within-group inner iterations
+	\item Energy-collapsed acceleration step
+	\end{itemize}
+\item Multigroup Jacobi with Inner Acceleration (MJIA)
+	\begin{itemize}
+	\item Accelerate the within-group iterations with $G$ independent DSA calculations
+	\item Follow with energy-collapsed acceleration step
+	\end{itemize}
+\end{itemize}
 \end{block}
 \end{frame}
 %---------------------------
@@ -1939,38 +1966,59 @@ $c=4$
 \end{frame}
 %---------------------------
 \begin{frame}[t]\frametitle{1-group Energy-Collapsed Diffusion Equation}
-\vspace{-3mm}
-\begin{block}{1G Correction System}{\small
+\begin{block}{1G Correction System}{\footnotesize
 \begin{itemize}
 \item Factorize the error: $\delta \Phi_{g}^{(k+1/2)} = \tcr{\xi_g} \tcb{\epsilon^{(k+1/2)}}$
 \item MG Solution Update:  $ \Phi_{g}^{(k+1)} =  \Phi_{g}^{(k+1/2)} + \tcr{\xi_g} \tcb{\epsilon^{(k+1/2)}}, \qquad \sum\displaylimits_{g=1}^{G} \tcr{\xi_g} = 1 $ 
 \end{itemize}
-\vspace{4mm}
+\vspace{3mm}
 \begin{equation*}
 -\vec{\nabla} \cdot \Big< D \Big> \vec{\nabla} \tcb{\epsilon} + \Big< \sigma \Big> \tcb{\epsilon} = \Big< R \Big>
 \end{equation*}
 }\end{block}
-\begin{block}{Spectral Distribution}{\small
-\begin{columns}
-\column{0.35\textwidth}
-TG Acceleration:  \\ \vspace{3mm}
-MTG Acceleration:  \\ \vspace{3mm}
-MG Jacobi Acceleration:  \\
-\column{0.63\textwidth}
-$\left(  {\bf \Sigma_t} - {\bf S_{L}} - {\bf S_{D}} \right)^{-1} {\bf S_{U}} {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}}$ \\ \vspace{3mm}
-$\left(  {\bf \Sigma_t} - {\bf S_{L}}  \right)^{-1} \left( {\bf S_{D}} + {\bf S_{U}} \right) {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}}$ \\ \vspace{3mm}
-${\bf \Sigma_t}^{-1} \left( {\bf S_L} + {\bf S_D} +{\bf S_U} \right) {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}}$ \\
-\end{columns}
+\begin{block}{Spectral Distribution and Residual}{\footnotesize
+\begin{equation*}
+\begin{aligned}
+&\text{TG:} \qquad    & \left(  {\bf \Sigma_t} - {\bf S_{L}} - {\bf S_{D}} \right)^{-1} {\bf S_{U}} {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}} \qquad &\sum\limits_{g=\tcm{1}}^G \left[ \sum\limits_{g'=\tcr{g+1}}^G \sigma_{s,0}^{gg'} \left( \phi_{g,0}^{(k+1/2)} - \phi_{g,0}^{(k)}  \right)\right]\\
+&\text{MTG:} \qquad & \left(  {\bf \Sigma_t} - {\bf S_{L}}  \right)^{-1} \left( {\bf S_{D}} + {\bf S_{U}} \right) {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}} \qquad &\sum\limits_{g=\tcm{1}}^G \left[ \sum\limits_{g'=\tcb{g}}^G \sigma_{s,0}^{gg'} \left( \phi_{g,0}^{(k+1/2)} - \phi_{g,0}^{(k)}  \right)\right]\\
+&\text{MJA:} \qquad & {\bf \Sigma_t}^{-1} \left( {\bf S_L} + {\bf S_D} +{\bf S_U} \right) {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}} \qquad &\sum\limits_{g=\tcm{1}}^G \left[ \sum\limits_{g'=\tcm{1}}^G \sigma_{s,0}^{gg'} \left( \phi_{g,0}^{(k+1/2)} - \phi_{g,0}^{(k)}  \right)\right]\\
+\end{aligned}
+\end{equation*}
 }\end{block}
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Jacobi + Inner Convergence}
-\begin{block}{Iterative Scheme}
-
-\end{block}
-\begin{block}{Energy-collapsed Diffusion Solve}
-
-\end{block}
+\begin{frame}[t]\frametitle{\small Jacobi + Inner Convergence}
+\vspace{-1mm}
+\begin{block}{Iterative Scheme}{\small
+\begin{enumerate}
+\item <1-> {Transport sweep of all $G$ thermal groups: ${\bf L_{gg}} \psi_g^{(k+1/3)} = {\bf M} \sum\limits_{g'=1}^G {\bf \Sigma}_{g g'} \phi_{g'}^{(k)} + {\bf Q}_g$}
+\item <2-> {Parallelizable $G$ within-group DSA steps: $\phi_{g}^{(k+2/3)} = \phi_{g}^{(k+1/3)} + \Delta \phi_g^{(k+1/3)}$}
+\item <3-> {Energy-collapsed acceleration step: $\phi_{g}^{(k+1)} = \phi_{g}^{(k+2/3)} + \tcr{\xi_g} \tcb{\epsilon^{(k+2/3)}}$ }
+\end{enumerate}
+}\end{block}
+\vspace{-1mm}
+\onslide<2->
+{
+\begin{block}{\small $G$ within-group diffusion solves}{\small
+\begin{equation*}
+- \vec{\nabla} \cdot D_g \vec{\nabla} \Delta \phi_g^{(k+1/3)} + \sigma_{a,g} \Delta \phi_g^{(k+1/3)} = \sigma_{s,0}^{gg} \left( \phi_g^{(k+1/3)} - \phi_g^{(k)}  \right)
+\end{equation*}
+}\end{block}
+}
+\vspace{-1mm}
+\onslide<3->
+{
+\begin{block}{\small Energy-collapsed diffusion step}{\footnotesize
+\begin{equation*}
+- \vec{\nabla} \cdot\Big< D \Big> \vec{\nabla}  \tcb{\epsilon}^{(k+2/3)} + \Big< \sigma \Big>  \tcb{\epsilon}^{(k+2/3)} = \Big< R^{(k+2/3)} \Big>
+\end{equation*}
+\vspace{2mm}
+\begin{equation*}
+ \left(  {\bf \Sigma_t} - {\bf S_{D}}  \right)^{-1} \left( {\bf S_{L}} + {\bf S_{U}} \right) {\bf \tcr{\xi}}=\rho {\bf \tcr{\xi}}, \qquad \Big< R^{(k+2/3)} \Big> = 
+\sum\limits_{g=1}^G \left[ \sum\limits_{g' \neq g}^G \sigma_{s,0}^{gg'} \left( \phi_{g,0}^{(k+2/3)} - \phi_{g,0}^{(k)}  \right)\right]
+\end{equation*}
+}\end{block}
+}
 \end{frame}
 %---------------------------
 %%%%%%%%%%%%%%%%%%%
@@ -1980,7 +2028,6 @@ ${\bf \Sigma_t}^{-1} \left( {\bf S_L} + {\bf S_D} +{\bf S_U} \right) {\bf \tcr{\
 \begin{frame}[t]\frametitle{IM1 Problem}
 \begin{block}{Iterative Procedures}
 \begin{itemize}
-	\item Brick grids
 	\item 99 energy groups - 42 fast and 57 thermal
 	\item Fast groups organized into 11 group sets to maximize downscatter
 	\item Gauss-Seidel iterations (TG and MTG)
@@ -2170,8 +2217,10 @@ SI+DSA & 256 &  14,592 & 11.2 \\ \hline
 \begin{enumerate}
 \item Investigated four linearly-complete polygonal basis functions: Wachspress, PWL, Mean Value, and Maximum Entropy
 \item Conversion to quadratic serendipity space of functions
-\item Captures the thick diffusion limit
-\item 
+\item Satisfies properties for the thick diffusion limit
+\item $H^{p+1}$ convergence for regular transport solutions
+\item $H^{1/2}$ convergence for irregular discontinuous solutions
+\item $H^{3/2}$ convergence for irregular continuous solutions
 \end{enumerate}
 \end{block}
 }
@@ -2198,7 +2247,7 @@ SI+DSA & 256 &  14,592 & 11.2 \\ \hline
 \end{block}
 \begin{block}{DSA Open Items}
 \begin{enumerate}
-\item Numerical verification of the MJIA method
+\item Numerical implementation and verification of the MJIA method
 \item Mixed-mode parallelism with DSA preconditioning
 \end{enumerate}
 \end{block}
