@@ -787,7 +787,8 @@ Serendipity
 $V$ - vertex nodes \\
 $E$ - face midpoint nodes \\
 $D$ - interior diagonal nodes \\ \vspace{3mm}
-$V+E+D = n + n + \frac{n(n-3)}{2}$
+$V+E+D = n + n + \frac{n(n-3)}{2}$ \\ \vspace{3mm}
+$V+E+D = \frac{n(n+1)}{2} = N_q$
 }
 \end{columns}
 \end{block}
@@ -874,11 +875,32 @@ c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)}
 }
 \only<4>
 {
-\begin{block}{}
+{\small
+\vspace{-3mm}
+\begin{block}{Reduction Problem}
+\begin{itemize}
+\item Each serendipity function is formed by its corresponding quadratic function plus linear combinations of the diagonal functions
+\item Simplified matrix form:
 \begin{equation*}
-\mathbb{A} = \left[  \mathbb{I} | \mathbb{A}' \right]
+\mathbb{A} = \left[  \mathbb{I} \, | \, \mathbb{A}' \right]
 \end{equation*}
+$\mathbb{I}$ - $(2n \times 2n)$ identity matrix \\
+$\mathbb{A}'$ - $(2n \times \frac{n(n-3)}{2})$ constraint matrix
+\end{itemize}
 \end{block}
+\vspace{-3mm}
+\begin{block}{Column $ab$ of $\mathbb{A}'$ - underdeterminded system}
+\begin{equation*}
+\begin{aligned}
+\sum\displaylimits_{ii \in V} c_{ab}^{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} &= 2 \\
+\sum\displaylimits_{ii \in V} c_{ab}^{ii} \vec{x}_{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} \vec{x}_{i (i+1)} &= 2 \vec{x}_{ab}\\
+\sum\displaylimits_{ii \in V} c_{ab}^{ii} \vec{x}_{i} \vec{x}_{i}^T + \sum\displaylimits_{i(i+1) \in E} c_{ab}^{i(i+1)} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) &= \vec{x}_{a} \vec{x}_{b}^T + \vec{x}_{b} \vec{x}_{a}^T
+\end{aligned}
+\end{equation*}
+\vspace{2mm}
+Use Moore-Penrose Pseudo-Inverse: $\mathbb{B}^* = \mathbb{B}^T (\mathbb{B} \mathbb{B}^T)^{-1}$
+\end{block}
+}
 }
 \end{frame}
 %---------------------------
@@ -1942,6 +1964,15 @@ ${\bf \Sigma_t}^{-1} \left( {\bf S_L} + {\bf S_D} +{\bf S_U} \right) {\bf \tcr{\
 }\end{block}
 \end{frame}
 % --------------------------------------------
+\begin{frame}[t]\frametitle{Jacobi + Inner Convergence}
+\begin{block}{Iterative Scheme}
+
+\end{block}
+\begin{block}{Energy-collapsed Diffusion Solve}
+
+\end{block}
+\end{frame}
+%---------------------------
 %%%%%%%%%%%%%%%%%%%
 \subsection{IM1 Results}
 %%%%%%%%%%%%%%%%%%%
