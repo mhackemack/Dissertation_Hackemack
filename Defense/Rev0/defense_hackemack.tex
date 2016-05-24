@@ -222,7 +222,31 @@ https://afinemesh.files.wordpress.com/2015/07/kitware-cmb-nuke.jpg
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Topics of this Dissertation Work}
-
+\begin{block}{Polygonal Finite Elements}
+\begin{itemize}
+\item Seek basis functions compatible with arbitrary polygonal grids
+	\begin{itemize}
+	\item Linear-completeness - $\{ 1,x,y \}$
+	\item Compatible with at least weakly-convex polygons
+	\end{itemize}
+\item Seek a methodology to build higher-order basis functions
+	\begin{itemize}
+	\item Investigate quadratic serendipity functions - $\{ 1,x,y ,x^2,xy,y^2\}$
+	\item Still maintains weakly-convex compatibility
+	\end{itemize}
+\end{itemize}
+\end{block}
+\begin{block}{Diffusion Synthetic Acceleration (DSA)}
+\begin{itemize}
+\item Seek a DFEM diffusion discretization for DSA
+	\begin{itemize}
+	\item Stable and robust on arbitrary polytope grids
+	\item Efficiently solvable with suitable preconditioners
+	\item Scalable to massively-parallel problems
+	\end{itemize}
+\item Seek a parallelizable thermal neutron upscattering acceleration method
+\end{itemize}
+\end{block}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{The Continuous-Energy Transport Equation} \vspace{-2.5mm}
@@ -319,7 +343,7 @@ ${\bf Q}$ - source operator \\
 \begin{frame}[t]\frametitle{Polytope Meshes}
          \begin{block}{}{\footnotesize
 			\begin{itemize}
-				\item <1-> Other physics communities are now employing polytope grids due to decreased cell/face counts (CFD in particular)
+				\item <1-> Other physics communities are now employing polytope grids due to decreased cell/face counts (CFD and solid mechanics in particular)
 				\item <2-> They allow for transition elements between different domain regions
 				\item <3-> Hanging nodes from non-conforming meshes are not necessary
 				\item <4-> Independently-generated simplicial grids ({\em i.e.} created in parallel) can be stitched together with polytopes without communicating the whole mesh across processors
@@ -1751,7 +1775,17 @@ $\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
 \begin{frame}[t]\frametitle{MIP Results Summary}
 \begin{block}{}
 \begin{enumerate}
-\item
+\item Linear and quadratic 2D basis functions are stable and robust
+\item 3D PWL basis functions
+	\begin{enumerate}
+	\item Stable and robust even on high aspect ratio cells
+	\item Match PDT numerical results well
+	\end{enumerate}
+\item Implementation of MIP DSA in PDT
+	\begin{enumerate}
+	\item Scaling suites ran to $O(10^5)$ processors on VULCAN
+	\item DSA fractional times small if given sufficient work for transport sweeps
+	\end{enumerate}
 \end{enumerate}
 \end{block}
 \end{frame}
@@ -1839,7 +1873,22 @@ $c=4$
 \only<1>
 {
 \frametitle{MIP Scaling Results}
-
+\begin{block}{Problem Description}
+	\begin{itemize}
+	\item Modified Zerr problem - used optimal sweep aggregation parameters
+	\item Homogeneous cube - about 500 mfp and c=0.9999
+	\item 1 energy group
+	\item SI precondition with MIP DSA using HYPRE PCG and AMG
+	\end{itemize}
+\end{block}
+\begin{block}{Scaling Suites}
+	\begin{itemize}
+	\item 2 scaling suites - 512 cells/proc and 4096 cells/proc
+	\item Varied number of angles
+	\item 10 SI iterations
+	\item 10 PCG iteations per SI iteration
+	\end{itemize}
+\end{block}
 }
 \only<2>
 {
@@ -2039,7 +2088,6 @@ $c=4$
 	\item Jacobi iterations (MG Jacobi)
 	\begin{itemize}
 		\item All thermal groups in 1 group set
-		\item No outer iterations (no iterative upscattering)
 		\item Concurrent sweeping of all thermal groups
 		\item Acceleration after each sweep of thermal group set
 	\end{itemize}
@@ -2112,42 +2160,42 @@ Air     &0.7580&0.5282&0.8121&0.7828&0.8845&0.7896&0.7166\\
 {
 \begin{block}{Two-Grid Results - $10^{-7}$ inner tolerance}
 \begin{table}
-\begin{tabular}{|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|}
 \hline
-Problem & Outer Iter. & Inner Iter. & 1-Group Sweeps & Solve Time (min)  \\
+Problem & Outer Iter.. & 1-Group Sweeps & Solve Time (min)  \\
 \hline \hline
-\tcr{SI} & \tcr{361} & \tcr{185,422} &\tcr{185,422}  &  \tcr{486.50} \\ \hline
-SI+DSA & 55 & 35,699 & 35,699 &  96.48 \\ \hline
-GMRES & 38 & 41,575 & 41,575 &  128.63 \\ \hline
-GMRES+DSA & 14 & 19,053 & 19,053  & 57.92  \\ \hline
+\tcr{SI} & \tcr{361}  &\tcr{185,422}  &  \tcr{486.50} \\ \hline
+SI+DSA & 55  & 35,699 &  96.48 \\ \hline
+GMRES & 38  & 41,575 &  128.63 \\ \hline
+GMRES+DSA & 14 &  19,053  & 57.92  \\ \hline
 \end{tabular}
 \end{table}
 \end{block}
 \vspace{-3mm}
 \begin{block}{Modified Two-Grid Results}
 \begin{table}
-\begin{tabular}{|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|}
 \hline
-Problem & Outer Iter. & Inner Iter. & 1-Group Sweeps & Solve Time (min)  \\
+Problem & Outer Iter. & 1-Group Sweeps & Solve Time (min)  \\
 \hline \hline
-\tcr{SI} & \tcr{536} & \tcr{77,632} & \tcr{77,632} & \tcr{275.83}  \\ \hline
-SI+DSA & 73 & 10,846 & 10,846 &  40.60 \\ \hline
-GMRES & 78 & 4,845 & 4,845 &  25.82 \\ \hline
-GMRES+DSA & 26 & 1,881 & 1,881 & 11.09  \\ \hline
+\tcr{SI} & \tcr{536}  & \tcr{77,632} & \tcr{275.83}  \\ \hline
+SI+DSA & 73  & 10,846 &  40.60 \\ \hline
+GMRES & 78  & 4,845 &  25.82 \\ \hline
+GMRES+DSA & 26  & 1,881 & 11.09  \\ \hline
 \end{tabular}
 \end{table}
 \end{block}
 \vspace{-3mm}
 \begin{block}{Multigroup Jacobi Results}
 \begin{table}
-\begin{tabular}{|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|}
 \hline
-Problem & Outer Iter. & Inner Iter. & 1-Group Sweeps & Solve Time (min)  \\
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (min)  \\
 \hline \hline
-\tcr{SI} & \tcr{1} & \tcr{1,734} & \tcr{98,838} &  \tcr{111.07} \\ \hline
-SI+DSA & 1 & 157 & 8,949 &  15.49 \\ \hline
-GMRES & 1 & 118 & 6,726 &  8.65 \\ \hline
-\tcb{GMRES+DSA} &  \tcb{1}& \tcb{35} & \tcb{1,995} &  \tcb{4.16} \\ \hline
+\tcr{SI}  & \tcr{1,734} & \tcr{98,838} &  \tcr{111.07} \\ \hline
+SI+DSA & 157 & 8,949 &  15.49 \\ \hline
+GMRES  & 118 & 6,726 &  8.65 \\ \hline
+\tcb{GMRES+DSA} & \tcb{35} & \tcb{1,995} &  \tcb{4.16} \\ \hline
 \end{tabular}
 \end{table}
 \end{block}
@@ -2228,10 +2276,11 @@ SI+DSA & 256 &  14,592 & 11.2 \\ \hline
 {
 \begin{block}{DSA Conclusions}
 \begin{enumerate}
+\item MIP is stable and robust for 3D DSA problems
 \item MIP scheme - SPD and efficiently solved with PCG and AMG preconditioning
-\item MIP is efficient and robust
-\item Scaling 
-\item 
+\item MIP implemented in PDT - good scaling out to $O(10^5)$ processors
+\item Proposed MJA and MJIA methods - parallelizable
+\item MJA numerically shown to yield better wallclock times than traditional upscatter acceleration methods
 \end{enumerate}
 \end{block}
 }
