@@ -193,32 +193,14 @@ College Station, TX, USA 77843\\[1ex]
 \centering
 \begin{block}{}
 \begin{itemize}
-\item <1-> Seek computational methods to more accurately and efficiently model radiation transport.
-\item <2-> Within the paradigm of Department of Energy's exascale initiative.
-\item <3-> Specifically focus on the use of unstructured meshes.
+\item Seek computational methods to more accurately and efficiently model radiation transport.
+\item Within the paradigm of Department of Energy's exascale initiative.
+\item Specifically focus on the use of unstructured meshes.
 \end{itemize}
 \end{block}
-\only<2>
-{
 \centering
-\vspace{5mm}
-{}\includegraphics[width=0.90\columnwidth]{images/titan.jpg}
-}
-\only<1>
-{
-\centering
-\vspace{2mm}
-{}\includegraphics[width=0.350\columnwidth]{images/C5G7_fast.png} \hspace*{3mm}
-{}\includegraphics[width=0.350\columnwidth]{images/C5G7_thermal.png}
-}
-\only<3>
-{
-\centering
-{}\includegraphics[width=0.70\columnwidth]{images/kitware-cmb-nuke.jpg}
-\begin{block}{}{\footnotesize
-https://afinemesh.files.wordpress.com/2015/07/kitware-cmb-nuke.jpg
-}\end{block}
-}
+\vspace{3mm}
+{}\includegraphics[width=0.80\columnwidth]{images/b_2558.jpg}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Topics of this Dissertation Work}
@@ -282,7 +264,7 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 {
 \begin{block}{DGFEM spatial discretization}
 \begin{equation*}
-- \left( \vec{\Omega}_m \cdot  \vec{\nabla} b_m, \psi_{m} \right)_{K} + \Big(  \sigma_{t} b_m ,   \psi_{m} \Big)_{K}  + \sum_{f=1}^{N_f^K} \Big< ( \vec{\Omega}_m \cdot \vec{n}_f ) \, b_m, \tilde{\psi}_m  \Big>_{f}  = \left(  b_m ,   Q_m \right)_{K}
+- \left( \vec{\Omega}_m \cdot  \vec{\nabla} b_m, \psi_{m} \right)_{K} + \Big(  \sigma_{t} b_m ,   \psi_{m} \Big)_{K}  + \sum_{f=1}^{N_f^K} \Big< ( \vec{\Omega}_m \cdot \vec{n}_f ) \, b_m, \tcr{\tilde{\psi}_m}  \Big>_{f}  = \left(  b_m ,   Q_m \right)_{K}
 \end{equation*}
 \end{block}
 \begin{block}{The upwind scheme}{\small
@@ -291,7 +273,7 @@ $\beta ({\bf r}, E' , E, {\bf \Omega}' , {\bf \Omega})$ - boundary albedo
 \column{0.48\textwidth}
 \centering
 \begin{equation*}
-\tilde{\psi}_m (\vec{r})  = 
+\tcr{\tilde{\psi}_m} (\vec{r})  = 
 \begin{cases}
 \psi_m^{-} , & \partial K^+ \\
 \psi_m^{-}, & \partial K^- \backslash \partial \mathcal{D} \\
@@ -372,18 +354,19 @@ ${\bf Q}$ - source operator \\
 \begin{frame}[t]\frametitle{Higher-Order FEM Basis Functions}
 \begin{block}{}
 \begin{itemize}
-\item <1-> More processor work per element solve in tranpsort sweep.
-\item <2-> Increased convergence rates:
+\item More processor work per element solve in tranpsort sweep.
+\item Increased convergence rates:
 {
 \begin{equation*}
-|| u - u_h ||_{L_2} = C \, h^{p+1}, \qquad || u - u_h ||_{L_2} = C \, N_{dof}^{-\frac{p+1}{d}}
+|| u - u_h ||_{L_2} = C \, h^{q}, \qquad || u - u_h ||_{L_2} = C \, N_{dof}^{-\frac{q}{d}}
 \end{equation*}
+\vspace{2mm}
+$q = \min(p+1,r)$ \\
+$r$ - solution regularity
 }
 \end{itemize}
 \end{block}
 \centering
-\only<1>
-{
 \vspace{3mm}
 \centering
 \begin{columns}
@@ -400,12 +383,6 @@ Quadratic
 {}\includegraphics[width=0.75\columnwidth]{images/ref_tri_dofs_k3.png} \\
 Cubic
 \end{columns}
-}
-\only<2>
-{
-{}\includegraphics[width=0.45\columnwidth]{images/hConverge.eps} \hspace*{1mm}
-{}\includegraphics[width=0.45\columnwidth]{images/NConverge.eps}
-}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Diffusion Synthetic Acceleration}
@@ -440,24 +417,10 @@ Cubic
 \typeout{POLYFEM}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % POLYFEM SECTION
-\section{POLYFEM}
+\section[POLYFEM]{POLYFEM, a transport solver for arbitrary polygonal grids}
 %%%%%%%%%%%%%%%%%%%
 \subsection{}
 %%%%%%%%%%%%%%%%%%%
-%---------------------------
-\setbeamerfont{frametitle}{size=\normalsize}
-\begin{frame}[t]\frametitle{Polytope Finite Elements}
-\centering
-\begin{block}{2D arbitrary convex/concave polygons}
-\centering
-\includegraphics[width=0.70\textwidth]{images/arbitrary_polygons.png}
-\end{block}
-\vspace{0.5cm}
-\begin{block}{3D convex polyhedra}
-\centering
-\includegraphics[width=0.70\textwidth]{images/arbitrary_polyhedra.png}
-\end{block}
-\end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Finite element architecture}
 \begin{block}{Mass Matrix - element $K$}
@@ -555,16 +518,6 @@ $N_V$ - number of cell vertices
 \centering
 \includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
 \vspace{0.3cm}
-\only<1>{
-\begin{block}{Preserve piecewise linear harmonic maps over triangulations}
-\begin{equation*}
-\frac{\partial^2 u}{\partial x^2} + \frac{\partial^2 u}{\partial y^2} = 0, \qquad u(\vec{r}) = u_0 , \, \vec{r} \in \partial \mathcal{D} 
-\end{equation*} \\
-\vspace{1.0cm}
-$u(\vec{r})$ - piecewise linear function on the cell boundary
-\end{block}
-}
-\only<2>{
 \begin{block}{}
 \begin{equation*}
 \lambda_i^{MV} (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{x}_j - \vec{x}|}
@@ -588,24 +541,12 @@ $\longrightarrow$
 \end{equation*}
 \end{columns}
 \end{block}
-}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Maximum Entropy (ME) Coordinates}
 \centering
 \includegraphics[width=0.40\textwidth]{images/ref_polygon.png}
 \vspace{0.3cm}
-\only<1>{
-\begin{block}{Constrained optimization problem - Shannon Entropy}
-\begin{equation*}
-\max\displaylimits_{\lambda(\vec{x})}  H(\lambda, m), \qquad  H(\lambda, m) = - \sum\displaylimits_{i} \lambda_i (\vec{x}) \ln \left(   \frac{\lambda_i(\vec{x})}{m_i(\vec{x})} \right)
-\end{equation*} \\ \vspace{3mm}
-\begin{equation*}
-\sum\displaylimits_{i} \lambda_i (\vec{x}) = 1, \qquad \sum\displaylimits_{i} \lambda_i (\vec{x}) ( \vec{x}_i - \vec{x} ) = \vec{0}
-\end{equation*}
-\end{block}
-}
-\only<2>{
 \begin{block}{}
 \begin{equation*}
 \lambda_i^{ME} (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = m_j(\vec{x}) \exp(- \omega^* \cdot (\vec{x}_j - \vec{x}))
@@ -616,19 +557,6 @@ $\longrightarrow$
 \mathcal{L} (\lambda, \omega_0, \omega) = - \sum\displaylimits_{i} \lambda_i (\vec{x}) \ln \left(   \frac{\lambda_i(\vec{x})}{m_i(\vec{x})} \right) - \omega_0 \left(  \sum\displaylimits_{i}  \lambda_i (\vec{x}) -1  \right) - \omega \cdot  \left(  \sum\displaylimits_{i}  \lambda_i (\vec{x}) (\vec{x}_i - \vec{x})  \right)
 \end{equation*}}
 \end{block}
-}
-\only<3>{
-\begin{block}{}
-\begin{equation*}
-\lambda_i^{ME} (\vec{x}) = \frac{w_i (\vec{x}) }{ \sum_{j} w_j (\vec{x})}, \qquad w_j (\vec{x}) = m_j(\vec{x}) \exp(- \omega^* \cdot (\vec{x}_j - \vec{x}))
-\end{equation*}
-\end{block}
-\begin{block}{}
-\begin{equation*}
-\omega^* = \text{argmin} \, F(\omega, \vec{x})  \qquad F(\omega, \vec{x}) = \ln \left(  \sum_j w_j (\vec{x})  \right)
-\end{equation*}
-\end{block}
-}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]
@@ -741,7 +669,7 @@ Maximum Entropy
 \subsection{Quadratic Basis Functions on Polygons}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Quadratic Serendipity Basis Functions on 2D Polygons [1]}
+\begin{frame}[t]\frametitle{\small {\em Quadratic Serendipity} Basis Functions on 2D Polygons [1]}
 \begin{block}{}
 \begin{enumerate}
 	\item <1-> Form the linear barycentric functions - \{$\lambda_i$\}
@@ -787,13 +715,13 @@ Serendipity
 }\end{block}
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Pairwise products of the barycentric basis functions - $\mu_{ab} = \lambda_a \lambda_b$}
+\begin{frame}[t]\frametitle{\small Pairwise products of the barycentric basis functions - $\mu_{ab} = \lambda_a \lambda_b$}
 \only<1>{
 \centering
 {}\includegraphics[width=0.75\columnwidth]{images/rand_quad_ab.png} 
 }
 \only<2>{
-\begin{block}{Necessary Constraints}
+\begin{block}{Necessary Constraints - by construction}
 \begin{columns}
 \column{0.62\textwidth}
 \begin{equation*}
@@ -828,7 +756,7 @@ $V+E+D = \frac{n(n+1)}{2} = N_q$
 }
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Eliminate interior nodes to form Serendipity basis}
+\begin{frame}[t]\frametitle{\small Eliminate interior nodes to form Serendipity basis}
 \only<1>
 {
 \centering
@@ -869,37 +797,9 @@ c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)}
 \end{equation*}
 }\end{block}
 }
-\only<3>
-{
-\vspace{-3mm}
-\begin{block}{Constant Constraint}{\footnotesize
-\begin{equation*}
-\begin{aligned}
-\sum\displaylimits_{ii \in V} c_{aa}^{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{aa}^{i(i+1)} &= 1 , \qquad \forall aa \in V \\
-\sum\displaylimits_{ii \in V} c_{ab}^{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} &= 2 , \qquad \forall ab \in E \cup D
-\end{aligned}
-\end{equation*}
-}\end{block}
-\begin{block}{Linear Constraint}{\footnotesize
-\begin{equation*}
-\begin{aligned}
-\sum\displaylimits_{ii \in V} c_{aa}^{ii} \vec{x}_{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{aa}^{i(i+1)} \vec{x}_{i (i+1)} &= \vec{x}_{aa} , \qquad \forall aa \in V \\
-\sum\displaylimits_{ii \in V} c_{ab}^{ii} \vec{x}_{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} \vec{x}_{i (i+1)} &= 2 \vec{x}_{ab} , \qquad \forall ab \in E \cup D
-\end{aligned}
-\end{equation*}
-}\end{block}
-\begin{block}{Quadratic Constraint}{\footnotesize
-\begin{equation*}
-\begin{aligned}
-\sum\displaylimits_{ii \in V} c_{aa}^{ii} \vec{x}_{i} \vec{x}_{i}^T + \sum\displaylimits_{i(i+1) \in E} c_{aa}^{i(i+1)} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) &= \vec{x}_{a} \vec{x}_{a}^T , \qquad &\forall aa \in V \\
-\sum\displaylimits_{ii \in V} c_{ab}^{ii} \vec{x}_{i} \vec{x}_{i}^T + \sum\displaylimits_{i(i+1) \in E} c_{ab}^{i(i+1)} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) &= \vec{x}_{a} \vec{x}_{b}^T + \vec{x}_{b} \vec{x}_{a}^T, \qquad &\forall ab \in E \cup D
-\end{aligned}
-\end{equation*}
-}\end{block}
-}
 \end{frame}
 %---------------------------
-\begin{frame}[t]\frametitle{Eliminate interior nodes to form Serendipity basis}
+\begin{frame}[t]\frametitle{\small Eliminate interior nodes to form Serendipity basis}
 {\small
 \vspace{-3mm}
 \begin{block}{Reduction Problem}
@@ -924,14 +824,12 @@ $\mathbb{A}'$ - $(2n \times \frac{n(n-3)}{2})$ constraint matrix
 \sum\displaylimits_{ii \in V} c_{ab}^{ii} \vec{x}_{i} \vec{x}_{i}^T + \sum\displaylimits_{i(i+1) \in E} c_{ab}^{i(i+1)} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) &= \vec{x}_{a} \vec{x}_{b}^T + \vec{x}_{b} \vec{x}_{a}^T
 \end{aligned}
 \end{equation*}
-\vspace{2mm}
-Use Moore-Penrose Pseudo-Inverse: $\mathbb{B}^* = \mathbb{B}^T (\mathbb{B} \mathbb{B}^T)^{-1}$
 \end{block}
 }
 }
 \end{frame}
 %---------------------------
-\begin{frame}[t]{Special case - bilinear coordinates on the unit square}
+\begin{frame}[t]{\small Special case - bilinear coordinates on the unit square}
 \vspace{-0.2cm}
 \begin{block}{Bilinear coordinates and quadratic extension}{\footnotesize
 \vspace{-0.15cm}
@@ -1001,7 +899,7 @@ Use Moore-Penrose Pseudo-Inverse: $\mathbb{B}^* = \mathbb{B}^T (\mathbb{B} \math
 \begin{frame}[t]
 \only<1>
 {
-\frametitle{Quadratic Basis Functions on the Unit Square}
+\frametitle{\small Quadratic Basis Functions on the Unit Square}
 \begin{columns}
 \column{0.50\textwidth}
 \centering
@@ -1019,7 +917,7 @@ Maximum Entropy
 }
 \only<2>
 {
-\frametitle{Quadratic Basis Functions on the Unit Square}
+\frametitle{\small Quadratic Basis Functions on the Unit Square}
 \begin{columns}
 \column{0.50\textwidth}
 \centering
@@ -1037,7 +935,7 @@ Maximum Entropy
 }
 \only<3>
 {
-\frametitle{Quadratic Basis Functions on the Degenerate Pentagon}
+\frametitle{\small Quadratic Basis Functions on the Degenerate Pentagon}
 \begin{columns}
 \column{0.333\textwidth}
 \centering
@@ -1068,122 +966,13 @@ Maximum Entropy
 \begin{frame}[t]\frametitle{Results Summary}
 \begin{block}{}
 \begin{enumerate}
-\item Linear and quadratic basis functions capture the thick diffusion limit.
 \item Linear basis functions capture exactly-linear transport solutions.
 \item Quadratic basis functions capture exactly-quadratic transport solutions.
 \item Convergence rate analysis using the Method of Manufactured Solutions. 
 \item Convergence rate analysis bound by the solution regularity.
+\item Linear and quadratic basis functions capture the thick diffusion limit.
 \end{enumerate}
 \end{block}
-\end{frame}
-% --------------------------------------------
-\begin{frame}[t]
-\only<1>
-{
-\frametitle{\small Thick Diffusion Limit}{\small
-\vspace{-3mm}
-\begin{block}{Sufficient Basis Function Properties for Full Resolution}
-\begin{itemize}
-\item Locality of basis function integration on faces
-\item Surface matching of basis functions across faces
-\end{itemize}
-\end{block}
-\vspace{-3mm}
-\begin{block}{Test Problem}
-\begin{equation*}
-\vec{\Omega} \cdot \vec{\nabla} \psi + \frac{1}{\epsilon} \psi =  \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\phi}{4 \pi} +  \frac{\epsilon}{4 \pi},  \qquad \frac{\epsilon}{3} {\nabla}^2 \phi + \epsilon  \phi =  \epsilon
-\end{equation*}
-\vspace{1mm}
-\begin{equation*}
-\begin{aligned}
-	\sigma_t &\rightarrow \frac{1}{\epsilon}  \qquad
-	\sigma_a &\rightarrow \epsilon  \qquad
-	\sigma_s &\rightarrow \left( \frac{1}{\epsilon} - \epsilon   \right)  \qquad
-	\frac{Q_0}{4 \pi} &\rightarrow  \frac{\epsilon}{4 \pi}
-\end{aligned}
-\end{equation*}
-\vspace{-1mm}
-\begin{itemize}
-\item Vacuum boundaries
-\item $S_8$ level-symmetric quadrature
-\item CFEM diffusion with ``standard'' stiffness matrix
-\end{itemize}
-\end{block}
-\vspace{-3mm}
-\begin{block}{Convergence}
-\begin{itemize}
-\item $|| \phi_D - \phi_T||_{L_2} \propto \epsilon$
-\item PWL converges to an alternate diffusion solution
-\end{itemize}
-\end{block}
-}
-}
-\only<2>
-{
-\frametitle{Thick Diffusion Limit - \tcr{$\epsilon = 10^{-1}$}}
-\begin{columns}
-\column{0.5\textwidth}
-\centering
-{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1_ep=1e-1.png}\\
-Transport, $p=1$
-{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2_ep=1e-1.png}\\
-Transport, $p=2$
-\column{0.5\textwidth}
-\centering
-{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1.png}\\
-Diffusion, $p=1$
-{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2.png}\\
-Diffusion, $p=2$
-\end{columns}
-}
-\only<3>
-{
-\frametitle{Thick Diffusion Limit - \tcr{$\epsilon = 10^{-3}$}}
-\begin{columns}
-\column{0.5\textwidth}
-\centering
-{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1_ep=1e-3.png}\\
-Transport, $p=1$
-{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2_ep=1e-3.png}\\
-Transport, $p=2$
-\column{0.5\textwidth}
-\centering
-{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1.png}\\
-Diffusion, $p=1$
-{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2.png}\\
-Diffusion, $p=2$
-\end{columns}
-}
-\only<4>
-{
-\frametitle{Thick Diffusion Limit - \tcr{$\epsilon = 10^{-5}$}}
-\begin{columns}
-\column{0.5\textwidth}
-\centering
-{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1_ep=1e-5.png}\\
-Transport, $p=1$
-{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2_ep=1e-5.png}\\
-Transport, $p=2$
-\column{0.5\textwidth}
-\centering
-{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1.png}\\
-Diffusion, $p=1$
-{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2.png}\\
-Diffusion, $p=2$
-\end{columns}
-}
-%\only<5>
-%{
-%\frametitle{Cartesian Mesh Convergence Rate}
-%\centering
-%{}\includegraphics[width=0.80\columnwidth]{images/DLConvergenceError_Cartesian.eps}
-%}
-\only<5>
-{
-\frametitle{Polygonal Mesh Convergence Rate}
-\centering
-{}\includegraphics[width=0.80\columnwidth]{images/DLConvergenceError_SqPoly.eps}
-}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]
@@ -1430,7 +1219,7 @@ $r$ - solution regularity
 \item Incident boundary flux $45^{\circ}$-downwards
 	\begin{enumerate}
 	\item First configuration: left-face incidence only
-	\item Second configuration: left-face and top-face incidence
+	\item Second configuration: left-face and top-face incidence (backup slides)
 	\end{enumerate}
 \end{enumerate}
 \end{block}
@@ -1443,44 +1232,19 @@ $r$ - solution regularity
 }
 \only<2>
 {
-\frametitle{Incident Flux Configuration}
-\vspace{1cm}
-\hspace*{2.75cm}
-{}\includegraphics[width=0.45\textwidth]{images/PA_Shading.png}
+\frametitle{Left-Face Incidence Solutions - $H^{1/2} (\mathcal{D})$}
+\begin{columns}
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.65\textwidth]{images/PALeftSol_Cart.png} \\
+{}\includegraphics[width=0.65\textwidth]{images/PALeftSol_Poly.png}
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.65\textwidth]{images/PALeftSol_Tri.png} \\
+{}\includegraphics[width=0.65\textwidth]{images/PALeftSol_SplitPoly.png}
+\end{columns}
 }
 \only<3>
-{
-\frametitle{Non-Aligned Meshes}
-\vspace{0.75cm}
-\hspace*{0.25cm}
-{}\includegraphics[width=0.475\textwidth]{images/PAMesh_Cart.png} 
-{}\includegraphics[width=0.475\textwidth]{images/PAMesh_Poly.png}
-}
-\only<4>
-{
-\frametitle{Aligned Meshes}
-\vspace{0.75cm}
-\hspace*{0.25cm}
-{}\includegraphics[width=0.475\textwidth]{images/PAMesh_Tri.png} 
-{}\includegraphics[width=0.475\textwidth]{images/PAMesh_SplitPoly.png}
-}
-\only<5>
-{
-\frametitle{Left-Face Incidence Solutions - $H^{1/2} (\mathcal{D})$}
-\vspace{0.75cm}
-\hspace*{0.25cm}
-{}\includegraphics[width=0.475\textwidth]{images/PALeftSol_Poly.png} 
-{}\includegraphics[width=0.475\textwidth]{images/PALeftSol_SplitPoly.png}
-}
-\only<6>
-{
-\frametitle{Left-Face and Top-Face Incidence Solutions -  $H^{3/2} (\mathcal{D})$}
-\vspace{0.75cm}
-\hspace*{0.25cm}
-{}\includegraphics[width=0.475\textwidth]{images/PALeftTopSol_Poly.png} 
-{}\includegraphics[width=0.475\textwidth]{images/PALeftTopSol_SplitPoly.png}
-}
-\only<7>
 {
 \frametitle{Mesh-Aligned - Left-Face Incidence: $H^{p+1} (\mathcal{D})$}
 \vspace{1.00cm}
@@ -1495,7 +1259,7 @@ $\sigma_t = 1$
 $\sigma_t = 50$
 \end{columns}
 }
-\only<8>
+\only<4>
 {
 \frametitle{NOT Mesh-Aligned - Left-Face Incidence: $H^{1/2} (\mathcal{D})$}
 \vspace{1.00cm}
@@ -1510,39 +1274,93 @@ $\sigma_t = 1$
 $\sigma_t = 50$
 \end{columns}
 }
-\only<9>
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]
+\only<1>
 {
-\frametitle{Mesh-Aligned - Left-Face and Top-Face Incidence: $H^{p+1} (\mathcal{D})$}
-\vspace{1.00cm}
-\begin{columns}[c]
+\frametitle{\small Thick Diffusion Limit}{\small
+\vspace{-3mm}
+\begin{block}{Sufficient Basis Function Properties for Full Resolution}
+\begin{itemize}
+\item Locality of basis function integration on faces
+\item Surface matching of basis functions across faces
+\end{itemize}
+\end{block}
+\vspace{-3mm}
+\begin{block}{Test Problem}
+\begin{equation*}
+\vec{\Omega} \cdot \vec{\nabla} \psi + \frac{1}{\epsilon} \psi =  \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\phi}{4 \pi} +  \frac{\epsilon}{4 \pi},  \qquad \frac{\epsilon}{3} {\nabla}^2 \phi + \epsilon  \phi =  \epsilon
+\end{equation*}
+\vspace{1mm}
+\begin{equation*}
+\begin{aligned}
+	\sigma_t &\rightarrow \frac{1}{\epsilon}  \qquad
+	\sigma_a &\rightarrow \epsilon  \qquad
+	\sigma_s &\rightarrow \left( \frac{1}{\epsilon} - \epsilon   \right)  \qquad
+	\frac{Q_0}{4 \pi} &\rightarrow  \frac{\epsilon}{4 \pi}
+\end{aligned}
+\end{equation*}
+\vspace{-1mm}
+\begin{itemize}
+\item Vacuum boundaries
+\item $S_8$ level-symmetric quadrature
+\item CFEM diffusion with ``standard'' stiffness matrix
+\end{itemize}
+\end{block}
+\vspace{-3mm}
+\begin{block}{Convergence}
+\begin{itemize}
+\item $|| \phi_D - \phi_T||_{L_2} \propto \epsilon$
+\item PWL converges to an alternate diffusion solution
+\end{itemize}
+\end{block}
+}
+}
+\only<2>
+{
+\frametitle{Thick Diffusion Limit - \tcr{Linear MAXENT}}
+\begin{columns}
 \column{0.5\textwidth}
 \centering
-{}\includegraphics[width=\textwidth]{images/PAErr_LeftTop_SplitPoly_sig1.eps} \\
-$\sigma_t = 1$
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1_ep=1e-1.png}\\
+Transport, $\epsilon=10^{-1}$
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1_ep=1e-3.png}\\
+Transport, $\epsilon=10^{-3}$
 \column{0.5\textwidth}
 \centering
-{}\includegraphics[width=\textwidth]{images/PAErr_LeftTop_SplitPoly_sig50.eps} \\
-$\sigma_t = 50$
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1_ep=1e-2.png}\\
+Transport, $\epsilon=10^{-2}$
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=1.png}\\
+Diffusion
 \end{columns}
 }
-\only<10>
+\only<3>
 {
-\frametitle{NOT Mesh-Aligned -  Left-Face and Top-Face Incidence: $H^{3/2} (\mathcal{D})$}
-\vspace{1.00cm}
-\begin{columns}[c]
+\frametitle{Thick Diffusion Limit - \tcr{Quadratic MAXENT}}
+\begin{columns}
 \column{0.5\textwidth}
 \centering
-{}\includegraphics[width=\textwidth]{images/PAErr_LeftTop_Poly_sig1.eps} \\
-$\sigma_t = 1$
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2_ep=1e-1.png}\\
+Transport, $\epsilon=10^{-1}$
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2_ep=1e-3.png}\\
+Transport, $\epsilon=10^{-3}$
 \column{0.5\textwidth}
 \centering
-{}\includegraphics[width=\textwidth]{images/PAErr_LeftTop_Poly_sig50.eps} \\
-$\sigma_t = 50$
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2_ep=1e-2.png}\\
+Transport, $\epsilon=10^{-2}$
+{}\includegraphics[width=0.75\columnwidth]{images/Sq_poly_MAXENT_k=2.png}\\
+Diffusion
 \end{columns}
+}
+\only<4>
+{
+\frametitle{Polygonal Mesh Convergence Rate}
+\centering
+{}\includegraphics[width=0.80\columnwidth]{images/DLConvergenceError_SqPoly.eps}
 }
 \end{frame}
 % --------------------------------------------
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \typeout{***********************************************************************************}
@@ -1635,12 +1453,12 @@ a( \Phi, b)  &= \Big<  D \vec{\nabla}  \Phi , \vec{\nabla} b  \Big>_{\mathcal{D}
 \end{align*} }
 \end{block}
 \begin{block}{}{\footnotesize
-[2] D.N. Arnold. ``An interior penalty finite element method with discontinuous elements.'' {\em SIAM J. Numer. Anal.}, 19:742-760, (1982).
+[2] D.N. Arnold. ``An interior penalty finite element method with \tcr{discontinuous} elements.'' {\em SIAM J. Numer. Anal.}, 19:742-760, (1982).
 }\end{block}
 \end{frame}
 %---------------------------
-\begin{frame}[t]\frametitle{SIP Penalty Coefficient}
-\begin{block}{}{
+\begin{frame}[t]\frametitle{Symmetric Interior Penalty (SIP) Form}
+\begin{block}{SIP Penalty Coefficient}{
 	\begin{equation*}
 		\kappa_e^{SIP} \equiv 
 		\begin{cases}
@@ -1649,79 +1467,41 @@ a( \Phi, b)  &= \Big<  D \vec{\nabla}  \Phi , \vec{\nabla} b  \Big>_{\mathcal{D}
 		\end{cases}
 	\end{equation*}}
 	\begin{equation*}
-		C_B = c p (p+1)
+		C_B = c p (p+1), \qquad u^{\pm} = \lim_{s \rightarrow 0^{\pm}} u ({\bf r} + s {\bf n})
 	\end{equation*}
-\end{block}
-\begin{block}{}
+
+
 $c$ - user defined constant ($c \geq 1$) \\
 $p$ - polynomial order of the finite element basis ($1,2,3,...$) \\
 $D^{(+/-)}$ - diffusion coefficient defined on the positive/negative side of a face\\
 $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a face
 \end{block}
-\begin{block}{}
-	\begin{equation*}
-		u^{\pm} = \lim_{s \rightarrow 0^{\pm}} u ({\bf r} + s {\bf n})
-	\end{equation*}
+\begin{block}{SIP Properties}
+\begin{itemize}
+\item Symmetric Positive Definite (SPD)
+\item Efficiently solved with Preconditioned Conjugate Gradient (PCG) and Algebraic MultiGrid (AMG) preconditioner
+\end{itemize}
 \end{block}
 \end{frame}
 %---------------------------
 \begin{frame}[t]
 \frametitle{Orthogonal Projection}
-\only<1>
-{
 \vspace{1cm}
 {}\includegraphics[width=0.425\textwidth]{images/Orth_proj_square.png} \hfill
 {}\includegraphics[width=0.425\textwidth]{images/Orth_proj_pentagon.png}
-}
-\only<2>
-{
-\begin{block}{2D Orthogonal Projections}
-\begin{table}
-\centering
-\begin{tabular}{|c|c|c|c|c|}
-	\hline
-	Number of Vertices & 3 & 4 & $>4$ and even& $>4$ and odd \\
-	\hline
-	$h$ & $2 \frac{A_K}{L_f}$ & $\frac{A_K}{L_f}$ & $4 \frac{A_K}{P_K}$ & $2 \frac{A_K}{P_K} + \sqrt{\frac{2 A_K}{N_K \sin(\frac{2 \pi}{N_K})}}$ \\
-	\hline
-\end{tabular}
-\end{table}
-\vspace{3mm}
-$N_K$ - \# of vertices for polygon $K$\\
-$A_K$ - Area of polygon $K$\\
-$L_f$  - Length of face $f$\\
-$P_K$ - Perimeter for polygon $K$
-\end{block}
-\begin{block}{3D Orthogonal Projections}
-\begin{table}
-\centering
-\begin{tabular}{|c|c|c|c|}
-	\hline
-	Number of Faces & 4 & 6 & otherwise \\
-	\hline
-	$h$ & $3 \frac{V_K}{A_f}$ & $\frac{V_K}{A_f}$ & $6 \frac{V_K}{SA_K}$  \\ [1ex]
-	\hline
-\end{tabular}
-\end{table}
-\vspace{3mm}
-$V_K$  - Volume of polyhedron $K$\\
-$A_f$   - Area of face $f$\\
-$SA_K$ - Surface area of polyhedron $K$
-\end{block}
-}
 \end{frame}
 %---------------------------
 %%%%%%%%%%%%%%%%%%%
 \subsection{Modified Interior Penalty Method}
 %%%%%%%%%%%%%%%%%%%
 %---------------------------
-\begin{frame}[t]\frametitle{Modified Interior Penalty (MIP) Form}
-
+\begin{frame}[t]\frametitle{\small Modified Interior Penalty (MIP) Form}
+\vspace{-3mm}
 Recall the DSA equation:
 \begin{equation*}
 {\bf \tilde{A}} \tcr{\delta \phi}^{(\ell+1/2)} = \tilde{{\bf R}}^{(\ell+1/2)}
 \end{equation*}
-
+\vspace{-4mm}
 \begin{block}{Diffusion Form}{\footnotesize
 \begin{gather*}
 \Big<  D \vec{\nabla} \tcr{\delta \Phi} , \vec{\nabla} b  \Big>_{\mathcal{D}} 
@@ -1740,34 +1520,6 @@ Recall the DSA equation:
 	\end{block}
 \end{frame}
 %---------------------------
-%%%%%%%%%%%%%%%%%%%
-%\subsection{Linear Basis Functions on Polyhedra}
-%%%%%%%%%%%%%%%%%%%
-% --------------------------------------------
-\setbeamerfont{frametitle}{size=\large}
-\begin{frame}[t]{Linear Basis Functions on 3D Polyhedra}
-\begin{block}{Linear basis functions and convex polyhedra only for 3D}{\small
-\begin{itemize}
-\item The 2D quadratic serendipity formulation is more arduous in 3D
-\item Intercell coupling is not straightforward for concave polyhedra
-\item Focus on 3D PWL functions
-\item Focus on 3D parallelepipeds and extruded convex polygons (convex prisms)
-\end{itemize}}
-\end{block}
-\begin{block}{3D PWL basis functions}{\small
-\begin{equation*}
-b_i (\vec{x})  = t_i  (\vec{x})  + \sum_{f=1}^{F_i} \beta_f^i  t_f (\vec{x}) + \alpha_i t_c  (\vec{x}) 
-\end{equation*}
-}\end{block}
-\begin{block}{}{\footnotesize
-$t_i$ - standard 3D linear function for a tet $(i,i+1,f_c,K_c)$; 1 at vertex $i$, linearly decreases to 0 to the cell center, each adjoining face center, and each adjoining vertex\\ \vspace{0.5mm}
-$t_c$ - 3D tent function; 1 at cell center, linearly decreases to 0 at all vertices and face centers \\ \vspace{0.5mm}
-$t_f$ - face tent function; 1 at face center, linearly decreases to 0 at each face vertex and cell center\\ \vspace{0.5mm}
-$\alpha_i = \frac{1}{N_V}$ - weight parameter for vertex $i$\\ \vspace{0.5mm}
-$\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
-}\end{block}
-\end{frame}
-% --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
 \subsection{Results}
 %%%%%%%%%%%%%%%%%%%
@@ -1825,47 +1577,23 @@ $\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
 \only<1>
 {
 \frametitle{Unit Cube PWL Fourier Analysis}
-\vspace{1cm}
-\begin{columns}
-\column{0.5\textwidth}
+\vspace{6mm}
 \centering
-\includegraphics[width=\textwidth]{images/SI_MIP_hex_C=1_PWLD_LS.eps}\\
-$c=1$
-\column{0.5\textwidth}
-\centering
-\includegraphics[width=\textwidth]{images/SI_MIP_hex_C=4_PWLD_LS.eps}\\
-$c=4$
-\end{columns}
+\includegraphics[width=0.65\textwidth]{images/SI_MIP_hex_C=4_PWLD_LS.eps}
 }
 \only<2>
 {
 \frametitle{3D PWL Fourier Analysis - Aspect Ratios}
-\vspace{1cm}
-\begin{columns}
-\column{0.5\textwidth}
+\vspace{6mm}
 \centering
-\includegraphics[width=\textwidth]{images/SI_MIP_hex_PWLD1_AR1.eps}\\
-$c=1,$ $S_8$
-\column{0.5\textwidth}
-\centering
-\includegraphics[width=\textwidth]{images/SI_MIP_hex_PWLD1_AR4.eps}\\
-$c=4,$ $S_8$
-\end{columns}
+\includegraphics[width=0.65\textwidth]{images/SI_MIP_hex_PWLD1_AR4.eps}
 }
 \only<3>
 {
 \frametitle{Numerical 3D PWL Results}
-\vspace{1cm}
-\begin{columns}
-\column{0.5\textwidth}
+\vspace{6mm}
 \centering
-\includegraphics[width=\textwidth]{images/SI_MIP_hex_C=1_PWLD_LS_wNSR.eps}\\
-$c=1$
-\column{0.5\textwidth}
-\centering
-\includegraphics[width=\textwidth]{images/SI_MIP_hex_C=4_PWLD_LS_wNSR.eps}\\
-$c=4$
-\end{columns}
+\includegraphics[width=0.65\textwidth]{images/SI_MIP_hex_C=4_PWLD_LS_wNSR.eps}
 }
 \end{frame}
 % --------------------------------------------
@@ -1977,7 +1705,7 @@ $c=4$
 \end{block}
 \end{frame}
 %---------------------------
-\begin{frame}[t]\frametitle{Three two-grid-like acceleration methodologies (implemented in PDT)}{\footnotesize
+\begin{frame}[t]\frametitle{\small Three two-grid-like acceleration methodologies (implemented in PDT)}{\footnotesize
 \vspace{-2.5mm}
 \begin{block}{Standard Two-Grid Acceleration (TG) - Morel 1993}
 \begin{itemize}
@@ -2028,12 +1756,41 @@ $c=4$
 \begin{block}{Spectral Distribution and Residual}{\footnotesize
 \begin{equation*}
 \begin{aligned}
-&\text{TG:} \qquad    & \left(  {\bf \Sigma_t} - {\bf S_{L}} - {\bf S_{D}} \right)^{-1} {\bf S_{U}} {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}} \qquad &\sum\limits_{g=\tcm{1}}^G \left[ \sum\limits_{g'=\tcr{g+1}}^G \sigma_{s,0}^{gg'} \left( \phi_{g,0}^{(k+1/2)} - \phi_{g,0}^{(k)}  \right)\right]\\
-&\text{MTG:} \qquad & \left(  {\bf \Sigma_t} - {\bf S_{L}}  \right)^{-1} \left( {\bf S_{D}} + {\bf S_{U}} \right) {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}} \qquad &\sum\limits_{g=\tcm{1}}^G \left[ \sum\limits_{g'=\tcb{g}}^G \sigma_{s,0}^{gg'} \left( \phi_{g,0}^{(k+1/2)} - \phi_{g,0}^{(k)}  \right)\right]\\
-&\text{MJA:} \qquad & {\bf \Sigma_t}^{-1} \left( {\bf S_L} + {\bf S_D} +{\bf S_U} \right) {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}} \qquad &\sum\limits_{g=\tcm{1}}^G \left[ \sum\limits_{g'=\tcm{1}}^G \sigma_{s,0}^{gg'} \left( \phi_{g,0}^{(k+1/2)} - \phi_{g,0}^{(k)}  \right)\right]\\
+&\text{TG:} \qquad    & \left(  {\bf \Sigma_t} - {\bf S_{L}} - {\bf S_{D}} \right)^{-1} {\bf S_{U}} {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}}, \qquad &\Big< R \Big>=\sum\limits_{g=\tcm{1}}^G \left[ \sum\limits_{g'=\tcr{g+1}}^G \sigma_{s,0}^{gg'} \left( \phi_{g,0}^{(k+1/2)} - \phi_{g,0}^{(k)}  \right)\right]\\
+&\text{MTG:} \qquad & \left(  {\bf \Sigma_t} - {\bf S_{L}}  \right)^{-1} \left( {\bf S_{D}} + {\bf S_{U}} \right) {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}}, \qquad &\Big< R \Big>=\sum\limits_{g=\tcm{1}}^G \left[ \sum\limits_{g'=\tcb{g}}^G \sigma_{s,0}^{gg'} \left( \phi_{g,0}^{(k+1/2)} - \phi_{g,0}^{(k)}  \right)\right]\\
+&\text{MJA:} \qquad & {\bf \Sigma_t}^{-1} \left( {\bf S_L} + {\bf S_D} +{\bf S_U} \right) {\bf \tcr{\xi}} = \rho {\bf \tcr{\xi}}, \qquad &\Big< R \Big>=\sum\limits_{g=\tcm{1}}^G \left[ \sum\limits_{g'=\tcm{1}}^G \sigma_{s,0}^{gg'} \left( \phi_{g,0}^{(k+1/2)} - \phi_{g,0}^{(k)}  \right)\right]\\
 \end{aligned}
 \end{equation*}
 }\end{block}
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]\frametitle{\small Graphite Fourier Analysis}
+\only<1>
+{
+\vspace{1cm}
+\begin{columns}
+\column{0.5\textwidth}
+\centering
+\includegraphics[width=1.00\textwidth]{images/FA_graphite_TG.eps}\\
+Two-Grid
+\column{0.5\textwidth}
+\centering
+\includegraphics[width=1.00\textwidth]{images/FA_graphite_MTG.eps}\\
+Modified Two-Grid
+\end{columns}
+}
+\only<2>
+{
+\vspace{1cm}
+\begin{columns}
+\column{0.25\textwidth}
+\column{0.50\textwidth}
+\centering
+\includegraphics[width=1.00\textwidth]{images/FA_graphite_MJA.eps}\\
+Multigroup Jacobi
+\column{0.25\textwidth}
+\end{columns}
+}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{\small Jacobi + Inner Convergence}
@@ -2070,29 +1827,53 @@ $c=4$
 }
 \end{frame}
 %---------------------------
+\begin{frame}[t]
+\only<1>
+{
+\frametitle{\small Graphite Two-Grid (TG) Flat Mode Eigenvalues}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_Graph_FA_TG.eps}
+}
+\only<2>
+{
+\frametitle{\small Graphite Modified Two-Grid (MTG) Flat Mode Eigenvalues}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_Graph_FA_MTG.eps}
+}
+\only<3>
+{
+\frametitle{\small Graphite Multigroup Jacobi Acceleration (MJA) Flat Mode Eigenvalues}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_Graph_FA_MJA.eps}
+}
+\only<4>
+{
+\frametitle{\small Graphite Multigroup Jacobi with Inner Acceleration (MJIA) Flat Mode Eigenvalues}
+\hspace*{1.1cm}
+\includegraphics[width=0.75\textwidth]{images/IM1_Graph_FA_MJIA.eps}
+}
+\end{frame}
+%---------------------------
 %%%%%%%%%%%%%%%%%%%
 \subsection{IM1 Results}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
 \begin{frame}[t]\frametitle{IM1 Problem}
-\begin{block}{Iterative Procedures}
+\begin{columns}
+\column{0.55\textwidth}
+\vspace{-3cm}
+\begin{block}{}{\small
 \begin{itemize}
+	\item Calibration of impurities in graphite bars
 	\item 99 energy groups - 42 fast and 57 thermal
-	\item Fast groups organized into 11 group sets to maximize downscatter
-	\item Gauss-Seidel iterations (TG and MTG)
-	\begin{itemize}
-		\item Outer iterations march through thermal groups 1 at a time
-		\item No thermal group parallelization
-		\item Acceleration after each outer iteration
-	\end{itemize}
-	\item Jacobi iterations (MG Jacobi)
-	\begin{itemize}
-		\item All thermal groups in 1 group set
-		\item Concurrent sweeping of all thermal groups
-		\item Acceleration after each sweep of thermal group set
-	\end{itemize}
+	\item Fast groups organized into 11 group sets
+	\item Other materials include HDPE, Borated-HDPE, wood, air, AmBe, BF3, Boral, and steel
 \end{itemize}
-\end{block}
+}\end{block}
+\column{0.45\textwidth}
+\centering
+\includegraphics[width=0.90\textwidth]{images/IM1_exp_setup_crop.jpg}
+\end{columns}
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]
@@ -2123,41 +1904,7 @@ Air     &0.7580&0.5282&0.8121&0.7828&0.8845&0.7896&0.7166\\
 \end{table}
 }\end{frame}
 % --------------------------------------------
-\begin{frame}[t]
-\only<1>
-{
-\frametitle{\small Graphite Two-Grid Flat Mode Eigenvalues}
-\hspace*{1.1cm}
-\includegraphics[width=0.75\textwidth]{images/IM1_Graph_FA_TG.eps}
-}
-\only<2>
-{
-\frametitle{\small Graphite Modified Two-Grid Flat Mode Eigenvalues}
-\hspace*{1.1cm}
-\includegraphics[width=0.75\textwidth]{images/IM1_Graph_FA_MTG.eps}
-}
-\only<3>
-{
-\frametitle{\small Graphite Multigroup Jacobi Acceleration Flat Mode Eigenvalues}
-\hspace*{1.1cm}
-\includegraphics[width=0.75\textwidth]{images/IM1_Graph_FA_MJA.eps}
-}
-\only<4>
-{
-\frametitle{\small Graphite Multigroup Jacobi with Inner Acceleration Flat Mode Eigenvalues}
-\hspace*{1.1cm}
-\includegraphics[width=0.75\textwidth]{images/IM1_Graph_FA_MJIA.eps}
-}
-\end{frame}
-% --------------------------------------------
-\begin{frame}[t]\frametitle{2D Variant Results}{\footnotesize
-\only<1>
-{
-\hspace*{1.75cm}
-{}\includegraphics[width=0.60\textwidth]{images/2D_IM1_Variant_Layout.png}
-}
-\only<2>
-{
+\begin{frame}[t]\frametitle{\small 2D Variant Results}{\footnotesize
 \begin{block}{Two-Grid Results - $10^{-7}$ inner tolerance}
 \begin{table}
 \begin{tabular}{|c|c|c|c|}
@@ -2200,10 +1947,17 @@ GMRES  & 118 & 6,726 &  8.65 \\ \hline
 \end{table}
 \end{block}
 }
-}
 \end{frame}
 % --------------------------------------------
-\begin{frame}[t]\frametitle{3D IM1 Results}{\footnotesize
+\begin{frame}[t]\frametitle{\small 3D IM1 Results}{\footnotesize
+\only<1>
+{
+\hspace*{1.75cm}
+\centering
+{}\includegraphics[width=0.45\textwidth]{images/IM1_configuration_Rev1.png}
+}
+\only<2>
+{
 \vspace{-2mm}
 \begin{block}{Two-Grid Results}
 \begin{table}
@@ -2247,6 +2001,7 @@ SI+DSA & 256 &  14,592 & 11.2 \\ \hline
 \end{table}
 \end{block}
 }
+}
 \end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -2268,7 +2023,7 @@ SI+DSA & 256 &  14,592 & 11.2 \\ \hline
 \item Satisfies properties for the thick diffusion limit
 \item $H^{p+1}$ convergence for regular transport solutions
 \item $H^{1/2}$ convergence for irregular discontinuous solutions
-\item $H^{3/2}$ convergence for irregular continuous solutions
+\item $H^{3/2}$ convergence for irregular continuous solutions (in backup)
 \end{enumerate}
 \end{block}
 }
@@ -2355,7 +2110,40 @@ A special acknowledgment to the Department of Energy Rickover Fellowship Program
 \typeout{Backup Slides}
 \section{Backup Slides}
 %%%%%%%%%%%%%%%%%%%
+\subsection{Additional POLYFEM Theory}
+%%%%%%%%%%%%%%%%%%%
+% --------------------------------------------
+\begin{frame}[t]\frametitle{\small $\mathbb{A}$ matrix constraints}
+\vspace{-3mm}
+\begin{block}{Constant Constraint}{\footnotesize
+\begin{equation*}
+\begin{aligned}
+\sum\displaylimits_{ii \in V} c_{aa}^{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{aa}^{i(i+1)} &= 1 , \qquad \forall aa \in V \\
+\sum\displaylimits_{ii \in V} c_{ab}^{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} &= 2 , \qquad \forall ab \in E \cup D
+\end{aligned}
+\end{equation*}
+}\end{block}
+\begin{block}{Linear Constraint}{\footnotesize
+\begin{equation*}
+\begin{aligned}
+\sum\displaylimits_{ii \in V} c_{aa}^{ii} \vec{x}_{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{aa}^{i(i+1)} \vec{x}_{i (i+1)} &= \vec{x}_{aa} , \qquad \forall aa \in V \\
+\sum\displaylimits_{ii \in V} c_{ab}^{ii} \vec{x}_{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} \vec{x}_{i (i+1)} &= 2 \vec{x}_{ab} , \qquad \forall ab \in E \cup D
+\end{aligned}
+\end{equation*}
+}\end{block}
+\begin{block}{Quadratic Constraint}{\footnotesize
+\begin{equation*}
+\begin{aligned}
+\sum\displaylimits_{ii \in V} c_{aa}^{ii} \vec{x}_{i} \vec{x}_{i}^T + \sum\displaylimits_{i(i+1) \in E} c_{aa}^{i(i+1)} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) &= \vec{x}_{a} \vec{x}_{a}^T , \qquad &\forall aa \in V \\
+\sum\displaylimits_{ii \in V} c_{ab}^{ii} \vec{x}_{i} \vec{x}_{i}^T + \sum\displaylimits_{i(i+1) \in E} c_{ab}^{i(i+1)} \left(  \vec{x}_{i} \vec{x}_{i+1}^T + \vec{x}_{i+1} \vec{x}_{i}^T  \right) &= \vec{x}_{a} \vec{x}_{b}^T + \vec{x}_{b} \vec{x}_{a}^T, \qquad &\forall ab \in E \cup D
+\end{aligned}
+\end{equation*}
+}\end{block}
+\end{frame}
+% --------------------------------------------
+%%%%%%%%%%%%%%%%%%%
 \subsection{Additional POLYFEM Results}
+%%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Exactly-Linear Transport Solutions}
 \only<1>
@@ -2448,11 +2236,116 @@ A special acknowledgment to the Department of Energy Rickover Fellowship Program
 }
 \end{frame}
 % --------------------------------------------
+\begin{frame}[t]
+\only<1>
+{
+\frametitle{Left-Face Incidence Solutions - $H^{1/2} (\mathcal{D})$}
+\begin{columns}
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.65\textwidth]{images/PALeftTopSol_Cart.png} \\
+{}\includegraphics[width=0.65\textwidth]{images/PALeftTopSol_Poly.png}
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.65\textwidth]{images/PALeftTopSol_Tri.png} \\
+{}\includegraphics[width=0.65\textwidth]{images/PALeftTopSol_SplitPoly.png}
+\end{columns}
+}
+\only<2>
+{
+\frametitle{Mesh-Aligned - Left-Face and Top-Face Incidence: $H^{p+1} (\mathcal{D})$}
+\vspace{1.00cm}
+\begin{columns}[c]
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=\textwidth]{images/PAErr_LeftTop_SplitPoly_sig1.eps} \\
+$\sigma_t = 1$
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=\textwidth]{images/PAErr_LeftTop_SplitPoly_sig50.eps} \\
+$\sigma_t = 50$
+\end{columns}
+}
+\only<3>
+{
+\frametitle{NOT Mesh-Aligned -  Left-Face and Top-Face Incidence: $H^{3/2} (\mathcal{D})$}
+\vspace{1.00cm}
+\begin{columns}[c]
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=\textwidth]{images/PAErr_LeftTop_Poly_sig1.eps} \\
+$\sigma_t = 1$
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=\textwidth]{images/PAErr_LeftTop_Poly_sig50.eps} \\
+$\sigma_t = 50$
+\end{columns}
+}
+\end{frame}
+% --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
 \subsection{Additional MIP Slides}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
-
+\begin{frame}[t]
+\frametitle{Orthogonal Projection}
+\begin{block}{2D Orthogonal Projections}
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+	\hline
+	Number of Vertices & 3 & 4 & $>4$ and even& $>4$ and odd \\
+	\hline
+	$h$ & $2 \frac{A_K}{L_f}$ & $\frac{A_K}{L_f}$ & $4 \frac{A_K}{P_K}$ & $2 \frac{A_K}{P_K} + \sqrt{\frac{2 A_K}{N_K \sin(\frac{2 \pi}{N_K})}}$ \\
+	\hline
+\end{tabular}
+\end{table}
+\vspace{3mm}
+$N_K$ - \# of vertices for polygon $K$\\
+$A_K$ - Area of polygon $K$\\
+$L_f$  - Length of face $f$\\
+$P_K$ - Perimeter for polygon $K$
+\end{block}
+\begin{block}{3D Orthogonal Projections}
+\begin{table}
+\centering
+\begin{tabular}{|c|c|c|c|}
+	\hline
+	Number of Faces & 4 & 6 & otherwise \\
+	\hline
+	$h$ & $3 \frac{V_K}{A_f}$ & $\frac{V_K}{A_f}$ & $6 \frac{V_K}{SA_K}$  \\ [1ex]
+	\hline
+\end{tabular}
+\end{table}
+\vspace{3mm}
+$V_K$  - Volume of polyhedron $K$\\
+$A_f$   - Area of face $f$\\
+$SA_K$ - Surface area of polyhedron $K$
+\end{block}
+\end{frame}
+% --------------------------------------------
+\begin{frame}[t]{Linear Basis Functions on 3D Polyhedra}
+\begin{block}{Linear basis functions and convex polyhedra only for 3D}{\small
+\begin{itemize}
+\item The 2D quadratic serendipity formulation is more arduous in 3D
+\item Intercell coupling is not straightforward for concave polyhedra
+\item Focus on 3D PWL functions
+\item Focus on 3D parallelepipeds and extruded convex polygons (convex prisms)
+\end{itemize}}
+\end{block}
+\begin{block}{3D PWL basis functions}{\small
+\begin{equation*}
+b_i (\vec{x})  = t_i  (\vec{x})  + \sum_{f=1}^{F_i} \beta_f^i  t_f (\vec{x}) + \alpha_i t_c  (\vec{x}) 
+\end{equation*}
+}\end{block}
+\begin{block}{}{\footnotesize
+$t_i$ - standard 3D linear function for a tet $(i,i+1,f_c,K_c)$; 1 at vertex $i$, linearly decreases to 0 to the cell center, each adjoining face center, and each adjoining vertex\\ \vspace{0.5mm}
+$t_c$ - 3D tent function; 1 at cell center, linearly decreases to 0 at all vertices and face centers \\ \vspace{0.5mm}
+$t_f$ - face tent function; 1 at face center, linearly decreases to 0 at each face vertex and cell center\\ \vspace{0.5mm}
+$\alpha_i = \frac{1}{N_V}$ - weight parameter for vertex $i$\\ \vspace{0.5mm}
+$\beta_f^i = \frac{1}{N_f}$ - weight parameter for face $f$ touching vertex $i$
+}\end{block}
+\end{frame}
 % --------------------------------------------
 %%%%%%%%%%%%%%%%%%%
 \subsection{Additional Upscatter Slides}
