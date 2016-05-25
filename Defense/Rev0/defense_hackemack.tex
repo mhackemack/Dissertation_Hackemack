@@ -328,7 +328,7 @@ ${\bf Q}$ - source operator \\
 				\item <1-> Other physics communities are now employing polytope grids due to decreased cell/face counts (CFD and solid mechanics in particular)
 				\item <2-> They allow for transition elements between different domain regions
 				\item <3-> Hanging nodes from non-conforming meshes are not necessary
-				\item <4-> Independently-generated simplicial grids ({\em i.e.} created in parallel) can be stitched together with polytopes without communicating the whole mesh across processors
+				\item <4-> Independently-generated simplical grids ({\em i.e.} created in parallel) can be stitched together with polytopes without communicating the whole mesh across processors
 			\end{itemize}}
          \end{block}
 \centering
@@ -422,6 +422,7 @@ Cubic
 \subsection{}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
+\setbeamerfont{frametitle}{size=\small}
 \begin{frame}[t]\frametitle{Finite element architecture}
 \begin{block}{Mass Matrix - element $K$}
 \begin{equation*}
@@ -444,12 +445,12 @@ Cubic
 \subsection{Linear Basis Functions on Polygons}
 %%%%%%%%%%%%%%%%%%%
 % --------------------------------------------
-\begin{frame}[t]\frametitle{Linear Basis Functions - Generalized Barycentric Coordinates}
+\begin{frame}[t]\frametitle{\small Linear Basis Functions - Generalized Barycentric Coordinates}
 \centering
 \includegraphics[width=0.35\textwidth]{images/ref_polygon.png}
 \only<1>{
 \begin{block}{Basis Function Properties - Barycentric Coordinates}{\small
-$\lambda_i$ - linear basis function located at vertex $i$ \vspace{0.25cm}
+$\lambda_i$ - linear basis function located at vertex $i$
 \vspace{-1mm}
 	\begin{enumerate}
 	\item Positivity*: $\lambda_i \geq 0$ \vspace{1mm}
@@ -586,6 +587,22 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative***\\ \hline
 }
 \only<2>
 {
+\frametitle{Basis Function Locations}
+\vspace{1.5cm}
+\begin{columns}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.90\columnwidth]{images/Def_lin_sq.png}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.90\columnwidth]{images/Def_lin_degsq.png}
+\column{0.333\textwidth}
+\centering
+{}\includegraphics[width=0.90\columnwidth]{images/Def_lin_L.png}
+\end{columns}
+}
+\only<3>
+{
 \frametitle{Basis Functions on the Unit Square}
 \begin{columns}
 \column{0.50\textwidth}
@@ -602,7 +619,7 @@ PWL\\ \vspace{3mm}
 Maximum Entropy
 \end{columns}
 }
-\only<3>
+\only<4>
 {
 \frametitle{Basis Functions on the Degenerate Pentagon}
 \begin{columns}
@@ -620,7 +637,7 @@ PWL\\ \vspace{3mm}
 Maximum Entropy
 \end{columns}
 }
-\only<4>
+\only<5>
 {
 \frametitle{Basis Functions on the Degenerate Pentagon}
 \begin{columns}
@@ -638,7 +655,7 @@ PWL\\ \vspace{3mm}
 Maximum Entropy
 \end{columns}
 }
-\only<5>
+\only<6>
 {
 \frametitle{Basis Functions on the L-Shaped Domain}
 %\vspace{1cm}
@@ -801,7 +818,6 @@ c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)}
 %---------------------------
 \begin{frame}[t]\frametitle{\small Eliminate interior nodes to form Serendipity basis}
 {\small
-\vspace{-3mm}
 \begin{block}{Reduction Problem}
 \begin{itemize}
 \item Each serendipity function is formed by its corresponding quadratic function plus linear combinations of the diagonal functions
@@ -813,10 +829,9 @@ $\mathbb{I}$ - $(2n \times 2n)$ identity matrix \\
 $\mathbb{A}'$ - $(2n \times \frac{n(n-3)}{2})$ constraint matrix
 \end{itemize}
 \end{block}
-\vspace{-3mm}
 \onslide<2->
 {
-\begin{block}{Column $ab$ of $\mathbb{A}'$ - underdeterminded system}
+\begin{block}{Column $ab$ of $\mathbb{A}'$: underdeterminded system - $\mathbb{B} \vec{c}_{ab} = \vec{q}_{ab}$}
 \begin{equation*}
 \begin{aligned}
 \sum\displaylimits_{ii \in V} c_{ab}^{ii} + \sum\displaylimits_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} &= 2 \\
@@ -899,6 +914,19 @@ $\mathbb{A}'$ - $(2n \times \frac{n(n-3)}{2})$ constraint matrix
 \begin{frame}[t]
 \only<1>
 {
+\frametitle{Basis Function Locations}
+\vspace{1.25cm}
+\begin{columns}
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.90\columnwidth]{images/Def_quad_sq.png}
+\column{0.5\textwidth}
+\centering
+{}\includegraphics[width=0.90\columnwidth]{images/Def_quad_degsq.png}
+\end{columns}
+}
+\only<2>
+{
 \frametitle{\small Quadratic Basis Functions on the Unit Square}
 \begin{columns}
 \column{0.50\textwidth}
@@ -915,7 +943,7 @@ PWL\\ \vspace{3mm}
 Maximum Entropy
 \end{columns}
 }
-\only<2>
+\only<3>
 {
 \frametitle{\small Quadratic Basis Functions on the Unit Square}
 \begin{columns}
@@ -933,7 +961,7 @@ PWL\\ \vspace{3mm}
 Maximum Entropy
 \end{columns}
 }
-\only<3>
+\only<4>
 {
 \frametitle{\small Quadratic Basis Functions on the Degenerate Pentagon}
 \begin{columns}
@@ -1402,7 +1430,7 @@ However, this is just as difficult as the original transport problem. Instead, w
 \begin{equation*}
 \tilde{{\bf A}} \delta \phi^{\tcr{(\ell+1/2)}} = \tilde{{\bf R}}^{\tcr{(\ell+1/2)}}
 \end{equation*}
-$\tilde{{\bf A}}$ is a low-order diffusion operator.
+$\tilde{{\bf A}}$ is a low-order \tcm{diffusion} operator.
 }
 \end{block}
 \end{frame}
@@ -1458,6 +1486,12 @@ a( \Phi, b)  &= \Big<  D \vec{\nabla}  \Phi , \vec{\nabla} b  \Big>_{\mathcal{D}
 \end{frame}
 %---------------------------
 \begin{frame}[t]\frametitle{Symmetric Interior Penalty (SIP) Form}
+\begin{block}{SIP Properties}
+\begin{itemize}
+\item Symmetric Positive Definite (SPD)
+\item Efficiently solved with Preconditioned Conjugate Gradient (PCG) and Algebraic MultiGrid (AMG) preconditioner
+\end{itemize}
+\end{block}
 \begin{block}{SIP Penalty Coefficient}{
 	\begin{equation*}
 		\kappa_e^{SIP} \equiv 
@@ -1475,12 +1509,6 @@ $c$ - user defined constant ($c \geq 1$) \\
 $p$ - polynomial order of the finite element basis ($1,2,3,...$) \\
 $D^{(+/-)}$ - diffusion coefficient defined on the positive/negative side of a face\\
 $h^{(+/-)}$ - orthogonal projection defined on the positive/negative side of a face
-\end{block}
-\begin{block}{SIP Properties}
-\begin{itemize}
-\item Symmetric Positive Definite (SPD)
-\item Efficiently solved with Preconditioned Conjugate Gradient (PCG) and Algebraic MultiGrid (AMG) preconditioner
-\end{itemize}
 \end{block}
 \end{frame}
 %---------------------------
@@ -1586,7 +1614,7 @@ Recall the DSA equation:
 \frametitle{3D PWL Fourier Analysis - Aspect Ratios}
 \vspace{6mm}
 \centering
-\includegraphics[width=0.65\textwidth]{images/SI_MIP_hex_PWLD1_AR4.eps}
+\includegraphics[width=0.65\textwidth]{images/SI_MIP_hex_AR4.eps}
 }
 \only<3>
 {
@@ -1600,15 +1628,15 @@ Recall the DSA equation:
 \begin{frame}[t]
 \only<1>
 {
-\frametitle{MIP Scaling Results}
+\frametitle{MIP Scaling Results}{\small
+\vspace{-3mm}
 \begin{block}{Problem Description}
 	\begin{itemize}
-	\item Modified Zerr problem - used optimal sweep aggregation parameters
-	\item Homogeneous cube - about 500 mfp and c=0.9999
-	\item 1 energy group
+	\item 1G Zerr problem - used optimal sweep aggregation parameters
 	\item SI precondition with MIP DSA using HYPRE PCG and AMG
 	\end{itemize}
 \end{block}
+\vspace{-3mm}
 \begin{block}{Scaling Suites}
 	\begin{itemize}
 	\item 2 scaling suites - 512 cells/proc and 4096 cells/proc
@@ -1617,6 +1645,12 @@ Recall the DSA equation:
 	\item 10 PCG iteations per SI iteration
 	\end{itemize}
 \end{block}
+\vspace{-3mm}
+\begin{block}{Optimal cell-set configurations}
+\centering
+\includegraphics[width=0.50\textwidth]{images/cellset_configs.png}
+\end{block}
+}
 }
 \only<2>
 {
@@ -1674,6 +1708,38 @@ Recall the DSA equation:
 \end{frame}
 % --------------------------------------------
 \begin{frame}[t]\frametitle{Overview of Methods}
+\begin{block}{Multigroup Iteration Schemes}
+\begin{itemize}
+\item Gauss-Seidel - sequential (\tcr{NOT parallelizable}) iteration of thermal groups
+\item Jacobi - simultaneous (\tcb{parallelizable}) iteration of thermal groups
+\item Both are poor iterative methods for problems dominated by upscattering
+\end{itemize}
+\end{block}
+\begin{block}{Accelerating Gauss-Seidel - {\em historical methods}}
+\begin{itemize}
+\item Two-Grid Acceleration - DO converge inner iterations
+\item Modified Two-Grid Acceleration - DO NOT converge inner iterations
+\item Both perform a spectrally-collapsed diffusion acceleration step
+\end{itemize}
+\end{block}
+\begin{block}{Accelerating Jacobi - {\em proposed methods}}
+\begin{itemize}
+\item Multigroup Jacobi Acceleration
+	\begin{itemize}
+	\item DO NOT converge inner iterations
+	\item Perform a spectrally-collapsed diffusion acceleration step
+	\end{itemize}
+\item Multigroup Jacobi with Inner Acceleration
+	\begin{itemize}
+	\item Accelerate within-group iterations
+	\item Perform a spectrally-collapsed diffusion acceleration step
+	\end{itemize}
+\end{itemize}
+\end{block}
+\end{frame}
+% --------------------------------------------
+\iffalse
+\begin{frame}[t]\frametitle{Overview of Methods}
 \begin{block}{Gauss-Seidel in Energy}
 \begin{itemize}
 \item Serial iterations of thermal groups - NOT parallelizable over energy
@@ -1704,6 +1770,7 @@ Recall the DSA equation:
 \end{itemize}
 \end{block}
 \end{frame}
+\fi
 %---------------------------
 \begin{frame}[t]\frametitle{\small Three two-grid-like acceleration methodologies (implemented in PDT)}{\footnotesize
 \vspace{-2.5mm}
@@ -1909,7 +1976,7 @@ Air     &0.7580&0.5282&0.8121&0.7828&0.8845&0.7896&0.7166\\
 \begin{table}
 \begin{tabular}{|c|c|c|c|}
 \hline
-Problem & Outer Iter.. & 1-Group Sweeps & Solve Time (min)  \\
+Problem & Outer Iter. & 1-Group Sweeps & Solve Time (min)  \\
 \hline \hline
 \tcr{SI} & \tcr{361}  &\tcr{185,422}  &  \tcr{486.50} \\ \hline
 SI+DSA & 55  & 35,699 &  96.48 \\ \hline
@@ -1941,7 +2008,7 @@ Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (min)  \\
 \hline \hline
 \tcr{SI}  & \tcr{1,734} & \tcr{98,838} &  \tcr{111.07} \\ \hline
 SI+DSA & 157 & 8,949 &  15.49 \\ \hline
-GMRES  & 118 & 6,726 &  8.65 \\ \hline
+\tcm{GMRES}  & \tcm{118} & \tcm{6,726} &  \tcm{8.65} \\ \hline
 \tcb{GMRES+DSA} & \tcb{35} & \tcb{1,995} &  \tcb{4.16} \\ \hline
 \end{tabular}
 \end{table}
@@ -1952,9 +2019,8 @@ GMRES  & 118 & 6,726 &  8.65 \\ \hline
 \begin{frame}[t]\frametitle{\small 3D IM1 Results}{\footnotesize
 \only<1>
 {
-\hspace*{1.75cm}
-\centering
-{}\includegraphics[width=0.45\textwidth]{images/IM1_configuration_Rev1.png}
+\hspace*{2cm}
+{}\includegraphics[width=0.50\textwidth]{images/IM1_configuration_Rev1.png}
 }
 \only<2>
 {
