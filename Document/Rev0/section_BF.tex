@@ -685,7 +685,7 @@ b_j (\vec{x}) = \frac{m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{
 
 In these computational procedures, $\alpha$ is the damping parameter. If the error at iteration $k$, $|| \vec{g}_{k} || $ is greater than $10^{-4}$, then a line search algorithm is used \cite{burden2001numerical}. Otherwise, $\alpha$ can be set to unity as the error decreases. We note that a line search algorithm must be used for certain classes of polygonal shapes. For extremely-distorted concave polygons, this Newton iteration procedure can be unstable without it. Due to the quadratic convergence of Newton's method in the vicinity of the final solution, only 3-7 Newton iterations should be required to obtain accuracies of at least $10^{-10}$. 
 
-We conclude our discussion of the maximum entropy coordinates by providing example plots over the same polygonal domains that we showed for the PWL and MV coordinates. First, we give the contour plots of the ME coordinates over the unit square in Figure \ref{fig::2D_MAXENT1_unit_square_basis_functions}. Similar to the Wachspress and MV coordinates, the maximum entropy coordinates are smoothly varying within the domain of the polygon and posess continuous derivatives (in contrast to the PWL coordinates). Next in Figure \ref{fig::2D_MAXENT1_deg_square_basis_functions}, we give the contour plots of the degenerate polygon. Finally, Figure \ref{fig::2D_MAXENT1_Ldom_basis_functions} gives the contour plots for the linear maximum entropy coordinates on the L-shaped domain. We can see that these coordinates can appropriately interpolate functions on concave polygons.
+We conclude our discussion of the maximum entropy coordinates by providing example plots over the same polygonal domains that we showed for the PWL and MV coordinates. First, we give the contour plots of the ME coordinates over the unit square in Figure \ref{fig::2D_MAXENT1_unit_square_basis_functions}. Similar to the Wachspress and MV coordinates, the maximum entropy coordinates are smoothly varying within the domain of the polygon and possess continuous derivatives (in contrast to the PWL coordinates). Next in Figure \ref{fig::2D_MAXENT1_deg_square_basis_functions}, we give the contour plots of the degenerate polygon. Finally, Figure \ref{fig::2D_MAXENT1_Ldom_basis_functions} gives the contour plots for the linear maximum entropy coordinates on the L-shaped domain. We can see that these coordinates can appropriately interpolate functions on concave polygons.
 
 \begin{figure}
 \centering
@@ -1559,7 +1559,7 @@ For the sake of analysis, we seek to simplify Eqs. (\ref{eq::BF_Results_TDL_scal
 
 \noindent respectively.
 
-From previous work \cite{adams2001dfem}, it is already known that linear interpolants with properties corresponding to barycentric coordinates satisfy the thick diffusion limit. However, it needs to be demonstrated that the quadratic serendipity extensions will also satisfy the limit. We will demonstrate this both qualitatively and quantitatively. The transport and diffusion equations to be solved are Eqs. (\ref{eq::BF_Results_TDL_normalized_trans_eq}) and (\ref{eq::BF_Results_TDL_normalized_diff_eq}), respectively. The diffusion equation is discretized using a Continuous Finite Element Method (CFEM) form. Vacuum boundary conditions are applied for the transport equations and homogeneous dirichlet conditions are applied for the diffusion equations. With this choice of boundary conditions, the transport and diffusion solutions will converge only as $\epsilon$ gets small. Specifically, they converge at a rate of $O(\epsilon)$ with an $L_2$-norm if the gradients of the basis functions span the same space as the functions. This is true for the Wachspress, mean value, and maximum entropy functions but not the PWL functions. For some range of $\epsilon$, PWL will converge as $O(\epsilon)$, but will eventually plateau. This is because PWL converges to a slightly different diffusion solution than CFEM diffusion.
+From previous work \cite{adams2001dfem}, it is already known that linear interpolants with properties corresponding to barycentric coordinates satisfy the thick diffusion limit. However, it needs to be demonstrated that the quadratic serendipity extensions will also satisfy the limit. We will demonstrate this both qualitatively and quantitatively. The transport and diffusion equations to be solved are Eqs. (\ref{eq::BF_Results_TDL_normalized_trans_eq}) and (\ref{eq::BF_Results_TDL_normalized_diff_eq}), respectively. The diffusion equation is discretized using a Continuous Finite Element Method (CFEM) form. Vacuum boundary conditions are applied for the transport equations and homogeneous Dirichlet conditions are applied for the diffusion equations. With this choice of boundary conditions, the transport and diffusion solutions will converge only as $\epsilon$ gets small. Specifically, they converge at a rate of $O(\epsilon)$ with an $L_2$-norm if the gradients of the basis functions span the same space as the functions. This is true for the Wachspress, mean value, and maximum entropy functions but not the PWL functions. For some range of $\epsilon$, PWL will converge as $O(\epsilon)$, but will eventually plateau. This is because PWL converges to a slightly different diffusion solution than CFEM diffusion.
 
 We first provide an example of the diffusion solution in Figure \ref{fig::BF_Results_DL_DiffSol} on a polygonal grid for both the linear and quadratic mean value basis functions. Next, Figures \ref{fig::BF_Results_DL_Wachspress}, \ref{fig::BF_Results_DL_PWLD}, \ref{fig::BF_Results_DL_MV}, and \ref{fig::BF_Results_DL_MAXENT} provide the transport solutions with varying $\epsilon$ values using the Wachspress, PWL, mean value, and maximum entropy coordinates, respectively. We see that as we reduce $\epsilon$ from $10^{-1}$ to $10^{-5}$, our transport solutions converge to our diffusion solutions. Finally, we show the convergence rates of the discretized transport, $\Phi_T$, and diffusion, $\Phi_D$, solutions under the $L_2$-norm. The $L_2$-norm of the difference between the transport and diffusion solutions, $|| \Phi_T - \Phi_D||_{L_2}$, should decrease as $O(\epsilon)$ for all the basis functions except the linear and quadratic PWL functions. We demonstrate this as true in Figures \ref{fig::BF_Results_DL_Conv_Cart} and \ref{fig::BF_Results_DL_Conv_Poly} for a Cartesian and polygonal mesh, respectively. For both meshes, the linear and quadratic Wachspress, MV, and ME basis functions show convergence rates of $O(\epsilon)$, but PWL plateaus. However, we notice that the quadratic PWL functions converge as $O(\epsilon)$ longer because of their increased interpolation accuracy.
 
@@ -1929,7 +1929,7 @@ For this example, we test the various 2D polygonal finite element basis function
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_WACHSPRESS_k1.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Contour plots of the exactly-linear solution with the Wachspress basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\caption{Contour plots of the exactly-linear solution with the Wachspress basis functions on (a) Cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
 \label{fig::BF_Results_Linear_wach_sol}
 \end{figure}
 
@@ -1976,7 +1976,7 @@ For this example, we test the various 2D polygonal finite element basis function
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_PWLD_k1.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Contour plots of the exactly-linear solution with the PWL basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\caption{Contour plots of the exactly-linear solution with the PWL basis functions on (a) Cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
 \label{fig::BF_Results_Linear_pwld_sol}
 \end{figure}
 
@@ -2023,7 +2023,7 @@ For this example, we test the various 2D polygonal finite element basis function
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_MV_k1.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Contour plots of the exactly-linear solution with the mean value basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\caption{Contour plots of the exactly-linear solution with the mean value basis functions on (a) Cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
 \label{fig::BF_Results_Linear_mv_sol}
 \end{figure}
 
@@ -2070,7 +2070,7 @@ For this example, we test the various 2D polygonal finite element basis function
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_MAXENT_k1.eps}
 		\caption{}
 	\end{subfigure}
-\caption{Contour plots of the exactly-linear solution with the linear maximum entropy basis functions on (a) cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+\caption{Contour plots of the exactly-linear solution with the linear maximum entropy basis functions on (a) Cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
 \label{fig::BF_Results_Linear_me1_sol}
 \end{figure}
 
@@ -2497,7 +2497,7 @@ The sinusoid flux solutions, \{$\Psi_s$, $\Phi_s$\}, have the following paramete
 \end{aligned} 
 \end{equation}
 
-\noindent where $\nu$ is a frequency parameter. We restrict this paremeter to positive integers ($\nu = 1,2,3,...$) to maintain characteristic 5 of the solution and problem space. The gaussian solution space, \{$\Psi_g$, $\Phi_g$\}, that has its local maximum centered at ($x_0,y_0$) has the parameterized form,
+\noindent where $\nu$ is a frequency parameter. We restrict this parameter to positive integers ($\nu = 1,2,3,...$) to maintain characteristic 5 of the solution and problem space. The gaussian solution space, \{$\Psi_g$, $\Phi_g$\}, that has its local maximum centered at ($x_0,y_0$) has the parameterized form,
 
 \begin{equation}
 \label{eq::BF_Results_MMS_gaussfluxsols}
@@ -2844,7 +2844,7 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftSol_SplitPoly.png}
 	\end{subfigure}
 }
-\caption{Example Solution of the purely-absorbing medium case with left-face incidence and $\sigma_t=1$ using the linear PWL basis functions.}
+\caption{Example solution of the purely-absorbing medium case with left-face incidence and $\sigma_t=1$ using the linear PWL basis functions.}
 \label{fig::BF_Results_PA_Left_Solutions}
 \end{figure}
 
@@ -2877,7 +2877,7 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftTopSol_SplitPoly.png}
 	\end{subfigure}
 }
-\caption{Example Solution of the purely-absorbing medium case with left-face and top-face incidence and $\sigma_t=1$ using the linear PWL basis functions.}
+\caption{Example solution of the purely-absorbing medium case with left-face and top-face incidence and $\sigma_t=1$ using the linear PWL basis functions.}
 \label{fig::BF_Results_PA_LeftTop_Solutions}
 \end{figure}
 

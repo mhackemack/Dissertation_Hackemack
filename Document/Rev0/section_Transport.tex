@@ -22,7 +22,7 @@
 \section{Fundamental Aspects of the Transport Equation}
 \label{sec::DSA_aspects}
 
-The movement of bulk materials and particles through some medium can be described by the statistical behavior of a non-equilibrium system. Boltzmann first devised these probabilistic field equations to characterize fluid flow via driving temperature gradients \cite{encyc_physics}. His work was later extended to model general fluid flow, heat conduction, hamiltonian mechanics, quantum theory, general relativity, and radiation transport, among others. The Boltzmann Equation can be written in the general form:
+The movement of bulk materials and particles through some medium can be described by the statistical behavior of a non-equilibrium system. Boltzmann first devised these probabilistic field equations to characterize fluid flow via driving temperature gradients \cite{encyc_physics}. His work was later extended to model general fluid flow, heat conduction, Hamiltonian mechanics, quantum theory, general relativity, and radiation transport, among others. The Boltzmann Equation can be written in the general form:
 
 \begin{equation}
 \label{eq::gen_boltzmann}
@@ -56,7 +56,7 @@ The time-dependent neutron angular flux, $\Psi (\vec{r}, E, \vec{\Omega}, t)$, a
 \begin{aligned}
 \frac{1}{v(E)}\frac{\partial \Psi}{\partial t} + \vec{\Omega} \cdot \vec{\nabla} \Psi (\vec{r}, E, \vec{\Omega},t)+ \sigma_t (\vec{r}, E,t) \Psi (\vec{r}, E, \vec{\Omega},t) =Q_{ext} (\vec{r}, E, \vec{\Omega},t) \\
 + \frac{\chi (\vec{r}, E,t)}{4 \pi} \int dE' \nu \sigma_f (\vec{r}, E',t) \int d\Omega' \Psi (\vec{r}, E', \vec{\Omega}',t) \\ 
-+ \int dE' \int d\Omega' \sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega,t) \Psi (\vec{r}, E', \vec{\Omega}',t)
++ \int dE' \int d\Omega' \sigma_s (\vec{r},E' \rightarrow E, \Omega' \rightarrow \Omega,t) \Psi (\vec{r}, E', \vec{\Omega}',t)
 \end{aligned}
 \end{equation}
 
@@ -142,7 +142,7 @@ From this distribution of energy values, we then say that a particular energy gr
 \label{fig::Sn_MG_energy_bands}
 \end{figure}
 
-For the remainder of this energy discretization procedure, we will utilize the steady-state form of the transport equation in Eq. (\ref{eq::Sn_transport_eq_op_SS}). The time-dependent and eigenvalue forms are analagous and would be derived identically. Taking the energy interval for group $g$ as defined in Eq. (\ref{eq::Sn_MG_energy_interval}), the energy-integrated angular flux of group $g$ is
+For the remainder of this energy discretization procedure, we will utilize the steady-state form of the transport equation in Eq. (\ref{eq::Sn_transport_eq_op_SS}). The time-dependent and eigenvalue forms are analogous and would be derived identically. Taking the energy interval for group $g$ as defined in Eq. (\ref{eq::Sn_MG_energy_interval}), the energy-integrated angular flux of group $g$ is
 
 \begin{equation}
 \label{eq::Sn_MG_ang_flux_g}
@@ -164,12 +164,12 @@ For the remainder of this energy discretization procedure, we will utilize the s
 \sigma_{t,g} (\vec{r}) & \equiv \frac{\int_{E_{g}}^{E_{g-1}} \sigma_{t} (\vec{r},\vec{\Omega},E) \int_{4 \pi} \Psi (\vec{r},\vec{\Omega}, E) \, dE d\Omega}{\int_{E_{g}}^{E_{g-1}} \int_{4 \pi} \Psi (\vec{r},\vec{\Omega}, E) \, dE d\Omega}\\
 \nu\sigma_{f,g} (\vec{r}) & \equiv \frac{\int_{E_{g}}^{E_{g-1}} \nu\sigma_{f} (\vec{r},E)  \int_{4 \pi} \Psi (\vec{r},\vec{\Omega}, E) \, dE d\Omega}{\int_{E_{g}}^{E_{g-1}} \int_{4 \pi} \Psi (\vec{r},\vec{\Omega}, E) \, dE d\Omega} \\
 \chi_g & \equiv \int_{E_{g}}^{E_{g-1}} \chi  (\vec{r},E) \, dE \\
-\sigma_{s}^{g' \rightarrow g} (\vec{r},\vec{\Omega}' , \vec{\Omega} ) & \equiv \frac{\int_{E_{g'}}^{E_{g'-1}} \left[ \int_{E_{g}}^{E_{g-1}} \sigma_s (\vec{r},E' \rightarrow E,\vec{\Omega}' , \vec{\Omega} ) \, dE \right] \Psi (\vec{r},\vec{\Omega}', E') \, dE' }{\int_{E_{g}}^{E_{g-1}}  \Psi (\vec{r},\vec{\Omega}, E) \, dE} \\
+\sigma_{s}^{g' \rightarrow g} (\vec{r},\vec{\Omega}' , \vec{\Omega} ) & \equiv \frac{\int_{E_{g'}}^{E_{g'-1}} \left[ \int_{E_{g}}^{E_{g-1}} \sigma_s (\vec{r},E' \rightarrow E,\vec{\Omega}' , \vec{\Omega} ) \, dE \right] \Psi (\vec{r},\vec{\Omega}', E') \, dE' }{\int_{E_{g'}}^{E_{g'-1}}  \Psi (\vec{r},\vec{\Omega}, E) \, dE} \\
 Q_g (\vec{r}, \vec{\Omega}) & \equiv \int_{E_{g}}^{E_{g-1}} Q (\vec{r}, \vec{\Omega}, E) \, dE
 \end{aligned}
 \end{equation}
 
-The above equations are mathematically exact to those presented in Eqs. (\ref{eq::Sn_transport_eq_full} - \ref{eq::Sn_transport_eq_op_SS}) and we have made no approximations at this time. However, this requires full knowledge of the energy distribution of the angular flux solution at all positions in our problem domain since we weight the multigroup cross sections with this solution. This is obviously impossible since the energy distibution is part of the solution space we are trying to solve for. Instead, we now define the process to make the multigroup discretization an effective approximation method.
+The above equations are mathematically exact to those presented in Eqs. (\ref{eq::Sn_transport_eq_full} - \ref{eq::Sn_transport_eq_op_SS}) and we have made no approximations at this time. However, this requires full knowledge of the energy distribution of the angular flux solution at all positions in our problem domain since we weight the multigroup cross sections with this solution. This is obviously impossible since the energy distribution is part of the solution space we are trying to solve for. Instead, we now define the process to make the multigroup discretization an effective approximation method.
 
 We first define an approximate angular flux distribution for a region $s$:
 
@@ -185,7 +185,7 @@ We first define an approximate angular flux distribution for a region $s$:
 \begin{aligned}
 \sigma_{t,g} (\vec{r}) & \equiv \frac{\int_{E_{g}}^{E_{g-1}} \sigma_{t} (\vec{r},E) f_{s} (E) \, dE}{\int_{E_{g}}^{E_{g-1}} f_{s} (E) \, dE} ,\\
 \nu\sigma_{f,g} (\vec{r}) & \equiv \frac{\int_{E_{g}}^{E_{g-1}} \nu\sigma_{f} (\vec{r},E)  f_{s} (E) \, dE }{\int_{E_{g}}^{E_{g-1}} f_{s} (E) \, dE}, \\
-\sigma_{s}^{g' \rightarrow g} (\vec{r},\vec{\Omega}' , \vec{\Omega} ) & \equiv \frac{\int_{E_{g'}}^{E_{g'-1}} \left[ \int_{E_{g}}^{E_{g-1}} \sigma_s (\vec{r},E' \rightarrow E,\vec{\Omega}' , \vec{\Omega} ) \, dE \right] f_{s} (E')\, dE' }{\int_{E_{g}}^{E_{g-1}}  f_{s} (E) \, dE} .
+\sigma_{s}^{g' \rightarrow g} (\vec{r},\vec{\Omega}' , \vec{\Omega} ) & \equiv \frac{\int_{E_{g'}}^{E_{g'-1}} \left[ \int_{E_{g}}^{E_{g-1}} \sigma_s (\vec{r},E' \rightarrow E,\vec{\Omega}' , \vec{\Omega} ) \, dE \right] f_{s} (E')\, dE' }{\int_{E_{g'}}^{E_{g'-1}}  f_{s} (E) \, dE} .
 \end{aligned}
 \end{equation}
 
@@ -506,7 +506,7 @@ The second angular quadrature set we will present is a Product Gauss-Legendre-Ch
 
 \begin{itemize}
 	\item Does not have $90^o$ rotational invariance within the primary octant; however, we still maintain octant-to-octant symmetry via mapping;
-	\item Has more control over the placement of the anglular directions within the primary octant;
+	\item Has more control over the placement of the angular directions within the primary octant;
 	\item Quadrature weights are aligned with the polar level;
 	\item Has strictly positive weights for all polar and azimuthal combinations;
 	\item Integrates exactly many of the spherical harmonics functions.
@@ -523,7 +523,7 @@ Because the PGLC quadrature set is formed by product-wise multiplication, we sim
 
 \noindent respectively. 
 
-For the polar direction, a Gauss-Legendre quadrature set is used \cite{abramowitz1964handbook}. Similar to the azimuthal direction, we restrict the integration of the polar direction to its positive values: $\xi \in (0,1)$. If we specify $P$ polar directions, then the cosine of the polar nodes, $\xi$, of our quadrature set are the positive roots of the $2P$-order Legendre polynomials taken over the inveral $[-1, 1]$. In this case, we simply discard the negative roots. The corresponding Legendre weights are given by the following formula,
+For the polar direction, a Gauss-Legendre quadrature set is used \cite{abramowitz1964handbook}. Similar to the azimuthal direction, we restrict the integration of the polar direction to its positive values: $\xi \in (0,1)$. If we specify $P$ polar directions, then the cosine of the polar nodes, $\xi$, of our quadrature set are the positive roots of the $2P$-order Legendre polynomials taken over the interval $[-1, 1]$. In this case, we simply discard the negative roots. The corresponding Legendre weights are given by the following formula,
 
 \begin{equation}
 \label{eq::Sn_Angle_PGLC_legendre_weights}
@@ -823,7 +823,7 @@ a(\Psi^{*},\Psi) = \sum\displaylimits_{m=1}^M w_m \Big[  \Big(  \Psi_m^{*}, \vec
 \end{aligned}
 \end{equation}
 
-\noindent This bilinear form is positive definite ($a(\Psi,\Psi) > 0$) but obviously not symmetric. It also holds Galerking orthogonality, which means that the jumps across elements for the exact solution are zero,
+\noindent This bilinear form is positive definite ($a(\Psi,\Psi) > 0$) but obviously not symmetric. It also holds Galerkin orthogonality, which means that the jumps across elements for the exact solution are zero,
 
 \begin{equation}
 \label{eq::Sn_Spatial_Convergence_Galerkin_orth}
@@ -870,7 +870,7 @@ The convergence of DGFEM methods for the hyperbolic systems has been extensively
 
 \noindent where $q$ has the same definition as before. We can see that for the $L_2$ norm the convergence rate is simply $1/2$ integer more than the DG norm for both the polynomial order and the regularity index.
 
-Investigating the definition of the $q$ term in Eqs. (\ref{eq::Sn_Spatial_Convergence_DGnorm_psi}), (\ref{eq::Sn_Spatial_Convergence_DGnorm_phi}), and (\ref{eq::Sn_Spatial_Convergence_L2norm_phi}) further, we can see that our DGFEM transport convergence rates are all limited by the regularity, $r$, of the solution space. The spaces to which the transport equation can reside have been investigated by others in previous works \cite{wang2009convergence,magenes1970problemes,johnson1983convergence}. If we have sufficiently smooth data, then the exact transport solution belongs, at most, in the $H^{3/2-\epsilon} (\mathcal{D})$ Hilbert space. This yields a solution regularity of $r=\frac{3}{2}-\epsilon$, where $\epsilon$ is positive and extremely small. This means that for most practical occurences, the observed converge regularity is simply $\frac{3}{2}$. For this case it is sufficient to have piecewise polynomial cross section data and incident boundary fluxes that align with our mesh. However, in the case of a pure absorber or void, the exact transport solution lives in the $H^{1/2-\epsilon} (\mathcal{D})$ Hilbert space. Again, the practical irregularity becomes $\frac{1}{2}$. From these spaces, one would think that the transport solution regularity would impede the use of higher-order finite element spaces. We note, however, that these regularity indices only apply to the asymptotic convergence range, which usually only applies to very fine meshes that are much smaller than typically employed meshes. Therefore, we expect to capture up to order $(p+1)$ convergence in preasymptotic ranges that would be employed for a wide variety of transport problems. Results capturing this irregularity behavior are presented in Chapter \ref{sec::BF}.
+Investigating the definition of the $q$ term in Eqs. (\ref{eq::Sn_Spatial_Convergence_DGnorm_psi}), (\ref{eq::Sn_Spatial_Convergence_DGnorm_phi}), and (\ref{eq::Sn_Spatial_Convergence_L2norm_phi}) further, we can see that our DGFEM transport convergence rates are all limited by the regularity, $r$, of the solution space. The spaces to which the transport equation can reside have been investigated by others in previous works \cite{wang2009convergence,magenes1970problemes,johnson1983convergence}. If we have sufficiently smooth data, then the exact transport solution belongs, at most, in the $H^{3/2-\epsilon} (\mathcal{D})$ Hilbert space. This yields a solution regularity of $r=\frac{3}{2}-\epsilon$, where $\epsilon$ is positive and extremely small. This means that for most practical occurrences, the observed converge regularity is simply $\frac{3}{2}$. For this case it is sufficient to have piecewise polynomial cross section data and incident boundary fluxes that align with our mesh. However, in the case of a pure absorber or void, the exact transport solution lives in the $H^{1/2-\epsilon} (\mathcal{D})$ Hilbert space. Again, the practical irregularity becomes $\frac{1}{2}$. From these spaces, one would think that the transport solution regularity would impede the use of higher-order finite element spaces. We note, however, that these regularity indices only apply to the asymptotic convergence range, which usually only applies to very fine meshes that are much smaller than typically employed meshes. Therefore, we expect to capture up to order $(p+1)$ convergence in preasymptotic ranges that would be employed for a wide variety of transport problems. Results capturing this irregularity behavior are presented in Chapter \ref{sec::BF}.
 
 Finally, we also seek to define the transport solution convergence rates in terms other than the maximum element diameter, $h$. For polytope meshes, this metric may not be the easiest to compute or report if there is large variability in the polygonal or polyhedral elements of the mesh. We seek to re-express the convergence rates in terms of the total number of degrees of freedom in the problem, $N_{dof}$, instead of the maximum element diameter, $h$. First, we relate the total number of elements, $N_{ele}$, to the maximum element diameter,
 
@@ -1013,7 +1013,7 @@ Just like the elementary mass matrix, we can use the same spatial quadrature set
 \subsubsection{Elementary Surface Matrices}
 \label{sec::Sn_Spatial_Matrices_Surface}
 
-Finally, the last terms to consider of the discretized transport equation are those found on the faces of the cell boundary: $  \vec{\Omega}_m \cdot  \Big<  \vec{n} \, b_m, \Psi_m  \Big>_{\partial K}$. These terms are analagous to the cell mass matrix but are computed on the cell boundary with dimensionality $(d-1)$. Analyzing a single face, $f$, in cell $K$, the analytical surface matrix is of the form,
+Finally, the last terms to consider of the discretized transport equation are those found on the faces of the cell boundary: $  \vec{\Omega}_m \cdot  \Big<  \vec{n} \, b_m, \Psi_m  \Big>_{\partial K}$. These terms are analogous to the cell mass matrix but are computed on the cell boundary with dimensionality $(d-1)$. Analyzing a single face, $f$, in cell $K$, the analytical surface matrix is of the form,
 
 \begin{equation}
 \label{eq::Sn_surface_matrix_analytical}
@@ -1261,7 +1261,7 @@ This cell-by-cell inversion of the streaming operator is known as a {\em transpo
 
 \begin{itemize}
 \item The iterative solver does not need to build any matrices explicitly but only requires the action of ${\bf L}^{-1}$.
-\item Does not require the formation of $M$ separate matrices for each of the angular directions (for 1 energy group). This is both memory and computationaly intensive for any problems of appreciable size.
+\item Does not require the formation of $M$ separate matrices for each of the angular directions (for 1 energy group). This is both memory and computationally intensive for any problems of appreciable size.
 \item The matrix-vector operations on a single element within a transport sweep can be efficiently performed depending on the group set structure and the angle aggregation as outlined in Section \ref{sec::Sn_Solution_Iterative}.
 \item The matrix-free transport sweep favors higher-order DGFEM schemes since they will yield more processor work per element with less memory caching (which is the current bottleneck with massively-parallel calculations).
 \item The number of sweep iterations does not grow with increasing problem size or processor counts. This is in contrast with partial-domain sweeping like {\em parallel block jacobi} (PBJ) \cite{zerr2011solution}.
@@ -1394,7 +1394,7 @@ With the error estimates defined for all cells $K \in \mathbb{T}_h^r$ for refine
 
 \noindent where $\alpha$ is a user-defined value $(0,1)$. This refinement criterion has a simple meaning. If, for example, $\alpha = 0.2$, then a cell will be refined if its error estimate is greater than 20\% of the cell with the largest error estimate. This does not necessarily mean that 80\% of the mesh cells will be refined at level $r$. Instead, the criterion simply states that any cell above a particular threshold will be refined. This means that it is theoretically possible for the extreme cases of 1 or all cells being refined at a particular refinement cycle. The first extreme case could arise with a single spatial cell having a strong solution discontinuity stemming from a strong localized source. The second extreme case could arise when the intercell solution jumps are about equivalent stemming from an incredibly smooth discretized solution at that particular refinement cycle. We could also enforce a uniform refinement of all the spatial cells by setting $\alpha=0$.
 
-Once we have determined which elements on mesh level $r$ to refine, we then form our new adapted mesh on level $r+1$ by a combination of logical refinement rules, hierarchical elements, and refinement trees. Each quadrilateral mesh cell with vertices flagged for refinement (which we denote as the parent element) is further subdivided into four smaller quadrilateral cells (which we denote as daughter elements I, II, III, and IV) that maintain the overall shape of the orginal mesh cell. If the parent element is denoted by the vertices (1), (2), (3), and (4), then the refinement rules, including the new local ordering of each daughter element's vertices are given in Figure \ref{fig::Sn_Solution_Spatial_AMR_quadrefrules}. These refinement rules are detailed as follows:
+Once we have determined which elements on mesh level $r$ to refine, we then form our new adapted mesh on level $r+1$ by a combination of logical refinement rules, hierarchical elements, and refinement trees. Each quadrilateral mesh cell with vertices flagged for refinement (which we denote as the parent element) is further subdivided into four smaller quadrilateral cells (which we denote as daughter elements I, II, III, and IV) that maintain the overall shape of the original mesh cell. If the parent element is denoted by the vertices (1), (2), (3), and (4), then the refinement rules, including the new local ordering of each daughter element's vertices are given in Figure \ref{fig::Sn_Solution_Spatial_AMR_quadrefrules}. These refinement rules are detailed as follows:
 
 \begin{enumerate}
 \item Daughter element I is placed near original vertex (1).
