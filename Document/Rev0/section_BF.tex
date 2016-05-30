@@ -2914,7 +2914,7 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 	\caption{$\sigma_t = 100$}
 	\end{subfigure}
 }
-\caption{Convergence rates for the pure absober problem with left-face incidence on triangular meshes with different values of $\sigma_t$.}
+\caption{Convergence rates for the pure absorber problem with left-face incidence on triangular meshes with different values of $\sigma_t$.}
 \label{fig::BF_Results_PA_Left_Tri}
 \end{figure}
 
@@ -2951,7 +2951,7 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 	\caption{$\sigma_t = 100$}
 	\end{subfigure}
 }
-\caption{Convergence rates for the pure absober problem with left-face incidence on Cartesian meshes with different values of $\sigma_t$.}
+\caption{Convergence rates for the pure absorber problem with left-face incidence on Cartesian meshes with different values of $\sigma_t$.}
 \label{fig::BF_Results_PA_Left_Cart}
 \end{figure}
 
@@ -2988,7 +2988,7 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 	\caption{$\sigma_t = 100$}
 	\end{subfigure}
 }
-\caption{Convergence rates for the pure absober problem with left-face incidence on polygonal meshes with different values of $\sigma_t$.}
+\caption{Convergence rates for the pure absorber problem with left-face incidence on polygonal meshes with different values of $\sigma_t$.}
 \label{fig::BF_Results_PA_Left_Poly}
 \end{figure}
 
@@ -3025,7 +3025,7 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 	\caption{$\sigma_t = 100$}
 	\end{subfigure}
 }
-\caption{Convergence rates for the pure absober problem with left-face incidence on split-polygonal meshes with different values of $\sigma_t$.}
+\caption{Convergence rates for the pure absorber problem with left-face incidence on split-polygonal meshes with different values of $\sigma_t$.}
 \label{fig::BF_Results_PA_Left_SplitPoly}
 \end{figure}
 
@@ -3062,7 +3062,7 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 	\caption{$\sigma_t = 100$}
 	\end{subfigure}
 }
-\caption{Convergence rates for the pure absober problem with left-face and top-face incidence on triangular meshes with different values of $\sigma_t$.}
+\caption{Convergence rates for the pure absorber problem with left-face and top-face incidence on triangular meshes with different values of $\sigma_t$.}
 \label{fig::BF_Results_PA_LeftTop_Tri}
 \end{figure}
 
@@ -3099,7 +3099,7 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 	\caption{$\sigma_t = 100$}
 	\end{subfigure}
 }
-\caption{Convergence rates for the pure absober problem with left-face and top-face incidence on Cartesian meshes with different values of $\sigma_t$.}
+\caption{Convergence rates for the pure absorber problem with left-face and top-face incidence on Cartesian meshes with different values of $\sigma_t$.}
 \label{fig::BF_Results_PA_LeftTop_Cart}
 \end{figure}
 
@@ -3136,7 +3136,7 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 	\caption{$\sigma_t = 100$}
 	\end{subfigure}
 }
-\caption{Convergence rates for the pure absober problem with left-face and top-face incidence on polygonal meshes with different values of $\sigma_t$.}
+\caption{Convergence rates for the pure absorber problem with left-face and top-face incidence on polygonal meshes with different values of $\sigma_t$.}
 \label{fig::BF_Results_PA_LeftTop_Poly}
 \end{figure}
 
@@ -3173,7 +3173,7 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 	\caption{$\sigma_t = 100$}
 	\end{subfigure}
 }
-\caption{Convergence rates for the pure absober problem with left-face and top-face incidence on split-polygonal meshes with different values of $\sigma_t$.}
+\caption{Convergence rates for the pure absorber problem with left-face and top-face incidence on split-polygonal meshes with different values of $\sigma_t$.}
 \label{fig::BF_Results_PA_LeftTop_SplitPoly}
 \end{figure}
 
@@ -3184,7 +3184,7 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 
 Our final numerical example models a beam or searchlight through a vacuum. Similar problems were investigated in Dedner and Vollm{\"o}ller \cite{dedner2002adaptive} and Wang and Ragusa \cite{wang2011standard}. In this problem, an incident beam of neutrons is shined onto a small portion of a boundary, propagates through a vacuum, and then exits through a small portion of a different boundary. As the beam propagates through the vacuum, the spatial discretization causes radiation outflow through all downwind cell faces. This leads to numerical dispersion and will cause the beam to artificially broaden.
 
-In this problem, we investigate an $\mathbb{R}^2$ domain of size $[0,1]^2$ cm. The radiation enters the left boundary between $0.2 \leq y \leq 0.4$ with an un-normalized angular direction of $[1,0.4]$. For this chosen direction, the radiation beam would analytically leave the right boundary between $0.6 \leq y \leq 0.8$. This means that any radiation leaving the right boundary for all other $y$ values is due to the numerical dispersion of the beam. The initial mesh is a uniform $5 \text{x} 5$ Cartesian grid as shown in Figure \ref{fig::BF_Results_SL_starting_mesh}. We note that with this choice of initial grid, the analytical path of the beam is fully-contained withn a spatial cell (a mesh cell does not bisect the analytical beam at the incoming and outgoing faces). 
+In this problem, we investigate an $\mathbb{R}^2$ domain of size $[0,1]^2$ cm. The radiation enters the left boundary between $0.2 \leq y \leq 0.4$ with an un-normalized angular direction of $[1,0.4]$. For this chosen direction, the radiation beam would analytically leave the right boundary between $0.6 \leq y \leq 0.8$. This means that any radiation leaving the right boundary for all other $y$ values is due to the numerical dispersion of the beam. The initial mesh is a uniform $5 \text{x} 5$ Cartesian grid as shown in Figure \ref{fig::BF_Results_SL_starting_mesh}. We note that with this choice of initial grid, the analytical path of the beam is fully-contained within a spatial cell (a mesh cell does not bisect the analytical beam at the incoming and outgoing faces). 
 
 \begin{figure}
 \centering
@@ -3437,7 +3437,7 @@ Next, we plot the outgoing angular flux along the right face. We wish to see how
 
 In this chapter, we presented four different linearly-complete, barycentric, 2D polygonal basis functions to be used with the DGFEM transport equation: the Wachspress rational functions, the PWL coordinates, the mean value coordinates, and the maximum entropy coordinates. The Wachspress and the PWL coordinates had been previously utilized for DGFEM transport calculations, and we have extended the analysis to include the other two. Next, the procedure for converting these barycentric coordinates into the quadratic serendipity space of functions was given. For both the linear and quadratic coordinates, a simple quadrature rule for arbitrary polygons based on triangulation was used. We also provided some details of the 3D PWL coordinates that will be used in Chapter \ref{sec::DSA} for completeness.
 
-Numerical results were obtained to demonstrate the completeness and convergence properties of these coordinates. The 2D linear and quadratic basis functions capture the thick diffusion limit, which is a necessary property for TRT calculations. The linear and quadratic basis functions can capture exactly-linear and exactly-quadratic solution spaces, respectively. Next, a series of convergence studies were performed to test the convergence behavior of the basis functions under different conditions. Using MMS, the transport solutions converged at a rate of $p+1$ under uniform mesh refinement, which is perfectly in alignment with FEM theory. AMR was also used on MMS problems to achieve more accurate solutions with the same $p+1$ convergence rates using less degrees of freedom. Finally, we concluded with some numerical problems involving purely absorbing media containing a solution discontinuity. For these problems, the solutions converge at a rate of $\min ( p+1 , r)$ depending on the regularity of the alignment of the transport solution. If the spatial mesh is aligned with the discontinuity, then the $p+1$ convergence are still observed. If the meshes are not aligned, then convergence rates imposed by the regularity ($r=1/2$ or $3/2$) are observed for optically thin meshes. However, for meshes that are still optically thick convergence rates of $p+1$ are observed in the pre-asymptotic region before being restricted by $r$ as the mesh gets optically thin.
+Numerical results were obtained to demonstrate the completeness and convergence properties of these coordinates. The 2D linear and quadratic basis functions capture the thick diffusion limit, which is a necessary property for thermal radiative transport calculations. The linear and quadratic basis functions can capture exactly-linear and exactly-quadratic solution spaces, respectively. Next, a series of convergence studies were performed to test the convergence behavior of the basis functions under different conditions. Using MMS, the transport solutions converged at a rate of $p+1$ under uniform mesh refinement, which is perfectly in alignment with FEM theory. AMR was also used on MMS problems to achieve more accurate solutions with the same $p+1$ convergence rates using less degrees of freedom. Finally, we concluded with some numerical problems involving purely absorbing media containing a solution discontinuity. For these problems, the solutions converge at a rate of $\min ( p+1 , r)$ depending on the regularity of the alignment of the transport solution. If the spatial mesh is aligned with the discontinuity, then the $p+1$ convergence are still observed. If the meshes are not aligned, then convergence rates imposed by the regularity ($r=1/2$ or $3/2$) are observed for optically thin meshes. However, for meshes that are still optically thick convergence rates of $p+1$ are observed in the pre-asymptotic region before being restricted by $r$ as the mesh gets optically thin.
 
 
 
