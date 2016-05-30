@@ -66,11 +66,11 @@ The time-dependent neutron angular flux, $\Psi (\vec{r}, E, \vec{\Omega}, t)$, a
 \label{eq::Sn_transport_bc_full}
 \begin{aligned}
 	\Psi (\vec{r}, E, \vec{\Omega},t) = \Psi^{inc} (\vec{r}, E, \vec{\Omega},t) + \int dE' \int d\Omega' \gamma (\vec{r}, E' \rightarrow E, \vec{\Omega}' \rightarrow \vec{\Omega},t) \Psi (\vec{r}, E', \vec{\Omega}',t) \\
-	\text{for } \vec{r} \in \partial \mathcal{D}^{-} \left\{   \partial \mathcal{D}, \vec{\Omega}' \cdot \vec{n} < 0  \right\}
+	\text{for } \vec{r} \in \partial \mathcal{D}^{-} \left\{   \partial \mathcal{D}, \vec{\Omega} \cdot \vec{n} < 0  \right\}
 \end{aligned} .
 \end{equation}
 
-\noindent In Eqs. (\ref{eq::Sn_transport_eq_full}) and (\ref{eq::Sn_transport_bc_full}), the physical properties of the system are defined as the following: $\sigma_t (\vec{r}, E,t)$ is the total neutron cross section, $\chi (\vec{r}, E,t)$ is the neutron fission spectrum, $\sigma_f (\vec{r}, E',t)$ is the fission cross section, $\nu (\vec{r}, E',t)$ is the average number of neutrons emitted per fission, $\sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega,t)$ is the differential scattering cross section, $Q_{ext} (\vec{r}, E, \vec{\Omega},t)$ is a distributed external source, $\Psi^{inc} (\vec{r}, E, \vec{\Omega},t)$ is the incident boundary source, and $\gamma (\vec{r}, E' \rightarrow E, \vec{\Omega}' \rightarrow \vec{\Omega},t)$ is the boundary albedo. 
+\noindent In Eqs. (\ref{eq::Sn_transport_eq_full}) and (\ref{eq::Sn_transport_bc_full}), the physical properties of the system are defined as the following: $\sigma_t (\vec{r}, E,t)$ is the total neutron cross section, $\chi (\vec{r}, E,t)$ is the neutron fission spectrum, $\sigma_f (\vec{r}, E',t)$ is the fission cross section, $\nu (\vec{r}, E',t)$ is the average number of neutrons emitted per fission, $\sigma_s (E' \rightarrow E, \Omega' \rightarrow \Omega,t)$ is the differential scattering cross section, $Q_{ext} (\vec{r}, E, \vec{\Omega},t)$ is a distributed external source, $\Psi^{inc} (\vec{r}, E, \vec{\Omega},t)$ is the incident boundary source, and $\gamma (\vec{r}, E' \rightarrow E, \vec{\Omega}' \rightarrow \vec{\Omega},t)$ is the boundary albedo. We note that we have omitted the delayed neutron precursors from Eq. (\ref{eq::Sn_transport_eq_full}) because our work is restricted to steady-state problems.
 
 We define the operator notation of Eq. (\ref{eq::Sn_transport_eq_full}):
 
@@ -104,7 +104,7 @@ There is a special subset of transport problems that is routinely analyzed to de
 
 \begin{equation}
 \label{eq::Sn_nubar_k}
-	\nu (\vec{r}, E) \rightarrow \frac{\tilde{\nu} (\vec{r}, E)}{k},
+	\nu (\vec{r}, E) \rightarrow \frac{{\nu} (\vec{r}, E)}{k},
 \end{equation}
 
 \noindent where we have introduced the eigenvalue, $k$. By also dropping the external source term, the steady-state neutron transport equation in Eq. (\ref{eq::Sn_transport_eq_op_SS}) can be rewritten into
@@ -116,7 +116,7 @@ There is a special subset of transport problems that is routinely analyzed to de
 
 \noindent where $(k, \tilde{\Psi})$ forms an appropriate eigenvalue-eigenvector pair. Of most interest is the eigenpair corresponding to the eigenvalue of largest magnitude.
 
-We can then gain knowledge of the behavior of the neutron population in the problem by taking the full phase-space integrals of the loss operator $\int  \int \int \, {\bf L} \tilde{\Psi} \, dE \, d\Omega \, d^3r$, the fission operator $\int  \int \int \, {\bf F} \tilde{\Psi} \, dE \, d\Omega \, d^3r$, and the scattering operator $\int  \int \int \, {\bf S} \tilde{\Psi} \, dE \, d\Omega \, d^3r$. With the appropriate eigenvector solution, $\tilde{\Psi}$, the $k$ eigenvalue then has the meaning as the multiplicative value which balances Eq. (\ref{eq::Sn_transport_eq_op_keff}) in an integral sense. This means that $k$ also has a physical meaning as well. A value $k<1$ is called subcritical and corresponds to a system whose neutron population decreases in time; a value $k=1$ is called critical and corresponds to a system whose neutron population remains constant in time; and a value $k>1$ is called supercritical and corresponds to a system whose neutron population increases in time \cite{ott1989}.
+We can then gain knowledge of the behavior of the neutron population in the problem by taking the full phase-space integrals of the left-hand-side and right-hand-side operators of Eq. (\ref{eq::Sn_transport_eq_op_keff}). With the appropriate eigenvector solution, $\tilde{\Psi}$, the $k$ eigenvalue then has the meaning as the multiplicative value which balances Eq. (\ref{eq::Sn_transport_eq_op_keff}) in an integral sense. This means that $k$ also has a physical meaning as well. A value $k<1$ is called subcritical and corresponds to a system whose neutron population decreases in time; a value $k=1$ is called critical and corresponds to a system whose neutron population remains constant in time; and a value $k>1$ is called supercritical and corresponds to a system whose neutron population increases in time \cite{ott1989}.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -419,7 +419,7 @@ We next specify the order of the quadrature set, $N$, which we restrict to only 
 \mu_i = \eta_i = \xi_i, \qquad i \in (1,N/2)
 \end{equation}
 
-As previously stated, once the location of the first ordinate, $\mu_1$, is selected, then the remaining are directly known. However, to maintain the relation of Eq. (\ref{eq::Sn_Angle_angle_cos_relation}), this first ordinate has restrictions placed on it. It must maintain a positive value: $\mu_1^2 \in (0, 1/3]$. Also, for the $S_2$ set (N=2), there is exactly one direction cosine with no degrees of freedom. This requires that $\mu_1^2 = 1/3$ for the $S_2$ case.
+As previously stated, once the location of the first ordinate, $\mu_1$, is selected, then the remaining are directly known. However, to maintain the relation of Eq. (\ref{eq::Sn_Angle_angle_cos_relation}), this first ordinate has restrictions placed on it. It must maintain a positive value: $\mu_1^2 \in (0, 1/3]$. Also, for the $S_2$ set ($N=2$), there is exactly one direction cosine with no degrees of freedom. This requires that $\mu_1^2 = 1/3$ for the $S_2$ case.
 
 With $\mu_1$ now selected, we can consider an ordinate set [$\mu_i, \eta_j, \xi_k $], where $i+j+k = N/2 + 2$. To maintain the appropriate Euclidean norm, a recursion relation can be derived (which we will not do for brevity):
 
@@ -716,10 +716,10 @@ Next, we multiply Eq. (\ref{eq::Sn_trans_eq_simple_no_energy_groups}) by an appr
 \begin{equation}
 \label{eq::Sn_DGFEM_trans_eq_cellK_diff_faces}
 \begin{aligned}
-- \left( \vec{\Omega}_m \cdot  \vec{\nabla} b_m, \Psi_{m} \right)_{K}   + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K}  \\
-+  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\Psi}_m  \Big>_{\partial K^+}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\Psi}_m  \Big>_{\partial K^- \backslash \partial \mathcal{D}} \\
-  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\Psi}_m  \Big>_{\partial K^- \cap \partial \mathcal{D}^d}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\Psi}_m  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
-= \sum_{p=0}^{N_P} \sum_{n=-p}^{p} \frac{2p + 1}{4 \pi}  Y_{p,n} (  \vec{\Omega}_m ) \left[ \Big( \sigma_{s,p} \, b_m,  \Phi_{p,n,} \Big)_{K}  + \left(  b_m ,   Q_{p,n} \right)_{K} \right]
+&- \left( \vec{\Omega}_m \cdot  \vec{\nabla} b_m, \Psi_{m} \right)_{K}   + \Big(  \sigma_{t} b_m ,   \Psi_{m} \Big)_{K}  \\
+&+  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\Psi}_m  \Big>_{\partial K^+}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\Psi}_m  \Big>_{\partial K^- \backslash \partial \mathcal{D}} \\
+  &+ \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\Psi}_m  \Big>_{\partial K^- \cap \partial \mathcal{D}^d}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\Psi}_m  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
+&= \sum_{p=0}^{N_P} \sum_{n=-p}^{p} \frac{2p + 1}{4 \pi}  Y_{p,n} (  \vec{\Omega}_m ) \left[ \Big( \sigma_{s,p} \, b_m,  \Phi_{p,n,} \Big)_{K}  + \left(  b_m ,   Q_{p,n} \right)_{K} \right]
 \end{aligned} .
 \end{equation}
 
@@ -761,7 +761,7 @@ We can now deal with the boundary fluxes, $\tilde{\Psi}_m$, by enforcing the ubi
 \end{aligned} .
 \end{equation} 
 
-\noindent We note that fluxes without the trace superscript are all within the cell. By completely defining our mathematical formulation for an arbitrary spatial cell, it is easy to see that the full set of equations to define our discretized solution space for a single angle and energy group comprises of a simple double integration loop. The full set of equations can be formed by looping over all spatial cells, $\mathcal{D} = \bigcup_{K \in \mathbb{T}_h} K$, while further looping over all faces within each cell, $\partial \mathcal{D}_K = \bigcup_{ f \in N_f^K} f$. 
+\noindent We note that fluxes without the trace superscript are all within the cell. Also, the basis functions, $b_m$, always correspond to within the cell. By completely defining our mathematical formulation for an arbitrary spatial cell, it is easy to see that the full set of equations to define our discretized solution space for a single angle and energy group comprises of a simple double integration loop. The full set of equations can be formed by looping over all spatial cells, $\mathcal{D} = \bigcup_{K \in \mathbb{T}_h} K$, while further looping over all faces within each cell, $\partial \mathcal{D}_K = \bigcup_{ f \in N_f^K} f$. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Convergence
@@ -1085,7 +1085,7 @@ The fully discretized transport equation has an angular flux solution, ${\bf \Ps
 
 In theory, if we had the computer memory, we could construct a left-hand-side matrix of dimensionality $(G \text{x} M \text{x} N_{dof})$x$(G \text{x} M \text{x} N_{dof})$ with a corresponding right-hand-side vector of dimensionality $(G \text{x} M \text{x} N_{dof})$x1, we could then directly solve for the full phase-space angular flux solution at once. However, because the dimensional space of the unknowns can rapidly grow and become too large for hardware memory, transport problems have traditionally been solved iteratively. We now detail the procedures that we will employ to iteratively obtain the phase-space solution in energy and angle.
 
-Because the only coupling that arises between the set of multigroup $S_N$ equations is between the energy groups in the scattering source, our iterative procedures principally lie in the energy domain. Figure \ref{fig::Sn_Solution_Iterative_scattmatrix} presents a pair of scattering matrices that show typical coupling between energy groups for neutronics problems. Depending on how the group boundaries are established along with a possible need for higher fidelity in energy, thermal upscattering may or may or may not be present in the problem. We can see from Figure \ref{fig::Sn_Solution_Iterative_scattmatrix} that the purely-downscattering matrix only has 1-way coupling, from high-to-low in the group energies. This means that if we progress through the energy groups from $g=1,...,G$ (in what is called an {\em outer iteration}), then we only have to do so once and we are done. However, there are many transport problems where we wish to have several energy groups in the thermal region. This leads to thermal neutron upscattering and causes the lower-right portion of the scattering matrix to be full as seen in the bottom of Figure \ref{fig::Sn_Solution_Iterative_scattmatrix}. Then, depending on how the groups are structured, multiple outer iterations may be necessary to fully converge the scattering source.
+Because of the tight coupling that arises between the set of multigroup $S_N$ equations is between the energy groups in the scattering source, our iterative procedures principally lie in the energy domain. Figure \ref{fig::Sn_Solution_Iterative_scattmatrix} presents a pair of scattering matrices that show typical coupling between energy groups for neutronics problems. Depending on how the group boundaries are established along with a possible need for higher fidelity in energy, thermal upscattering may or may or may not be present in the problem. We can see from Figure \ref{fig::Sn_Solution_Iterative_scattmatrix} that the purely-downscattering matrix only has 1-way coupling, from high-to-low in the group energies. This means that if we progress through the energy groups from $g=1,...,G$ (in what is called an {\em outer iteration}), then we only have to do so once and we are done. However, there are many transport problems where we wish to have several energy groups in the thermal region. This leads to thermal neutron upscattering and causes the lower-right portion of the scattering matrix to be full as seen in the bottom of Figure \ref{fig::Sn_Solution_Iterative_scattmatrix}. Then, depending on how the groups are structured, multiple outer iterations may be necessary to fully converge the scattering source.
 
 
 \begin{figure}
@@ -1104,7 +1104,7 @@ Because the only coupling that arises between the set of multigroup $S_N$ equati
 \label{fig::Sn_Solution_Iterative_scattmatrix}
 \end{figure}
 
-We now describe the full iterative procedures required to converge the scattering source in detail. We begin by defining a new concept called a {\em group set}, which is simply a collection of contiguous groups. The group sets are ordered from high-to-low energy just like the groups and are non-overlapping with the adjoining sets. We demonstrate this concept with a simple example. If we have a problem with 10 groups ($G=10$), we then choose to aggregate them into 3 group sets. Group set 1 contains $g \in [1,3]$, group set 2 contains $g \in [4,7]$, and group set 3 contains $g \in [8,10]$. With these group sets defined we then choose to employ a double iteration loop to converge the scattering matrix. The outer iterations in this procedure perform residual calculations by looping through the group sets. Then, for each group set in every outer iteration, {\em inner iterations} are performed. These inner iterations perform residual calculations to solve the scattering matrix within that group set to some specified tolerance. We will sometimes refer to these inner iterations as {\em within-group-set} (WGS) {\em iterations}. Because each outer iteration performs residual calculations for every group set, we will sometimes refer to these outer iteration as {\em across-group-set} (AGS) {\em iterations}. We continue performing AGS iterations until the solution residual is below some specified tolerance. At each outer and inner iteration, we possibly perform some acceleration (or preconditioning) step, where we leave the details for this until Chapter \ref{sec::DSA}. This complete iterative procedure involving the outer and inner iteration loops is given in Algorithm \ref{alg::Sn_Linear_Transport_Solve}. In this algorithm, we solve $N_{gs}$ number of group sets by using a maximum number of AGS iterations, $I_{ags}$, as well as a maximum number of WGS iterations for each group set, $I_{gs}$.
+We now describe the full iterative procedures required to converge the scattering source in detail. We begin by defining a new concept called a {\em group set}, which is simply a collection of contiguous groups. The group sets are ordered from high-to-low energy just like the groups and are non-overlapping with the adjoining sets. We demonstrate this concept with a simple example. If we have a problem with 10 groups ($G=10$), we then choose to aggregate them into 3 group sets. Group set 1 contains $g \in [1,3]$, group set 2 contains $g \in [4,7]$, and group set 3 contains $g \in [8,10]$. With these group sets defined we then choose to employ a double iteration loop to converge the scattering source. The outer iterations in this procedure perform residual calculations by looping through the group sets. Then, for each group set in every outer iteration, {\em inner iterations} are performed. These inner iterations perform residual calculations to solve the scattering source within that group set to some specified tolerance. We will sometimes refer to these inner iterations as {\em within-group-set} (WGS) {\em iterations}. Because each outer iteration performs residual calculations for every group set, we will sometimes refer to these outer iteration as {\em across-group-set} (AGS) {\em iterations}. We continue performing AGS iterations until the solution residual is below some specified tolerance. At each outer and inner iteration, we possibly perform some acceleration (or preconditioning) step, where we leave the details for this until Chapter \ref{sec::DSA}. This complete iterative procedure involving the outer and inner iteration loops is given in Algorithm \ref{alg::Sn_Linear_Transport_Solve}. In this algorithm, we solve $N_{gs}$ number of group sets by using a maximum number of AGS iterations, $I_{ags}$, as well as a maximum number of WGS iterations for each group set, $I_{wgs}$.
 
 As previously stated, the residual iterations for each group set only converge the scattering source for that group set. This means that the scattering sources from the other group sets are not modified during these iterations. We show this behavior by decomposing the transport equation into $N_{gs}$ separate equations where we have decomposed the scattering source into group set and across-group set components. The equations for the angular flux and flux moment solutions for each group set are given by
 
@@ -1149,7 +1149,7 @@ We can further express Eq. (\ref{eq::Sn_full_sol_gs_ops_psi}) in terms of only t
 \For{$a=1,...,I_{ags}$}
 	\State {\bf Loop}: through group sets
 	\For{$gs=1,...,N_{gs}$}
-		\For{$k=1,...,I_{gs}$}
+		\For{$k=1,...,I_{wgs}$}
 			\State {\bf Perform}: residual iteration
 			\State {\bf Apply}: Acceleration for group set $gs$
 			\State {\bf Check}: convergence of group set $gs$
@@ -1174,14 +1174,14 @@ One simple method to invert the $({\bf I} - {\bf T})$ operator of Eq. (\ref{eq::
 {\bf L} {\bf \Psi}^{(k+1)} =    {\bf M} {\bf \Sigma} {\bf \Phi}^{(k)} +  {\bf Q} ,
 \end{equation}
 
-\noindent where we removed the $gs$ subscripts for brevity and note that the driving source ${\bf Q}$ contains scattering sources from all other group sets into the current group set of interest. From Eq. (\ref{eq::Sn_pre_si_iter}), we can see that the scattering source at iteration $(k+1)$ is calculated from a previous guess for the flux moments at iteration $(k)$. Then, after the application of one transport sweep, we obtain a new guess for the angular flux moments:
+\noindent where we removed the $gs$ subscripts for brevity and note that the driving source ${\bf Q}$ contains scattering sources from all other group sets into the current group set of interest. From Eq. (\ref{eq::Sn_pre_si_iter}), we can see that the scattering source at iteration $(k+1)$ is calculated from a previous guess for the flux moments at iteration $(k)$. This is exactly a Jacobi iteration in energy for the group set. Then, after the application of one transport sweep, we obtain a new guess for the angular flux moments:
 
 \begin{equation}
 \label{eq::Sn_si_iter}
 \begin{aligned}
  {\bf \Psi}^{(k+1)} &= {\bf L}^{-1} \left(  {\bf M} {\bf \Sigma} {\bf \Phi}^{(k)} +  {\bf Q} \right) \\
 {\bf \Phi}^{(k+1)} &=  {\bf D} {\bf \Psi}^{(k+1)}
-\end{aligned}
+\end{aligned} .
 \end{equation}
 
 We continue to perform these Richardson iterations until the difference between two iterate solutions is less than some specified tolerance in a given norm. This convergence criterion for SI can be succinctly written as
@@ -1221,7 +1221,7 @@ $\rho$ & Iterations \\ \hline \hline
 \end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSubSection - Source Iteration
+%%%   SubSubSection - Krylov
 \subsubsection{Krylov Subspace Methods}
 \label{sec::Sn_Solution_Iterative_GMRES}
 

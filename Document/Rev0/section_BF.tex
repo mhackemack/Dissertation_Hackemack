@@ -650,7 +650,7 @@ Now that we have provided sufficient details for the basis functions and their w
 \end{aligned} ,
 \end{equation}
 
-\noindent where we repressed the spatial parameter $\vec{x}$ for brevity. If we take the first variation of $\mathcal{L}$ to zero ($\delta \mathcal{L} (\vec{b}; \kappa_0, \vec{\kappa} ) = 0$), then we obtain
+\noindent where we omitted the spatial parameter $\vec{x}$ for brevity. If we take the first variation of $\mathcal{L}$ to zero ($\delta \mathcal{L} (\vec{b}; \kappa_0, \vec{\kappa} ) = 0$), then we obtain
 
 \begin{equation}
 \label{eq::BF_ME_lagrangian_zero}
@@ -677,7 +677,7 @@ b_j (\vec{x}) = \frac{m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{
 \item Compute and store $(\vec{x}_j - \vec{x})$ and the prior functions $m_j (\vec{x})$;
 \item Start with iteration counter at $k=0$ and initialize the Lagrange multiplier: $\vec{\kappa}^0 = \vec{0}$;
 \item Compute the gradient of $F$, $\vec{g}_k = \vec{\nabla}_{\kappa} F (\vec{\kappa}^k)$, and its Hessian, $H_k = \vec{\nabla}_{\kappa} \vec{\nabla}_{\kappa}  F (\vec{\kappa}^k)$;
-\item Determine the Newton search direction: $\Delta \vec{\kappa}_k = - H_k^{-1} g_k$;
+\item Determine the Newton search direction: $\Delta \vec{\kappa}^k = - H_k^{-1} \vec{g}_k$;
 \item Update the multiplier: $\vec{\kappa}^{k+1} =\vec{\kappa}^k + \alpha \Delta \vec{\kappa}^k$;
 \item Check convergence by testing if $|| g_{k+1} || > \epsilon$.
 \item Set $\vec{\kappa}^*$ = $\vec{\kappa}^{k+1}$ and compute $\vec{b} (\vec{x})$
@@ -2485,7 +2485,7 @@ For this example, we choose the following solution and problem parameters and ch
 	\item The angular flux solution is zero on the boundary for all incident directions - this is identical to vacuum boundaries which can ease code development.
 \end{enumerate}
 
-\noindent To satisfy these characteristics, we choose to analyze two different solution spaces. The first is a smoothly varying sinusoid solution with no extreme local maxima. The second solution is a product of the quadratic function from Eq. (\ref{eq::BF_Results_x2y2_fluxsols}) and a gaussian which yields a significant local maximum. 
+\noindent To satisfy these characteristics, we choose to analyze two different solution spaces. The first is a smoothly varying sinusoidal solution with no extreme local maxima. The second solution is a product of the quadratic function from Eq. (\ref{eq::BF_Results_x2y2_fluxsols}) and a Gaussian which yields a significant local maximum. 
 
 The sinusoid flux solutions, \{$\Psi_s$, $\Phi_s$\}, have the following parameterized form,
 
@@ -2497,7 +2497,7 @@ The sinusoid flux solutions, \{$\Psi_s$, $\Phi_s$\}, have the following paramete
 \end{aligned} 
 \end{equation}
 
-\noindent where $\nu$ is a frequency parameter. We restrict this parameter to positive integers ($\nu = 1,2,3,...$) to maintain characteristic 5 of the solution and problem space. The gaussian solution space, \{$\Psi_g$, $\Phi_g$\}, that has its local maximum centered at ($x_0,y_0$) has the parameterized form,
+\noindent where $\nu$ is a frequency parameter. We restrict this parameter to positive integers ($\nu = 1,2,3,...$) to maintain characteristic 5 of the solution and problem space. The Gaussian solution space, \{$\Psi_g$, $\Phi_g$\}, that has its local maximum centered at ($x_0,y_0$) has the parameterized form,
 
 \begin{equation}
 \label{eq::BF_Results_MMS_gaussfluxsols}
@@ -2514,13 +2514,13 @@ The sinusoid flux solutions, \{$\Psi_s$, $\Phi_s$\}, have the following paramete
 C_M = \frac{100}{L_x^2 L_y^2} \qquad \gamma = \frac{L_x L_y}{100} .
 \end{equation}
 
-For this example, we choose the dimensionality of our problem to be $[0,1]^2$ which makes $L_x=L_y=1$ for both the sinusoid and gaussian solutions. For the sinusoid solution, we select the frequency parameter, $\nu$, to be 3 and for the gaussian solution we set the local maximum: $x_0=y_0 = 0.75$. With these parameters, the sinusoid solution will have local minima and maxima of $-2 \pi$ and $2 \pi$, respectively, and the gaussian solution will have a global maximum of $\frac{225}{32} \pi \approx 22.1$.
+For this example, we choose the dimensionality of our problem to be $[0,1]^2$ which makes $L_x=L_y=1$ for both the sinusoid and Gaussian solutions. For the sinusoid solution, we select the frequency parameter, $\nu$, to be 3 and for the Gaussian solution we set the local maximum: $x_0=y_0 = 0.75$. With these parameters, the sinusoid solution will have local minima and maxima of $-2 \pi$ and $2 \pi$, respectively, and the Gaussian solution will have a global maximum of $\frac{225}{32} \pi \approx 22.1$.
 
-For these two examples, we will use a different meshing strategy between them. The convergence rate analysis for the sinusoid problem will be performed on three different mesh types: 1) Cartesian meshes, 2) ordered-triangular meshes, and 3) polygonal meshes. The Cartesian and triangular meshes are the same as those used for the exactly-linear and exactly-quadratic problems. The polygonal meshes are the same as those used for the diffusion limit problem. We give an example of how the mesh will be refined for these different types in Figure \ref{fig::BF_Results_MMS_Sine_Meshes}. For the gaussian problem, we will utilize AMR to form our polygonal meshes. The numbers of polygons and their generation history will depend on the basis functions used and the mesh irregularity that is imposed.
+For these two examples, we will use a different meshing strategy between them. The convergence rate analysis for the sinusoid problem will be performed on three different mesh types: 1) Cartesian meshes, 2) ordered-triangular meshes, and 3) polygonal meshes. The Cartesian and triangular meshes are the same as those used for the exactly-linear and exactly-quadratic problems. The polygonal meshes are the same as those used for the diffusion limit problem. We give an example of how the mesh will be refined for these different types in Figure \ref{fig::BF_Results_MMS_Sine_Meshes}. For the Gaussian problem, we will utilize AMR to form our polygonal meshes. The numbers of polygons and their generation history will depend on the basis functions used and the mesh irregularity that is imposed.
 
 The convergence rates of the sinusoid solution are given in Figures \ref{fig::BF_Results_MMS_Sine_cart}, \ref{fig::BF_Results_MMS_Sine_tri}, and \ref{fig::BF_Results_MMS_Sine_poly} for the Cartesian, triangular, and polygonal meshes, respectively. The total cross section was set to 1.0 and $S_8$ level-symmetric quadrature was used. First, we provide some examples of the sinusoid solutions. Figures \ref{fig::BF_Results_MMS_Sine_PWL1_Sol} and \ref{fig::BF_Results_MMS_Sine_PWL2_Sol} give the contour plots for the sinusoid solutions using the linear and quadratic PWL basis functions, respectively. The meshes used are identical (in the same order) as those given in Figure \ref{fig::BF_Results_MMS_Sine_Meshes}. Next, we plot the $L_2$-norm of the error against the number of spatial degrees of freedom in the problem. From the theoretical analysis of Section \ref{sec::Sn_Spatial_Convergence}, we expected and obtained slope values of the convergence rate of -1 and -3/2 for the linear and quadratic basis functions, respectively. 
 
-Because we are using AMR for the gaussian problem, we will only analyze the PWL, MV, and ME basis functions since the Wachspress functions cannot handle degenerate polygons. For both the linear and quadratic AMR runsets, the refinement criterion, $\alpha$, was set to 0.1. For each linear and quadratic basis function, we performed mesh refinement where the maximum irregularity was set to either 1, 2, or 3. Figure \ref{fig::BF_Results_MMS_Gauss2D_cart}, \ref{fig::BF_Results_MMS_Gauss2D_tri}, and \ref{fig::BF_Results_MMS_Gauss2D_poly} give the convergence history of the 2D gaussian error in the $L_2$-norm using the PWL, mean value, and maximum entropy basis functions, respectively. We plot the different AMR cases with the corresponding uniform refinement case ($\alpha=0$) for comparison. We can clearly see that we obtain the proper convergence rates for all cases, and the AMR sets provide better solution accuracy with significantly less spatial degrees of freedom. Finally, we provide an example of a pair of AMR meshes and solutions in Figure \ref{fig::BF_Results_MMS_GQ_AMR_MeshSol} using the ME basis functions. We can see a clear difference in how the linear and quadratic basis functions will refine, with the quadratic functions causing much smoother refinement to occur.
+Because we are using AMR for the Gaussian problem, we will only analyze the PWL, MV, and ME basis functions since the Wachspress functions cannot handle degenerate polygons. For both the linear and quadratic AMR runsets, the refinement criterion, $\alpha$, was set to 0.1. For each linear and quadratic basis function, we performed mesh refinement where the maximum irregularity was set to either 1, 2, or 3. Figure \ref{fig::BF_Results_MMS_Gauss2D_cart}, \ref{fig::BF_Results_MMS_Gauss2D_tri}, and \ref{fig::BF_Results_MMS_Gauss2D_poly} give the convergence history of the 2D Gaussian error in the $L_2$-norm using the PWL, mean value, and maximum entropy basis functions, respectively. We plot the different AMR cases with the corresponding uniform refinement case ($\alpha=0$) for comparison. We can clearly see that we obtain the proper convergence rates for all cases, and the AMR sets provide better solution accuracy with significantly less spatial degrees of freedom. Finally, we provide an example of a pair of AMR meshes and solutions in Figure \ref{fig::BF_Results_MMS_GQ_AMR_MeshSol} using the ME basis functions. We can see a clear difference in how the linear and quadratic basis functions will refine, with the quadratic functions causing much smoother refinement to occur.
 
 \begin{figure}
 \centering
@@ -2754,7 +2754,7 @@ Because we are using AMR for the gaussian problem, we will only analyze the PWL,
 		\includegraphics[width=\textwidth]{figures/sec_BF/ME2_cart_Irr=1_cyc08_sol.eps}
 	\end{subfigure}
 }
-\caption{AMR meshes and solutions for the gaussian MMS problem using the maximum entropy coordinates: (top) linear basis functions at cycle 15 and (bottom) quadratic serendipity basis functions at cycle 08.}
+\caption{AMR meshes and solutions for the Gaussian MMS problem using the maximum entropy coordinates: (top) linear basis functions at cycle 15 and (bottom) quadratic serendipity basis functions at cycle 08.}
 \label{fig::BF_Results_MMS_GQ_AMR_MeshSol}
 \end{figure}
 
