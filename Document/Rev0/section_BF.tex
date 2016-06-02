@@ -1493,8 +1493,6 @@ The 3D PWL coordinates have an analogous form to their 2D version from Eq. (\ref
 
 \noindent respectively, which leads to constant values of $\alpha$ and $\beta$ for each cell and face, respectively. This assumption of the cell weight functions remains from the 2D PWL form. 
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - Results
 \section{Numerical Results}
@@ -1503,322 +1501,11 @@ The 3D PWL coordinates have an analogous form to their 2D version from Eq. (\ref
 Now that we have presented several linear polygonal finite element basis sets along with the methodology to convert them to quadratic serendipity-like basis, we present several numerical problems to demonstrate our methodology. First, we demonstrate that all of the 2D linear and quadratic serendipity basis functions can capture the correct transport solution in the thick diffusion limit in Section \ref{sec::DSA_Results_TDL}. Then, we demonstrate that the presented linear basis functions can capture an exactly-linear transport solution in Section \ref{sec::BF_Results_Linear}. We follow that by demonstrating that the quadratic serendipity basis functions can capture an exactly-quadratic transport solution in Section \ref{sec::BF_Results_Quadratic}. Next, we present some convergence properties of the basis sets using the method of manufactured solutions (MMS) in Section \ref{sec::BF_Results_MMS}. Then in Section \ref{sec::BF_Results_PA}, we demonstrate how the solution regularity can limit the convergence of our numerical transport solutions to the $H^{1/2}$ and $H^{3/2}$ Hilbert spaces. We conclude with a searchlight problem and observe how the basis sets react with adaptive mesh refinement (AMR) to mitigate numerical dispersion through a vacuum in Section \ref{sec::BF_Results_SL}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%   SubSection - Thick Diffusive Limit
-\subsection{Transport Solutions in the Thick Diffusive Limit}
-\label{sec::DSA_Results_TDL}
-
-We present our first numerical example by demonstrating that the various 2D polygonal finite element basis functions provided in Chapter \ref{sec::BF} satisfy the thick diffusion limit. We investigate the transport problem with isotropic scattering and an isotropic distributed source given by the following:
-
-\begin{equation}
-\label{eq::BF_Results_TDL_trans_eq}
-\vec{\Omega} \cdot \vec{\nabla} \Psi + \sigma_t \Psi =   \frac{\sigma_s}{4 \pi} \Phi +  \frac{Q_0}{4 \pi}.
-\end{equation}
-
-\noindent As the transport problem becomes more optically thick, the total mean free paths of the neutrons increases. In the thick diffusion limit, the domain mean free path approaches infinity. If we fix the physical dimensions of the problem to some finite value, then we can scale the cross sections and the source term to reflect the properties of the thick diffusion limit. In the thick diffusion limit the total and scattering cross sections tend to infinity while the absorption cross section and the source term tend to zero. If we introduce a scaling parameter, $\epsilon$, then we can write the scaled terms as,
-
-\begin{equation}
-\label{eq::BF_Results_TDL_scaling}
-\begin{aligned}
-	\sigma_t &\rightarrow \frac{\sigma_t}{\epsilon} \\
-	\sigma_a &\rightarrow \epsilon \sigma_t\\
-	\sigma_s &\rightarrow \left( \frac{1}{\epsilon} - \epsilon   \right) \sigma_t \\
-	\frac{Q_0}{4 \pi} &\rightarrow \epsilon \frac{Q_0}{4 \pi}
-\end{aligned} \, .
-\end{equation}
-
-\noindent Inserting these scaled cross sections and source term into Eq. (\ref{eq::BF_Results_TDL_trans_eq}) leads to the following scaled transport equation:
-
-\begin{equation}
-\label{eq::BF_Results_TDL_scaled_trans_eq}
-\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{\sigma_t}{\epsilon} \Psi = \sigma_t \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} + \epsilon \frac{Q_0}{4 \pi} .
-\end{equation}
-
-\noindent We can also use the scaled terms of Eq. (\ref{eq::BF_Results_TDL_scaling}) to give the corresponding scaled diffusion equation. If we take the 0th and 1st moments of Eq. (\ref{eq::BF_Results_TDL_scaled_trans_eq}) and assume that the P1 terms obey Fick's Law, then the scaled diffusion equation is
-
-\begin{equation}
-\label{eq::BF_Results_TDL_scaled_diff_eq}
-\epsilon \vec{\nabla} \cdot \frac{1}{3 \sigma_t}  \vec{\nabla} \Phi + \epsilon \sigma_t \Phi =  \epsilon Q_0.
-\end{equation}
-
-\noindent One can immediately see that Eq. (\ref{eq::BF_Results_TDL_scaled_diff_eq}) does not truly scale because there is an $\epsilon$ for each term. This is the desired behavior we want to see from the diffusion equation because, as $\epsilon \rightarrow 0$, the transport equation will converge to its diffusive limit and satisfy a diffusion equation.
-
-For the sake of analysis, we seek to simplify Eqs. (\ref{eq::BF_Results_TDL_scaled_trans_eq}) and (\ref{eq::BF_Results_TDL_scaled_diff_eq}) by normalization. We choose to set $\sigma_t$ and $Q_0$ to unity which gives the final transport and diffusion equations as  
-
-\begin{equation}
-\label{eq::BF_Results_TDL_normalized_trans_eq}
-\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{1}{\epsilon} \Psi =  \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} +  \frac{\epsilon}{4 \pi} ,
-\end{equation}
-
-\noindent and
-
-\begin{equation}
-\label{eq::BF_Results_TDL_normalized_diff_eq}
-\frac{\epsilon}{3} {\nabla}^2 \Phi + \epsilon  \Phi =  \epsilon ,
-\end{equation}
-
-\noindent respectively.
-
-From previous work \cite{adams2001dfem}, it is already known that linear interpolants with properties corresponding to barycentric coordinates satisfy the thick diffusion limit. However, it needs to be demonstrated that the quadratic serendipity extensions will also satisfy the limit. We will demonstrate this both qualitatively and quantitatively. The transport and diffusion equations to be solved are Eqs. (\ref{eq::BF_Results_TDL_normalized_trans_eq}) and (\ref{eq::BF_Results_TDL_normalized_diff_eq}), respectively. The diffusion equation is discretized using a Continuous Finite Element Method (CFEM) form. Vacuum boundary conditions are applied for the transport equations and homogeneous Dirichlet conditions are applied for the diffusion equations. With this choice of boundary conditions, the transport and diffusion solutions will converge only as $\epsilon$ gets small. Specifically, they converge at a rate of $O(\epsilon)$ with an $L_2$-norm if the gradients of the basis functions span the same space as the functions. This is true for the Wachspress, mean value, and maximum entropy functions but not the PWL functions. For some range of $\epsilon$, PWL will converge as $O(\epsilon)$, but will eventually plateau. This is because PWL converges to a slightly different diffusion solution than CFEM diffusion.
-
-We first provide an example of the diffusion solution in Figure \ref{fig::BF_Results_DL_DiffSol} on a polygonal grid for both the linear and quadratic mean value basis functions. Next, Figures \ref{fig::BF_Results_DL_Wachspress}, \ref{fig::BF_Results_DL_PWLD}, \ref{fig::BF_Results_DL_MV}, and \ref{fig::BF_Results_DL_MAXENT} provide the transport solutions with varying $\epsilon$ values using the Wachspress, PWL, mean value, and maximum entropy coordinates, respectively. We see that as we reduce $\epsilon$ from $10^{-1}$ to $10^{-5}$, our transport solutions converge to our diffusion solutions. Finally, we show the convergence rates of the discretized transport, $\Phi_T$, and diffusion, $\Phi_D$, solutions under the $L_2$-norm. The $L_2$-norm of the difference between the transport and diffusion solutions, $|| \Phi_T - \Phi_D||_{L_2}$, should decrease as $O(\epsilon)$ for all the basis functions except the linear and quadratic PWL functions. We demonstrate this as true in Figures \ref{fig::BF_Results_DL_Conv_Cart} and \ref{fig::BF_Results_DL_Conv_Poly} for a Cartesian and polygonal mesh, respectively. For both meshes, the linear and quadratic Wachspress, MV, and ME basis functions show convergence rates of $O(\epsilon)$, but PWL plateaus. However, we notice that the quadratic PWL functions converge as $O(\epsilon)$ longer because of their increased interpolation accuracy.
-
-\begin{figure}
-\centering
-{
-	\begin{subfigure}[b]{0.75\textwidth}
-		\centering
-		\label{subfig::DL_diff_mv_k1}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=1.png}
-		%\caption{}
-	\end{subfigure}
-}
-	\vspace{10mm}
-{
-	\begin{subfigure}[b]{0.75\textwidth}
-		\centering
-		\label{subfig::DL_diff_mv_k2}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=2.png}
-		%\caption{}
-	\end{subfigure}
-}
-\vspace{2mm}
-\caption{Diffusion solution representing the thick diffusion limit problem with linear (top) and quadratic (bottom) mean value basis functions.}
-\label{fig::BF_Results_DL_DiffSol}
-\end{figure}
-
-\begin{figure}
-\centering
-{
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_w1_e1}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=1_ep=1e-1.png}
-		\caption{Linear, $\epsilon = 10^{-1}$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_w2_e1}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=2_ep=1e-1.png}
-		\caption{Quadratic, $\epsilon = 10^{-1}$}
-	\end{subfigure}
-}
-{
-	\vspace{3mm}
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_w1_e3}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=1_ep=1e-3.png}
-		\caption{Linear, $\epsilon = 10^{-3}$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_w2_e3}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=2_ep=1e-3.png}
-		\caption{Quadratic, $\epsilon = 10^{-3}$}
-	\end{subfigure}
-}
-{
-	\vspace{3mm}
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_w1_e5}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=1_ep=1e-5.png}
-		\caption{Linear, $\epsilon = 10^{-5}$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_w2_e5}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=2_ep=1e-5.png}
-		\caption{Quadratic, $\epsilon = 10^{-5}$}
-	\end{subfigure}
-}
-\caption{Transport solutions of the thick diffusion limit problem using the Wachspress basis functions for varying values of the scaling parameter, $\epsilon$.}
-\label{fig::BF_Results_DL_Wachspress}
-\end{figure}
-
-\begin{figure}
-\centering
-{
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_pwl1_e1}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=1_ep=1e-1.png}
-		\caption{Linear, $\epsilon = 10^{-1}$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_pwl2_e1}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=2_ep=1e-1.png}
-		\caption{Quadratic, $\epsilon = 10^{-1}$}
-	\end{subfigure}
-}
-{
-	\vspace{3mm}
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_pwl1_e3}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=1_ep=1e-3.png}
-		\caption{Linear, $\epsilon = 10^{-3}$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_pwl2_e3}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=2_ep=1e-3.png}
-		\caption{Quadratic, $\epsilon = 10^{-3}$}
-	\end{subfigure}
-}
-{
-	\vspace{3mm}
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_pwl1_e5}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=1_ep=1e-5.png}
-		\caption{Linear, $\epsilon = 10^{-5}$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_pwl2_e5}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=2_ep=1e-5.png}
-		\caption{Quadratic, $\epsilon = 10^{-5}$}
-	\end{subfigure}
-}
-\caption{Transport solutions of the thick diffusion limit problem using the PWL basis functions for varying values of the scaling parameter, $\epsilon$.}
-\label{fig::BF_Results_DL_PWLD}
-\end{figure}
-
-\begin{figure}
-\centering
-{
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_mv1_e1}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=1_ep=1e-1.png}
-		\caption{Linear, $\epsilon = 10^{-1}$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_mv2_e1}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=2_ep=1e-1.png}
-		\caption{Quadratic, $\epsilon = 10^{-1}$}
-	\end{subfigure}
-}
-{
-	\vspace{3mm}
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_mv1_e3}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=1_ep=1e-3.png}
-		\caption{Linear, $\epsilon = 10^{-3}$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_mv2_e3}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=2_ep=1e-3.png}
-		\caption{Quadratic, $\epsilon = 10^{-3}$}
-	\end{subfigure}
-}
-{
-	\vspace{3mm}
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_mv1_e5}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=1_ep=1e-5.png}
-		\caption{Linear, $\epsilon = 10^{-5}$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_mv2_e5}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=2_ep=1e-5.png}
-		\caption{Quadratic, $\epsilon = 10^{-5}$}
-	\end{subfigure}
-}
-\caption{Transport solutions of the thick diffusion limit problem using the mean value basis functions for varying values of the scaling parameter, $\epsilon$.}
-\label{fig::BF_Results_DL_MV}
-\end{figure}
-
-\begin{figure}
-\centering
-{
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_me1_e1}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=1_ep=1e-1.png}
-		\caption{Linear, $\epsilon = 10^{-1}$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_me2_e1}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=2_ep=1e-1.png}
-		\caption{Quadratic, $\epsilon = 10^{-1}$}
-	\end{subfigure}
-}
-{
-	\vspace{3mm}
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_me1_e3}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=1_ep=1e-3.png}
-		\caption{Linear, $\epsilon = 10^{-3}$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_me2_e3}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=2_ep=1e-3.png}
-		\caption{Quadratic, $\epsilon = 10^{-3}$}
-	\end{subfigure}
-}
-{
-	\vspace{3mm}
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_me1_e5}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=1_ep=1e-5.png}
-		\caption{Linear, $\epsilon = 10^{-5}$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.465\textwidth}
-		\centering
-		\label{subfig::DL_trans_me2_e5}
-		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=2_ep=1e-5.png}
-		\caption{Quadratic, $\epsilon = 10^{-5}$}
-	\end{subfigure}
-}
-\caption{Transport solutions of the thick diffusion limit problem using the maximum entropy basis functions for varying values of the scaling parameter, $\epsilon$.}
-\label{fig::BF_Results_DL_MAXENT}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.775\textwidth]{figures/sec_BF/DLConvergenceError_Cartesian.eps}
-\caption{Convergence rates for the diffusion limit problem on a Cartesian mesh.}
-\label{fig::BF_Results_DL_Conv_Cart}
-\end{figure}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.775\textwidth]{figures/sec_BF/DLConvergenceError_SqPoly.eps}
-\caption{Convergence rates for the diffusion limit problem on a polygonal mesh.}
-\label{fig::BF_Results_DL_Conv_Poly}
-\end{figure}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Linear Solutions = METHOD OF EXACT SOLUTIONS
 \subsection{Two-Dimensional Exactly-Linear Transport Solutions}
 \label{sec::BF_Results_Linear}
 
-Our next numerical example demonstrates that the linear and quadratic polygonal finite element basis functions capture an exactly-linear solution space. We will show this by the method of exact solutions (MES). Since the coordinate interpolation of the basis functions for the linear basis functions requires exact linear interpolation (Eq. (\ref{eq::BF_linear_interp_affine})), then an exactly-linear solution space can be captured, even on highly distorted polygonal meshes. This also applies to the quadratic serendipity space since it is formed by the product-wise pairings of the linear basis functions. We build our exact solution by investigating the 2D, 1 energy group transport problem with no scattering and an angle-dependent distributed source,
+Our first numerical verification example demonstrates that the linear polygonal finite element basis functions capture an exactly-linear solution space. We will show this by the method of exact solutions (MES). Since the coordinate interpolation of the basis functions for the linear basis functions requires exact linear interpolation (Eq. (\ref{eq::BF_linear_interp_affine})), then an exactly-linear solution space can be captured, even on highly distorted polygonal meshes. This also applies to the quadratic serendipity space since it is formed by the product-wise pairings of the linear basis functions. We build our exact solution by investigating the 2D, 1 energy group transport problem with no scattering and an angle-dependent distributed source,
 
 \begin{equation}
 \label{eq::BF_Results_Linear_angflux}
@@ -3176,6 +2863,329 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 \caption{Convergence rates for the pure absorber problem with left-face and top-face incidence on split-polygonal meshes with different values of $\sigma_t$.}
 \label{fig::BF_Results_PA_LeftTop_SplitPoly}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Thick Diffusive Limit
+\subsection{Transport Solutions in the Thick Diffusive Limit}
+\label{sec::DSA_Results_TDL}
+
+Next, we present numerical verification that the various 2D polygonal finite element basis functions provided in Chapter \ref{sec::BF} satisfy the thick diffusion limit. 
+
+%%%%%%%%%%%%%%%%%%%%%%%
+% CONDITIONS FOR DIFFUSION LIMIT GO HERE!!
+%%%%%%%%%%%%%%%%%%%%%%%
+
+We investigate the transport problem with isotropic scattering and an isotropic distributed source given by the following:
+
+\begin{equation}
+\label{eq::BF_Results_TDL_trans_eq}
+\vec{\Omega} \cdot \vec{\nabla} \Psi + \sigma_t \Psi =   \frac{\sigma_s}{4 \pi} \Phi +  \frac{Q_0}{4 \pi}.
+\end{equation}
+
+\noindent As the transport problem becomes more optically thick, the total mean free paths of the neutrons increases. In the thick diffusion limit, the domain mean free path approaches infinity. If we fix the physical dimensions of the problem to some finite value, then we can scale the cross sections and the source term to reflect the properties of the thick diffusion limit. In the thick diffusion limit the total and scattering cross sections tend to infinity while the absorption cross section and the source term tend to zero. If we introduce a scaling parameter, $\epsilon$, then we can write the scaled terms as,
+
+\begin{equation}
+\label{eq::BF_Results_TDL_scaling}
+\begin{aligned}
+	\sigma_t &\rightarrow \frac{\sigma_t}{\epsilon} \\
+	\sigma_a &\rightarrow \epsilon \sigma_t\\
+	\sigma_s &\rightarrow \left( \frac{1}{\epsilon} - \epsilon   \right) \sigma_t \\
+	\frac{Q_0}{4 \pi} &\rightarrow \epsilon \frac{Q_0}{4 \pi}
+\end{aligned} \, .
+\end{equation}
+
+\noindent Inserting these scaled cross sections and source term into Eq. (\ref{eq::BF_Results_TDL_trans_eq}) leads to the following scaled transport equation:
+
+\begin{equation}
+\label{eq::BF_Results_TDL_scaled_trans_eq}
+\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{\sigma_t}{\epsilon} \Psi = \sigma_t \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} + \epsilon \frac{Q_0}{4 \pi} .
+\end{equation}
+
+\noindent We can also use the scaled terms of Eq. (\ref{eq::BF_Results_TDL_scaling}) to give the corresponding scaled diffusion equation. If we take the 0th and 1st moments of Eq. (\ref{eq::BF_Results_TDL_scaled_trans_eq}) and assume that the P1 terms obey Fick's Law, then the scaled diffusion equation is
+
+\begin{equation}
+\label{eq::BF_Results_TDL_scaled_diff_eq}
+\epsilon \vec{\nabla} \cdot \frac{1}{3 \sigma_t}  \vec{\nabla} \Phi + \epsilon \sigma_t \Phi =  \epsilon Q_0.
+\end{equation}
+
+\noindent One can immediately see that Eq. (\ref{eq::BF_Results_TDL_scaled_diff_eq}) does not truly scale because there is an $\epsilon$ for each term. This is the desired behavior we want to see from the diffusion equation because, as $\epsilon \rightarrow 0$, the transport equation will converge to its diffusive limit and satisfy a diffusion equation.
+
+For the sake of analysis, we seek to simplify Eqs. (\ref{eq::BF_Results_TDL_scaled_trans_eq}) and (\ref{eq::BF_Results_TDL_scaled_diff_eq}) by normalization. We choose to set $\sigma_t$ and $Q_0$ to unity which gives the final transport and diffusion equations as  
+
+\begin{equation}
+\label{eq::BF_Results_TDL_normalized_trans_eq}
+\vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{1}{\epsilon} \Psi =  \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} +  \frac{\epsilon}{4 \pi} ,
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::BF_Results_TDL_normalized_diff_eq}
+\frac{\epsilon}{3} {\nabla}^2 \Phi + \epsilon  \Phi =  \epsilon ,
+\end{equation}
+
+\noindent respectively.
+
+From previous work \cite{adams2001dfem}, it is already known that linear interpolants with properties corresponding to barycentric coordinates satisfy the thick diffusion limit. However, it needs to be demonstrated that the quadratic serendipity extensions will also satisfy the limit. We will demonstrate this both qualitatively and quantitatively. The transport and diffusion equations to be solved are Eqs. (\ref{eq::BF_Results_TDL_normalized_trans_eq}) and (\ref{eq::BF_Results_TDL_normalized_diff_eq}), respectively. The diffusion equation is discretized using a Continuous Finite Element Method (CFEM) form. Vacuum boundary conditions are applied for the transport equations and homogeneous Dirichlet conditions are applied for the diffusion equations. With this choice of boundary conditions, the transport and diffusion solutions will converge only as $\epsilon$ gets small. Specifically, they converge at a rate of $O(\epsilon)$ with an $L_2$-norm if the gradients of the basis functions span the same space as the functions. This is true for the Wachspress, mean value, and maximum entropy functions but not the PWL functions. For some range of $\epsilon$, PWL will converge as $O(\epsilon)$, but will eventually plateau. This is because PWL converges to a slightly different diffusion solution than CFEM diffusion.
+
+We first provide an example of the diffusion solution in Figure \ref{fig::BF_Results_DL_DiffSol} on a polygonal grid for both the linear and quadratic mean value basis functions. Next, Figures \ref{fig::BF_Results_DL_Wachspress}, \ref{fig::BF_Results_DL_PWLD}, \ref{fig::BF_Results_DL_MV}, and \ref{fig::BF_Results_DL_MAXENT} provide the transport solutions with varying $\epsilon$ values using the Wachspress, PWL, mean value, and maximum entropy coordinates, respectively. We see that as we reduce $\epsilon$ from $10^{-1}$ to $10^{-5}$, our transport solutions converge to our diffusion solutions. Finally, we show the convergence rates of the discretized transport, $\Phi_T$, and diffusion, $\Phi_D$, solutions under the $L_2$-norm. The $L_2$-norm of the difference between the transport and diffusion solutions, $|| \Phi_T - \Phi_D||_{L_2}$, should decrease as $O(\epsilon)$ for all the basis functions except the linear and quadratic PWL functions. We demonstrate this as true in Figures \ref{fig::BF_Results_DL_Conv_Cart} and \ref{fig::BF_Results_DL_Conv_Poly} for a Cartesian and polygonal mesh, respectively. For both meshes, the linear and quadratic Wachspress, MV, and ME basis functions show convergence rates of $O(\epsilon)$, but PWL plateaus. However, we notice that the quadratic PWL functions converge as $O(\epsilon)$ longer because of their increased interpolation accuracy.
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.75\textwidth}
+		\centering
+		\label{subfig::DL_diff_mv_k1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=1.png}
+		%\caption{}
+	\end{subfigure}
+}
+	\vspace{10mm}
+{
+	\begin{subfigure}[b]{0.75\textwidth}
+		\centering
+		\label{subfig::DL_diff_mv_k2}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=2.png}
+		%\caption{}
+	\end{subfigure}
+}
+\vspace{2mm}
+\caption{Diffusion solution representing the thick diffusion limit problem with linear (top) and quadratic (bottom) mean value basis functions.}
+\label{fig::BF_Results_DL_DiffSol}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_w1_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=1_ep=1e-1.png}
+		\caption{Linear, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_w2_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=2_ep=1e-1.png}
+		\caption{Quadratic, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_w1_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=1_ep=1e-3.png}
+		\caption{Linear, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_w2_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=2_ep=1e-3.png}
+		\caption{Quadratic, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_w1_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=1_ep=1e-5.png}
+		\caption{Linear, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_w2_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_WACHSPRESS_k=2_ep=1e-5.png}
+		\caption{Quadratic, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+}
+\caption{Transport solutions of the thick diffusion limit problem using the Wachspress basis functions for varying values of the scaling parameter, $\epsilon$.}
+\label{fig::BF_Results_DL_Wachspress}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_pwl1_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=1_ep=1e-1.png}
+		\caption{Linear, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_pwl2_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=2_ep=1e-1.png}
+		\caption{Quadratic, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_pwl1_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=1_ep=1e-3.png}
+		\caption{Linear, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_pwl2_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=2_ep=1e-3.png}
+		\caption{Quadratic, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_pwl1_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=1_ep=1e-5.png}
+		\caption{Linear, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_pwl2_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_PWLD_k=2_ep=1e-5.png}
+		\caption{Quadratic, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+}
+\caption{Transport solutions of the thick diffusion limit problem using the PWL basis functions for varying values of the scaling parameter, $\epsilon$.}
+\label{fig::BF_Results_DL_PWLD}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_mv1_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=1_ep=1e-1.png}
+		\caption{Linear, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_mv2_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=2_ep=1e-1.png}
+		\caption{Quadratic, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_mv1_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=1_ep=1e-3.png}
+		\caption{Linear, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_mv2_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=2_ep=1e-3.png}
+		\caption{Quadratic, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_mv1_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=1_ep=1e-5.png}
+		\caption{Linear, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_mv2_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MV_k=2_ep=1e-5.png}
+		\caption{Quadratic, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+}
+\caption{Transport solutions of the thick diffusion limit problem using the mean value basis functions for varying values of the scaling parameter, $\epsilon$.}
+\label{fig::BF_Results_DL_MV}
+\end{figure}
+
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_me1_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=1_ep=1e-1.png}
+		\caption{Linear, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_me2_e1}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=2_ep=1e-1.png}
+		\caption{Quadratic, $\epsilon = 10^{-1}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_me1_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=1_ep=1e-3.png}
+		\caption{Linear, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_me2_e3}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=2_ep=1e-3.png}
+		\caption{Quadratic, $\epsilon = 10^{-3}$}
+	\end{subfigure}
+}
+{
+	\vspace{3mm}
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_me1_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=1_ep=1e-5.png}
+		\caption{Linear, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.465\textwidth}
+		\centering
+		\label{subfig::DL_trans_me2_e5}
+		\includegraphics[width=\textwidth]{figures/sec_BF/Sq_poly_MAXENT_k=2_ep=1e-5.png}
+		\caption{Quadratic, $\epsilon = 10^{-5}$}
+	\end{subfigure}
+}
+\caption{Transport solutions of the thick diffusion limit problem using the maximum entropy basis functions for varying values of the scaling parameter, $\epsilon$.}
+\label{fig::BF_Results_DL_MAXENT}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.775\textwidth]{figures/sec_BF/DLConvergenceError_Cartesian.eps}
+\caption{Convergence rates for the diffusion limit problem on a Cartesian mesh.}
+\label{fig::BF_Results_DL_Conv_Cart}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.775\textwidth]{figures/sec_BF/DLConvergenceError_SqPoly.eps}
+\caption{Convergence rates for the diffusion limit problem on a polygonal mesh.}
+\label{fig::BF_Results_DL_Conv_Poly}
+\end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   SubSection - Unresolved Boundary Layer
+\subsection{Transport Solutions in Unresolved Boundary Layers}
+\label{sec::DSA_Results_UBL}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Searchlight Problem
