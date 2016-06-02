@@ -323,7 +323,10 @@ For completeness with the 2D and 3D results presented in Chapter \ref{sec::DSA},
 \section{Comparison between Modified Interior Penalty and Modified Four-Step DSA Schemes}
 \label{sec::App_DSA_M4S}
 
-In this work, our low-order diffusion operator was the discontinuous DFEM MIP form. Another common, fully-discontinuous form of the diffusion equation for use as a DSA scheme is the Modified Four-Step (M4S) method \cite{ref::dsa_DFEM_adams_martin}. It is a partially-consistent DSA scheme that can be derived in two-separate ways to yield the same functional form. One method is to take the analytic transport equation, expand the angular flux moments, take the moments to form the analytic diffusion equation, and then spatially discretize to form the spatially discretized diffusion equation. Conversely, the derivation can be performed by spatially discretizing the analytic transport equation, expanding the angular flux moments, and taking the moments to form the spatially discretized diffusion equation. Using either of these methods, we write the M4S diffusion form as 
+In this work, our low-order diffusion operator was the discontinuous DFEM MIP form. Another common, fully-discontinuous form of the diffusion equation for use as a DSA scheme is the Modified Four-Step (M4S) method \cite{ref::dsa_DFEM_adams_martin}. It is a partially-consistent DSA scheme that can be derived in two-separate ways to yield the same functional form. One method is to take the analytic transport equation, expand the angular flux moments, take the moments to form the analytic diffusion equation, and then spatially discretize to form the spatially discretized diffusion equation. Conversely, the derivation can be performed by spatially discretizing the analytic transport equation, expanding the angular flux moments, and taking the moments to form the spatially discretized diffusion equation. Using either of these methods, 
+
+
+With the notation that we used for the SIP and MIP forms in Chapter \ref{sec::DSA}, we can write the M4S diffusion form as 
 
 \begin{equation}
 a^{M4S}( b, \delta \Phi) = b^{M4S}(b),
