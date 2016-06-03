@@ -17,7 +17,7 @@
 \chapter{\uppercase {Addendum to Chapter 4}}
 \label{sec::appendix_DSA}
 
-In this appendix, we will perform some additional analysis of the MIP diffusion form. First, we provide greater implementation details for Fourier Analysis in Section \ref{sec::App_DSA_fourier}. Then, we provide some example Fourier Analysis for the 1D MIP DSA scheme in Section \ref{sec::App_DSA_resutls}. We conclude with a comparison between the MIP and Modified Four-Step (M4S) DSA schemes in Section \ref{sec::App_DSA_M4S}.
+In this appendix, we will perform some additional analysis of the MIP diffusion form. First, we provide greater implementation details for Fourier Analysis in Section \ref{sec::App_DSA_fourier}. Then, we provide some example Fourier Analysis for the 1D MIP DSA scheme in Section \ref{sec::App_DSA_resutls}. Next, we provide a comparison between the MIP and Modified Four-Step (M4S) DSA schemes in Section \ref{sec::App_DSA_M4S}. We conclude with a demonstration on the conservation of the SIP diffusion form in Section \ref{sec::App_DSA_SIP_Conservation}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -340,33 +340,29 @@ In this work, our low-order diffusion operator was the discontinuous DFEM MIP fo
 \left(  \alpha \delta \Phi + \frac{1}{2} D \partial_n \delta \Phi \right)_{r_K^+} \equiv \left(  1 - \beta \right)  \left(  \alpha \delta \Phi - \frac{1}{2} D \partial_n \delta \Phi \right)_{r_K^-} ,
 \end{equation}
 
-\noindent and $r_K^-$ and $r_K^+$ correspond to values taken from within and outside cell $K$, respectively. In Eq. (\ref{eq::App_DSA_M4S_paper_form}), $\alpha$ is approximately 1/4 and $Q$ corresponds to the residual of the DSA scheme. In Eq. (\ref{eq::App_DSA_M4S_bound_term}), $\beta$ has a value of 1 if the face corresponds to an incoming incident boundary face. Likewise, $\beta$ has a value of 0 if the face corresponds to an interior face or reflecting boundary face.
-
-With the notation that we used for the SIP and MIP forms in Chapter \ref{sec::DSA}, we can write the matrix of the M4S scheme as 
+\noindent and $r_K^-$ and $r_K^+$ correspond to values taken from within and outside cell $K$, respectively. In Eq. (\ref{eq::App_DSA_M4S_paper_form}), $\alpha$ is approximately 1/4 and $Q$ corresponds to the residual of the DSA scheme. In Eq. (\ref{eq::App_DSA_M4S_bound_term}), $\beta$ has a value of 1 if the face corresponds to an incoming incident boundary face. Likewise, $\beta$ has a value of 0 if the face corresponds to an interior face or reflecting boundary face. However, in the case of a reflecting boundary, the $r_K^+$ terms become the $r_K^-$ terms and no contribution is needed. With the notation that we used for the SIP and MIP forms in Chapter \ref{sec::DSA}, we can write the matrix of the M4S scheme as 
 
 \begin{equation}
 \label{eq::M4S_bilinear_form}
 \begin{aligned}
-a^{M4S}(b, \delta \Phi)  = \Big(  D \vec{\nabla} b , \vec{\nabla} \delta \Phi  \Big)_{\mathcal{D}} + \Big(  \sigma b , \delta \Phi  \Big)_{\mathcal{D}}    \\
-+ \frac{1}{4}  \Big< [\![   b ]\!] , [\![  \delta \Phi ]\!]\Big>_{E_h^i} + \Big<  [\![  b ]\!] , \{\!\{  D \partial_n \delta \Phi \}\!\}\Big>_{E_h^i}   \\
-+ \frac{1}{4} \Big<   b , \delta  \Phi \Big>_{\partial \mathcal{D}^d} - \frac{1}{2} \Big<  b ,  D \partial_n \delta \Phi \Big>_{\partial \mathcal{D}^d} 
+a^{M4S}&(b, \delta \Phi)  = \Big(  D \vec{\nabla} b , \vec{\nabla} \delta \Phi  \Big)_{\mathcal{D}} + \Big(  \sigma b , \delta \Phi  \Big)_{\mathcal{D}}    \\
+&+ \frac{1}{4}  \Big< [\![   b ]\!] , [\![  \delta \Phi ]\!]\Big>_{E_h^i} + \Big<  [\![  b ]\!] , \{\!\{  D \partial_n \delta \Phi \}\!\}\Big>_{E_h^i}   \\
+&+ \frac{1}{4} \Big<   b , \delta  \Phi \Big>_{\partial \mathcal{D}^d} - \frac{1}{2} \Big<  b ,  D \partial_n \delta \Phi \Big>_{\partial \mathcal{D}^d} 
 \end{aligned} .
 \end{equation}
 
-\noindent 
-
-We compare the M4S form with the MIP form. We again write the bilinear matrix of MIP diffusion form as
+We now compare the M4S form with the MIP form. We again write the bilinear matrix of MIP diffusion form as
 
 \begin{equation}
 \label{eq::App_MIP_bilinear_form}
 \begin{aligned}
-a^{MIP}(b, \delta \Phi)  = \Big(  D \vec{\nabla} b , \vec{\nabla} \delta \Phi  \Big)_{\mathcal{D}} + \Big(  \sigma b , \delta \Phi  \Big)_{\mathcal{D}}    \\
-+  \Big< \kappa_f^{MIP} [\![   b ]\!] , [\![  \delta \Phi ]\!]\Big>_{E_h^i} + \Big<  [\![  b ]\!] , \{\!\{  D \partial_n \delta \Phi \}\!\}\Big>_{E_h^i}  + \Big< \{\!\{  D \partial_n b \}\!\} , [\![ \delta \Phi ]\!]\Big>_{E_h^i} \\
-+ \Big< \kappa_f^{MIP}  b , \delta  \Phi \Big>_{\partial \mathcal{D}^d} - \frac{1}{2} \Big<  b ,  D \partial_n \delta \Phi \Big>_{\partial \mathcal{D}^d} - \frac{1}{2} \Big<   D \partial_n b , \delta \Phi \Big>_{\partial \mathcal{D}^d}  
-\end{aligned} ,
+a^{MIP}&(b, \delta \Phi)  = \Big(  D \vec{\nabla} b , \vec{\nabla} \delta \Phi  \Big)_{\mathcal{D}} + \Big(  \sigma b , \delta \Phi  \Big)_{\mathcal{D}}    \\
+&+  \Big< \kappa_f^{MIP} [\![   b ]\!] , [\![  \delta \Phi ]\!]\Big>_{E_h^i} + \Big<  [\![  b ]\!] , \{\!\{  D \partial_n \delta \Phi \}\!\}\Big>_{E_h^i}  + \Big< \{\!\{  D \partial_n b \}\!\} , [\![ \delta \Phi ]\!]\Big>_{E_h^i} \\
+&+ \Big< \kappa_f^{MIP}  b , \delta  \Phi \Big>_{\partial \mathcal{D}^d} - \frac{1}{2} \Big<  b ,  D \partial_n \delta \Phi \Big>_{\partial \mathcal{D}^d} - \frac{1}{2} \Big<   D \partial_n b , \delta \Phi \Big>_{\partial \mathcal{D}^d}  
+\end{aligned} .
 \end{equation}
 
-\noindent 
+\noindent Between Eqs. (\ref{eq::M4S_bilinear_form}) and (\ref{eq::App_MIP_bilinear_form}), we can immediately see similarities and differences between the M4S and MIP diffusion forms. M4S does not contain the $\Big< \{\!\{  D \partial_n b \}\!\} , [\![ \delta \Phi ]\!]\Big>_{E_h^i}$ or $\frac{1}{2} \Big<   D \partial_n b , \delta \Phi \Big>_{\partial \mathcal{D}^d}  $ symmetrization terms. Therefore, the M4S scheme is not symmetric and PCG cannot be used as the iterative method. Instead, a method like GMRES would be needed to solve the M4S system of equations. We can also see from Eq. (\ref{eq::M4S_bilinear_form}) that the ``penalty'' term in M4S is a constant value of 1/4.
 
 We now provide a pair of results for the M4S form. First, we give a comparison between the theoretical Fourier Analysis and numerical spectral radii results on unit square mesh cells using the linear PWL basis functions in Figure \ref{fig::App_DSA_2D_M4S_Fourier_NSR}. Then, we provide the Fourier wave number distributions of the PWL basis functions on the unit square in Figures \ref{fig::App_DSA_M4S_LS2}, \ref{fig::App_DSA_M4S_LS4}, \ref{fig::App_DSA_M4S_LS8}, and \ref{fig::App_DSA_M4S_LS16} for the $S_2$, $S_4$, $S_8$, and $S_16$ level-symmetric quadrature, respectively.
 
@@ -374,7 +370,7 @@ We now provide a pair of results for the M4S form. First, we give a comparison b
 % BEGIN M4S PLOTS
 \begin{figure}
 \centering
-\includegraphics[width=0.85\textwidth]{figures/appendices/SI_M4S_2D_wNSR.eps}
+\includegraphics[width=0.95\textwidth]{figures/appendices/SI_M4S_2D_wNSR.eps}
 \caption{Comparison between the numerical spectral radii and the theoretical Fourier Analysis spectral radii for the M4S scheme on the unit square.}
 \label{fig::App_DSA_2D_M4S_Fourier_NSR}
 \end{figure}
@@ -566,3 +562,14 @@ We now provide a pair of results for the M4S form. First, we give a comparison b
 \caption{Fourier wave number distribution for different mesh optical thicknesses of a single 2D square cell with PWL basis functions and $LS_{16}$ quadrature.}
 \label{fig::App_DSA_M4S_LS16}
 \end{figure}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%   Section - SIP Conservation
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section{Conservation of the SIP Diffusion Form}
+\label{sec::App_DSA_SIP_Conservation}
+
+We conclude by demonstrating that the SIP form is a conservation discretization of the diffusion equation.
