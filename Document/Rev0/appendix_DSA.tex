@@ -323,8 +323,24 @@ For completeness with the 2D and 3D results presented in Chapter \ref{sec::DSA},
 \section{Comparison between Modified Interior Penalty and Modified Four-Step DSA Schemes}
 \label{sec::App_DSA_M4S}
 
-In this work, our low-order diffusion operator was the discontinuous DFEM MIP form. Another common, fully-discontinuous form of the diffusion equation for use as a DSA scheme is the Modified Four-Step (M4S) method \cite{ref::dsa_DFEM_adams_martin}. It is a partially-consistent DSA scheme that can be derived in two-separate ways to yield the same functional form. One method is to take the analytic transport equation, expand the angular flux moments, take the moments to form the analytic diffusion equation, and then spatially discretize to form the spatially discretized diffusion equation. Conversely, the derivation can be performed by spatially discretizing the analytic transport equation, expanding the angular flux moments, and taking the moments to form the spatially discretized diffusion equation. Using either of these methods, 
+In this work, our low-order diffusion operator was the discontinuous DFEM MIP form. Another common, fully-discontinuous form of the diffusion equation for use as a DSA scheme is the Modified Four-Step (M4S) method \cite{ref::dsa_DFEM_adams_martin}. It is a partially-consistent DSA scheme that can be derived in two-separate ways to yield the same functional form. One method is to take the analytic transport equation, expand the angular flux moments, take the moments to form the analytic diffusion equation, and then spatially discretize to form the spatially discretized diffusion equation. Conversely, the derivation can be performed by spatially discretizing the analytic transport equation, expanding the angular flux moments, and taking the moments to form the spatially discretized diffusion equation. Using either of these methods, we can write the equations for a set of $N_K$ basis functions, $b_i^K$, in element $K$ with $N_f^K$ faces as
 
+\begin{equation}
+\label{eq::App_DSA_M4S_paper_form}
+\begin{aligned}
+&\sum_{f}^{N_f^K} \int\limits_{f} b_i^K \left[  \left(  \alpha \delta \Phi - \frac{1}{2} D \partial_n \delta \Phi \right)_{r_K^-} - \left(  \alpha \delta \Phi + \frac{1}{2} D \partial_n \delta \Phi \right)_{r_K^+} \right] \\
+&+ \int\limits_{K} D \vec{\nabla} b_i^K \cdot \vec{\nabla} \delta \Phi + \int\limits_{K} \sigma_a  b_i^K \delta \Phi = \int\limits_{K}  b_i^K Q , \qquad 1 \leq i \leq N_K
+\end{aligned},
+\end{equation}
+
+\noindent where 
+
+\begin{equation}
+\label{eq::App_DSA_M4S_bound_term}
+\left(  \alpha \delta \Phi + \frac{1}{2} D \partial_n \delta \Phi \right)_{r_K^+} \equiv \left(  1 - \beta \right)  \left(  \alpha \delta \Phi - \frac{1}{2} D \partial_n \delta \Phi \right)_{r_K^-} ,
+\end{equation}
+
+\noindent and $r_K^-$ and $r_K^+$ correspond to values taken from within and outside cell $K$, respectively. In Eq. (\ref{eq::App_DSA_M4S_paper_form}), $\alpha$ is approximately 1/4 and $Q$ corresponds to the residual of the DSA scheme. In Eq. (\ref{eq::App_DSA_M4S_bound_term}), $\beta$ has a value of 1 if the face corresponds to an incoming incident boundary face. Likewise, $\beta$ has a value of 0 if the face corresponds to an interior face or reflecting boundary face.
 
 With the notation that we used for the SIP and MIP forms in Chapter \ref{sec::DSA}, we can write the M4S diffusion form as 
 
