@@ -572,4 +572,38 @@ We now provide a pair of results for the M4S form. First, we give a comparison b
 \section{Conservation of the SIP Diffusion Form}
 \label{sec::App_DSA_SIP_Conservation}
 
-We conclude by demonstrating that the SIP form is a conservation discretization of the diffusion equation.
+We conclude by demonstrating that the SIP form is a conservative discretization of the diffusion equation. 
+
+
+
+\begin{equation}
+\label{eq::App_DSA_MIP_int_form}
+\begin{aligned}
+ \int\limits_{\partial K}& \kappa^{MIP}  b_i^K \left(  \Phi^- - \Phi^+ \right) -  \int\limits_{\partial K}   b_i^K \left( \frac{1}{2} D^- \partial_n  \Phi^- - \frac{1}{2} D^+ \partial_n \Phi^+ \right) -  \int\limits_{\partial K} \frac{1}{2} D \partial_n  b_i^K  \left(  \Phi^- - \Phi^+ \right)   \\
+&+ \int\limits_{K} D \vec{\nabla} b_i^K \cdot \vec{\nabla}  \Phi + \int\limits_{K} \sigma_a  b_i^K  \Phi = \int\limits_{K}  b_i^K Q , \qquad 1 \leq i \leq N_K
+\end{aligned},
+\end{equation}
+
+\noindent where the $\Phi^-$ and $\Phi^+$ terms correspond to the fluxes within and outside cell $K$.
+
+
+\begin{equation}
+\label{eq::App_DSA_MIP_afterint}
+ \int\limits_{\partial K} \left[  \left(  \kappa^{MIP}  \Phi - \frac{1}{2} D \partial_n  \Phi \right)_{r_K^-} - \left(  \kappa^{MIP}  \Phi + \frac{1}{2} D \partial_n  \Phi \right)_{r_K^+} \right]  + \int\limits_{K} \sigma_a   \Phi = \int\limits_{K}  Q ,
+\end{equation}
+
+\noindent where we note that the summation of the basis function values and gradients within element $K$ are
+
+\begin{equation}
+\label{eq::App_DSA_int_bf}
+\sum\limits_{i=1}^{N_K} b_i^K = 1 ,
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::App_DSA_int_gradbf}
+\sum\limits_{i=1}^{N_K} \vec{\nabla} b_i^K = \vec{0} ,
+\end{equation}
+
+\noindent respectively.
