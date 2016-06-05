@@ -364,7 +364,7 @@ a^{MIP}&(b, \delta \Phi)  = \Big(  D \vec{\nabla} b , \vec{\nabla} \delta \Phi  
 
 \noindent Between Eqs. (\ref{eq::M4S_bilinear_form}) and (\ref{eq::App_MIP_bilinear_form}), we can immediately see similarities and differences between the M4S and MIP diffusion forms. M4S does not contain the $\Big< \{\!\{  D \partial_n b \}\!\} , [\![ \delta \Phi ]\!]\Big>_{E_h^i}$ or $\frac{1}{2} \Big<   D \partial_n b , \delta \Phi \Big>_{\partial \mathcal{D}^d}  $ symmetrization terms. Therefore, the M4S scheme is not symmetric and PCG cannot be used as the iterative method. Instead, a method like GMRES would be needed to solve the M4S system of equations. We can also see from Eq. (\ref{eq::M4S_bilinear_form}) that the ``penalty'' term in M4S is a constant value of 1/4.
 
-We now provide a pair of results for the M4S form. First, we give a comparison between the theoretical Fourier Analysis and numerical spectral radii results on unit square mesh cells using the linear PWL basis functions in Figure \ref{fig::App_DSA_2D_M4S_Fourier_NSR}. Then, we provide the Fourier wave number distributions of the PWL basis functions on the unit square in Figures \ref{fig::App_DSA_M4S_LS2}, \ref{fig::App_DSA_M4S_LS4}, \ref{fig::App_DSA_M4S_LS8}, and \ref{fig::App_DSA_M4S_LS16} for the $S_2$, $S_4$, $S_8$, and $S_16$ level-symmetric quadrature, respectively.
+We now provide a pair of results for the M4S form. First, we give a comparison between the theoretical Fourier Analysis and numerical spectral radii results on unit square mesh cells using the linear PWL basis functions in Figure \ref{fig::App_DSA_2D_M4S_Fourier_NSR}. Then, we provide the Fourier wave number distributions of the PWL basis functions on the unit square in Figures \ref{fig::App_DSA_M4S_LS2}, \ref{fig::App_DSA_M4S_LS4}, \ref{fig::App_DSA_M4S_LS8}, and \ref{fig::App_DSA_M4S_LS16} for the $S_2$, $S_4$, $S_8$, and $S_{16}$ level-symmetric quadrature, respectively.
 
 
 % BEGIN M4S PLOTS
@@ -572,24 +572,31 @@ We now provide a pair of results for the M4S form. First, we give a comparison b
 \section{Conservation of the SIP Diffusion Form}
 \label{sec::App_DSA_SIP_Conservation}
 
-We conclude by demonstrating that the SIP form is a conservative discretization of the diffusion equation. 
+We conclude by demonstrating that the SIP form is a conservative discretization of the diffusion equation. This can be done by formulating an appropriate balance equation over any element. We show conservation by performing the following steps:
 
 
+\begin{enumerate}
+\item Write the $N_K$ equations for element $K$ in an analogous manner to Eq. (\ref{eq::App_DSA_M4S_paper_form}).
+\item Perform a summation over the $N_K$ basis functions for element $K$.
+\item Collect like terms and verify that an appropriate balance equation is produced for element $K$.
+\end{enumerate}
+
+We first write the $N_K$ DFEM SIP equations for element $K$ as
 
 \begin{equation}
 \label{eq::App_DSA_MIP_int_form}
 \begin{aligned}
- \int\limits_{\partial K}& \kappa^{MIP}  b_i^K \left(  \Phi^- - \Phi^+ \right) -  \int\limits_{\partial K}   b_i^K \left( \frac{1}{2} D^- \partial_n  \Phi^- - \frac{1}{2} D^+ \partial_n \Phi^+ \right) -  \int\limits_{\partial K} \frac{1}{2} D \partial_n  b_i^K  \left(  \Phi^- - \Phi^+ \right)   \\
+ \int\limits_{\partial K}& \kappa^{SIP}  b_i^K \left(  \Phi^- - \Phi^+ \right) -  \int\limits_{\partial K}   b_i^K \left( \frac{1}{2} D^- \partial_n  \Phi^- + \frac{1}{2} D^+ \partial_n \Phi^+ \right) -  \int\limits_{\partial K} \frac{1}{2} D \partial_n  b_i^K  \left(  \Phi^- - \Phi^+ \right)   \\
 &+ \int\limits_{K} D \vec{\nabla} b_i^K \cdot \vec{\nabla}  \Phi + \int\limits_{K} \sigma_a  b_i^K  \Phi = \int\limits_{K}  b_i^K Q , \qquad 1 \leq i \leq N_K
 \end{aligned},
 \end{equation}
 
-\noindent where the $\Phi^-$ and $\Phi^+$ terms correspond to the fluxes within and outside cell $K$.
+\noindent where the $\Phi^-$ and $\Phi^+$ terms correspond to the fluxes within and outside element $K$ and the basis functions, $b_i^K$, always correspond to element $K$. Next, we sum over all the basis functions of element $K$. Performing this summation yields
 
 
 \begin{equation}
 \label{eq::App_DSA_MIP_afterint}
- \int\limits_{\partial K} \left[  \left(  \kappa^{MIP}  \Phi - \frac{1}{2} D \partial_n  \Phi \right)_{r_K^-} - \left(  \kappa^{MIP}  \Phi + \frac{1}{2} D \partial_n  \Phi \right)_{r_K^+} \right]  + \int\limits_{K} \sigma_a   \Phi = \int\limits_{K}  Q ,
+ \int\limits_{\partial K} \kappa^{SIP}  \left(  \Phi^- - \Phi^+ \right) -  \int\limits_{\partial K}   \left( \frac{1}{2} D^- \partial_n  \Phi^- + \frac{1}{2} D^+ \partial_n \Phi^+ \right) + \int\limits_{K} \sigma_a   \Phi = \int\limits_{K}  Q ,
 \end{equation}
 
 \noindent where we note that the summation of the basis function values and gradients within element $K$ are
@@ -606,4 +613,18 @@ We conclude by demonstrating that the SIP form is a conservative discretization 
 \sum\limits_{i=1}^{N_K} \vec{\nabla} b_i^K = \vec{0} ,
 \end{equation}
 
-\noindent respectively.
+\noindent respectively. Because of Eq. (\ref{eq::App_DSA_int_gradbf}), the stiffness matrix and the surface matrices containing gradients of the basis functions are eliminated. We collect like terms and write Eq. (\ref{eq::App_DSA_MIP_afterint}) as
+
+\begin{equation}
+\label{eq::App_DSA_MIP_liketerms}
+ \int\limits_{\partial K} \left(  \kappa^{SIP}  \Phi^- - \frac{1}{2} D^- \partial_n  \Phi^- \right) -  \int\limits_{\partial K}   \left(  \kappa^{SIP}  \Phi^+ + \frac{1}{2} D^+ \partial_n \Phi^+ \right) + \int\limits_{K} \sigma_a   \Phi = \int\limits_{K}  Q .
+\end{equation}
+
+\noindent Equation (\ref{eq::App_DSA_MIP_liketerms}) constitutes a balance equation for element $K$ where we see that the total source is equal to the absorption plus net leakage. We note that the partial currents (the surface integrals in Eq. (\ref{eq::App_DSA_MIP_liketerms})) are only correct if $\kappa^{SIP} $ is equal to 1/4. However, if this same procedure is performed to form a balance equation for element $K'$, then we can write 
+
+\begin{equation}
+\label{eq::App_DSA_MIP_Kp}
+ \int\limits_{\partial K'} \left(  \kappa^{SIP}  \Phi^+ + \frac{1}{2} D^+ \partial_n  \Phi^+ \right) -  \int\limits_{\partial K'}   \left(  \kappa^{SIP}  \Phi^- - \frac{1}{2} D^- \partial_n \Phi^- \right) + \int\limits_{K'} \sigma_a   \Phi = \int\limits_{K'}  Q ,
+\end{equation}
+
+\noindent where we used $\Phi^+$ and $\Phi^-$ from element $K$ and made use of the opposite face normals of element $K'$. Summing the net leakage terms between Eqs. (\ref{eq::App_DSA_MIP_liketerms}) and (\ref{eq::App_DSA_MIP_Kp}), we see that the net leakage between elements $K$ and $K'$ vanishes. Therefore, every element forms an appropriate balance equation, and SIP is conservative.

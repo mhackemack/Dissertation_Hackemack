@@ -664,11 +664,11 @@ Now that we have provided sufficient details for the basis functions and their w
 b_j (\vec{x}) = \frac{m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{x}))}{W} ,
 \end{equation}
 
-\noindent where $W = \sum_j w_j (\vec{x})$. We can immediately see that this satisfies the form for our maximum entropy coordinates given in Eq. (\ref{eq::BF_ME_BF}). This means that we are just left with describing the non-linear numerical procedure to compute $\vec{\kappa}$. The solution of Eq. (\ref{eq::BF_ME_lagrangian_result}) is equivalent to solving the following dual unconstrained optimization problem \cite{boyd2004convex}:
+\noindent where $W = \sum\limits_{j=1}^{N_K} w_j (\vec{x})$. We can immediately see that this satisfies the form for our maximum entropy coordinates given in Eq. (\ref{eq::BF_ME_BF}). This means that we are just left with describing the non-linear numerical procedure to compute $\vec{\kappa}$. The solution of Eq. (\ref{eq::BF_ME_lagrangian_result}) is equivalent to solving the following dual unconstrained optimization problem \cite{boyd2004convex}:
 
 \begin{equation}
 \label{eq::BF_ME_opt_prob_form}
-\vec{\kappa}^* = \min F(\vec{\kappa}) , \qquad F(\vec{\kappa}) = \log W (\vec{\kappa})
+\vec{\kappa}^* = \min_{\vec{\kappa}} F(\vec{\kappa}) , \qquad F(\vec{\kappa}) = \log W (\vec{\kappa})
 \end{equation}
 
 \noindent In Eq. (\ref{eq::BF_ME_opt_prob_form}),  $F(\vec{\kappa})$ is the non-linear function to be solved with Newton's method. We summarize all the steps needed for computation as follows:
@@ -1041,7 +1041,7 @@ To remove the diagonal functions, we formalize this procedure by recasting it as
 \end{aligned} .
 \end{equation}
 
-\noindent With these basis orderings, we can now denote the entries of $\mathbb{A}$ (given by $c_{ab}^{ij}$) as the following:
+\noindent With these basis orderings, we can now denote the entries of $\mathbb{A}$ (given by $c_{ab}^{ij}$) as
 
 \begin{equation}
 \label{eq::BF_quad_to_ser_matrix_constraints}
@@ -1054,8 +1054,10 @@ c_{11}^{ij} & \ldots & c_{ab}^{ij} & \ldots & c_{(n-2)n}^{ij} \\
 \ldots&\ddots&\vdots&\ddots&\vdots \\
 c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)} 
 \end{array}
-\right] .
+\right] ,
 \end{equation}
+
+\noindent where $n=N_K$ is used for clarity.
 
 A sufficient set of constraints for the entries in $\mathbb{A}$ to ensure the precision properties of Eqs. (\ref{eq::BF_ser_interp_req_constant} - \ref{eq::BF_ser_interp_req_quadratic}) can be written for the constant constraint,
 
@@ -1498,7 +1500,7 @@ The 3D PWL coordinates have an analogous form to their 2D version from Eq. (\ref
 \section{Numerical Results}
 \label{sec::BF_Results}
 
-Now that we have presented several linear polygonal finite element basis sets along with the methodology to convert them to quadratic serendipity-like basis, we present several numerical problems to demonstrate our methodology. First, we demonstrate that all of the 2D linear and quadratic serendipity basis functions can capture the correct transport solution in the thick diffusion limit in Section \ref{sec::DSA_Results_TDL}. Then, we demonstrate that the presented linear basis functions can capture an exactly-linear transport solution in Section \ref{sec::BF_Results_Linear}. We follow that by demonstrating that the quadratic serendipity basis functions can capture an exactly-quadratic transport solution in Section \ref{sec::BF_Results_Quadratic}. Next, we present some convergence properties of the basis sets using the method of manufactured solutions (MMS) in Section \ref{sec::BF_Results_MMS}. Then in Section \ref{sec::BF_Results_PA}, we demonstrate how the solution regularity can limit the convergence of our numerical transport solutions to the $H^{1/2}$ and $H^{3/2}$ Hilbert spaces. We conclude with a searchlight problem and observe how the basis sets react with adaptive mesh refinement (AMR) to mitigate numerical dispersion through a vacuum in Section \ref{sec::BF_Results_SL}.
+Now that we have presented several linear polygonal finite element basis sets along with the methodology to convert them to quadratic serendipity-like basis, we present several numerical problems to demonstrate our methodology. First, we demonstrate that the presented linear basis functions can capture an exactly-linear transport solution in Section \ref{sec::BF_Results_Linear}. We follow that by demonstrating that the quadratic serendipity basis functions can capture an exactly-quadratic transport solution in Section \ref{sec::BF_Results_Quadratic}. Next, we present some convergence properties of the basis sets using the method of manufactured solutions (MMS) in Section \ref{sec::BF_Results_MMS}. Then in Section \ref{sec::BF_Results_PA}, we demonstrate how the solution regularity can limit the convergence of our numerical transport solutions to the $H^{1/2}$ and $H^{3/2}$ Hilbert spaces. Then, we demonstrate that all of the 2D linear and quadratic serendipity basis functions can capture the correct transport solution in the thick diffusion limit in Section \ref{sec::DSA_Results_TDL}. We conclude with a searchlight problem and observe how the basis sets react with adaptive mesh refinement (AMR) to mitigate numerical dispersion through a vacuum in Section \ref{sec::BF_Results_SL}.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSection - Linear Solutions = METHOD OF EXACT SOLUTIONS
