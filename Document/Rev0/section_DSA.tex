@@ -798,8 +798,6 @@ R_g^{(k+1/2)} = \sum_{g'=1}^G \sigma_{s,0}^{g g'} \left( \phi_{g',0}^{(k+1/2)} -
 
 Up to this point, we have presented a two-grid-like methodology in the MJA method that is amenable to parallel computation. With modern transport codes that can solve energy groups simultaneously, the grind times for these multi-energy group set transport sweeps are significantly lower than single group sweeps ({\em i.e.,} TG and MTG methods). Therefore, it is possible to have ``worse'' theoretical convergence properties for MJA (compared to TG) but still converge to a solution faster based on wallclock time (we demonstrate this in Sections \ref{sec::DSA_Results_IM1_2D} and \ref{sec::DSA_Results_IM1_3D}). However, like the MTG method, MJA does not converge the inner iterations. For graphite with $O(10^1)$ - $O(10^2)$ thermal groups, there can still be several within-group scattering ratios above 0.9. Therefore, there will be a large contribution to the iteration error from the non-convergence of the within-group iterations. We quickly note that as the number of thermal groups approaches infinity, this behavior will disappear. Because of this behavior of the scattering ratios, we then have recourse to provide a better estimate of the within-group scattering error before performing the spectrally-collapsed, 1-group diffusion correction. However, we still seek to continue the parallel nature of the MJA algorithm. Therefore, we propose an acceleration step before the spectrally-collapsed correction where we perform $G$ 1-group DSA calculations for the within-group error based on the methodology proposed in Section \ref{sec::DSA_DSA_Operator}. These $G$ diffusion calculations are independent and thus parallelizable. We choose to call this new scheme the Multigroup Jacobi with Inner Acceleration (MJIA) method and summarize it as follows:
 
-%%%% MORE DETAILS GO HERE!!!!
-
 \begin{enumerate}
 \item Solve for the fast energy groups.
 \item Build scattering source for the thermal groups.
@@ -1202,14 +1200,14 @@ S_{i,j,K} =  \int_K \vec{\nabla}b_i \cdot \vec{\nabla} b_j .
 \subsection{Elementary Surface Gradient Matrices}
 \label{sec::DSA_SIP_SurfaceGradient}
 
-The second new elementary matrix that we present for the SIP discretization corresponds to the integrals of the product of the basis functions with their gradients on a given surface. For a given face $f$, these matrices are of the general form: $\Big<  D \partial_n b, \Phi \Big>_f$. These terms are analogous to the cell streaming matrix but are computed on the cell boundary with dimensionality $(d-1)$. Analyzing a single face, $f$, in cell $K$, the analytical surface gradient matrix is of the form,
+The second new elementary matrix that we present for the SIP discretization corresponds to the integrals of the product of the basis functions with their gradients on a given surface. For a given face $f$, these matrices are of the general form: $\Big<  D \partial_n b, \Phi \Big>_f$. These terms are analogous to the cell streaming matrix but are computed on the cell boundary with dimensionality $(d-1)$. Analyzing a single face, $f$, in cell $K$, the analytical surface gradient matrix is of the following form:
 
 \begin{equation}
 \label{eq::DSA_surface_gradient_matrix_analytical}
-{\bf N}_{f,K}  =    \int_f \vec{n} (s) \cdot \vec{\nabla} {\bf b}_K \, {\bf b}_K^T \, d s ,
+{\bf N}_{f,K}  =    \int\limits_f \vec{n} (s)  \cdot \vec{\nabla} {\bf b}_K \, {\bf b}_K^T \, d s .
 \end{equation}
 
-\noindent where the surface normal, $\vec{n}$, is directed outwards from cell $K$ and is allowed to vary along the cell face. From the analytical integral, we can see that these matrices have dimensionality, $(N_K \text{x} N_K )$. We include the operation of the dot product between the outward normal and the basis function gradient for two reasons. First, it reduces the dimensionality of the matrices. Second, because the interior face terms in the SIP bilinear form are independent of the orientation of the normal unit vector along the face, we do not need to perform any additional handling of the face normals. We can see that the bilinear form is independent of the face normal orientation by observing the following relations:
+\noindent where the direction of the surface normal, $\vec{n}$, is arbitrarily chosen to either go from cell $K$ to cell $K'$ or from cell $K'$ to cell $K$. From the analytical integral, we can see that these matrices have dimensionality, $(N_K \text{x} N_K )$. We include the operation of the dot product between the outward normal and the basis function gradient for two reasons. First, it reduces the dimensionality of the matrices. Second, because the interior face terms in the SIP bilinear form are independent of the orientation of the normal unit vector along the face, we do not need to perform any additional handling of the face normals. We can see that the bilinear form is independent of the face normal orientation by observing the following relations:
 
 \begin{equation}
 \label{eq::DSA_outward_normal_notes}
@@ -2789,14 +2787,17 @@ From the timing results of Figure \ref{fig::DSA_Vulcan_MIP_Timing}, one must won
 \subsection{Thermal Neutron Upscattering Acceleration}
 \label{sec::DSA_Results_IM1}
 
-We conclude the results of this chapter by presenting analysis on the ability to use DSA to accelerate the convergence of multigroup transport problems that are dominated by thermal neutron upscattering. All the results presented in this section center around the Impurity Model 1 (IM1) experiments performed by the Center for Exascale Radiation Transport (CERT) group at Texas A\&M University. The IM1 experiment seeks to quantify the amount of impurities present in a set of graphite bars by treating them as $1/E$ absorbers. The materials present in the experiment consist of graphite, air, wood, high-density polyethylene (HDPE), borated high-density polyethylene (B-HDPE), Steel, Boral, an AmBe source, and a BF3 detector. The experimental configuration can be seen in Figure \ref{fig::IM1_config_3D}. The AmBe source sits inside an HDPE cylinder surrounded by a B-HDPE shell. A graphite bar is placed above the HDPE cylinder and sits between the AmBe source and the BF3 detector. A 99 energy group structure with 42 fast and 57 thermal groups is used. For these results, we first present the theoretical Fourier Analysis of the different upscattering acceleration methods in Section \ref{sec::DSA_Results_IM1_Fourier}. Then, numerical analysis of a simple 2D variant of the experimental setup is performed in Section \ref{sec::DSA_Results_IM1_2D} to yield a complete set of runs for the different methods. We analyze the iteration counts and timing statistics for the different methods. Finally, we conclude in Section \ref{sec::DSA_Results_IM1_3D} with a numerical analysis of the 3D configuration for an approximate hexahedral geometry and one formed by triangular prisms (extrusion of a 2D triangular mesh).
+We conclude the results of this chapter by presenting analysis on the ability to use DSA to accelerate the convergence of multigroup transport problems that are dominated by thermal neutron upscattering. All the results presented in this section center around the Impurity Model 1 (IM1) experiments performed by the Center for Exascale Radiation Transport (CERT) group at Texas A\&M University. The IM1 experiment seeks to quantify the amount of impurities present in a set of graphite bars by treating them as $1/E$ absorbers. The materials present in the experiment consist of graphite, air, wood, high-density polyethylene (HDPE), borated high-density polyethylene (B-HDPE), Steel, Boral, an AmBe source, and a BF3 detector. The experimental configuration can be seen in Figure \ref{fig::IM1_setup_3D}. The AmBe source sits inside an HDPE cylinder surrounded by a B-HDPE shell. A graphite bar is placed above the HDPE cylinder and sits between the AmBe source and the BF3 detector. A 99 energy group structure with 42 fast and 57 thermal groups is used. For these results, we first present the theoretical Fourier Analysis of the different upscattering acceleration methods in Section \ref{sec::DSA_Results_IM1_Fourier}. Then, numerical analysis of a simple 2D variant of the experimental setup is performed in Section \ref{sec::DSA_Results_IM1_2D} to yield a complete set of runs for the different methods. We analyze the iteration counts and timing statistics for the different methods. Finally, we conclude in Section \ref{sec::DSA_Results_IM1_3D} with a numerical analysis of the 3D configuration for an approximate hexahedral geometry and one formed by triangular prisms (extrusion of a 2D triangular mesh).
 
 \begin{figure}
 \centering
-\includegraphics[width=0.85\textwidth]{figures/sec_DSA/IM1_configuration_Rev1.png}
-\caption{Configuration of the IM1 problem with the outer layers of air removed.}
-\label{fig::IM1_config_3D}
+\includegraphics[width=0.85\textwidth]{figures/sec_DSA/IM1_exp_setup.jpg}
+\caption{Experimental setup of the IM1 problem.}
+\label{fig::IM1_setup_3D}
 \end{figure}
+
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - MG IM1 Fourier
@@ -2939,14 +2940,6 @@ We first wish to perform numerical testing of the upscatter acceleration methods
 \label{fig::IM1_config_2D}
 \end{figure}
 
-For this problem, we analyzed the iteration and timing results for the TG, MTG, and MJA methodologies with both Richardson Iteration and GMRES. The outer iteration tolerance was set to $10^{-6}$, and the inner tolerance for the TG method was set to $10^{-7}$. 64 processors were used for all runs. Tables \ref{tab::IM1_2D_TG}, \ref{tab::IM1_2D_MTG}, and \ref{tab::IM1_2D_MJA} provide the full set of iteration and timing results for the TG, MTG, and MJA methods, respectively. For each of the upscatter acceleration methods, we performed accelerated and unaccelerated Richardson (SI) and GMRES runs. We can clearly see several results from the tables which we summarize as the following:
-
-\begin{enumerate}
-\item The MJA method provides the best performance characteristics in regards to solution times. The parallel nature of the transport sweeps with all sweeps in a group set provides significant time savings compared to the TG and MTG methods.
-\item There is a significant penalty for the serial-in-energy nature of the TG and MTG methods. Even when less transport sweeps are performed than MJA, it yields significantly longer wallclock times.
-\item A Krylov (GMRES) iteration scheme is needed to account for the PHI problem behavior and yield effective DSA preconditioning. This is easily visible because the SI runs require significantly more iterations (more than what infinite medium analysis predicts). Instead, the accelerated GMRES runs recover the theoretical convergence behaviors.
-\end{enumerate}
-
 \begin{table}
 \caption{Sweep count and timing data for the 2D IM1 variant problem using Two-Grid Acceleration.}
 \centering
@@ -2995,14 +2988,28 @@ GMRES  & 118 & 6,726 &  8.65 \\ \hline
 \label{tab::IM1_2D_MJA}
 \end{table}
 
+For this problem, we analyzed the iteration and timing results for the TG, MTG, and MJA methodologies with both Richardson Iteration and GMRES. The outer iteration tolerance was set to $10^{-6}$, and the inner tolerance for the TG method was set to $10^{-7}$. 64 processors were used for all runs. Tables \ref{tab::IM1_2D_TG}, \ref{tab::IM1_2D_MTG}, and \ref{tab::IM1_2D_MJA} provide the full set of iteration and timing results for the TG, MTG, and MJA methods, respectively. For each of the upscatter acceleration methods, we performed accelerated and unaccelerated Richardson (SI) and GMRES runs. We can clearly see several results from the tables which we summarize as the following:
+
+\begin{enumerate}
+\item The MJA method provides the best performance characteristics in regards to solution times. The parallel nature of the transport sweeps with all sweeps in a group set provides significant time savings compared to the TG and MTG methods.
+\item There is a significant penalty for the serial-in-energy nature of the TG and MTG methods. Even when less transport sweeps are performed than MJA, it yields significantly longer wallclock times.
+\item A Krylov (GMRES) iteration scheme is needed to account for the PHI problem behavior and yield effective DSA preconditioning. This is easily visible because the SI runs require significantly more iterations (more than what infinite medium analysis predicts). Instead, the accelerated GMRES runs recover the theoretical convergence behaviors.
+\end{enumerate}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   SubSubSection - MG IM1 3D
 \subsubsection{3D IM1 Results}
 \label{sec::DSA_Results_IM1_3D}
 
-We conclude the investigation of the thermal neutron upscattering methodologies by presenting the numerical results pertaining to analysis of the 3D configuration of the IM1 experiment. The runset for this analysis is similar to that performed for the 2D variant problem. Here, we provide two distinct runsets. The first runset utilizes a hexahedral (or brick) configuration of the IM1 problem. The domain is filled with Cartesian parallelepipeds and the curved surfaces are approximated. The second runset utilizes a more accurate geometry by use of triangular prisms. A triangular mesh (where curved surfaces are approximated by many-sided polygons) is constructed in 2D and then axially extruded along the z-dimension. The spherical AmBe detector is approximated by ``stair-stepping'', and volume-preserving algorithms are employed on any curved surface approximated by the polygons.
+\begin{figure}
+\centering
+\includegraphics[width=0.85\textwidth]{figures/sec_DSA/IM1_configuration_Rev1.png}
+\caption{Configuration of the IM1 problem with the outer layers of air removed.}
+\label{fig::IM1_config_3D}
+\end{figure}
 
-We give the iteration and timing results for the brick-geometry IM1 problem in Tables \ref{tab::IM1_3Dbrick_TG}, \ref{tab::IM1_3Dbrick_MTG}, and \ref{tab::IM1_3Dbrick_MJA} for the TG, MTG, and MJA, respectively. All runs were performed on 3496 processors. We note that not all of the data points are populated due to prohibitive run times. This is why the 2D variant was essential to provide a complete set of results for all algorithm and method types. However, from the data points that were obtainable, we can determine that the results for the different algorithms and methodologies matches the 2D variant problem closely. The serial natures of the TG and MTG methods in their Gauss-Seidel process in energy are prohibitively slow for problems at these scales. Only the accelerated GMRES TG case could be completed as well as the unaccelerated and accelerated GMRES MTG cases. We can see similar convergence properties (similar iteration counts) to the 2D variant problem for all the methods and both algorithms. However, it is once again apparent that the parallel concurrence of the transport sweeps with the MJA method leads to the best performance.
+We conclude the investigation of the thermal neutron upscattering methodologies by presenting the numerical results pertaining to analysis of the 3D configuration of the IM1 experiment. The PDT model of the problem is given in Figure \ref{fig::IM1_config_3D} where we have removed the outer layers of air for visualization purposes. The domain is filled with Cartesian parallelepipeds, and the cylinders and sphere are modeled as mass-preserving parallelepipeds and a cube, respectively. Reflecting boundaries are employed so that the runs are quarter geometry to minimize memory footprints.
 
 % BRICK RESULTS
 \begin{table}
@@ -3052,6 +3059,9 @@ SI+DSA & 256 &  14,592 & 11.2 \\ \hline
 \end{tabular}
 \label{tab::IM1_3Dbrick_MJA}
 \end{table}
+
+The runset for this analysis is similar to that performed for the 2D variant problem. We give the iteration and timing results for the brick-geometry IM1 problem in Tables \ref{tab::IM1_3Dbrick_TG}, \ref{tab::IM1_3Dbrick_MTG}, and \ref{tab::IM1_3Dbrick_MJA} for the TG, MTG, and MJA, respectively. All runs were performed on 3496 processors. We note that not all of the data points are populated due to prohibitive run times. This is why the 2D variant was essential to provide a complete set of results for all algorithm and method types. However, from the data points that were obtainable, we can determine that the results for the different algorithms and methodologies matches the 2D variant problem closely. The serial natures of the TG and MTG methods in their Gauss-Seidel process in energy are prohibitively slow for problems at these scales. Only the accelerated GMRES TG case could be completed as well as the unaccelerated and accelerated GMRES MTG cases. We can see similar convergence properties (similar iteration counts) to the 2D variant problem for all the methods and both algorithms. However, it is once again apparent that the parallel concurrence of the transport sweeps with the MJA method leads to the best performance.
+
 
 % TRIANGLE RESULTS
 \iffalse
