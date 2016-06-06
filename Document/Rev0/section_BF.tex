@@ -805,7 +805,7 @@ We conclude this summary discussion on the different linearly-complete 2D polygo
 
 \begin{table}
 \centering
-\caption[Summary of the 2D polygonal basis functions]{Summary of the properties of the 2D coordinate systems used on polygons. }
+\caption{Summary of the properties of the 2D coordinate systems used on polygons.}
 \begin{tabular}{|c|c|c|c|c|}
 \hline
 Basis Function & Dimension & Polygon Type & Integration & Evaluation \\
@@ -847,7 +847,7 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 		\caption{Maximum Entropy}
 	\end{subfigure}
 }
-\caption[Contour plots of the linear basis functions on the unit square.]{Contour plots of the different linear basis function on the unit square located at vertex (0,1).}
+\caption{Contour plots of the different linear basis function on the unit square located at vertex (0,1).}
 \label{fig::2D_Linear_Summary_unit_square_basis_functions}
 \end{figure}
 
@@ -880,7 +880,7 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 		\caption{Maximum Entropy}
 	\end{subfigure}
 }
-\caption[Contour plots of the linear basis functions on the degenerate pentagon.]{Contour plots of the different linear basis function on the degenerate pentagon located at vertex (0,1). It is clear that the Wachspress coordinates fail for the weakly convex case.}
+\caption{Contour plots of the different linear basis function on the degenerate pentagon located at vertex (0,1). It is clear that the Wachspress coordinates fail for the weakly convex case.}
 \label{fig::2D_Summary_deg_square_basis_functions}
 \end{figure}
 
@@ -922,7 +922,7 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 	\end{subfigure}
 }
 \vspace{2mm}
-\caption[Contour plots of the linear basis functions on the L-shaped domain.]{Contour plots of the different linear basis functions on the L-shaped domain. The PWL (top), mean value (middle), and maximum entropy (bottom) functions are plotted at vertices $(0,1)$ (left) and $(1/2,1/2)$ (right).}
+\caption{Contour plots of the different linear basis functions on the L-shaped domain. The PWL (top), mean value (middle), and maximum entropy (bottom) functions are plotted at vertices $(0,1)$ (left) and $(1/2,1/2)$ (right).}
 \label{fig::2DSummary_Ldom_basis_functions}
 \end{figure}
 
@@ -1163,7 +1163,7 @@ We now present some example contour plots for the conversion of the linear baryc
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_MAXENT2_contour_b4.png}
 		\caption{Maximum Entropy}
 	\end{subfigure}
-\caption[Contour plots of the quadratic basis functions on the unit square.]{Contour plots of the different quadratic serendipity basis function on the unit square located at vertex (0,1).}
+\caption{Contour plots of the different quadratic serendipity basis function on the unit square located at vertex (0,1).}
 \label{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF4}
 \end{figure}
 
@@ -1192,7 +1192,7 @@ We now present some example contour plots for the conversion of the linear baryc
 		\includegraphics[width=\textwidth]{figures/sec_BF/square_MAXENT2_contour_b8.png}
 		\caption{Maximum Entropy}
 	\end{subfigure}
-\caption[Contour plots of the quadratic basis functions on the unit square.]{Contour plots of the different quadratic serendipity basis function on the unit square at a mid-face node located at (0,1/2).}
+\caption{Contour plots of the different quadratic serendipity basis function on the unit square at a mid-face node located at (0,1/2).}
 \label{fig::2D_Quadratic_Summary_unit_square_basis_functions_BF8}
 \end{figure}
 
@@ -1235,7 +1235,7 @@ We now present some example contour plots for the conversion of the linear baryc
 	\end{subfigure}
 }
 \vspace{2mm}
-\caption[Contour plots of the quadratic basis functions on the degenerate square.]{Contour plots of the different quadratic serendipity basis functions on the degenerate square. The PWL (top), mean value (middle), and maximum entropy (bottom) functions are plotted at vertices $(0,1)$ (left) and $(1/2,1)$ (right)}
+\caption{Contour plots of the different quadratic serendipity basis functions on the degenerate square. The PWL (top), mean value (middle), and maximum entropy (bottom) functions are plotted at vertices $(0,1)$ (left) and $(1/2,1)$ (right)}
 \label{fig::2DQuadSer_degsquare_basis_functions}
 \end{figure}
 
@@ -1577,189 +1577,213 @@ For this example, we test the various 2D polygonal finite element basis function
 % Begin Linear Solution figures
 \begin{figure}
 \centering
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::cart_wach_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/cart_WACHSPRESS_k1.eps}
-		\caption{}
+		\caption{Cartesian}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::tri_wach_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/tri_WACHSPRESS_k1.eps}
-		\caption{}
+		\caption{Triangular}
 	\end{subfigure}
-	\vfill
+}
+\vspace{3mm}
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::shes_quad_wach_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/shes_quad_WACHSPRESS_k1.eps}
-		\caption{}
+		\caption{Shestakov Quadrilaterals}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::smooth_poly_wach_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/smooth_poly_WACHSPRESS_k1.eps}
-		\caption{}
+		\caption{Shestakov Polygons}
 	\end{subfigure}
-	\vfill
+}
+\vspace{3mm}
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::z_quad_wach_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_quad_WACHSPRESS_k1.eps}
-		\caption{}
+		\caption{Z-Quadrilaterals}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::z_poly_wach_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_WACHSPRESS_k1.eps}
-		\caption{}
+		\caption{Z-Polygons}
 	\end{subfigure}
-\caption{Contour plots of the exactly-linear solution with the Wachspress basis functions on (a) Cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+}
+\caption{Contour plots of the exactly-linear solution with the Wachspress basis functions.}
 \label{fig::BF_Results_Linear_wach_sol}
 \end{figure}
 
 \begin{figure}
 \centering
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::cart_pwld_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/cart_PWLD_k1.eps}
-		\caption{}
+		\caption{Cartesian}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::tri_pwld_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/tri_PWLD_k1.eps}
-		\caption{}
+		\caption{Triangular}
 	\end{subfigure}
-	\vfill
+}
+\vspace{3mm}
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::shes_quad_pwld_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/shes_quad_PWLD_k1.eps}
-		\caption{}
+		\caption{Shestakov Quadrilaterals}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::smooth_poly_pwld_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/smooth_poly_PWLD_k1.eps}
-		\caption{}
+		\caption{Shestakov Polygons}
 	\end{subfigure}
-	\vfill
+}
+\vspace{3mm}
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::z_quad_pwld_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_quad_PWLD_k1.eps}
-		\caption{}
+		\caption{Z-Quadrilaterals}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::z_poly_pwld_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_PWLD_k1.eps}
-		\caption{}
+		\caption{Z-Polygons}
 	\end{subfigure}
-\caption{Contour plots of the exactly-linear solution with the PWL basis functions on (a) Cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+}
+\caption{Contour plots of the exactly-linear solution with the PWL basis functions.}
 \label{fig::BF_Results_Linear_pwld_sol}
 \end{figure}
 
 \begin{figure}
 \centering
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::cart_mv_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/cart_MV_k1.eps}
-		\caption{}
+		\caption{Cartesian}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::tri_mv_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/tri_MV_k1.eps}
-		\caption{}
+		\caption{Triangular}
 	\end{subfigure}
-	\vfill
+}
+\vspace{3mm}
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::shes_quad_mv_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/shes_quad_MV_k1.eps}
-		\caption{}
+		\caption{Shestakov Quadrilaterals}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::smooth_poly_mv_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/smooth_poly_MV_k1.eps}
-		\caption{}
+		\caption{Shestakov Polygons}
 	\end{subfigure}
-	\vfill
+}
+\vspace{3mm}
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::z_quad_mv_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_quad_MV_k1.eps}
-		\caption{}
+		\caption{Z-Quadrilaterals}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::z_poly_mv_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_MV_k1.eps}
-		\caption{}
+		\caption{Z-Polygons}
 	\end{subfigure}
-\caption{Contour plots of the exactly-linear solution with the mean value basis functions on (a) Cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+}
+\caption{Contour plots of the exactly-linear solution with the mean value basis functions.}
 \label{fig::BF_Results_Linear_mv_sol}
 \end{figure}
 
 \begin{figure}
 \centering
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::cart_me_k1_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/cart_MAXENT_k1.eps}
-		\caption{}
+		\caption{Cartesian}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::tri_me_k1_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/tri_MAXENT_k1.eps}
-		\caption{}
+		\caption{Triangular}
 	\end{subfigure}
-	\vfill
+}
+\vspace{3mm}
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::shes_quad_me_k1_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/shes_quad_MAXENT_k1.eps}
-		\caption{}
+		\caption{Shestakov Quadrilaterals}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::smooth_poly_me_k1_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/smooth_poly_MAXENT_k1.eps}
-		\caption{}
+		\caption{Shestakov Polygons}
 	\end{subfigure}
-	\vfill
+}
+\vspace{3mm}
+{
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::z_quad_me_k1_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_quad_MAXENT_k1.eps}
-		\caption{}
+		\caption{Z-Quadrilaterals}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.45\textwidth}
 		\centering
 		\label{subfig::z_poly_me_k1_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/z_poly_MAXENT_k1.eps}
-		\caption{}
+		\caption{Z-Polygons}
 	\end{subfigure}
-\caption{Contour plots of the exactly-linear solution with the linear maximum entropy basis functions on (a) Cartesian mesh, (b) ordered-triangular mesh, (c) quadrilateral Shestakov mesh, (d) sinusoidal polygonal mesh, (e) quadrilateral z-mesh, and (f) polygonal z-mesh.}
+}
+\caption{Contour plots of the exactly-linear solution with the linear maximum entropy basis functions.}
 \label{fig::BF_Results_Linear_me1_sol}
 \end{figure}
 
@@ -1832,8 +1856,8 @@ For both problems, $L_x$ and $L_y$ are set to 1.0 to form the unit square. For t
 		\caption{Triangular}
 	\end{subfigure}
 }
+\vspace{3mm}
 {
-	\vspace{3mm}
 	\begin{subfigure}[b]{0.465\textwidth}
 		\centering
 		\label{subfig::shes_quad_me_k2_lin_sol}
@@ -1848,8 +1872,8 @@ For both problems, $L_x$ and $L_y$ are set to 1.0 to form the unit square. For t
 		\caption{Sinusoid Polygons}
 	\end{subfigure}
 }
+\vspace{3mm}
 {
-	\vspace{3mm}
 	\begin{subfigure}[b]{0.465\textwidth}
 		\centering
 		\label{subfig::z_quad_me_k2_lin_sol}
@@ -1885,8 +1909,8 @@ For both problems, $L_x$ and $L_y$ are set to 1.0 to form the unit square. For t
 		\caption{Triangular}
 	\end{subfigure}
 }
+\vspace{3mm}
 {
-	\vspace{3mm}
 	\begin{subfigure}[b]{0.465\textwidth}
 		\centering
 		\label{subfig::shes_quad_me_k2_lin_sol}
@@ -1901,8 +1925,8 @@ For both problems, $L_x$ and $L_y$ are set to 1.0 to form the unit square. For t
 		\caption{Sinusoid Polygons}
 	\end{subfigure}
 }
+\vspace{3mm}
 {
-	\vspace{3mm}
 	\begin{subfigure}[b]{0.465\textwidth}
 		\centering
 		\label{subfig::z_quad_me_k2_lin_sol}
@@ -1938,8 +1962,8 @@ For both problems, $L_x$ and $L_y$ are set to 1.0 to form the unit square. For t
 		\caption{Triangular}
 	\end{subfigure}
 }
+\vspace{3mm}
 {
-	\vspace{3mm}
 	\begin{subfigure}[b]{0.465\textwidth}
 		\centering
 		\label{subfig::shes_quad_me_k2_lin_sol}
@@ -1954,8 +1978,8 @@ For both problems, $L_x$ and $L_y$ are set to 1.0 to form the unit square. For t
 		\caption{Sinusoid Polygons}
 	\end{subfigure}
 }
+\vspace{3mm}
 {
-	\vspace{3mm}
 	\begin{subfigure}[b]{0.465\textwidth}
 		\centering
 		\label{subfig::z_quad_me_k2_lin_sol}
@@ -1991,8 +2015,8 @@ For both problems, $L_x$ and $L_y$ are set to 1.0 to form the unit square. For t
 		\caption{Triangular}
 	\end{subfigure}
 }
+\vspace{3mm}
 {
-	\vspace{3mm}
 	\begin{subfigure}[b]{0.465\textwidth}
 		\centering
 		\label{subfig::shes_quad_me_k2_lin_sol}
@@ -2007,8 +2031,8 @@ For both problems, $L_x$ and $L_y$ are set to 1.0 to form the unit square. For t
 		\caption{Sinusoid Polygons}
 	\end{subfigure}
 }
+\vspace{3mm}
 {
-	\vspace{3mm}
 	\begin{subfigure}[b]{0.465\textwidth}
 		\centering
 		\label{subfig::z_quad_me_k2_lin_sol}
@@ -2044,8 +2068,8 @@ For both problems, $L_x$ and $L_y$ are set to 1.0 to form the unit square. For t
 		\caption{Triangular}
 	\end{subfigure}
 }
+\vspace{3mm}
 {
-	\vspace{3mm}
 	\begin{subfigure}[b]{0.465\textwidth}
 		\centering
 		\label{subfig::shes_quad_me_k2_lin_sol}
@@ -2060,8 +2084,8 @@ For both problems, $L_x$ and $L_y$ are set to 1.0 to form the unit square. For t
 		\caption{Sinusoid Polygons}
 	\end{subfigure}
 }
+\vspace{3mm}
 {
-	\vspace{3mm}
 	\begin{subfigure}[b]{0.465\textwidth}
 		\centering
 		\label{subfig::z_quad_me_k2_lin_sol}
@@ -2097,8 +2121,8 @@ For both problems, $L_x$ and $L_y$ are set to 1.0 to form the unit square. For t
 		\caption{Triangular}
 	\end{subfigure}
 }
+\vspace{3mm}
 {
-	\vspace{3mm}
 	\begin{subfigure}[b]{0.465\textwidth}
 		\centering
 		\label{subfig::x2y2_shes_quad_me_k2_lin_sol}
@@ -2113,8 +2137,8 @@ For both problems, $L_x$ and $L_y$ are set to 1.0 to form the unit square. For t
 		\caption{Sinusoid Polygons}
 	\end{subfigure}
 }
+\vspace{3mm}
 {
-	\vspace{3mm}
 	\begin{subfigure}[b]{0.465\textwidth}
 		\centering
 		\label{subfig::x2y2_z_quad_me_k2_lin_sol}
@@ -2477,13 +2501,13 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\label{subfig::PA_Mesh_Tri}
-		\includegraphics[width=\textwidth]{figures/sec_BF/PAMesh_Tri.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAMesh_Cart.png}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\label{subfig::PA_Mesh_Cart}
-		\includegraphics[width=\textwidth]{figures/sec_BF/PAMesh_Cart.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PAMesh_Tri.png}
 	\end{subfigure}
 }
 \vspace{1cm}
@@ -2510,13 +2534,13 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\label{subfig::PA_Mesh_Tri}
-		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftSol_Tri.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftSol_Cart.png}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\label{subfig::PA_Mesh_Cart}
-		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftSol_Cart.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftSol_Tri.png}
 	\end{subfigure}
 }
 \vspace{1cm}
@@ -2543,13 +2567,13 @@ Finally, we analyze the problem with both left-face and top-face incidence of th
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\label{subfig::PA_Mesh_Tri}
-		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftTopSol_Tri.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftTopSol_Cart.png}
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\label{subfig::PA_Mesh_Cart}
-		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftTopSol_Cart.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/PALeftTopSol_Tri.png}
 	\end{subfigure}
 }
 \vspace{1cm}

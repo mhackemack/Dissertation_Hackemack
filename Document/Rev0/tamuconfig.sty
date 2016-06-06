@@ -43,7 +43,7 @@
 %\titleformat{\subsection}{\centering\normalsize\it}{\thesubsection}{1em}{}
 %\titleformat{\subsubsection}{\centering\normalsize\it}{\thesubsubsection}{1em}{}
 
-\setcounter{secnumdepth}{5}
+\setcounter{secnumdepth}{3}
 
 \addtocontents{toc}{\protect\renewcommand{\protect\cftchapleader}
         {\protect\cftdotfill{\cftsecdotsep}}}  % puts leader dots on chapters.
@@ -87,7 +87,7 @@
 \renewcommand{\cftchapaftersnum}{.} % adds a period after chapter numbers in the toc.
 
 % commented out 3-24
-% \renewcommand\cftsecafterpnum{\vskip\baselineskip} % These lines allow for long toc titles to be displayed single-spaced within.
+ %\renewcommand\cftsecafterpnum{\vskip\baselineskip} % These lines allow for long toc titles to be displayed single-spaced within.
 % \renewcommand\cftsubsecafterpnum{\vskip\baselineskip}
 % \renewcommand\cftsubsubsecafterpnum{\vskip\baselineskip}
 % \renewcommand\cftchapafterpnum{\vskip\baselineskip}
@@ -96,7 +96,7 @@
 
 % Uncomment this line if you need more space between your table/figure numbers and your title in your 
 % lof or lot. This will only need to be done if you have > 99 tables or figures in your manuscript.
-%\setlength{\cfttabnumwidth}{3em}  % Modify number width in LoT and LOF
+\setlength{\cfttabnumwidth}{3em}  % Modify number width in LoT and LOF
 
 %%%%%%%%%%%  Makes the appear TOC doublespaced and almost singlespaced for sections.
 
