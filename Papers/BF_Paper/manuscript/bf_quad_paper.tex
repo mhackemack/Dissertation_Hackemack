@@ -202,15 +202,14 @@ abstract goes here...
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%%\tcr{Make sure the following is expressed somewhere:\\
-%%In this
-%%research, we focus on using PWLD to discretize the diffusion equation. The
-%%PWLD discretization employs discontinuous finite elements and has been used to
-%%discretize the transport equation. Using it to discretize the diffusion
-%%equation is an important step in order to create a Diffusion Synthetic
-%%Acceleration scheme \cite{Adams2002,Wang2010}.
-%%}
-%%\bigskip
+\tcr
+{
+\begin{enumerate}
+\item introduce continuous, 1G transport equation
+\item history of higher-order transport discretizations
+\item benefits of polygonal grids
+\end{enumerate}
+}
 
 
 % Refined quadrilateral vertices figure
@@ -230,7 +229,14 @@ abstract goes here...
 \section{The DGFEM $S_N$ Discretization of the Transport Equation} \label{sec::dgfem}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+\tcr
+{
+\begin{enumerate}
+\item angular discretization
+\item DGFEM discretization with upwind scheme
+\item theoretical convergence rates (including solution irregularity)
+\end{enumerate}
+}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -238,26 +244,49 @@ abstract goes here...
 \section{Linear Polygonal Basis Functions} \label{sec::linpoly}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\tcr
+{
+\begin{enumerate}
+\item Image of geometric terms on general polygon
+\item List/description of barycentric properties
+\end{enumerate}
+}
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Wachspress Rational Functions}
 %------------------------------------------------------------------------------------------------------------
 
+\tcr{short history and functional form}
+
 %------------------------------------------------------------------------------------------------------------
 \subsection{Piecewise Linear Functions}
 %------------------------------------------------------------------------------------------------------------
+
+\tcr{short history and functional form}
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Mean Value Coordinates}
 %------------------------------------------------------------------------------------------------------------
 
+\tcr{short history and functional form}
+
 %------------------------------------------------------------------------------------------------------------
 \subsection{Maximum Entropy Coordinates}
 %------------------------------------------------------------------------------------------------------------
 
+\tcr{short history and functional form}
+
 %------------------------------------------------------------------------------------------------------------
 \subsection{Summary of the Linear Polygonal Basis Functions}
 %------------------------------------------------------------------------------------------------------------
+
+\tcr
+{
+\begin{enumerate}
+\item table with summary
+\item example contour plots
+\end{enumerate}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -265,18 +294,34 @@ abstract goes here...
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\tcr
+{
+\begin{enumerate}
+\item Image of conversion procedure
+\item conversion methodology
+\item example contour plots
+\end{enumerate}
+}
 
 % serendipity overview figure
 % ---------
 \iffalse
 \begin{figure}[hbt]
 \centering
-\includegraphics[width=\textwidth]{figures/sec_BF/linear_to_quad_process.png}
+\includegraphics[width=\textwidth]{\BFfigpath{linear_to_quad_process.png}}
 \caption{Overview of the process to construct the quadratic serendipity basis functions on polygons. The filled dots correspond to basis functions that maintain the Lagrange property while empty dots do not.}
 \label{fig::BF_2D_quad_process}
 \end{figure}
 \fi
 % ---------
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Adaptive Mesh Refinement Using Polygonal Basis Functions} \label{sec::amr}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tcr{overview of AMR for transport calculations}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -296,6 +341,16 @@ abstract goes here...
 \subsection{Convergence Rate Analysis by the Method of Manufactured Solutions}
 %------------------------------------------------------------------------------------------------------------
 
+%------------------------------------------------------------------------------------------------------------
+\subsection{Convergence Rate Analysis Bounded by the Solution Regularity}
+%------------------------------------------------------------------------------------------------------------
+
+%------------------------------------------------------------------------------------------------------------
+\subsection{Thick Diffusion Limit}
+%------------------------------------------------------------------------------------------------------------
+
+\tcr{do we want this in this paper?}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions} \label{sec::conclusions}
@@ -308,7 +363,7 @@ abstract goes here...
 \section*{Acknowledgments} 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-acknowledgements go here
+\tcr{mention Rickover Fellowship funding source?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
