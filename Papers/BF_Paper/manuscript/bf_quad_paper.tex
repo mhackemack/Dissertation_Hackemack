@@ -155,7 +155,8 @@
 %-------------------------
 %-------------------------
 %\title{Discontinuous Finite Element Solution for Diffusion Equations on Arbitrary Polygonal Meshes}
-\title{Higher-Order Basis Functions for the DGFEM $S_N$ Transport Equation on Arbitrary Polygonal Grids}
+%\title{Higher-Order Basis Functions for the DGFEM $S_N$ Transport Equation on Arbitrary Polygonal Grids}
+\title{Higher-Order Discontinuous Finite Element Discretization for $S_N$ Transport on Arbitrary Polygonal Grids}
 %-------------------------
 %-------------------------
 
@@ -201,13 +202,40 @@ abstract goes here...
 \section{Introduction} \label{sec::intro}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{itemize}
+%\item 
+%\item 
+%\item 
+%\end{itemize}
 
 \tcr
 {
 \begin{enumerate}
 \item introduce continuous, 1G transport equation
-\item history of higher-order transport discretizations
-\item benefits of polygonal grids
+\begin{itemize}
+\item application of TE (reactors, HDELP, astrophy, medical,...)
+\item oin this paper, we focus on solution techniques based on first-order form of the TE, namely, Sn DO in angle and DFEM in space. Why? The spatial disc of Sn transport dates back to Lessain/Raviart 1972, Reed/Hill 1973, and amenable to efficient iterative techniques, matrix-free transport sweeps + DSA precondition. Works well on massively // architectures.  
+\item most of DGFEM Sn Transport code (Denovo, Partisn, Capsacin) use linear on simplices and hex grids, except PDT, PWLD Adams on abitrary polyg/h
+\item also bring some focus on TDL (thick)
+\end{itemize}
+\item history of higher-order Sn transport discretizations
+\begin{itemize}
+\item DGFEM: Reed high-order triangular, Wang (AMR), 
+\item nodal method transport (review paper), Azmy AHOT, Wachspress 
+\item acknowledge basis functions derived/used here can be employed for other spatial disc of transport on arbitrary grids, SAAF, LS, EP, (CFEM) [some form can be Sn in agle or Pn, e.g., SAAF-PN/SN, EVENT UK Imperial  + RATTLESNAKE). Important to recall this in conclusions. 
+\end{itemize}
+\item polygonal grids + poly math
+\begin{itemize}
+\item HOWEVER, all of the above: nada for polygons except PWLD which is only linear
+\item why polyg? 4 reasons 
+\item Rand/Gillete sukumar
+\end{itemize}
+\item outline
+\begin{itemize}
+\item brief review DG/ Sn
+\item brief review of linear basis on polygon
+\item finally, the meat: (1) application (new) of existing HO basis function to Transport (2) novelty: PWQ on poly
+\end{itemize}
 \end{enumerate}
 }
 
@@ -230,11 +258,11 @@ abstract goes here...
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \tcr
-{
+{ keep it short
 \begin{enumerate}
 \item angular discretization
 \item DGFEM discretization with upwind scheme
-\item theoretical convergence rates (including solution irregularity)
+\item theoretical convergence rates (including solution irregularity) Wang + others (Pitkarantka ...)
 \end{enumerate}
 }
 
@@ -284,7 +312,7 @@ abstract goes here...
 {
 \begin{enumerate}
 \item table with summary
-\item example contour plots
+\item example contour plots (small)
 \end{enumerate}
 }
 
@@ -336,20 +364,27 @@ abstract goes here...
 %------------------------------------------------------------------------------------------------------------
 \subsection{Exactly-Quadratic Transport Solutions}
 %------------------------------------------------------------------------------------------------------------
+give table 1e-13 and the other one. mention why not plots
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Convergence Rate Analysis by the Method of Manufactured Solutions}
 %------------------------------------------------------------------------------------------------------------
+no mention of irr
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Convergence Rate Analysis Bounded by the Solution Regularity}
 %------------------------------------------------------------------------------------------------------------
+summarize results 
+give poly only for cv rate=1/2. put the 3/2 in appendix.
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Thick Diffusion Limit}
 %------------------------------------------------------------------------------------------------------------
+\begin{itemize}
+\item 1D unresolved boundary layer
+\item 2D from dissertation
+\end{itemize}
 
-\tcr{do we want this in this paper?}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
