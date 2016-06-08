@@ -1560,6 +1560,8 @@ Q(x,y,\mu,\eta) = a \mu + b \eta + \sigma_t \left(  c \mu + d \eta \right) + \si
 \end{aligned}
 \end{equation}
 
+\noindent For this work, we chose our parameters so that Eq. (\ref{eq::BF_Results_Linear_removeterms}) is not satisfied. Therefore, our source will be angle dependent.
+
 For this example, we test the various 2D polygonal finite element basis functions on six different mesh types. These mesh types include triangular, quadrilateral, and polygonal meshes:
 
 \begin{enumerate}
@@ -1571,7 +1573,7 @@ For this example, we test the various 2D polygonal finite element basis function
 	\item A polygonal variant of the quadrilateral z-mesh. The polygonal grid is formed in a similar manner to the sinusoidal polygonal mesh with a Voronoi diagram.
 \end{enumerate}
 
-\noindent We also wish that both the angular flux solution as well as the 0th moment solution are strictly positive everywhere. Therefore, we set the function parameters in Eq. (\ref{eq::BF_Results_Linear_fluxsols}) to $\sigma_t = a = c = d = e = 1.0$ and $b = 1.5$. We gave the solution the $40 \%$ tilt in space ($a \neq b$) so that it would not align with the triangular mesh. Using an S8 LS quadrature set, we ran all combinations of the polygonal basis functions and the mesh types. The linear solutions for the Wachspress, PWL, mean value, and linear maximum entropy are presented in Figures \ref{fig::BF_Results_Linear_wach_sol}, \ref{fig::BF_Results_Linear_pwld_sol}, \ref{fig::BF_Results_Linear_mv_sol}, \ref{fig::BF_Results_Linear_me1_sol}, respectively. We can see that for all the polygonal basis functions, an exactly-linear solution is captured as shown by the unbroken nature of the contour lines. This even holds on the highly distorted quadrilateral Shestakov mesh.
+\noindent We also wish that both the angular flux solution as well as the 0th moment solution are strictly positive everywhere. Therefore, we set the function parameters in Eq. (\ref{eq::BF_Results_Linear_fluxsols}) to $\sigma_t = a = c = d = e = 1.0$ and $b = 1.5$. We gave the solution the $40 \%$ tilt in space ($a \neq b$) so that it would not align with the triangular mesh. Using an $S_8$ LS quadrature set, we ran all combinations of the polygonal basis functions and the mesh types. The linear solutions for the Wachspress, PWL, mean value, and linear maximum entropy are presented in Figures \ref{fig::BF_Results_Linear_wach_sol}, \ref{fig::BF_Results_Linear_pwld_sol}, \ref{fig::BF_Results_Linear_mv_sol}, \ref{fig::BF_Results_Linear_me1_sol}, respectively. We can see that for all the polygonal basis functions, an exactly-linear solution is captured as shown by the unbroken nature of the contour lines. This even holds on the highly distorted quadrilateral Shestakov mesh.
 
 %%%%%%%%%%%%%%%%%
 % Begin Linear Solution figures
@@ -2126,11 +2128,11 @@ For both problems, $L_x$ and $L_y$ are set to 1.0 to form the unit square. For t
 	\begin{subfigure}[b]{0.465\textwidth}
 		\centering
 		\label{subfig::x2y2_shes_quad_me_k2_lin_sol}
-		\includegraphics[width=\textwidth]{figures/sec_BF/x2y2Sol_ShesQuad_ME2.png}
+		\includegraphics[width=\textwidth]{figures/sec_BF/x2y2Sol_ShesQuad_ME2_Rev1.png}
 		\caption{Shestakov Quadrilaterals}
 	\end{subfigure}
 	\hfill
-	\begin{subfigure}[b]{0.465\textwidth}
+	\begin{subfigure}[b]{0.460\textwidth}
 		\centering
 		\label{subfig::x2y2_smooth_poly_me_k2_lin_sol}
 		\includegraphics[width=\textwidth]{figures/sec_BF/x2y2Sol_SinePoly_ME2.png}

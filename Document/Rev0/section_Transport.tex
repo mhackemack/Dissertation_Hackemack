@@ -412,12 +412,14 @@ We begin our description of the LS quadrature by analyzing the 3D angular coordi
 \end{equation}
 
 
-We next specify the order of the quadrature set, $N$, which we restrict to only positive even integers. Each direction cosine ($\mu$, $\eta$, and $\xi$) then contains exactly $N/2$ positive values with respect to each of the three axes. This leads to exactly $\frac{N(N+2)}{8}$ total angular directions in the primary octant. Because of the rotational invariance of the quadrature set, no ordinate axis receives preferential clustering of the nodes. This means that the index value of each ordinate is identical: 
+We next specify the order of the quadrature set, $N$, which we restrict to only positive even integers. Each direction cosine ($\mu$, $\eta$, and $\xi$) then contains exactly $N/2$ positive values with respect to each of the three axes. This leads to exactly $\frac{N(N+2)}{8}$ total angular directions in the primary octant. Because of the rotational invariance of the quadrature set, no ordinate axis receives preferential clustering of the nodes. This means that the index value of each ordinate is identical:
 
 \begin{equation}
 \label{eq::Sn_Angle_LS_index_values}
 \mu_i = \eta_i = \xi_i, \qquad i \in (1,N/2)
 \end{equation}
+
+\noindent and the individual angular directions are composed of combinations of these ordinates.
 
 As previously stated, once the location of the first ordinate, $\mu_1$, is selected, then the remaining are directly known. However, to maintain the relation of Eq. (\ref{eq::Sn_Angle_angle_cos_relation}), this first ordinate has restrictions placed on it. It must maintain a positive value: $\mu_1^2 \in (0, 1/3]$. Also, for the $S_2$ set ($N=2$), there is exactly one direction cosine with no degrees of freedom. This requires that $\mu_1^2 = 1/3$ for the $S_2$ case.
 
@@ -435,7 +437,7 @@ With $\mu_1$ now selected, we can consider an ordinate set [$\mu_i, \eta_j, \xi_
  \Delta = \frac{2 (1-3 \mu_1^2)}{N-2}. 
 \end{equation}
 
-\noindent Based on this recursion form, we can see that if $\mu_1^2$ is close to 0, then the ordinates will be clustered around the poles of the primary octant. Likewise, if $\mu_1^2$ is close to $1/3$, then the ordinates will be clustered away from the poles. For this work, we choose to select values of $\mu_1$ in conformance with the $LQ_N$ quadrature set because they can exactly integrate the polynomials of the Legendre expansion of the scattering cross sections \cite{carlson1971}. We finally note that the weights of the $LQ_N$ set become negative for $N \geq 20$.
+\noindent Based on this recursion form, we can see that if $\mu_1^2$ is close to 0, then the ordinates will be clustered around the poles of the primary octant. Likewise, if $\mu_1^2$ is close to $1/3$, then the ordinates will be clustered away from the poles. Therefore, there is some flexibility in the level-symmetric quadrature set based on the selection of $\mu_1$. For this work, we choose to select values of $\mu_1$ in conformance with the $LQ_N$ quadrature set because they can exactly integrate the polynomials of the Legendre expansion of the scattering cross sections \cite{carlson1971}. We finally note that the weights of the $LQ_N$ set become negative for $N \geq 20$.
 
 We conclude this discussion of the LS quadrature set with some examples. Figure \ref{fig::Sn_Angle_LS_Quads_3D} provides a visual depiction of the LS nodes and weights in the primary octant for varying orders. The magnitude of the weights is characterized by the relative size of the nodes. Figure \ref{fig::Sn_Angle_LS_Quads_2D} then provides the projection of the 3D LS quadrature set onto the unit circle for various orders for use in 2D problems. We have included the full quadrature set in this image including the quadrant-to-quadrant mapping. 
 
