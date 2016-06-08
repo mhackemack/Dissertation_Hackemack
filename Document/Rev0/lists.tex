@@ -65,11 +65,16 @@
 \setlength{\cftbeforechapskip}{0.4cm}
 \setlength{\cftbeforesecskip}{0.30cm}
 \setlength{\cftbeforesubsecskip}{0.30cm}
-\setlength{\cftbeforesubsubsecskip}{0.30cm}
+%\setlength{\cftbeforesubsubsecskip}{0.30cm}
 \setlength{\cftbeforefigskip}{0.4cm}
 \setlength{\cftbeforetabskip}{0.4cm} 
 
+%\listoffigures
+
+\begingroup
+\renewcommand*{\addvspace}[1]{}
 \listoffigures
+\endgroup
 
 \end{singlespace}
 \end{center}
@@ -105,7 +110,12 @@
 \setlength{\cftbeforefigskip}{0.4cm}
 \setlength{\cftbeforetabskip}{0.4cm}
 
-\listoftables 
+%\listoftables
+
+\begingroup
+\renewcommand*{\addvspace}[1]{}
+\listoftables
+\endgroup
 
 \end{singlespace}
 \end{center}
