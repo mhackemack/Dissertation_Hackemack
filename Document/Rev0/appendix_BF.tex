@@ -21,7 +21,7 @@
 \section{Limits of the Linear Polygonal Basis Functions}
 \label{sec::appendix_BF_Limits}
 
-As it was stated in Chapter \ref{sec::BF}, the Wachspress, mean value, and maximum entropy coordinates are all undefined on the boundary of the polygonal element. However, these basis functions do have a valid limit on the boundary. This means that while direct boundary evaluation of the coordinates is impossible (results in divide-by-zero issues), we can demonstrate that the limits of their values are exactly those required of general barycentric coordinates. We use the geometric properties for an arbitrary polygon presented in Figure \ref{fig::App_BF_2D_ref_polygon} to do this.
+As it was stated in Chapter \ref{sec::BF}, the Wachspress, mean value, and maximum entropy coordinates are all undefined on the boundary of the polygonal element. However, these basis functions do have a valid limit on the boundary. This means that, while direct boundary evaluation of the coordinates is impossible (results in divide-by-zero issues), we can demonstrate that the limits of their values are exactly those required of general barycentric coordinates. We use the geometric properties for an arbitrary polygon presented in Figure \ref{fig::App_BF_2D_ref_polygon} to do this.
 
 \begin{figure}
 \centering
@@ -317,7 +317,7 @@ y&y_j&y_{j+1}
 \hat{w}_i (\vec{x})  = w_i (\vec{x}) A_j (\vec{x}) .
 \end{equation}
 
-\noindent This modified weight functions can be expanded to
+\noindent This modified weight function can be expanded to
 
 \begin{equation}
 \label{eq::App_BF_MV_weights_mod_expand}
@@ -328,7 +328,7 @@ y&y_j&y_{j+1}
 
 \begin{equation}
 \label{eq::App_BF_MVBF_mod}
-\lambda_i (\vec{x}) = \frac{\hat{w}_i  (\vec{x}) }{\sum\limits_{j=1}^{N_K} \hat{w}_j  (\vec{x}) }
+\lambda_i (\vec{x}) = \frac{\hat{w}_i  (\vec{x}) }{\sum\limits_{j=1}^{N_K} \hat{w}_j  (\vec{x}) } .
 \end{equation}
 
 \noindent Analyzing Eq. (\ref{eq::App_BF_MV_weights_mod_expand}), we can immediately discern that $\hat{w}_i (\vec{x}) = 0 $ for ($i=j,j+1$). This is because as $\vec{x}$ goes to the boundary, $\alpha_j$ goes to $\pi$ and $\sin (\alpha_j)$ goes to zero. We will show below that the limit of $\hat{w}_i (\vec{x}) $ is greater than zero and bounded for ($i=j,j+1$). We can then write the mean value basis functions in the modified terms for vertex $j$ and $j+1$ as 
@@ -610,7 +610,7 @@ In Chapter \ref{sec::BF}, we provided the functional form for the Piecewise Line
 \subsection{2D PWL Basis Functions}
 \label{sec::appendix_BF_PWLInt_2D}
 
-In Section \ref{sec::BF_2DLinear_PWL}, we provided the functional form for the 2D Piecewise Linear (PWL) coordinates. We noted that of the linearly-complete 2D polygonal coordinates, PWL is the only one that can perform analytical integrations of the elementary matrices. We now describe the procedures to perform these analytical integrations of the elementary matrices. The integral of the $b_i \, b_j$ term for the mass matrix and streaming matrix are given by 
+In Section \ref{sec::BF_2DLinear_PWL}, we provided the functional form for the 2D Piecewise Linear (PWL) coordinates. We noted that, of the linearly-complete 2D polygonal coordinates, PWL is the only one that can perform analytical integrations of the elementary matrices. We now describe the procedures to perform these analytical integrations of the elementary matrices. The integral of the $b_i \, b_j$ term for the mass matrix and streaming matrix are given by 
 
 \begin{equation}
 \label{eq::App_BF_2D_triref_massterm}
@@ -692,7 +692,7 @@ The integrations of the 3D PWL basis functions on an arbitrary 3D polyhedra can 
 \end{aligned},
 \end{equation}
 
-\noindent respectively. In Eqs. (\ref{eq::App_BF_3D_triref_massterm}) and (\ref{eq::App_BF_3D_triref_gradterm}), $t_f$ and $t_g$ are the face tent functions. We then define the su-tetrahedron $k$ corresponding to two vertices on a face (counter-clockwise orientation), the face center, and the polyhedron center. We transform the $t_j$, $t_j$, $t_f$, and $t_c$ basis functions into the $\hat{b}_1$, $\hat{b}_2$, $\hat{b}_3$, and $\hat{b}_4$ reference functions on the sub-tetrahedron $k$. We can write the $(4 \times 4)$ sub-matrix contribution for the sub-tetrahedron $k$ into the global mass matrix of element $K$ as
+\noindent respectively. In Eqs. (\ref{eq::App_BF_3D_triref_massterm}) and (\ref{eq::App_BF_3D_triref_gradterm}), $t_f$ and $t_g$ are the face tent functions. We then define the sub-tetrahedron $k$ corresponding to two vertices on a face (counter-clockwise orientation), the face center, and the polyhedron center. We transform the $t_j$, $t_j$, $t_f$, and $t_c$ basis functions into the $\hat{b}_1$, $\hat{b}_2$, $\hat{b}_3$, and $\hat{b}_4$ reference functions on the sub-tetrahedron $k$. We can write the $(4 \times 4)$ sub-matrix contribution for the sub-tetrahedron $k$ into the global mass matrix of element $K$ as
 
 \begin{equation}
 \label{eq::App_BF_3D_massterm_littlemat}

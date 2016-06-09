@@ -21,7 +21,7 @@
 \section{Detailed Description of the Spherical Harmonics Expansion of the Scattering Kernel}
 \label{sec::appendix_SN_Scattering}
 
-In Section \ref{sec::Sn_Angle}, we provided details on the angular discretization of the transport equation. Specifically, we mentioned that the scattering term is modified by series expanding the scattering cross sections in terms of Legendre polynomials, $P$, and series expanding the angular flux in terms of the spherical harmonics functions, $Y$ . We now go into further detail on the steps properly perform these expansions for the scattering kernel.
+In Section \ref{sec::Sn_Angle}, we provided details on the angular discretization of the transport equation. Specifically, we mentioned that the scattering term is modified by a series expansion of the scattering cross sections in terms of Legendre polynomials, $P$, and a series expansion of the angular flux in terms of the spherical harmonics functions, $Y$. We now go into further detail on the steps to properly perform these expansions for the scattering kernel.
 
 We first define the scattering kernel, and ignore energy and spatial position, as the following:
 
@@ -138,7 +138,7 @@ Now, we define the expansion of the scattering cross section by use of the Legen
 \sigma_{s,n} \equiv \int\limits_{-1}^{1} d \mu_0 \, \sigma_s (\mu_0) P_n (\mu_0).
 \end{equation}
 
-If we define the term $N_p$ is the minimum integer value between $N_s$ and $N_f$, then we can then insert Eqs. (\ref{eq::App_SN_sharm_flux_exp}) and (\ref{eq::App_SN_scatt_int}) into Eq. (\ref{eq::App_SN_scatt_kernel}) to yield the following
+If we define the term $N_p$ as the minimum integer value between $N_s$ and $N_f$, then we can then insert Eqs. (\ref{eq::App_SN_sharm_flux_exp}) and (\ref{eq::App_SN_scatt_int}) into Eq. (\ref{eq::App_SN_scatt_kernel}) to yield the following
 
 \begin{equation}
 \label{eq::App_SN_scatt_kernel_inserted}

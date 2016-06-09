@@ -323,7 +323,7 @@ For completeness with the 2D and 3D results presented in Chapter \ref{sec::DSA},
 \section{Comparison between Modified Interior Penalty and Modified Four-Step DSA Schemes}
 \label{sec::App_DSA_M4S}
 
-In this work, our low-order diffusion operator was the discontinuous DFEM MIP form. Another common, fully-discontinuous form of the diffusion equation for use as a DSA scheme is the Modified Four-Step (M4S) method \cite{ref::dsa_DFEM_adams_martin}. It is a partially-consistent DSA scheme that can be derived in two-separate ways to yield the same functional form. One method is to take the analytic transport equation, expand the angular flux moments, take the moments to form the analytic diffusion equation, and then spatially discretize to form the spatially discretized diffusion equation. Conversely, the derivation can be performed by spatially discretizing the analytic transport equation, expanding the angular flux moments, and taking the moments to form the spatially discretized diffusion equation. Using either of these methods, we can write the equations for a set of $N_K$ basis functions, $b_i^K$, in element $K$ with $N_f^K$ faces as
+In this work, our low-order diffusion operator was the discontinuous DFEM MIP form. Another common, fully-discontinuous form of the diffusion equation for use as a DSA scheme is the Modified Four-Step (M4S) method \cite{ref::dsa_DFEM_adams_martin}. It is a partially-consistent DSA scheme that can be derived in two separate ways to yield the same functional form. One method is to take the analytic transport equation, expand the angular flux moments, take the moments to form the analytic diffusion equation, and then spatially discretize to form the spatially discretized diffusion equation. Conversely, the derivation can be performed by spatially discretizing the analytic transport equation, expanding the angular flux moments, and taking the moments to form the spatially discretized diffusion equation. Using either of these methods, we can write the equations for a set of $N_K$ basis functions, $b_i^K$, in element $K$ with $N_f^K$ faces as
 
 \begin{equation}
 \label{eq::App_DSA_M4S_paper_form}
@@ -362,7 +362,7 @@ a^{MIP}&(b, \delta \Phi)  = \Big(  D \vec{\nabla} b , \vec{\nabla} \delta \Phi  
 \end{aligned} .
 \end{equation}
 
-\noindent Between Eqs. (\ref{eq::M4S_bilinear_form}) and (\ref{eq::App_MIP_bilinear_form}), we can immediately see similarities and differences between the M4S and MIP diffusion forms. M4S does not contain the $\Big< \{\!\{  D \partial_n b \}\!\} , [\![ \delta \Phi ]\!]\Big>_{E_h^i}$ or $\frac{1}{2} \Big<   D \partial_n b , \delta \Phi \Big>_{\partial \mathcal{D}^d}  $ symmetrization terms. Therefore, the M4S scheme is not symmetric and PCG cannot be used as the iterative method. Instead, a method like GMRES would be needed to solve the M4S system of equations. We can also see from Eq. (\ref{eq::M4S_bilinear_form}) that the ``penalty'' term in M4S is a constant value of 1/4.
+\noindent Between Eqs. (\ref{eq::M4S_bilinear_form}) and (\ref{eq::App_MIP_bilinear_form}), we can immediately see similarities and differences between the M4S and MIP diffusion forms. M4S does not contain the $\Big< \{\!\{  D \partial_n b \}\!\} , [\![ \delta \Phi ]\!]\Big>_{E_h^i}$ or $\frac{1}{2} \Big<   D \partial_n b , \delta \Phi \Big>_{\partial \mathcal{D}^d}  $ symmetrization terms. Therefore, the M4S scheme is not symmetric, and PCG cannot be used as the iterative method. Instead, a method like GMRES would be needed to solve the M4S system of equations. We can also see from Eq. (\ref{eq::M4S_bilinear_form}) that the ``penalty'' term in M4S is a constant value of 1/4.
 
 We now provide a pair of results for the M4S form. First, we give a comparison between the theoretical Fourier Analysis and numerical spectral radii results on unit square mesh cells using the linear PWL basis functions in Figure \ref{fig::App_DSA_2D_M4S_Fourier_NSR}. Then, we provide the Fourier wave number distributions of the PWL basis functions on the unit square in Figures \ref{fig::App_DSA_M4S_LS2}, \ref{fig::App_DSA_M4S_LS4}, \ref{fig::App_DSA_M4S_LS8}, and \ref{fig::App_DSA_M4S_LS16} for the $S_2$, $S_4$, $S_8$, and $S_{16}$ level-symmetric quadrature, respectively.
 
@@ -613,7 +613,7 @@ We first write the $N_K$ DFEM SIP equations for element $K$ as
 \sum\limits_{i=1}^{N_K} \vec{\nabla} b_i^K = \vec{0} ,
 \end{equation}
 
-\noindent respectively. Because of Eq. (\ref{eq::App_DSA_int_gradbf}), the stiffness matrix and the surface matrices containing gradients of the basis functions are eliminated. We collect like terms and write Eq. (\ref{eq::App_DSA_MIP_afterint}) as
+\noindent respectively. Because of Eq. (\ref{eq::App_DSA_int_gradbf}), the stiffness matrix and the surface matrices containing gradients of the basis functions are eliminated. We collect like terms, and write Eq. (\ref{eq::App_DSA_MIP_afterint}) as
 
 \begin{equation}
 \label{eq::App_DSA_MIP_liketerms}
