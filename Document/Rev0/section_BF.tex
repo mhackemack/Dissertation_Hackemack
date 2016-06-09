@@ -15,9 +15,9 @@
 \label{sec::BF}
 
 
-In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various elementary matrices needed to form the full set of spatially-discretized PDEs. These included the mass, streaming, and surface matrices where the integrations on the element's domain and boundary require combinations of the basis functions' values and gradients. From FEM theory \cite{ern2013theory}, the basis functions act as interpolation functions with local measure on some subset of elements on a discretized mesh, $\mathbb{T}_h$. To achieve the maximum possible solution convergence rate for regular solutions of $p+1$, the basis functions must have polynomial completeness of at least order $p$. For 2D interpolants, the basis functions are linearly-complete ($p=1$) if they can exactly interpolate the $\{ 1, x, y \}$ span of functions. Likewise, 2D basis functions are said to be quadratically-complete if they can exactly interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions. This work seeks to analyze the use of the different linearly-complete polygonal basis functions with the DGFEM $S_N$ transport equation. We then seek to extend this analysis to quadratically-complete basis functions, thus achieving higher convergence rates (third-order). We will do this by utilizing the methodology developed by Rand et al. \cite{rand2014quadratic} on the different linearly-complete polygonal coordinates.
+In Section \ref{sec::Sn_Spatial}, we detailed the spatial discretization of the transport equation. We then proceeded to give the functional forms for the various elementary matrices needed to form the full set of spatially-discretized PDEs. These included the mass, streaming, and surface matrices where the integrations on the element's domain and boundary require combinations of the basis functions' values and gradients. From FEM theory \cite{ern2013theory}, the basis functions form a function space with local measure on some subset of elements on a discretized mesh, $\mathbb{T}_h$. To achieve the maximum possible solution convergence rate for regular solutions of $p+1$, the basis functions must have polynomial completeness of at least order $p$. For 2D interpolants, the basis functions are linearly-complete ($p=1$) if they can exactly interpolate the $\{ 1, x, y \}$ span of functions. Likewise, 2D basis functions are said to be quadratically-complete if they can exactly interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions. This work seeks to analyze the use of the different linearly-complete polygonal basis functions with the DGFEM $S_N$ transport equation. We then seek to extend this analysis to quadratically-complete basis functions, thus achieving higher convergence rates (third-order). We will do this by utilizing the methodology developed by Rand et al. \cite{rand2014quadratic} on the different linearly-complete polygonal coordinates.
 
-The remainder of this chapter is organized as follows. In Section \ref{sec::BF_2DLinear}, we present the 2D, linearly-complete, barycentric, polygonal basis functions that we will analyze in this dissertation. We then present in Section \ref{sec::BF_2DQuadratic} the methodology to convert the barycentric polygonal basis functions presented in Section \ref{sec::BF_2DLinear} into a serendipity space of basis functions with quadratic-completeness. Section \ref{sec::BF_2DIntegration} provides the methodology that will be employed to generate spatial quadrature sets on 2D arbitrary polygons. Section \ref{sec::BF_3DLinear} then presents the 3D, linearly-complete, polyhedral basis functions that will be exclusively used in Chapter \ref{sec::DSA} for 3D DSA calculations. We then present numerical results pertaining to our linear and quadratic 2D basis functions in Section \ref{sec::BF_Results}. Section \ref{sec::BF_Conclusions} concludes with some closing remarks.
+The remainder of this chapter is organized as follows. In Section \ref{sec::BF_2DLinear}, we present the 2D, linearly-complete, barycentric, polygonal basis functions that we will analyze in this dissertation. We then present in Section \ref{sec::BF_2DQuadratic} the methodology to convert the barycentric polygonal basis functions presented in Section \ref{sec::BF_2DLinear} into a serendipity space of basis functions with quadratic-completeness. Section \ref{sec::BF_2DIntegration} provides the methodology that will be employed to generate spatial quadrature sets on 2D arbitrary polygons. Section \ref{sec::BF_3DLinear} then presents the 3D, linearly-complete, polyhedral basis functions that will be exclusively used in Chapter \ref{sec::DSA} for 3D DSA calculations. We then present numerical results pertaining to our linear and quadratic 2D basis functions in Section \ref{sec::BF_Results}. These results include verification examples and demonstrating that the basis functions satisfy transport solutions in the thick diffusion limit. Section \ref{sec::BF_Conclusions} concludes with some closing remarks.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%   Section - 2D Linear
@@ -136,14 +136,14 @@ h_j (\vec{x}) = \left(  \vec{x}_j - \vec{x} \right) \cdot \vec{n}_j = \left(  \v
 
 \begin{equation}
 \label{eq::BF_wach_wt_perpdist}
- w_j (\vec{x}) = \frac{\vec{n}_{j-1} \, \times \, \vec{n}_j}{h_{j-1} (\vec{x}) h_j (\vec{x})} ,
+ w_j (\vec{x}) = \frac{|\vec{n}_{j-1} \, \times \, \vec{n}_j|}{h_{j-1} (\vec{x}) h_j (\vec{x})} ,
 \end{equation}
 
 \noindent where
 
 \begin{equation}
 \label{eq::BF_wach_cross}
-\vec{x}_{1} \times \vec{x}_2 = 
+|\vec{x}_{1} \times \vec{x}_2| = 
 \left|  
 \begin{array}{ccc}
 x_1 & x_2 \\
@@ -443,7 +443,7 @@ We now give the form of the mean value gradients. Since the mean value coordinat
 \vec{\nabla} b_{j}^{MV}(\vec{x}) = b_{j}^{MV} (\vec{x}) \left( \vec{R}_j  (\vec{x})- \sum\displaylimits_{i}   b_{i}^{MV} (\vec{x}) \vec{R}_i (\vec{x}) \right) ,
 \end{equation}
 
-\noindent where the reduced gradient, $\vec{R}_j $, still has the same definition from Eq. (\ref{eq::BF_wach_reduced_grad}). If we define $t_j=\tan(\alpha_j/2)$ and $t_{j-1}=\tan(\alpha_{j-1}/2)$, then after extensive algebra, the mean value reduced gradients are
+\noindent where the reduced gradient, $\vec{R}_j $, still has the same definition from Eq. (\ref{eq::BF_wach_reduced_grad}). If we define $t_j=\tan(\alpha_j/2)$ and $t_{j-1}=\tan(\alpha_{j-1}/2)$, then after extensive algebra (which we will not show), the mean value reduced gradients are
 
 \begin{equation}
 \label{eq::BF_mv_red_grad_form}
@@ -1028,10 +1028,10 @@ To remove the diagonal functions, we formalize this procedure by recasting it as
 
 \begin{equation}
 \label{eq::BF_ser_ordering}
-\left\{ \xi_{ij} \right\} = \Big\{ \left[  \xi_{11}, \xi_{22}, ... , \xi_{N_K N_K} \right] , \left[ \xi_{12}, \xi_{23}, ..., \xi_{(N_K-1)N_K}, \xi_{N_K(N_K+1)} \right] \Big\} .
+\left\{ \xi_{ij} \right\} = \Big\{ \left[  \xi_{11}, \xi_{22}, ... , \xi_{N_K N_K} \right] , \left[ \xi_{12}, \xi_{23}, ..., \xi_{(N_K-1)N_K}, \xi_{N_K(N_K+1)} \right] \Big\} ,
 \end{equation}
 
-\noindent The quadratic basis begins identically to the serendipity basis by first listing the vertex and mid-face functions. Then the diagonal functions are indexed in lexicographical order. This gives the following ordering for the quadratic functions
+\noindent where $N_K+1=1$. The quadratic basis begins identically to the serendipity basis by first listing the vertex and mid-face functions. Then the diagonal functions are indexed in lexicographical order. This gives the following ordering for the quadratic functions
 
 \begin{equation}
 \label{eq::BF_quad_ordering}
@@ -1103,7 +1103,7 @@ A sufficient set of constraints for the entries in $\mathbb{A}$ to ensure the pr
 
 \noindent where $\mathbb{I}$ is the ($2 N_K \text{x} 2 N_K$) identity matrix, and $\mathbb{A}'$ is a full ($2 N_K \text{x}  \frac{N_K(N_K-3)}{2}$) matrix. This means that the vertex and face midpoint serendipity functions, $\xi_{ij}$, are formed by taking their corresponding quadratic function, $\mu_{ij}$, and adding some linear combination of the interior functions. Therefore, we only need to determine the $\frac{N_K(N_K-3)}{2}$ columns of the $\mathbb{A}'$ matrix to complete this linear transformation. 
 
-In their work, Rand et al. proposed a methodology where only six coefficients are chosen to be non-zero and can be directly calculated through geometric expressions. However, their approach is only valid for strictly-convex polygons. This will not work for our analysis since we wish to also analyze degenerate polygons that will arise in our AMR calculations. Therefore, we will use a least squares method to calculate each of the columns of $\mathbb{A}'$. We note that the coefficients calculated with this least squares method and that of Rand will be identical only for orthogonal quadrilaterals. If we isolate the column $(ab)$ from $\mathbb{A}'$, then we can form the following system of equations, 
+In their work, Rand et al. proposed a methodology where only six coefficients are chosen to be non-zero and can be directly calculated through geometric expressions. However, their approach is only valid for strictly-convex polygons. This will not work for our analysis since we wish to also analyze degenerate polygons that will arise in our AMR calculations. Therefore, we will use a least squares method to calculate each of the columns of $\mathbb{A}'$. We note that the coefficients calculated with this least squares method and that of Rand will be identical only for rectangles. If we isolate the column $(ab)$ from $\mathbb{A}'$, then we can form the following system of equations, 
 
 \begin{equation}
 \label{eq::BF_quad_MP_form}
@@ -1124,8 +1124,10 @@ In their work, Rand et al. proposed a methodology where only six coefficients ar
 \begin{aligned}
 \xi_{ij} &=  \mu_{i,j} + \sum_{ab \in D} c_{ab}^{ij} \mu_{ab} \\
 &=  \lambda_i \lambda_j + \sum_{ab \in D} c_{ab}^{ij}\lambda_a \lambda_b
-\end{aligned} .
+\end{aligned} ,
 \end{equation}
+
+\noindent where $i=j$ for vertex functions.
 
 The gradients of the serendipity basis are simple to compute with the chain rule of Calculus. If we take the gradient of Eq. (\ref{eq::BF_quad_xi_reduced}) and use appropriate derivative rules, then the gradients of the different serendipity functions can be given by
 
@@ -1454,7 +1456,7 @@ We conclude this section by providing some visual examples of quadrature sets fo
 \label{sec::BF_3DLinear}
 
 
-We have defined linearly-complete and quadratically-complete 2D polygonal basis functions for use in FEM analysis of the DGFEM transport equation. Now, we present an efficient coordinate system for arbitrary 3D polyhedra that is linearly-complete. At the time of this work and to the best of our knowledge, no analogous methodology to convert linear coordinates on 3D polyhedra to their serendipity basis exists. Therefore, we will utilize only a single linearly-complete 3D coordinate system for some of the analysis to be performed in Chapter \ref{sec::DSA}, but we include it here for completeness with the 2D coordinates.
+We have defined linearly-complete and quadratically-complete 2D polygonal basis functions for use in FEM analysis of the DGFEM transport equation. Now, we present an efficient coordinate system for arbitrary 3D polyhedra that is linearly-complete. At the time of this work and to the best of our knowledge, no analogous methodology to convert linear coordinates on 3D polyhedra to their serendipity basis exists. However, the 3D serendipity space of functions is well defined for hexahedra \cite{arnold2011serendipity}. Therefore, we will utilize only a single linearly-complete 3D coordinate system for some of the analysis to be performed in Chapter \ref{sec::DSA}, but we include it here for completeness with the 2D coordinates.
 
 For this work, we will utilize the 3D version of the Piecewise Linear (PWL) coordinates that is suitable for x-y-z geometries \cite{bailey2008phd}. From Table \ref{tab::BF_2Dlin_summary}, we can see some of the properties of the different 2D polygonal coordinates. The PWL functions are the only coordinates with a 3D analogue that allow for direct, analytical integration of the elementary matrices. This means that no spatial quadrature sets are required, though an analogous procedure to Section \ref{sec::BF_2DIntegration} could be employed using sub-tetrahedra instead of sub-triangles. In Appendix \ref{sec::appendix_BF}, we detail how these 3D PWL coordinates can be analytically integrated using the reference tetrahedron and affine mapping. The 3D PWL coordinates also allow for extremely-distorted concave polyhedra, though we will not analyze those in this work.
 
@@ -2926,14 +2928,14 @@ We investigate the transport problem with isotropic scattering and an isotropic 
 \vec{\Omega} \cdot \vec{\nabla} \Psi + \frac{\sigma_t}{\epsilon} \Psi = \sigma_t \left( \frac{1}{\epsilon} - \epsilon   \right)  \frac{\Phi}{4 \pi} + \epsilon \frac{Q_0}{4 \pi} .
 \end{equation}
 
-\noindent We can also use the scaled terms of Eq. (\ref{eq::BF_Results_TDL_scaling}) to give the corresponding scaled diffusion equation. If we take the 0th and 1st moments of Eq. (\ref{eq::BF_Results_TDL_scaled_trans_eq}) and assume that the P1 terms obey Fick's Law, then the scaled diffusion equation is
+\noindent We can also use the scaled terms of Eq. (\ref{eq::BF_Results_TDL_scaling}) to give the corresponding scaled diffusion equation. If we expand the angular flux as powers of $\epsilon$ in Eq. (\ref{eq::BF_Results_TDL_scaled_trans_eq}) and assume a Fick's Law, then the scaled diffusion equation is
 
 \begin{equation}
 \label{eq::BF_Results_TDL_scaled_diff_eq}
-\epsilon \vec{\nabla} \cdot \frac{1}{3 \sigma_t}  \vec{\nabla} \Phi + \epsilon \sigma_t \Phi =  \epsilon Q_0.
+-\epsilon \vec{\nabla} \cdot \frac{1}{3 \sigma_t}  \vec{\nabla} \Phi + \epsilon \sigma_t \Phi =  \epsilon Q_0.
 \end{equation}
 
-\noindent One can immediately see that Eq. (\ref{eq::BF_Results_TDL_scaled_diff_eq}) does not truly scale because there is an $\epsilon$ for each term. This is the desired behavior we want to see from the diffusion equation because, as $\epsilon \rightarrow 0$, the transport equation will converge to its diffusive limit and satisfy a diffusion equation.
+\noindent One can immediately see that Eq. (\ref{eq::BF_Results_TDL_scaled_diff_eq}) does not truly scale because there is an $\epsilon$ for each term. This is the desired behavior we want to see from the diffusion equation because, as $\epsilon \rightarrow 0$, the transport equation will converge to its diffusive limit and satisfy a diffusion equation that is independent of $\epsilon$.
 
 For the sake of analysis, we seek to simplify Eqs. (\ref{eq::BF_Results_TDL_scaled_trans_eq}) and (\ref{eq::BF_Results_TDL_scaled_diff_eq}) by normalization. We choose to set $\sigma_t$ and $Q_0$ to unity, which gives the final transport and diffusion equations as  
 
@@ -2946,7 +2948,7 @@ For the sake of analysis, we seek to simplify Eqs. (\ref{eq::BF_Results_TDL_scal
 
 \begin{equation}
 \label{eq::BF_Results_TDL_normalized_diff_eq}
-\frac{\epsilon}{3} {\nabla}^2 \Phi + \epsilon  \Phi =  \epsilon ,
+-\frac{\epsilon}{3} {\nabla}^2 \Phi + \epsilon  \Phi =  \epsilon ,
 \end{equation}
 
 \noindent respectively.
