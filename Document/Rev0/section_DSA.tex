@@ -335,17 +335,17 @@ Recall the operator form of the fully discretized transport equation as defined 
 
 \begin{equation}
 \label{eq::DSA_1G_M}
-M_{m} \equiv \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi}   \sum_{n=-p}^{p}  Y_{p,n} (  \vec{\Omega}_m )   ,
+M_{m,p,n} \equiv  \frac{2p + 1}{4 \pi}  Y_{p,n} (  \vec{\Omega}_m )   ,
 \end{equation}
 
 \noindent and 
 
 \begin{equation}
 \label{eq::DSA_1G_D}
-D_{p,n} \equiv \sum_{m=1}^M w_m Y_{p,n} (\vec{\Omega}_m) ,
+D_{m,p,n} \equiv w_m Y_{p,n} (\vec{\Omega}_m) ,
 \end{equation}
 
-\noindent respectively. This means that the operation ${\bf D} {\bf L}^{-1}$ corresponds to a full-domain transport sweep followed by the computation of the flux moments from the angular flux. We next apply our half-iterate and previous iterate indices on Eq. (\ref{eq::DSA_1G_trans_eq_ops}) to form the Richardson iteration procedure for our transport equation:
+\noindent respectively. These operators perform mappings between the discrete angular fluxes and the angular moments. This means that the operation ${\bf D} {\bf L}^{-1}$ corresponds to a full-domain transport sweep followed by the computation of the flux moments from the angular flux. We next apply our half-iterate and previous iterate indices on Eq. (\ref{eq::DSA_1G_trans_eq_ops}) to form the Richardson iteration procedure for our transport equation:
 
 \begin{equation}
 \label{eq::DSA_1G_trans_eq_ops_its}

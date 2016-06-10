@@ -294,8 +294,8 @@ Next, we substitute Eq. (\ref{eq::Sn_ang_flux_basis}) into Eq. (\ref{eq::Sn_Angl
 \begin{equation}
 \label{eq::Sn_Angle_simple_trans_eq_w_ang_basis}
 \begin{aligned}
-\vec{\Omega} \cdot \vec{\nabla} \left( \sum\displaylimits_{m=1}^{M} B_m (\vec{\Omega}_k)  \Psi_m \right) + \sigma_t \left(  \sum\displaylimits_{m=1}^{M} B_m (\vec{\Omega}_k)  \Psi_m \right) \\
-= \sum_{p=0}^{N_p} \frac{2p + 1}{4 \pi} \sigma_{s,p}   \sum_{n=-p}^{p}   Y_{p,n} (  \vec{\Omega} ) \left(  \sum\displaylimits_{m=1}^M \Psi_m \int_{4 \pi} d\Omega \, B_m (\vec{\Omega}_k)  \, Y_{p,n} (\vec{\Omega})  \right)  \\
+\vec{\Omega}_k \cdot \vec{\nabla} \left( \sum\displaylimits_{m=1}^{M} B_m (\vec{\Omega}_k)  \Psi_m \right) + \sigma_t \left(  \sum\displaylimits_{m=1}^{M} B_m (\vec{\Omega}_k)  \Psi_m \right) \\
+= \sum_{p=0}^{N_p} \frac{2p + 1}{4 \pi} \sigma_{s,p}   \sum_{n=-p}^{p}   Y_{p,n} (  \vec{\Omega}_k ) \left(  \sum\displaylimits_{m=1}^M \Psi_m \int_{4 \pi} d\Omega \, B_m (\vec{\Omega}_k)  \, Y_{p,n} (\vec{\Omega}_k)  \right)  \\
 k=1,...,M
 \end{aligned} ,
 \end{equation}
@@ -804,15 +804,7 @@ Because we seek to investigate the use of high-order spatial basis functions for
 [\![ \Psi_m]\!] = \Psi_m^{+} - \Psi_m^{-} ,
 \end{equation}
 
-\noindent and along with the inflow basis function, $b_m^{+}$, is beholden to the following trace condition:
-
-\begin{equation}
-\label{eq::Sn_Spatial_Convergence_trace}
-\begin{aligned}
-\Psi_m^{\pm} \equiv \lim\displaylimits_{s \rightarrow 0^\pm} \Psi_m (\vec{r} - u (\vec{r})  s  \, \vec{\Omega}_m ) \\
-u (\vec{r}) = \text{sgn} \left(  \vec{n} (\vec{r}) \cdot  \vec{\Omega}_m \right)
-\end{aligned} .
-\end{equation}
+\noindent and along with the inflow basis function, $b_m^{+}$, is beholden to the trace condition condition of Eq. (\ref{eq::Sn_ang_flux_trace}).
 
 We can give compact notation to the variational form of the DGFEM transport equation in Eq. (\ref{eq::Sn_DGFEM_variational_form}) by defining the bilinear form in Eq. (\ref{eq::Sn_Spatial_Convergence_bilinear}). We have changed the sequence of the summation over directions and over the elements for the boundary terms.
 
@@ -843,7 +835,7 @@ a(\Psi^{*},\Psi - \Psi_{exact})  = 0, \qquad m=1,...,M .
 
 \begin{equation}
 \label{eq::Sn_Spatial_Convergence_DGform}
-|| u ||^2_{DG} = \sum_{K \in \mathbb{T}_h} \left[  || u  ||^2_{L^2 (K)} + \frac{1}{2} || u^+ - u^- ||_{L^2 (\partial K)} \right],
+|| u ||^2_{DG} = \sum_{K \in \mathbb{T}_h} \left[  || u  ||^2_{L^2 (K)} + \frac{1}{2} || u^+ - u^- ||^2_{L^2 (\partial K)} \right],
 \end{equation}
 
 \noindent which contains the standard $L_2$ norm in the element interiors as well as additional $L_2$ norms on the element boundaries corresponding to the jump terms across the mesh cells.
@@ -1068,7 +1060,7 @@ To this point, we have properly described the procedures to discretize the trans
 \label{eq::Sn_DGFEM_trans_eq_cellK_bmg_complete}
 \begin{aligned}
 -  \Big( \vec{\Omega}_m \cdot  & \vec{\nabla} b_{m,g}, \Psi_{m,g} \Big)_{K}   + \Big(  \sigma_{t,g} b_{m,g} ,   \Psi_{m,g} \Big)_{K} +  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}_{m,g}^{-}  \Big>_{\partial K^+}  \\
-  + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}_{m,g}^{+}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}^{-}_{m',g}  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
+  + & \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}_{m,g}^{-}  \Big>_{\partial K^- \backslash \partial \mathcal{D}}  + \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}^{-}_{m',g}  \Big>_{\partial K^- \cap \partial \mathcal{D}^r}  \\
 = & \sum\displaylimits_{g'=1}^G \sum_{p=0}^{N_P} \frac{2p + 1}{4 \pi} \sum_{n=-p}^{p}   Y_{p,n} (  \vec{\Omega}_m )  \Big( \sigma_{s,p}^{g' \rightarrow g} \, b_{m,g},  \Phi_{p,n,g'} \Big)_{K}  \\
 + & \left(  b_{m,g} ,   Q_{m,g} \right)_{K} - \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_{m,g}, {\Psi}_{m,g}^{inc}  \Big>_{\partial K^- \cap \partial \mathcal{D}^d}
 \end{aligned} .
@@ -1412,7 +1404,7 @@ Once we have determined which elements on mesh level $r$ to refine, we then form
 
 \begin{figure}
 \centering
-\includegraphics[width=0.45\textwidth]{figures/sec_Sn/Quad_cell_refinement_rules.eps}
+\includegraphics[width=0.50\textwidth]{figures/sec_Sn/Quad_cell_refinement_rules.eps}
 \caption{Refinement rules for a quadrilateral mesh cell.}
 \label{fig::Sn_Solution_Spatial_AMR_quadrefrules}
 \end{figure}
@@ -1422,7 +1414,7 @@ Once a mesh element from level $r$ has been refined, we need to incorporate its 
 \begin{figure}
 \centering
 {
-	\begin{subfigure}[b]{0.48\textwidth}
+	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.95\textwidth]{figures/sec_Sn/Quad_tree_domain.png}
 		\caption{Twice-refined domain}
@@ -1431,7 +1423,7 @@ Once a mesh element from level $r$ has been refined, we need to incorporate its 
 }
 	\hfill
 {
-	\begin{subfigure}[b]{0.48\textwidth}
+	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
 		\includegraphics[width=0.85\textwidth]{figures/sec_Sn/Quad_tree_structure.png}
 		\caption{Refinement tree structure}
@@ -1447,18 +1439,18 @@ Following a refinement cycle, we have a new adapted mesh, $\mathbb{T}_h^{r+1}$, 
 \begin{figure}
 \centering
 {
-	\begin{subfigure}[b]{0.48\textwidth}
+	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
-		\includegraphics[width=0.95\textwidth]{figures/sec_Sn/cell_refinement_before.eps}
+		\includegraphics[width=0.975\textwidth]{figures/sec_Sn/cell_refinement_before.eps}
 		\caption{Before refinement}
 		\label{fig::Sn_Solution_Spatial_AMR_BS_before}
 	\end{subfigure}
 }
 	\hfill
 {
-	\begin{subfigure}[b]{0.48\textwidth}
+	\begin{subfigure}[b]{0.485\textwidth}
 		\centering
-		\includegraphics[width=0.95\textwidth]{figures/sec_Sn/cell_refinement_after.eps}
+		\includegraphics[width=0.975\textwidth]{figures/sec_Sn/cell_refinement_after.eps}
 		\caption{After refinement}
 		\label{fig::Sn_Solution_Spatial_AMR_BS_after}
 	\end{subfigure}

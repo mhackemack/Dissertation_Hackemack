@@ -628,7 +628,7 @@ w_j (\vec{x})  = m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{x})),
 
 \begin{equation}
 \label{eq::BF_ME_prior_products}
-\pi_j (\vec{x}) = \prod\limits_{k \neq j-1, j}^{N_K} \rho_k (\vec{x}),
+\pi_j (\vec{x}) = \prod\limits_{k \neq j-1, j}^{N_K} \rho_k (\vec{x})  = \rho_1(\vec{x}) \ldots \rho_{j-2}(\vec{x}) \rho_{j+1}(\vec{x}) \ldots \rho_{N_K}(\vec{x}) ,
 \end{equation}
 
 \noindent and
@@ -671,7 +671,7 @@ b_j (\vec{x}) = \frac{m_j(\vec{x}) \exp(-  \vec{\kappa} \cdot (\vec{x}_j - \vec{
 \vec{\kappa}^* = \min_{\vec{\kappa}} F(\vec{\kappa}) , \qquad F(\vec{\kappa}) = \log W (\vec{\kappa})
 \end{equation}
 
-\noindent In Eq. (\ref{eq::BF_ME_opt_prob_form}),  $F(\vec{\kappa})$ is the non-linear function to be solved with Newton's method. We summarize all the steps needed for computation as follows:
+\noindent In Eq. (\ref{eq::BF_ME_opt_prob_form}), the zero of $F(\vec{\kappa})$ is the non-linear function to be solved with Newton's method. We summarize all the steps needed for computation as follows:
 
 \begin{enumerate}
 \item Compute and store $(\vec{x}_j - \vec{x})$ and the prior functions $m_j (\vec{x})$;
@@ -972,7 +972,7 @@ Now, we give the full details on converting the linear generalized barycentric c
 \item Use the $\mathbb{A}$ matrix to reduce the $\{ \mu_{ab} \}$ function set to the $2 N_K$ serendipity basis set $\{ \xi_{ij} \}$.
 \end{enumerate}
 
-We begin by computing the ($i=1,...,N_K$) linear barycentric functions, $\{ \lambda_i (\vec{x}) \}$, and their gradients, $\{ \vec{\nabla} \lambda_i (\vec{x}) \}$, for a point $\vec{x}$. These linearly-complete barycentric functions can be converted immediately to barycentric-like functions with quadratic precision. Taking all non-repeating pairwise products of the linear functions yields a total of $N_Q=\frac{N_K(N_K+1)}{2}$ quadratic functions: $\mu_{ab} = \lambda_a \lambda_b$. Doing this generates functions that either live on the polygon's vertices, mid-face points, or midpoints of the polygon's diagonals between two vertices as seen in Figure \ref{fig::BF_2D_quad_process}. The $N_K$ vertex functions are denoted as $ab \in V$, the $N_K$ mid-face functions are denoted as $ab \in E$, and the $\frac{N_K(N_K-3)}{2}$ diameter functions are denoted as $ab \in D$. We also define the abbreviated notation of $\vec{x}_{ab} = \frac{\vec{x}_a + \vec{x}_b}{2}$, so that $\vec{x}_{aa}$ corresponds to a vertex function at $\vec{x}_a$. Using these various notations, we can write the precision properties of the $\mu_{ab}$ functions for the constant constraint,
+We begin by computing the ($i=1,...,N_K$) linear barycentric functions, $\{ \lambda_i (\vec{x}) \}$, and their gradients, $\{ \vec{\nabla} \lambda_i (\vec{x}) \}$, for a point $\vec{x}$. These linearly-complete barycentric functions can be converted immediately to barycentric-like functions with quadratic precision. Taking all non-repeating pairwise products of the linear functions yields a total of $N_Q=\frac{N_K(N_K+1)}{2}$ quadratic functions: $\mu_{ab} = \lambda_a \lambda_b$. Doing this generates functions that either live on the polygon's vertices, mid-face points, or midpoints of the polygon's diagonals between two vertices as seen in Figure \ref{fig::BF_2D_quad_process}. The $N_K$ vertex functions are denoted as $ab \in V$ ($a=b$), the $N_K$ mid-face (mid-edge) functions are denoted as $ab \in E$ ($|a-b|=1$), and the $\frac{N_K(N_K-3)}{2}$ diameter (interior) functions are denoted as $ab \in D$ ($|a-b| > 1$). For the mid-edge and interior functions, only 1 combination of $ab$ is kept since $\mu_{ab}=\mu_{ba}$. We also define the abbreviated notation of $\vec{x}_{ab} = \frac{\vec{x}_a + \vec{x}_b}{2}$, so that $\vec{x}_{aa}$ corresponds to a vertex function at $\vec{x}_a$. Using these various notations, we can write the precision properties of the $\mu_{ab}$ functions for the constant constraint,
 
 \begin{equation}
 \label{eq::BF_quad_interp_req_constant_alt}
@@ -1117,7 +1117,7 @@ In their work, Rand et al. proposed a methodology where only six coefficients ar
 \mathbb{B}^* = \mathbb{B}^T (\mathbb{B} \mathbb{B}^T)^{-1}.
 \end{equation}
 
-\noindent Once all of the coefficients for the $\mathbb{A}'$ matrix are known, each of the quadratic serendipity functions can be computed by
+\noindent We note that we have only tested this methodology on convex and weakly-convex polygons. Once all of the coefficients for the $\mathbb{A}'$ matrix are known, each of the quadratic serendipity functions can be computed by
 
 \begin{equation}
 \label{eq::BF_quad_xi_reduced}
