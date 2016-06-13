@@ -6,7 +6,7 @@
 %%
 %% elsarticle.dtx  (with options: `class')
 %% 
-%% Copyright 2007, 2008 Elsevier Ltd.
+%% Copyright 2007, 2008, 2009 Elsevier Ltd
 %% 
 %% This file is part of the 'Elsarticle Bundle'.
 %% -------------------------------------------
@@ -21,13 +21,14 @@
 %% The list of all files belonging to the 'Elsarticle Bundle' is
 %% given in the file `manifest.txt'.
 %% 
-%% $Id: elsarticle.cls,v 1.18 2008-08-28 06:03:47 cvr Exp $
+%%
+%% $Id: elsarticle.dtx 19 2009-12-17 07:07:52Z rishi $
 %%
  \def\RCSfile{elsarticle}%
- \def\RCSversion{1.0.1}%
- \def\RCSdate{2008/05/22}%
+ \def\RCSversion{1.20b}%
+ \def\RCSdate{2009/09/17}%
  \def\@shortjnl{\relax}
- \def\@journal{Elsevier Science} \def\@company{Elsevier Science}
+ \def\@journal{Elsevier Ltd} \def\@company{Elsevier Ltd}
  \def\@issn{000-0000}
  \def\@shortjid{elsarticle}
 \NeedsTeXFormat{LaTeX2e}[1995/12/01]
@@ -55,9 +56,9 @@
    \AtBeginDocument{\@twosidefalse\@mparswitchfalse}}
 \DeclareOption{final}{\gdef\@blstr{1}\global\preprintfalse}
 \DeclareOption{review}{\global\preprinttrue\gdef\@blstr{1.5}}
-\DeclareOption{authoryear}{\xdef\@biboptions{authoryear}}
-\DeclareOption{number}{\xdef\@biboptions{square,numbers}}
-\DeclareOption{numbers}{\xdef\@biboptions{square,numbers}}
+\DeclareOption{authoryear}{\xdef\@biboptions{round,authoryear}}
+\DeclareOption{number}{\xdef\@biboptions{numbers}}
+\DeclareOption{numbers}{\xdef\@biboptions{numbers}}
 \DeclareOption{longtitle}{\global\longmktitletrue}
 \DeclareOption{5p}{\xdef\jtype{5}\global\preprintfalse
   \ExecuteOptions{twocolumn}}
@@ -87,11 +88,11 @@
          {\string\Newlabel{#1}{\@currentlabel}}\@esphack}
 \def\Newlabel#1#2{\expandafter\xdef\csname X@#1\endcsname{#2}}
 
-\def\Ref#1{\@ifundefined{X@#1}{0}{\csname X@#1\endcsname}%
+\def\elsRef#1{\@ifundefined{X@#1}{0}{\csname X@#1\endcsname}%
 }
 
 \def\tnotemark[#1]{\textsuperscript{\@for\@@tmark:=#1\do{%
-      \edef\tnotenum{\@ifundefined{X@\@@tmark}{1}{\Ref{\@@tmark}}}%
+      \edef\tnotenum{\@ifundefined{X@\@@tmark}{1}{\elsRef{\@@tmark}}}%
       \ifcase\tnotenum\or\ding{73}\or,\ding{73}\ding{73}\fi}}%
 }
 \let\@tnotemark\@empty
@@ -104,10 +105,14 @@
    \def\thefootnote{\ifcase\c@tnote\or\ding{73}\or\ding{73}\ding{73}\fi}%
     \footnotetext{#2}}}
 
+\let\@nonumnotes\@empty
+\def\nonumnote#1{\g@addto@macro\@nonumnotes{%
+     \let\thefootnote\relax\footnotetext{#1}}}
+
 \newcounter{fnote}
 \def\fnmark[#1]{\let\comma\@empty
     \def\@fnmark{\@for\@@fnmark:=#1\do{%
-    \edef\fnotenum{\@ifundefined{X@\@@fnmark}{1}{\Ref{\@@fnmark}}}%
+    \edef\fnotenum{\@ifundefined{X@\@@fnmark}{1}{\elsRef{\@@fnmark}}}%
   \unskip\comma\fnotenum\let\comma,}}%
 }
 
@@ -118,8 +123,8 @@
    \global\setcounter{footnote}{\thefnote}%
    \footnotetext{#2}}}
 
-\def\cormark[#1]{\edef\cnotenum{\Ref{#1}}\unskip%
-   \textsuperscript{\sep\ifcase\cnotenum\or
+\def\cormark[#1]{\edef\cnotenum{\elsRef{#1}}%
+    \unskip\textsuperscript{\sep\ifcase\cnotenum\or
        $\ast$\or$\ast\ast$\fi\hspace{-1pt}}\let\sep=,}
 
 \let\@cormark\@empty
@@ -131,7 +136,11 @@
     $\ast\ast$\fi}%
     \footnotetext{#2}}}
 
-\def\corref#1{\cormark[#1]}
+\let\@corref\@empty
+\def\corref#1{\edef\cnotenum{\elsRef{#1}}%
+    \edef\@corref{\ifcase\cnotenum\or
+         $\ast$\or$\ast\ast$\fi\hskip-1pt}}
+
 \def\fnref#1{\fnmark[#1]}
 \def\tnoteref#1{\tnotemark[#1]}
 
@@ -142,9 +151,16 @@
 \let\@elseads\@empty
 \let\@elsuads\@empty
 \let\@cormark\@empty
+\def\hashchar{\expandafter\@gobble\string\~}
+\def\underscorechar{\expandafter\@gobble\string\_}
+\def\lbracechar{\expandafter\@gobble\string\{}
+\def\rbracechar{\expandafter\@gobble\string\}}
+
 \def\ead{\@ifnextchar[{\@uad}{\@ead}}
-\gdef\@ead#1{\bgroup\def\_{\string\_}\def\{{\string\{}%
-   \def\}{\string\}}%
+\gdef\@ead#1{\bgroup\def\_{\string\underscorechar\space}%
+  \def\{{\string\lbracechar\space}%
+   \def~{\hashchar\space}%
+   \def\}{\string\rbracechar\space}%
    \edef\tmp{\the\@eadauthor}
    \immediate\write\@auxout{\string\emailauthor
      {#1}{\expandafter\strip@prefix\meaning\tmp}}%
@@ -157,6 +173,8 @@
       \eadsep\texttt{#1} (#2)\def\eadsep{\unskip,\space}}%
 }
 \gdef\@uad[#1]#2{\bgroup
+  \def~{\string\hashchar\space}%
+  \def\_{\string\underscorechar\space}%
    \edef\tmp{\the\@eadauthor}
    \immediate\write\@auxout{\string\urlauthor
      {#2}{\expandafter\strip@prefix\meaning\tmp}}%
@@ -179,11 +197,13 @@
     \def\baselinestretch{1}%
     \authorsep#2\unskip\textsuperscript{%#1%
       \@for\@@affmark:=#1\do{%
-       \edef\affnum{\@ifundefined{X@\@@affmark}{1}{\Ref{\@@affmark}}}%
+       \edef\affnum{\@ifundefined{X@\@@affmark}{1}{\elsRef{\@@affmark}}}%
      \unskip\sep\affnum\let\sep=,}%
-      \ifx\@fnmark\@empty\else\unskip\sep\@fnmark\let\sep=,\fi}%
+      \ifx\@fnmark\@empty\else\unskip\sep\@fnmark\let\sep=,\fi
+      \ifx\@corref\@empty\else\unskip\sep\@corref\let\sep=,\fi
+      }%
     \def\authorsep{\unskip,\space}%
-    \global\let\sep\@empty
+    \global\let\sep\@empty\global\let\@corref\@empty
     \global\let\@fnmark\@empty}%
     \@eadauthor={#2}
 }
@@ -191,9 +211,12 @@
 \def\@author#1{\g@addto@macro\elsauthors{\normalsize%
     \def\baselinestretch{1}%
     \upshape\authorsep#1\unskip\textsuperscript{%
-      \ifx\@fnmark\@empty\else\unskip\sep\@fnmark\let\sep=,\fi}%
+      \ifx\@fnmark\@empty\else\unskip\sep\@fnmark\let\sep=,\fi
+      \ifx\@corref\@empty\else\unskip\sep\@corref\let\sep=,\fi
+      }%
     \def\authorsep{\unskip,\space}%
     \global\let\@fnmark\@empty
+    \global\let\@corref\@empty
     \global\let\sep\@empty}%
     \@eadauthor={#1}
 }
@@ -202,12 +225,41 @@
 \def\addsep{\par\vskip6pt}
 \def\address{\@ifnextchar[{\@@address}{\@address}}
 
+\def\@alph#1{%
+  \ifcase#1\or a\or b\or c\or d\or e\or f\or g\or h\or i\or j\or k\or
+  l\or m\or n\or o\or p\or q\or r\or s\or t\or u\or v\or w\or x\or
+  y\or z%
+  \or aa\or ab\or ac\or ad\or ae\or af\or ag\or ah\or ai\or aj\or
+  ak\or al\or am\or an\or ao\or ap\or aq\or ar\or as\or at\or au\or
+  av\or aw\or ax\or ay\or az%
+  \or ba\or bb\or bc\or bd\or be\or bf\or bg\or bh\or bi\or bj\or
+  bk\or bl\or bm\or bn\or bo\or bp\or bq\or br\or bs\or bt\or bu\or
+  bv\or bw\or bx\or by\or bz%
+  \or ca\or cb\or cc\or cd\or ce\or cf\or cg\or ch\or ci\or cj\or
+  ck\or cl\or cm\or cn\or co\or cp\or cq\or cr\or cs\or ct\or cu\or
+  cv\or cw\or cx\or cy\or cz%
+  \or da\or db\or dc\or dd\or de\or df\or dg\or dh\or di\or dj\or
+  dk\or dl\or dm\or dn\or do\or dp\or dq\or dr\or ds\or dt\or du\or
+  dv\or dw\or dx\or dy\or dz%
+  \or ea\or eb\or ec\or ed\or ee\or ef\or eg\or eh\or ei\or ej\or
+  ek\or el\or em\or en\or eo\or ep\or eq\or er\or es\or et\or eu\or
+  ev\or ew\or ex\or ey\or ez%
+  \or fa\or fb\or fc\or fd\or fe\or ff\or fg\or fh\or fi\or fj\or
+  fk\or fl\or fm\or fn\or fo\or fp\or fq\or fr\or fs\or ft\or fu\or
+  fv\or fw\or fx\or fy\or fz%
+  \or ga\or gb\or gc\or gd\or ge\or gf\or gg\or gh\or gi\or gj\or
+  gk\or gl\or gm\or gn\or go\or gp\or gq\or gr\or gs\or gt\or gu\or
+  gv\or gw\or gx\or gy\or gz%
+  \else\@ctrerr\fi}
+
 \newcounter{affn}
 \renewcommand\theaffn{\alph{affn}}
 
 \long\def\@@address[#1]#2{\g@addto@macro\elsaddress{%
     \def\baselinestretch{1}%
-     \refstepcounter{affn}\elsLabel{#1}%
+     \refstepcounter{affn}
+     \xdef\@currentlabel{\theaffn}
+     \elsLabel{#1}%
     \textsuperscript{\theaffn}#2\par}}
 
 \long\def\@address#1{\g@addto@macro\elsauthors{%
@@ -232,7 +284,7 @@
   \global\setbox\keybox=\vbox\bgroup\hsize=\textwidth
   \normalsize\normalfont\def\baselinestretch{1}
   \parskip\z@
-  \noindent\textit{Key words: }
+  \noindent\textit{Keywords: }
   \raggedright                         % Keywords are not justified.
   \ignorespaces}
 \def\endkeyword{\par \egroup}
@@ -244,6 +296,7 @@
   \iflongmktitle
    \let\columnwidth=\textwidth\fi
   \ifx\@tnotes\@empty\else\@tnotes\fi
+  \ifx\@nonumnotes\@empty\else\@nonumnotes\fi
   \ifx\@cornotes\@empty\else\@cornotes\fi
   \ifx\@elseads\@empty\relax\else
    \let\thefootnote\relax
@@ -398,7 +451,6 @@
        Preprint submitted to \ifx\@journal\@empty Elsevier
        \else\@journal\fi\hfill\today}%
      \let\@evenfoot\@oddfoot}
-
 \def\@seccntDot{.}
 \def\@seccntformat#1{\csname the#1\endcsname\@seccntDot\hskip 0.5em}
 
@@ -622,9 +674,9 @@
   textheight=622pt,
   textwidth=468pt,
   centering,
- headheight=50pt,
+  headheight=50pt,
   headsep=12pt,
-  footskip=12pt,
+  footskip=18pt,
   footnotesep=24pt plus 2pt minus 12pt,
   columnsep=2pc
  }
@@ -653,7 +705,6 @@
 %% End of option '5p'
 %%
 \fi\fi\fi
-
 \def\journal#1{\gdef\@journal{#1}}
  \let\@journal\@empty
 \newenvironment{frontmatter}{}{\maketitle}
@@ -695,7 +746,64 @@
 \@makeother\=
 }{}}
 %%
+\def\appendixname{Appendix }
+\renewcommand\appendix{\par
+  \setcounter{section}{0}%
+  \setcounter{subsection}{0}%
+  \setcounter{equation}{0}
+  \gdef\thefigure{\@Alph\c@section.\arabic{figure}}%
+  \gdef\thetable{\@Alph\c@section.\arabic{table}}%
+  \gdef\thesection{\appendixname~\@Alph\c@section}%
+  \@addtoreset{equation}{section}%
+  \gdef\theequation{\@Alph\c@section.\arabic{equation}}%
+  \addtocontents{toc}{\string\let\string\numberline\string\tmptocnumberline}{}{}
+}
 
+%%%% \numberline width calculation for appendix.
+\newdimen\appnamewidth
+\def\tmptocnumberline#1{%
+   \setbox0=\hbox{\appendixname}
+   \appnamewidth=\wd0
+   \addtolength\appnamewidth{2.5pc}
+   \hb@xt@\appnamewidth{#1\hfill}
+}
+
+%% Added for work with amsrefs.sty
+
+\@ifpackageloaded{amsrefs}%
+  {}
+  {%\let\bibsection\relax%
+  \AtBeginDocument{\def\cites@b#1#2,#3{%
+    \begingroup[%
+        \toks@{\InnerCite{#2}#1}%
+        \ifx\@empty#3\@xp\@gobble\fi
+        \cites@c#3%
+}}}
+%%
+%% Added for avoiding clash with cleveref.sty
+
+\@ifpackageloaded{cleveref}%
+ {}
+ {\def\tnotetext[#1]#2{\g@addto@macro\@tnotes{%
+    \refstepcounter{tnote}%
+    \immediate\write\@auxout{\string\Newlabel{#1}{\thetnote}}
+    \def\thefootnote{\ifcase\c@tnote\or\ding{73}\or\ding{73}\ding{73}\fi}%
+    \footnotetext{#2}}}
+%%%
+  \def\fntext[#1]#2{\g@addto@macro\@fnotes{%
+    \refstepcounter{fnote}%
+    \immediate\write\@auxout{\string\Newlabel{#1}{\thefnote}}
+    \def\thefootnote{\thefnote}%
+    \global\setcounter{footnote}{\thefnote}%
+    \footnotetext{#2}}}
+%%%
+  \def\cortext[#1]#2{\g@addto@macro\@cornotes{%
+    \refstepcounter{cnote}%
+    \immediate\write\@auxout{\string\Newlabel{#1}{\thecnote}}
+    \def\thefootnote{\ifcase\thecnote\or$\ast$\or
+    $\ast\ast$\fi}%
+    \footnotetext{#2}}}
+}
 \endinput
 %%
 %% End of file `elsarticle.cls'.

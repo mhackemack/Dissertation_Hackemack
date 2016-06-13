@@ -1,15 +1,10 @@
 %%
 %% This is file `elsarticle-num.bst',
-%% generated with the docstrip utility.
-%%
-%% The original source files were:
-%%
-%% elsarticle.dtx  (with options: `num')
 %% 
-%% Copyright 2007, 2008 Elsevier Ltd.
+%% Copyright 2007, 2008, 2009 Elsevier Ltd
 %% 
 %% This file is part of the 'Elsarticle Bundle'.
-%% -------------------------------------------
+%% ---------------------------------------------
 %% 
 %% It may be distributed under the conditions of the LaTeX Project Public
 %% License, either version 1.2 of this license or (at your option) any
@@ -21,26 +16,12 @@
 %% The list of all files belonging to the 'Elsarticle Bundle' is
 %% given in the file `manifest.txt'.
 %% 
-%%% Modification of BibTeX style file elsarticle-num.bst
-%%% ... by urlbst, version 0.6 (marked with "% urlbst")
-%%% See <http://purl.org/nxg/dist/urlbst>
-%%% Added webpage entry type, and url and lastchecked fields.
-%%% Added eprint support.
-%%% Added DOI support.
-%%% Added hyperref support.
-%%% Original headers follow...
-
 %%
-%% This is file `elsarticle-num.bst',
-%% generated with the docstrip utility.
+%% $Id: elsarticle-num.bst 19 2009-12-17 07:07:52Z rishi $
 %%
-%% The original source files were:
 %%
-%% merlin.mbs  (with options: `,seq-no,nm-init,ed-au,dt-end,yr-par,yrp-x,jttl-rm,thtit-a,vnum-sp,volp-blk,jdt-p,pp-last,jnm-x,btit-rm,bt-rm,pub-date,pub-xpar,pre-edn,url,url-nl,edpar,blk-com,in-col,pp,ed,abr,ednx,ord,jabr,and-xcom,xand,em-x,nfss')
-%% After docstrip generation some manual changes were made (SP)
-
 %% ----------------------------------------
-
+%%
 ENTRY
   { address
     author
@@ -1522,3 +1503,5 @@ EXECUTE {end.bib}
 %% End of customized bst file
 %%
 %% End of file `elsarticle-num.bst'.
+
+
