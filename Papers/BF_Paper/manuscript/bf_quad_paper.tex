@@ -287,11 +287,46 @@ abstract goes here...
 
 \tcr{short history and functional form}
 
+The first linearly-complete polygonal functions that we will consider are the Wachspress rational functions \cite{wachspress1975rational}. 
+
+\begin{equation}
+\label{eq::wach_BF}
+\lambda_{j}^{W} (\vec{r}) = \frac{w_j (\vec{r}) }{\sum\limits_{i=1}^{n} w_i (\vec{r})},
+\end{equation}
+
+\noindent where the Wachspress weight function for vertex $j$, $w_j$, has the following definition:
+
+\begin{equation}
+\label{eq::wach_weights}
+w_j (\vec{r})  = \frac{A(\vec{r}_{j-1}, \vec{r}_{j}, \vec{r}_{j+1})}{A(\vec{r}, \vec{r}_{j-1}, \vec{r}_{j}) \, A(\vec{r}, \vec{r}_{j}, \vec{r}_{j+1})} .
+\end{equation}
+
+\noindent In Eq. (\ref{eq::wach_weights}), the terms $A(\vec{a}, \vec{b}, \vec{c})$ denote the signed area of the triangle with vertices $\vec{a}$, $\vec{b}$, and $\vec{c}$. Each of these signed areas can be computed by
+
+\begin{equation}
+\label{eq::wach_signed_area}
+A(\vec{a}, \vec{b}, \vec{c}) = \frac{1}{2}
+\left|  
+  \begin{array}{ccc}
+  1 & 1 & 1 \\
+  x_a & x_b & x_c \\
+  y_a & y_b & y_c
+  \end{array}
+\right| .
+\end{equation}
+
 %------------------------------------------------------------------------------------------------------------
 \subsection{Piecewise Linear Functions}
 %------------------------------------------------------------------------------------------------------------
 
 \tcr{short history and functional form}
+
+\begin{equation}
+\label{eq::PWL_2D}
+\lambda_j^{PWL} (\vec{r}) = t_j (\vec{r}) + \alpha_j^K t_c (\vec{r}) .
+\end{equation}
+
+\noindent In Eq. (\ref{eq::PWL_2D}), $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero at the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function located at $\vec{r}_{c}$ which is unity at the cell center and linearly decreases to zero at each cell vertex. $\alpha_{j}^{K}$ is the weight parameter for vertex $j$ in cell $K$. The functional form of Eq. (\ref{eq::PWL_2D}) with identical vertex weights means that the PWL function for vertex $j$, within the domain of $K$, linearly decreases to a value of $1/n$ at the polygonal center. From there, the function linearly decreases to zero on all faces that are not connected to vertex $j$.
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Mean Value Coordinates}
@@ -299,11 +334,28 @@ abstract goes here...
 
 \tcr{short history and functional form}
 
+\begin{equation}
+\label{eq::MV_BF}
+\lambda_{j}^{MV} (\vec{r}) = \frac{w_j (\vec{r}) }{\sum\limits_{i=1}^{n} w_i (\vec{r})} ,
+\end{equation}
+
+\noindent where the mean value weight function for vertex $j$, $w_j$, has the following definition:
+
+\begin{equation}
+\label{eq::MV_weights}
+w_j (\vec{r})  = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{r}_j - \vec{r}|}.
+\end{equation}
+
 %------------------------------------------------------------------------------------------------------------
 \subsection{Maximum Entropy Coordinates}
 %------------------------------------------------------------------------------------------------------------
 
 \tcr{short history and functional form}
+
+\begin{equation}
+\label{eq::ME_BF}
+\lambda_{j}^{ME} (\vec{r}) = \frac{w_j (\vec{r}) }{\sum\limits_{i=1}^{n} w_i (\vec{r})} .
+\end{equation}
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Summary of the Linear Polygonal Basis Functions}
@@ -316,6 +368,21 @@ abstract goes here...
 \item example contour plots (small)
 \end{enumerate}
 }
+
+\begin{table}
+\centering
+\caption{Summary of the properties of the 2D coordinate systems used on polygons.}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Basis Function & Dimension & Polygon Type & Integration & Evaluation \\
+\hline \hline
+Wachspress	&2D/3D&	Convex&	Numerical	&Direct\\ \hline
+PWL&	1D/2D/3D&	Convex/Concave&	Analytical	&Direct\\ \hline
+Mean Value&	2D&	Convex/Concave&	Numerical	&Direct\\ \hline
+Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
+\end{tabular}
+\label{tab::2Dlin_summary}
+\end{table}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -365,26 +432,26 @@ abstract goes here...
 %------------------------------------------------------------------------------------------------------------
 \subsection{Exactly-Quadratic Transport Solutions}
 %------------------------------------------------------------------------------------------------------------
-give table 1e-13 and the other one. mention why not plots
+\tcr{give table 1e-13 and the other one. mention why not plots}
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Convergence Rate Analysis by the Method of Manufactured Solutions}
 %------------------------------------------------------------------------------------------------------------
-no mention of irr
+\tcr{no mention of irr}
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Convergence Rate Analysis Bounded by the Solution Regularity}
 %------------------------------------------------------------------------------------------------------------
-summarize results 
-give poly only for cv rate=1/2. put the 3/2 in appendix.
+\tcr{summarize results 
+give poly only for cv rate=1/2. put the 3/2 in appendix.}
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Thick Diffusion Limit}
 %------------------------------------------------------------------------------------------------------------
-\begin{itemize}
+\tcr{\begin{itemize}
 \item 1D unresolved boundary layer
 \item 2D from dissertation
-\end{itemize}
+\end{itemize}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -405,7 +472,6 @@ This research was performed under appointment to the Rickover Graduate Fellowshi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\pagebreak
 
 \bibliographystyle{unsrt}
 \bibliography{references}
