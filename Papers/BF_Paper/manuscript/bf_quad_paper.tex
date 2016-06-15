@@ -44,13 +44,15 @@
 
 %% if you use PostScript figures in your article
 %% use the graphics package for simple commands
-\usepackage{subfigure}
+%\usepackage{subfigure}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \usepackage{color}
 %% or use the graphicx package for more complicated commands
 \usepackage{graphicx}
 %% or use the epsfig package if you prefer to use the old commands
-%% \usepackage{epsfig}
+\usepackage{epstopdf}
 
 %% The amssymb package provides various useful mathematical symbols 
 %% The amsthm package provides extended theorem environments
@@ -235,7 +237,9 @@ abstract goes here...
 \begin{itemize}
 \item brief review DG/ Sn
 \item brief review of linear basis on polygon
-\item finally, the meat: (1) application (new) of existing HO basis function to Transport (2) novelty: PWQ on poly
+\item the meat: (1) application (new) of existing HO basis function to Transport (2) novelty: PWQ on poly
+\item AMR
+\item results
 \end{itemize}
 \end{enumerate}
 }
@@ -252,6 +256,10 @@ abstract goes here...
 \end{figure}
 \fi
 % ---------
+
+% Outline 
+% --------
+The remainder of the paper is as follows.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -285,9 +293,7 @@ abstract goes here...
 \subsection{Wachspress Rational Functions}
 %------------------------------------------------------------------------------------------------------------
 
-\tcr{short history and functional form}
-
-The first linearly-complete polygonal functions that we will consider are the Wachspress rational functions \cite{wachspress1975rational}. 
+The first linearly-complete polygonal functions that we will consider are the Wachspress rational functions \cite{wachspress1975rational}. These rational functions were the first derived for 2D polygons and possess all the properties of the barycentric coordinates. However, they are only valid interpolants over strictly-convex polygons. Weakly-convex polygons (colinear vertices) lose piecewise linearity on the boundary. Concave polygons have regions within their domain that are undefined and divide-by-zero occurs. The Wachspress coordinates (which we denote as $\lambda^W$) have the following form
 
 \begin{equation}
 \label{eq::wach_BF}
@@ -319,14 +325,28 @@ A(\vec{a}, \vec{b}, \vec{c}) = \frac{1}{2}
 \subsection{Piecewise Linear Functions}
 %------------------------------------------------------------------------------------------------------------
 
-\tcr{short history and functional form}
+The second linearly-complete 2D polygonal functions that we will analyze are the Piecewise Linear (PWL) coordinates proposed by Stone and Adams \cite{ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}. The 2D PWL functions are defined as combinations of linear triangular functions, with some of them only having measure within a subregion of a polygon. These subregions are formed by triangulating the arbitrary 2D polygon into a set of sub-triangles.  Each sub-triangle is defined by two adjacent vertices of the polygon and the polygon's centroid, $\vec{r}_{c}$. The polygon's centroid can be defined by
+
+\begin{equation}
+\label{eq::PWL_2D_centroid}
+	\vec{r}_{c} =  \sum\displaylimits_{j=1}^{n} \alpha_{j} \vec{r}_j ,
+\end{equation}
+
+\noindent where $\alpha_{j}$ are the vertex weights functions and, 
+
+\begin{equation}
+\label{eq::PWL_2D_vertex_weight_sum}
+ \sum\displaylimits_{j=1}^{n} \alpha_{j} = 1.
+\end{equation}
+
+\noindent For this work, we continue to use the definition for the vertex weight functions from previous works \cite{ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured,bailey2008phd}: $\alpha_{j}= 1/n$. Therefore, the vertex weight functions are the same for every vertex, and the cell centroid simply becomes the average position of all the vertices. Using these vertex weight functions, the PWL basis function for vertex $j$, $\lambda_j^{PWL}$, is defined as
 
 \begin{equation}
 \label{eq::PWL_2D}
-\lambda_j^{PWL} (\vec{r}) = t_j (\vec{r}) + \alpha_j^K t_c (\vec{r}) .
+\lambda_j^{PWL} (\vec{r}) = t_j (\vec{r}) + \alpha_j t_c (\vec{r}) .
 \end{equation}
 
-\noindent In Eq. (\ref{eq::PWL_2D}), $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero at the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function located at $\vec{r}_{c}$ which is unity at the cell center and linearly decreases to zero at each cell vertex. $\alpha_{j}^{K}$ is the weight parameter for vertex $j$ in cell $K$. The functional form of Eq. (\ref{eq::PWL_2D}) with identical vertex weights means that the PWL function for vertex $j$, within the domain of $K$, linearly decreases to a value of $1/n$ at the polygonal center. From there, the function linearly decreases to zero on all faces that are not connected to vertex $j$.
+\noindent In Eq. (\ref{eq::PWL_2D}), $t_j$ is the standard 2D linear function with unity at vertex $j$ that linearly decreases to zero at the cell center and each adjoining vertex. $t_c$ is the 2D cell ``tent'' function located at $\vec{r}_{c}$ which is unity at the cell center and linearly decreases to zero at each cell vertex. $\alpha_{j}$ is the weight parameter for vertex $j$. The functional form of Eq. (\ref{eq::PWL_2D}) with identical vertex weights means that the PWL function for vertex $j$, within the domain of the polygon, linearly decreases to a value of $1/n$ at the polygonal center. From there, the function linearly decreases to zero on all faces that are not connected to vertex $j$.
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Mean Value Coordinates}
@@ -369,7 +389,7 @@ w_j (\vec{r})  = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{r}_j -
 \end{enumerate}
 }
 
-\begin{table}
+\begin{table}[hbt]
 \centering
 \caption{Summary of the properties of the 2D coordinate systems used on polygons.}
 \begin{tabular}{|c|c|c|c|c|}
@@ -401,14 +421,12 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 
 % serendipity overview figure
 % ---------
-\iffalse
 \begin{figure}[hbt]
 \centering
-\includegraphics[width=\textwidth]{\BFfigpath{linear_to_quad_process.png}}
+\includegraphics[width=0.90\textwidth]{\BFfigpath{linear_to_quad_process.png}}
 \caption{Overview of the process to construct the quadratic serendipity basis functions on polygons. The filled dots correspond to basis functions that maintain the Lagrange property while empty dots do not.}
 \label{fig::BF_2D_quad_process}
 \end{figure}
-\fi
 % ---------
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -429,21 +447,283 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 \subsection{Exactly-Linear Transport Solutions}
 %------------------------------------------------------------------------------------------------------------
 
+Our first numerical verification example demonstrates that the linear polygonal finite element basis functions capture an exactly-linear solution space. We will show this by the method of exact solutions (MES). We build our exact solution by investigating the 2D, 1 energy group transport problem with no scattering and an angle-dependent distributed source,
+
+\begin{equation}
+\label{eq::Results_Linear_angflux}
+\mu \frac{\partial \Psi}{\partial x} + \eta \frac{\partial \Psi}{\partial y} + \sigma_t \Psi = Q(x,y, \mu, \eta), 
+\end{equation}
+
+\noindent where the streaming term was separated into the corresponding two-dimensional terms. We then define an angular flux solution that is linear in both space and angle along with the corresponding 0th moment scalar flux ($\Phi_{0,0} \rightarrow \Phi$) solution:
+
+\begin{equation}
+\label{eq::BF_Results_Linear_fluxsols}
+\begin{aligned}
+\Psi (x,y,\mu,\eta) &= ax + by + c \mu + d\eta + e\\
+\Phi (x,y) &= 2 \pi \left( ax + by  + e \right)
+\end{aligned} .
+\end{equation}
+
+% Linear contour plots
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::cart_wach_lin_sol}
+		\includegraphics[width=\textwidth]{\BFfigpath{cart_WACHSPRESS_k1.eps}}
+		\caption{Cartesian}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::tri_wach_lin_sol}
+		\includegraphics[width=\textwidth]{\BFfigpath{tri_WACHSPRESS_k1.eps}}
+		\caption{Triangular}
+	\end{subfigure}
+}
+\vspace{3mm}
+{
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::shes_quad_wach_lin_sol}
+		\includegraphics[width=\textwidth]{\BFfigpath{shes_poly_WACHSPRESS_k1.eps}}
+		\caption{Shestakov Polygons}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::smooth_poly_wach_lin_sol}
+		\includegraphics[width=\textwidth]{\BFfigpath{smooth_poly_WACHSPRESS_k1.eps}}
+		\caption{Shestakov Polygons}
+	\end{subfigure}
+}
+\vspace{3mm}
+{
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_quad_wach_lin_sol}
+		\includegraphics[width=\textwidth]{\BFfigpath{z_quad_WACHSPRESS_k1.eps}}
+		\caption{Z-Quadrilaterals}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.45\textwidth}
+		\centering
+		\label{subfig::z_poly_wach_lin_sol}
+		\includegraphics[width=\textwidth]{\BFfigpath{z_poly_WACHSPRESS_k1.eps}}
+		\caption{Z-Polygons}
+	\end{subfigure}
+}
+\caption{Contour plots of the exactly-linear solution with the Wachspress basis functions.}
+\label{fig::Results_Linear_wach_sol}
+\end{figure}
+
 %------------------------------------------------------------------------------------------------------------
 \subsection{Exactly-Quadratic Transport Solutions}
 %------------------------------------------------------------------------------------------------------------
-\tcr{give table 1e-13 and the other one. mention why not plots}
+
+The first problem interpolates the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions, which we denote with the following general and exactly-quadratic solution, $\{\Psi_q, \Phi_q\}$:
+
+\begin{equation}
+\label{eq::Results_Quadratic_fluxsols}
+\begin{aligned}
+\Psi_q (x,y,\mu,\eta) &= a + bx + c y+ d xy + e x^2 + fy^2 \\
+\Phi_q (x,y) &= 2 \pi \left(  a + bx + c y+ d xy + e x^2 + fy^2 \right)
+\end{aligned} 
+\end{equation}
+
+\noindent We clearly see that any combination of positive or negative (non-zero) values for the coefficients $a-f$ will span the quadratic serendipity space. The second problem contains terms up to $x^2 y^2$. This higher-order functional form has a solution, $\{ \Psi_{x2y2}, \Phi_{x2y2}\}$, given by the following
+
+\begin{equation}
+\label{eq::Results_x2y2_fluxsols}
+\begin{aligned}
+\Psi_{x2y2} (x,y,\mu,\eta) &= x \left(L_x - x \right) y \left(L_y - y \right) \\
+\Phi_{x2y2} (x,y) &= 2 \pi x \left(L_x - x \right) y \left(L_y - y \right) 
+\end{aligned} ,
+\end{equation}
+
+\noindent where $L_x$ and $L_y$ are the dimensions of the domain in $x$ and $y$.
+
+% 1,x,y,x^2,xy,y^2 table
+\begin{table}[hbt]
+\caption{$L_2$-norm of the error in the quadratic solution spanning $\{ 1, x, y, x^2, xy, y^2 \}$ for the different quadratic serendipity basis functions on different mesh types.}
+\centering
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+& \multicolumn{4}{c}{Basis Functions}\vline\\
+\hline
+Mesh Type & Wachspress & PWL& Mean Value& Max. Entropy \\
+\hline
+Cartesian&2.23e-13&7.25e-13&5.68e-14&5.65e-14\\
+Triangular&7.85e-14&1.46e-13&2.52e-14&2.54e-13\\
+Shes. Poly&1.14e-14&6.82e-14&5.75e-14&1.25e-13\\
+Sine Poly&2.56e-13&4.15e-13&3.25e-13&6.37e-13\\
+Z-Poly&5.24e-14&5.35e-14&1.68e-13&5.19e-14\\
+Z-Quad&6.64e-14&4.42e-14&8.29e-14&6.82e-13\\
+\hline
+\end{tabular}
+\end{table}
+
+%
+\begin{table}[hbt]
+\caption{$L_2$-norm of the error in the quadratic solution containing the $x^2y^2$ term for the different quadratic serendipity basis functions on different mesh types.}
+\centering
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+& \multicolumn{4}{c}{Basis Functions}\vline\\
+\hline
+Mesh Type & Wachspress & PWL& Mean Value& Max. Entropy \\
+\hline
+Cartesian&3.50e-06&2.72e-05&8.29e-06&3.86e-05\\
+Triangular&5.13e-05&5.13e-05&5.13e-05&5.13e-05\\
+Shes. Poly&3.97e-04&3.37e-04&2.81e-04&3.91e-04\\
+Sine Poly&3.75e-05&1.22e-04&7.62e-05&1.39e-04\\
+Z-Poly&2.93e-05&3.07e-05&2.59e-05&3.46e-05\\
+Z-Quad&2.98e-05&8.73e-05&5.08e-05&1.17e-04\\
+\hline
+\end{tabular}
+\end{table}
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Convergence Rate Analysis by the Method of Manufactured Solutions}
 %------------------------------------------------------------------------------------------------------------
 \tcr{no mention of irr}
 
+The sinusoid flux solutions, \{$\Psi_s$, $\Phi_s$\}, have the following parameterized form,
+
+\begin{equation}
+\label{eq::Results_MMS_sinefluxsols}
+\begin{aligned}
+\Psi_s (x,y) = &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}), \\ 
+\Phi_s (x,y) = 2 \pi &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}),
+\end{aligned} 
+\end{equation}
+
+\noindent where $\nu$ is a frequency parameter. We restrict this parameter to positive integers ($\nu = 1,2,3,...$). The Gaussian solution space, \{$\Psi_g$, $\Phi_g$\}, that has its local maximum centered at ($x_0,y_0$) has the parameterized form,
+
+\begin{equation}
+\label{eq::BF_Results_MMS_gaussfluxsols}
+\begin{aligned}
+\Psi_g (x,y) = &C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}), \\ 
+\Phi_g (x,y) = 2 \pi &C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}),
+\end{aligned} 
+\end{equation}
+
+\noindent where the constants in the equations are:
+
+\begin{equation}
+\label{eq::BF_Results_MMS_gaussconsts}
+C_M = \frac{100}{L_x^2 L_y^2} \qquad \gamma = \frac{L_x L_y}{100} .
+\end{equation}
+
 %------------------------------------------------------------------------------------------------------------
 \subsection{Convergence Rate Analysis Bounded by the Solution Regularity}
 %------------------------------------------------------------------------------------------------------------
-\tcr{summarize results 
-give poly only for cv rate=1/2. put the 3/2 in appendix.}
+\tcr{summarize results; give poly only for cv rate=1/2. put the 3/2 in appendix.}
+
+
+
+% Left-face incidence mesh and solution
+% ---------------------------------------------
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.425\textwidth}
+		\centering
+		\label{subfig::PA_MeshSol_Poly}
+		\includegraphics[width=\textwidth]{\BFfigpath{PALeftSol_SplitPoly.png}}
+		\caption{Split-Polygonal Mesh}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.425\textwidth}
+		\centering
+		\label{subfig::PA_MeshSol_SplitPoly}
+		\includegraphics[width=\textwidth]{\BFfigpath{PALeftSol_Poly.png}}
+		\caption{Polygonal Mesh}
+	\end{subfigure}
+\caption{Example solution of the purely-absorbing medium case with left-face incidence and $\sigma_t=1$ using the linear PWL basis functions.}
+\label{fig::Results_PA_Left_Solutions}
+\end{figure}
+
+% p+1split-polygonal convergence rate plots - left-face incidence
+% ---------------------------------------------------------------------------
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_SplitPoly_sig1}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_Left_SplitPoly_sig1.eps}}
+	\caption{$\sigma_t = 1$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_SplitPoly_sig10}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_Left_SplitPoly_sig10.eps}}
+	\caption{$\sigma_t = 10$}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_SplitPoly_sig50}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_Left_SplitPoly_sig50.eps}}
+	\caption{$\sigma_t = 50$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_SplitPoly_sig100}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_Left_SplitPoly_sig100.eps}}
+	\caption{$\sigma_t = 100$}
+	\end{subfigure}
+}
+\caption{Convergence rates for the pure absorber problem with left-face incidence on split-polygonal meshes with different values of $\sigma_t$.}
+\label{fig::Results_PA_Left_SplitPoly}
+\end{figure}
+
+
+% 1/2 polygonal convergence rate plots - left-face incidence
+% ---------------------------------------------------------------------
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Poly_sig1}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_Left_Poly_sig1.eps}}
+	\caption{$\sigma_t = 1$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Poly_sig10}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_Left_Poly_sig10.eps}}
+	\caption{$\sigma_t = 10$}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Poly_sig50}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_Left_Poly_sig50.eps}}
+	\caption{$\sigma_t = 50$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_Left_Poly_sig100}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_Left_Poly_sig100.eps}}
+	\caption{$\sigma_t = 100$}
+	\end{subfigure}
+}
+\caption{Convergence rates for the pure absorber problem with left-face incidence on polygonal meshes with different values of $\sigma_t$.}
+\label{fig::Results_PA_Left_Poly}
+\end{figure}
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Thick Diffusion Limit}
@@ -459,7 +739,7 @@ give poly only for cv rate=1/2. put the 3/2 in appendix.}
 \section{Conclusions} \label{sec::conclusions}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+In this paper...
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -476,6 +756,120 @@ This research was performed under appointment to the Rickover Graduate Fellowshi
 \bibliographystyle{unsrt}
 \bibliography{references}
 
+% Begin appendices
+\appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conversion of the Serendipity Functions to the Lagrange Space}  \label{app::Lagrange}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Additional Convergence Rate Analysis for Continuous Transport Solutions Bounded by the Solution Regularity}  \label{app::Lagrange}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+% Left-face and top-face incidence mesh and solution
+% ---------------------------------------------
+\begin{figure}
+\centering
+	\begin{subfigure}[b]{0.425\textwidth}
+		\centering
+		\label{subfig::PA_MeshSol_Poly}
+		\includegraphics[width=\textwidth]{\BFfigpath{PALeftTopSol_SplitPoly.png}}
+		\caption{Split-Polygonal Mesh}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.425\textwidth}
+		\centering
+		\label{subfig::PA_MeshSol_SplitPoly}
+		\includegraphics[width=\textwidth]{\BFfigpath{PALeftTopSol_Poly.png}}
+		\caption{Polygonal Mesh}
+	\end{subfigure}
+\caption{Example solution of the purely-absorbing medium case with left-face and top-face incidence and $\sigma_t=1$ using the linear PWL basis functions.}
+\label{fig::Results_PA_Left_Solutions}
+\end{figure}
+
+% p+1split-polygonal convergence rate plots - left-face incidence
+% ---------------------------------------------------------------------------
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_SplitPoly_sig1}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_LeftTop_SplitPoly_sig1.eps}}
+	\caption{$\sigma_t = 1$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_SplitPoly_sig10}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_LeftTop_SplitPoly_sig10.eps}}
+	\caption{$\sigma_t = 10$}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_SplitPoly_sig50}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_LeftTop_SplitPoly_sig50.eps}}
+	\caption{$\sigma_t = 50$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_SplitPoly_sig100}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_LeftTop_SplitPoly_sig100.eps}}
+	\caption{$\sigma_t = 100$}
+	\end{subfigure}
+}
+\caption{Convergence rates for the pure absorber problem with left-face and top-face incidence on split-polygonal meshes with different values of $\sigma_t$.}
+\label{fig::Results_PA_Left_SplitPoly}
+\end{figure}
+
+
+% 1/2 polygonal convergence rate plots - left-face incidence
+% ---------------------------------------------------------------------
+\begin{figure}
+\centering
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Poly_sig1}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_LeftTop_Poly_sig1.eps}}
+	\caption{$\sigma_t = 1$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Poly_sig10}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_LeftTop_Poly_sig10.eps}}
+	\caption{$\sigma_t = 10$}
+	\end{subfigure}
+}
+\vspace{1cm}
+{
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Poly_sig50}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_LeftTop_Poly_sig50.eps}}
+	\caption{$\sigma_t = 50$}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.485\textwidth}
+		\centering
+		\label{subfig::PA_LeftTop_Poly_sig100}
+		\includegraphics[width=\textwidth]{\BFfigpath{PAErr_LeftTop_Poly_sig100.eps}}
+	\caption{$\sigma_t = 100$}
+	\end{subfigure}
+}
+\caption{Convergence rates for the pure absorber problem with left-face and top-face incidence on polygonal meshes with different values of $\sigma_t$.}
+\label{fig::Results_PA_Left_Poly}
+\end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

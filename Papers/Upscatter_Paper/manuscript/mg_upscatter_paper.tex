@@ -27,7 +27,8 @@
 %\documentclass[preprint,12pt]{elsarticle}
 
 %% Use the option review to obtain double line spacing
-\documentclass[preprint,review,12pt]{elsarticle}
+%\documentclass[preprint,review,12pt]{elsarticle}
+\documentclass[preprint,10pt]{elsarticle}
 
 %% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
 %% for a journal layout:
@@ -87,7 +88,7 @@
 %-------------------------
 \begin{abstract}
 %% Text of abstract
-
+abstract goes here...
 \end{abstract}
 %-------------------------
 \begin{keyword}
@@ -106,9 +107,25 @@ Thermal Neutron Upscattering \sep DSA \sep Parallel \sep Jacobi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\tcr
+{
+\begin{enumerate}
+\item Brief description of outer-iteration scheme for multigroup problems (words only). Historically, this was a GS procedure.
+\item Historical upscatter acceleration work:
+\begin{itemize}
+\item multifrequency-grey
+\item Fission source acceleration
+\item Averin and Voloschenko upscatter (nonlinear procedure)
+\item Finally, TG and MTG. Can mention that Evans and Clarno specifically came up with TTG because MIP had not been developed and it wasn't known if a DSA scheme would be stable for unstructured multi-dimensional and multi-material problems.
+\end{itemize}
+\item Describe desire for parallelizable acceleration methodology motivated by massively-parallel computer architectures. Mention that our methods were motivated by the TG and MTG methods.
+\item outline
+\end{enumerate}
+}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Gauss-Seidel Acceleration Methodologies} \label{sec::GS}
+\section{Serial Gauss-Seidel Acceleration Methodologies} \label{sec::GS}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -116,15 +133,58 @@ Thermal Neutron Upscattering \sep DSA \sep Parallel \sep Jacobi
 \subsection{Two-Grid Acceleration}
 %------------------------------------------------------------------------------------------------------------
 
+\tcr{Give the outline of the TG method. This section would be a little longer since it would need to introduce the factorized error mode, the averaged diffusion equation, and the group-dependent update.}
+
 %------------------------------------------------------------------------------------------------------------
 \subsection{Modified Two-Grid Acceleration}
 %------------------------------------------------------------------------------------------------------------
+
+\tcr
+{
+state differences with TG (this should be relatively short):
+\begin{enumerate}
+\item 1 sweep per group in GS procedure
+\item spectral shape collapse eigenvalue equation
+\item low-order residual
+\end{enumerate}
+}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Parallelizable Jacobi Acceleration Methodologies} \label{sec::Jac}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tcr{Discuss desire to simultaneously solve transport sweeps. Propose the two Jacobi methods in the same mold as the GS methods (Modified means to not converge the inners).}
+
+%------------------------------------------------------------------------------------------------------------
+\subsection{Jacobi Acceleration}
+%------------------------------------------------------------------------------------------------------------
+
+\tcr
+{
+\begin{enumerate}
+\item do not want to converge inners with sweeps (would be silly to not communicate after each iteration)
+\item want to estimate convergence of inners with a within-group DSA acceleration for each group
+\item finish with spectrally-collapsed acceleration step
+\end{enumerate}
+}
+
+%------------------------------------------------------------------------------------------------------------
+\subsection{Modified Jacobi Acceleration}
+%------------------------------------------------------------------------------------------------------------
+
+\tcr{
+describe small difference with the Jacobi Acceleration which is the removal of the middle step (the within-group accelerations)
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The Modified Interior Penalty Method} \label{sec::MIP}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tcr{BRIEF overview of the MIP discretization with appropriate references. Turcksin and Ragusa is a short and straightforward presentation of MIP to base on.}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -135,10 +195,18 @@ Thermal Neutron Upscattering \sep DSA \sep Parallel \sep Jacobi
 %------------------------------------------------------------------------------------------------------------
 \subsection{Fourier Analysis}
 %------------------------------------------------------------------------------------------------------------
+\tcr{Fourier and flat mode plots for the different methods.}
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Homogeneous Graphite Configuration}
 %------------------------------------------------------------------------------------------------------------
+\tcr{I was thinking a simple table with iteration statistics for a homogenous cube problem.}
+
+%------------------------------------------------------------------------------------------------------------
+\subsection{Heterogeneous Configurations}
+%------------------------------------------------------------------------------------------------------------
+
+\tcr{2D and 3D IM1 results}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -158,8 +226,6 @@ This research was performed under appointment to the Rickover Graduate Fellowshi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\pagebreak
-
 \bibliographystyle{elsarticle-num}
 \bibliography{references}
 
