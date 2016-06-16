@@ -110,16 +110,18 @@ Thermal Neutron Upscattering \sep DSA \sep Parallel \sep Jacobi
 \tcr
 {
 \begin{enumerate}
-\item Brief description of outer-iteration scheme for multigroup problems (words only). Historically, this was a GS procedure.
+\item Brief description of outer-iteration scheme for multigroup problems (words only). Historically (and still used today in several software, ref, simulate ), this was a GS procedure (note: some recent works build athe full MG unsymmetric matrix, rattlesnake, parcs). Why is acceleration of GS important? D2O, C.
+transition to previous work on acceleration of GS
 \item Historical upscatter acceleration work:
 \begin{itemize}
+\item: start with TG 1993, in passing Averin+Vol., MTG, MF-grey (was this before TG?). As closing, other techniques used iteration residuals (including thermal upscatter residual), e.g., Sanchez et al. (point out not converging innners outers in the fission accel)
 \item multifrequency-grey
 \item Fission source acceleration
 \item Averin and Voloschenko upscatter (nonlinear procedure)
 \item Finally, TG and MTG. Can mention that Evans and Clarno specifically came up with TTG because MIP had not been developed and it wasn't known if a DSA scheme would be stable for unstructured multi-dimensional and multi-material problems.
 \end{itemize}
-\item Describe desire for parallelizable acceleration methodology motivated by massively-parallel computer architectures. Mention that our methods were motivated by the TG and MTG methods.
-\item outline
+\item Describe desire for parallelizable acceleration methodology motivated by massively-parallel computer architectures. Sn transport sweeps. Shameless plug for PDT (with references)  Mention that our methods were motivated by the TG and MTG methods.
+\item outline (sell your ANALYSIS work too, not just the numerical PDT results)
 \end{enumerate}
 }
 
@@ -135,10 +137,14 @@ Thermal Neutron Upscattering \sep DSA \sep Parallel \sep Jacobi
 
 \tcr{Give the outline of the TG method. This section would be a little longer since it would need to introduce the factorized error mode, the averaged diffusion equation, and the group-dependent update.}
 
+give once TE fully spelled out (no ang/space disct) but multigroup. quickly introduce operator notations. make a note about Sn in angle DFEM in space (ref).
+
+talk about that one eigenvalue close to 1 of the iteration process that the 2grid acceleration was killing.
+
 %------------------------------------------------------------------------------------------------------------
 \subsection{Modified Two-Grid Acceleration}
 %------------------------------------------------------------------------------------------------------------
-
+MTG: Evans used transport for the energy-collapsed equation. here, we present it for one-group diffusion since this is how we apply it. because now we have reliable diffusion accelerator...
 \tcr
 {
 state differences with TG (this should be relatively short):
@@ -148,6 +154,7 @@ state differences with TG (this should be relatively short):
 \item low-order residual
 \end{enumerate}
 }
+message: silly to converge inners before going to next thermal group. however, account for non-convergence of inners through spectrally collapsed residual in the 1-g acceleration.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -157,14 +164,19 @@ state differences with TG (this should be relatively short):
 
 \tcr{Discuss desire to simultaneously solve transport sweeps. Propose the two Jacobi methods in the same mold as the GS methods (Modified means to not converge the inners).}
 
+per our discussion of the story flow:
+1. MTG-GS: not good for // \\
+2. thus go with MTG-Jacobi. not converging the inners (inspired by MTG-GS) but accounting for them in the spectrally-averaged residual \\. 
+3. gains in // can be expected (to be verified with FA + num results). however, is spectral collapse acceleration (2-grid) doing a good job? can we boost it? because converging the inners with TG-GS was excellent. however, we do not want to sweep. idea. good enough convergence in the form of a DSA per group.
+
+
 %------------------------------------------------------------------------------------------------------------
 \subsection{Jacobi Acceleration}
 %------------------------------------------------------------------------------------------------------------
-
 \tcr
 {
 \begin{enumerate}
-\item do not want to converge inners with sweeps (would be silly to not communicate after each iteration)
+\item we do not want to converge inners with sweeps (would be silly to not communicate after each iteration)
 \item want to estimate convergence of inners with a within-group DSA acceleration for each group
 \item finish with spectrally-collapsed acceleration step
 \end{enumerate}
@@ -178,6 +190,8 @@ state differences with TG (this should be relatively short):
 describe small difference with the Jacobi Acceleration which is the removal of the middle step (the within-group accelerations)
 }
 
+summarize/uniform naming and put a table with acronyms 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The Modified Interior Penalty Method} \label{sec::MIP}
@@ -186,27 +200,39 @@ describe small difference with the Jacobi Acceleration which is the removal of t
 
 \tcr{BRIEF overview of the MIP discretization with appropriate references. Turcksin and Ragusa is a short and straightforward presentation of MIP to base on.}
 
+TEXT TEXT TEXT. IP DFEM, used as DSA, works well (cite) (at most, bilinear form for MIP in appendix).
+% MIP-DSA works in //: PhD dissertation as ref, if needed until other paper is done
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Numerical Results} \label{sec::results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+sell out stuff: you ground your work in ANALYSIS not trial and error. (note: say it in the intro too!). Shameless plug for PDT.
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Fourier Analysis}
 %------------------------------------------------------------------------------------------------------------
 \tcr{Fourier and flat mode plots for the different methods.}
 
+
+4 spectral shapes for graphite plot
+
 %------------------------------------------------------------------------------------------------------------
 \subsection{Homogeneous Graphite Configuration}
 %------------------------------------------------------------------------------------------------------------
 \tcr{I was thinking a simple table with iteration statistics for a homogenous cube problem.}
+
+expectations: these results will match closely the FA results.
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Heterogeneous Configurations}
 %------------------------------------------------------------------------------------------------------------
 
 \tcr{2D and 3D IM1 results}
+
+make a note on the highly heterogeneous configuration for which it is well known that ``all'' diffusion based accelerator have trouble, see Warsa/Yaqi ``PHI''.
+ 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
