@@ -374,7 +374,35 @@ w_j (\vec{r})  = \frac{\tan(\alpha_{j-1} / 2) + \tan(\alpha_j / 2)}{|\vec{r}_j -
 
 \begin{equation}
 \label{eq::ME_BF}
-\lambda_{j}^{ME} (\vec{r}) = \frac{w_j (\vec{r}) }{\sum\limits_{i=1}^{n} w_i (\vec{r})} .
+\lambda_{j}^{ME} (\vec{r}) = \frac{w_j (\vec{r}) }{\sum\limits_{i=1}^{n} w_i (\vec{r})} ,
+\end{equation}
+
+\noindent where the maximum entropy weight function for vertex $j$, $w_j$, has the following definition,
+
+\begin{equation}
+\label{eq::ME_weights}
+w_j (\vec{r})  = m_j(\vec{r}) \exp(-  \vec{\kappa} \cdot (\vec{r}_j - \vec{r})),
+\end{equation}
+
+\noindent and $\vec{\kappa}$ is a vector value of dimension 2 that will be explained shortly. In the context of Eq. (\ref{eq::ME_weights}), the prior distribution, $m_j$, can be viewed as a weight function associated with vertex $j$. This means that there is variability that one can employ for these weight functions. For FEM applications, an appropriate functional form for the prior distribution is given by
+
+\begin{equation}
+\label{eq::ME_prior_funcs}
+ m_j(\vec{r}) = \frac{\pi_j (\vec{r}) }{\sum\limits_{k=1}^{n} \pi_k (\vec{r})},
+\end{equation}
+
+\noindent where
+
+\begin{equation}
+\label{eq::ME_prior_products}
+\pi_j (\vec{r}) = \prod\limits_{k \neq j-1, j}^{n} \rho_k (\vec{r})  = \rho_1(\vec{r}) \ldots \rho_{j-2}(\vec{r}) \rho_{j+1}(\vec{r}) \ldots \rho_{n}(\vec{r}) ,
+\end{equation}
+
+\noindent and
+
+\begin{equation}
+\label{eq::ME_face_funcs}
+\rho_j (\vec{x}) = || \vec{x} - \vec{x}_j || + || \vec{x} - \vec{x}_{j+1} || - || \vec{x}_{j+1} - \vec{x}_j || .
 \end{equation}
 
 %------------------------------------------------------------------------------------------------------------
