@@ -19,10 +19,10 @@ loadquadrature(sn);
 % select data problem
 dataID=8;
 % load data
-porder=3; % select spatial approx order (1 or 2)
+porder=2; % select spatial approx order (1 or 2)
 [qsa]=loadmydata(dataID,porder);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-npar.lump = false;
+npar.lump = 1;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % T= transport matrix acting on angular fluxes
 % S= scattering operator acting on angular fluxes
