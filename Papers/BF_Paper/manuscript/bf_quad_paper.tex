@@ -301,7 +301,7 @@ The remainder of the paper is as follows.
 \subsection{Wachspress Rational Functions}
 %------------------------------------------------------------------------------------------------------------
 
-The first linearly-complete polygonal functions that we will consider are the Wachspress rational functions \cite{wachspress1975rational}. These rational functions were the first derived for 2D polygons and possess all the properties of the barycentric coordinates. However, they are only valid interpolants over strictly-convex polygons. Weakly-convex polygons (colinear vertices) lose piecewise linearity on the boundary. Concave polygons have regions within their domain that are undefined and divide-by-zero occurs. The Wachspress coordinates (which we denote as $\lambda^W$) have the following form
+The first linearly-complete polygonal functions that we will consider are the Wachspress rational functions \cite{wachspress1975rational}. These rational functions were the first derived for 2D polygons and possess all the properties of the barycentric coordinates. However, they are only valid interpolants over strictly-convex polygons. Weakly-convex polygons (contain colinear vertices) lose piecewise linearity on the boundary. Concave polygons have regions within their domain that are undefined and divide-by-zero occurs. The Wachspress coordinates (which we denote as $\lambda^W$) have the following form
 
 \begin{equation}
 \label{eq::wach_BF}
@@ -333,7 +333,7 @@ A(\vec{a}, \vec{b}, \vec{c}) = \frac{1}{2}
 \subsection{Piecewise Linear Functions}
 %------------------------------------------------------------------------------------------------------------
 
-The second linearly-complete 2D polygonal functions that we will analyze are the Piecewise Linear (PWL) coordinates proposed by Stone and Adams \cite{ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}. The 2D PWL functions are defined as combinations of linear triangular functions, with some of them only having measure within a subregion of a polygon. These subregions are formed by triangulating the arbitrary 2D polygon into a set of sub-triangles.  Each sub-triangle is defined by two adjacent vertices of the polygon and the polygon's centroid, $\vec{r}_{c}$. The polygon's centroid can be defined by
+The second linearly-complete 2D polygonal functions that we will analyze are the Piecewise Linear (PWL) functions proposed by Stone and Adams \cite{ref::PWLD_stone_adams,ref::PWLD_stone_adams_unstructured}. The 2D PWL functions are defined as combinations of linear triangular functions, with some of them only having measure within a subregion of a polygon. These subregions are formed by triangulating the arbitrary 2D polygon into a set of sub-triangles.  Each sub-triangle is defined by two adjacent vertices of the polygon and the polygon's centroid, $\vec{r}_{c}$. The polygon's centroid can be defined by
 
 \begin{equation}
 \label{eq::PWL_2D_centroid}
@@ -360,7 +360,7 @@ The second linearly-complete 2D polygonal functions that we will analyze are the
 \subsection{Mean Value Coordinates}
 %------------------------------------------------------------------------------------------------------------
 
-\tcr{short history and functional form}
+The third linearly-complete 2D polygonal funcitons that we will analyze are the mean value coordinates (MV) \cite{floater2003mean}.
 
 \begin{equation}
 \label{eq::MV_BF}
