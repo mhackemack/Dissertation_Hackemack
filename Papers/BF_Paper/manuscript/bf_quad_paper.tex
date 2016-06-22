@@ -283,6 +283,49 @@ The remainder of the paper is as follows.
 \end{enumerate}
 }
 
+In this section, we review the DGFEM $S_N$ transport equation. Given an angular quadrature set, $\{  \vec{\Omega}_m, w_m \}_{m=1}^M$, the $S_N$ transport equation with isotropic scattering is defined within an open, convex spatial domain $\mathcal{D}$, with boundary, $\partial \mathcal{D}$, as
+
+\begin{equation}
+\label{eq::trans_eq_simple_no_energy_groups}
+\left( \vec{\Omega}_m \cdot \vec{\nabla}  + \sigma_{t} (\vec{r}) \right)  \psi_{m} (\vec{r})=  \frac{\sigma_{s} (\vec{r})}{4 \pi}  \phi (\vec{r}) + Q_{m} (\vec{r}) ,
+\end{equation}
+
+\noindent where $\psi_{m} (\vec{r}) = \psi (\vec{r}, \vec{\Omega}_m)$ is the angular flux at position $\vec{r}$ in direction $\vec{\Omega}_m$, $\sigma_{t}$ and $\sigma_{s}$ are the total and scattering cross sections, and $Q_{m}$ is a distributed source for angle $m$. The scalar flux is defined as
+
+\begin{equation}
+\label{eq::scalar_flux_int}
+\phi (\vec{r}) = \int\limits_{4 \pi} d \Omega \, \psi (\vec{r}, \vec{\Omega}) \approx \sum_{m=1}^{M} w_m \psi_{m} (\vec{r}) .
+\end{equation}
+
+\noindent We then lay down an unstructured mesh, $\mathbb{T}_h \in \mathbb{R}^{d}$, over the spatial domain, where $d$ is the dimensionality of the problem (for this work, $d=2$). This mesh consists of non-overlapping spatial elements to form a complete union over the entire spatial domain: $\mathcal{D} = \bigcup_{K \in \mathbb{T}_h} K$. 
+
+We next form the set of DGFEM equations for a polygonal element $K$ with $n$ vertices and $n$ faces. We multiply Eq. (\ref{eq::trans_eq_simple_no_energy_groups}) by an appropriate test function $b_m$, integrate over element $K$, and apply Gauss' Divergence Theorem to the streaming term to obtain the Galerkin weighted-residual for element $K$ for an angular direction $\vec{\Omega}_m$:
+
+\begin{equation}
+\label{eq::DGFEM_trans_eq_cellK}
+\begin{aligned}
+ \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\psi}_m  \Big>_{\partial K} - \left( \vec{\Omega}_m \cdot  \vec{\nabla} b_m, \psi_{m} \right)_{K}  + \Big(  \sigma_{t} b_m ,   \psi_{m} \Big)_{K} \\
+=  \left( \frac{\sigma_s}{4 \pi} b_m ,   \phi \right)_{K} + \left(  b_m ,   Q_{m} \right)_{K}
+\end{aligned} .
+\end{equation}
+
+The inner products,
+
+\begin{equation}
+\label{eq::spatial_inner_products_cell}
+ \Big( u, v \Big)_K \equiv \int_K u \, v \, d r \qquad \text{and} \qquad  \Big< u, v \Big>_{\partial K} \equiv \int_{\partial K} u \, v \, d s
+\end{equation} 
+
+\noindent correspond to integrations over the cell volume and faces, respectively, where $dr \in \mathbb{R}^d$ is within the cell and $ds \in \mathbb{R}^{d-1}$ is along the cell boundary.
+
+The spatial convergence of DGFEM methods for the hyperbolic systems has been extensively studied \cite{lesaint1974finite,houston2000stabilized,houston2002discontinuous,wang2009convergence}. With the discretized flux solution, $\phi_h \in W^h_{\mathcal{D}}$, corresponding to our unstructured, $\mathbb{T}_h$, we can define an error for our DGFEM transport solution with the $L_2$ norm as
+
+\begin{equation}
+\label{eq::Convergence_L2norm_phi}
+|| \phi_h - \phi_{exact} ||_{L_2} \leq C \frac{h^{q}}{(p+1)^{q-1/2}} .
+\end{equation}
+
+\noindent In Eq. (\ref{eq::Convergence_L2norm_phi}), $q = \min (p+1, r )$, $h$ is the maximum diameter of all the mesh elements, $p$ is the polynomial completeness of the finite element function space, $r$ is the regularity index of the transport solution, and $C$ is a constant that is independent of the mesh employed.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -296,6 +339,21 @@ The remainder of the paper is as follows.
 \item List/description of barycentric properties
 \end{enumerate}
 }
+
+\begin{figure}
+\centering
+\includegraphics[width=0.65\textwidth]{\BFfigpath{ref_polygon_Rev1.png}}
+\caption{Arbitrary polygon with geometric properties used for 2D basis function generation.}
+\label{fig::2D_ref_polygon}
+\end{figure}
+
+\begin{enumerate}
+\item Positivity: $\lambda_j \geq 0$;
+\item Partitiion of unity: $\sum\limits_{j=1}^n \lambda_j = 1$;
+\item Affine combination: $\sum\limits_{j=1}^n \vec{r}_j \lambda_j (\vec{r}) = \vec{r}$;
+\item Lagrange property: $\lambda_i (\vec{r}_j) = \delta_{ij}$;
+\item Piecewise boundary linearity: $\lambda_j ((1-\mu ) \vec{x}_j  + \mu \vec{x}_{j+1})  = (1-\mu ) \lambda_j (\vec{x}_j ) + \mu \lambda_j (\vec{x}_{j+1} )$
+\end{enumerate}
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Wachspress Rational Functions}
@@ -329,6 +387,8 @@ A(\vec{a}, \vec{b}, \vec{c}) = \frac{1}{2}
 \right| .
 \end{equation}
 
+\noindent Through observation of Eq. (\ref{eq::wach_weights}), we can see that the denominator of $w_j$ goes to zero on 
+
 %------------------------------------------------------------------------------------------------------------
 \subsection{Piecewise Linear Functions}
 %------------------------------------------------------------------------------------------------------------
@@ -360,7 +420,7 @@ The second linearly-complete 2D polygonal functions that we will analyze are the
 \subsection{Mean Value Coordinates}
 %------------------------------------------------------------------------------------------------------------
 
-The third linearly-complete 2D polygonal funcitons that we will analyze are the mean value coordinates (MV) \cite{floater2003mean}.
+The third linearly-complete 2D polygonal funcitons that we will analyze are the mean value coordinates (MV) \cite{floater2003mean,floater2015generalized}. These functions were derived to approximate harmonic maps on a polygon by a set of piecewise linear maps over a triangulation of the polygon for use in computer aided graphic design. The mean value function at vertex $j$, $\lambda_{j}^{MV}$, is defined as
 
 \begin{equation}
 \label{eq::MV_BF}
@@ -580,6 +640,7 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 
 \tcr{overview of AMR for transport calculations}
 
+\iffalse
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Numerical Results} \label{sec::results}
@@ -594,16 +655,16 @@ Our first numerical verification example demonstrates that the linear polygonal 
 
 \begin{equation}
 \label{eq::Results_Linear_angflux}
-\mu \frac{\partial \Psi}{\partial x} + \eta \frac{\partial \Psi}{\partial y} + \sigma_t \Psi = Q(x,y, \mu, \eta), 
+\mu \frac{\partial \psi}{\partial x} + \eta \frac{\partial \psi}{\partial y} + \sigma_t \psi = Q(x,y, \mu, \eta), 
 \end{equation}
 
-\noindent where the streaming term was separated into the corresponding two-dimensional terms. We then define an angular flux solution that is linear in both space and angle along with the corresponding 0th moment scalar flux ($\Phi_{0,0} \rightarrow \Phi$) solution:
+\noindent where the streaming term was separated into the corresponding two-dimensional terms. We then define an angular flux solution that is linear in both space and angle along with the corresponding 0th moment scalar flux ($\phi_{0,0} \rightarrow \phi$) solution:
 
 \begin{equation}
 \label{eq::BF_Results_Linear_fluxsols}
 \begin{aligned}
-\Psi (x,y,\mu,\eta) &= ax + by + c \mu + d\eta + e\\
-\Phi (x,y) &= 2 \pi \left( ax + by  + e \right)
+\psi (x,y,\mu,\eta) &= ax + by + c \mu + d\eta + e\\
+\phi (x,y) &= 2 \pi \left( ax + by  + e \right)
 \end{aligned} .
 \end{equation}
 
@@ -665,23 +726,23 @@ Our first numerical verification example demonstrates that the linear polygonal 
 \subsection{Exactly-Quadratic Transport Solutions}
 %------------------------------------------------------------------------------------------------------------
 
-The first problem interpolates the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions, which we denote with the following general and exactly-quadratic solution, $\{\Psi_q, \Phi_q\}$:
+The first problem interpolates the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions, which we denote with the following general and exactly-quadratic solution, $\{\psi_q, \phi_q\}$:
 
 \begin{equation}
 \label{eq::Results_Quadratic_fluxsols}
 \begin{aligned}
-\Psi_q (x,y,\mu,\eta) &= a + bx + c y+ d xy + e x^2 + fy^2 \\
-\Phi_q (x,y) &= 2 \pi \left(  a + bx + c y+ d xy + e x^2 + fy^2 \right)
+\psi_q (x,y,\mu,\eta) &= a + bx + c y+ d xy + e x^2 + fy^2 \\
+\phi_q (x,y) &= 2 \pi \left(  a + bx + c y+ d xy + e x^2 + fy^2 \right)
 \end{aligned} 
 \end{equation}
 
-\noindent We clearly see that any combination of positive or negative (non-zero) values for the coefficients $a-f$ will span the quadratic serendipity space. The second problem contains terms up to $x^2 y^2$. This higher-order functional form has a solution, $\{ \Psi_{x2y2}, \Phi_{x2y2}\}$, given by the following
+\noindent We clearly see that any combination of positive or negative (non-zero) values for the coefficients $a-f$ will span the quadratic serendipity space. The second problem contains terms up to $x^2 y^2$. This higher-order functional form has a solution, $\{ \psi_{x2y2}, \phi_{x2y2}\}$, given by the following
 
 \begin{equation}
 \label{eq::Results_x2y2_fluxsols}
 \begin{aligned}
-\Psi_{x2y2} (x,y,\mu,\eta) &= x \left(L_x - x \right) y \left(L_y - y \right) \\
-\Phi_{x2y2} (x,y) &= 2 \pi x \left(L_x - x \right) y \left(L_y - y \right) 
+\psi_{x2y2} (x,y,\mu,\eta) &= x \left(L_x - x \right) y \left(L_y - y \right) \\
+\phi_{x2y2} (x,y) &= 2 \pi x \left(L_x - x \right) y \left(L_y - y \right) 
 \end{aligned} ,
 \end{equation}
 
@@ -734,23 +795,23 @@ Z-Quad&2.98e-05&8.73e-05&5.08e-05&1.17e-04\\
 %------------------------------------------------------------------------------------------------------------
 \tcr{no mention of irr}
 
-The sinusoid flux solutions, \{$\Psi_s$, $\Phi_s$\}, have the following parameterized form,
+The sinusoid flux solutions, \{$\psi_s$, $\phi_s$\}, have the following parameterized form,
 
 \begin{equation}
 \label{eq::Results_MMS_sinefluxsols}
 \begin{aligned}
-\Psi_s (x,y) = &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}), \\ 
-\Phi_s (x,y) = 2 \pi &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}),
+\psi_s (x,y) = &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}), \\ 
+\phi_s (x,y) = 2 \pi &\sin(\nu  \frac{\pi x}{L_x}) \sin(\nu  \frac{\pi y}{L_y}),
 \end{aligned} 
 \end{equation}
 
-\noindent where $\nu$ is a frequency parameter. We restrict this parameter to positive integers ($\nu = 1,2,3,...$). The Gaussian solution space, \{$\Psi_g$, $\Phi_g$\}, that has its local maximum centered at ($x_0,y_0$) has the parameterized form,
+\noindent where $\nu$ is a frequency parameter. We restrict this parameter to positive integers ($\nu = 1,2,3,...$). The Gaussian solution space, \{$\psi_g$, $\phi_g$\}, that has its local maximum centered at ($x_0,y_0$) has the parameterized form,
 
 \begin{equation}
 \label{eq::BF_Results_MMS_gaussfluxsols}
 \begin{aligned}
-\Psi_g (x,y) = &C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}), \\ 
-\Phi_g (x,y) = 2 \pi &C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}),
+\psi_g (x,y) = &C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}), \\ 
+\phi_g (x,y) = 2 \pi &C_M x (L_x - x) y (L_y - y) \exp(-\frac{(x-x_0)^2 + (y-y_0)^2}{\gamma}),
 \end{aligned} 
 \end{equation}
 
@@ -875,7 +936,7 @@ C_M = \frac{100}{L_x^2 L_y^2} \qquad \gamma = \frac{L_x L_y}{100} .
 \item 1D unresolved boundary layer
 \item 2D from dissertation
 \end{itemize}}
-
+\fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -903,10 +964,17 @@ This research was performed under appointment to the Rickover Graduate Fellowshi
 \appendix
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Limits of the Barycentric Functions on the Boundary}  \label{app::bound}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conversion of the Serendipity Functions to the Lagrange Space}  \label{app::Lagrange}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\iffalse
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Additional Convergence Rate Analysis for Continuous Transport Solutions Bounded by the Solution Regularity}  \label{app::Lagrange}
@@ -1014,6 +1082,7 @@ This research was performed under appointment to the Rickover Graduate Fellowshi
 \label{fig::Results_PA_Left_Poly}
 \end{figure}
 
+\fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}

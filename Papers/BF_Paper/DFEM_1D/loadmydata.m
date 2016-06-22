@@ -114,7 +114,8 @@ switch dataID
         qv=[0];
         % incoming flux values
         inc(1:sn)   = 0;
-        inc(sn/2+1)=1/snq.w(sn/2+1);
+        inc(sn/2+1) = 1;
+%         inc(sn/2+1)=1/snq.w(sn/2+1);
 
     case 9 % Adams (PIM) ref
         % number of elements per zone
@@ -128,7 +129,8 @@ switch dataID
         qv=[0 0];
         % incoming flux values
         inc(1:sn)   = 0;
-        inc(sn/2+1)=1/snq.w(sn/2+1);
+        inc(sn/2+1) = 1;
+%         inc(sn/2+1)=1/snq.w(sn/2+1);
 
     otherwise
         error('case ID unknown');

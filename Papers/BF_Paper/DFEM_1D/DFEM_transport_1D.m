@@ -7,7 +7,7 @@ clc;       % clear console screen
 global npar dat snq
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % select angular approx (must be an even number)
-sn=16;
+sn=24;
 if mod(sn,2)~=0
     error('sn must be even')
 end
@@ -17,12 +17,12 @@ loadquadrature(sn);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % select data problem
-dataID=8;
+dataID=9;
 % load data
-porder=2; % select spatial approx order (1 or 2)
+porder=1; % select spatial approx order (1 or 2)
 [qsa]=loadmydata(dataID,porder);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-npar.lump = 1;
+npar.lump = 0;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % T= transport matrix acting on angular fluxes
 % S= scattering operator acting on angular fluxes
