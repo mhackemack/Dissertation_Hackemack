@@ -7,7 +7,7 @@ clc;       % clear console screen
 global npar dat snq
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % select angular approx (must be an even number)
-sn=24;
+sn=16;
 if mod(sn,2)~=0
     error('sn must be even')
 end
