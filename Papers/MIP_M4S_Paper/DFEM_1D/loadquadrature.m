@@ -11,6 +11,3 @@ snq.w =b';
 
 % sum of the weights
 snq.sw = sum(snq.w);
-
-return
-end

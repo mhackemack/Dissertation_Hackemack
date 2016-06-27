@@ -1,11 +1,11 @@
-function myplot2(fid,phi,porder,dx,col)
+function pout = myplot2(fid,phi,porder,dx,col)
 
-figure(fid);
+% figure(fid);
 
 ncells=length(dx);
 f1=reshape(phi ,porder+1,ncells);f1=f1';
 x1=0.;
-
+hold on; grid on
 for i=1:ncells,
     x2=sum(dx(1:i));
     xx=linspace(x1,x2,porder+1);
@@ -16,8 +16,8 @@ for i=1:ncells,
         xx=[x1 x2];
         y1=f1(i)*ones(2,1);
     end
-    plot(xx,y1,col,'LineWidth',1);
-    hold on; grid on
+    pout = plot(xx,y1,col,'LineWidth',1);
+%     hold on; grid on
     x1=x2;
 end
 

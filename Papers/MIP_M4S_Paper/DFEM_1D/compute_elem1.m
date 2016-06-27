@@ -1,4 +1,4 @@
-function [mtot,mabs,msca,gr,e,qva]=compute_elem1()
+function [mtot,mabs,msca,gr,kD,e,egr,egrC,qva]=compute_elem1()
 
 global dat npar snq
 
@@ -17,7 +17,7 @@ g=m;
 k=m;
 f=zeros(porder+1,1);
 % store shapeset
-[b,dbdx] =feshpln(xq,porder);
+[b,dbdx] = feshpln(xq,porder);
 
 % compute local matrices + load vector
 for i=1:porder+1
@@ -37,7 +37,7 @@ jac  = dx(1:nel)/2;
 % loop over elements
 tot=zeros(nel,1); sca=tot; sabs=tot; qext=tot; DC=tot;
 for iel=1:npar.nel
-    my_zone=npar.iel2zon(iel);
+    my_zone   = npar.iel2zon(iel);
     tot(iel)  = dat.sigt(my_zone);
     sabs(iel) = dat.siga(my_zone);
     sca(iel)  = dat.sigs(my_zone);
@@ -46,21 +46,29 @@ for iel=1:npar.nel
 end
 
 % global mass matrices
-mtot =  kron( sparse( diag(tot.*jac) ), sparse(m) );
-mabs =  kron( sparse( diag(tot.*jac) ), sparse(m) );
-msca =  kron( sparse( diag(sca.*jac) ), sparse(m) );
+mtot =  kron( sparse( diag(tot.*jac) ),  sparse(m) );
+mabs =  kron( sparse( diag(sabs.*jac) ), sparse(m) );
+msca =  kron( sparse( diag(sca.*jac) ),  sparse(m) );
 % global gradient matrix
 gr = kron( speye(nel), sparse(g) );
 % global stiffness matrix
-
+kD = kron( sparse(diag(DC./jac)), sparse(k) );
 % global exeternal source vector
 qva = kron(qext.*jac,f);
 % make it an angular ext source
 qva=kron(ones(snq.sn,1),qva);
 
 % edge matrix
-e{1} = spalloc(ndof,ndof,ndof);
-e{2} = spalloc(ndof,ndof,ndof);
+e{1}    = spalloc(ndof,ndof,ndof);
+e{2}    = spalloc(ndof,ndof,ndof);
+egr{1}  = cell(npar.nel,1);
+egr{2}  = cell(npar.nel,1);
+egrC{1} = cell(npar.nel,1);
+egrC{2} = cell(npar.nel,1);
+
+% fe vals/gradients on the faces
+[bL,dbL] = feshpln(-1,porder);
+[bR,dbR] = feshpln(1,porder);
 
 % build edge matrix
 for iel=1:nel
@@ -72,16 +80,20 @@ for iel=1:nel
     % starting dofs indices for iel+1
     iel2 = iel+1;
     istart2 = (iel2-1)*(porder+1)+1;
-    
     % edge matrix, mu>0
     % ~~~~~~~~~~~~~~~~~
-    if(iel~=1),      e{1}(istart  ,istart0+porder) = -fu; end
+    if(iel~=1), e{1}(istart  ,istart0+porder) = -fu; end
     e{1}(istart+porder,istart+porder ) =  fu;
-    
     % edge matrix, mu<0
     % ~~~~~~~~~~~~~~~~~
     e{2}(istart  ,istart   ) = -fu;
     if(iel~=nel), e{2}(istart+porder,istart2  ) =  fu; end
+    % edge gradient matrices
+    % ~~~~~~~~~~~~~~~~~~~~~~
+    egr{1}{iel}  = (dbL'*bL)/jac(iel);
+    egr{2}{iel}  = (dbR'*bR)/jac(iel);
+    egrC{1}{iel} = (dbL'*bR)/jac(iel);
+    egrC{2}{iel} = (dbR'*bL)/jac(iel);
 end
 
 

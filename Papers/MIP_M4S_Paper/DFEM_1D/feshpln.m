@@ -5,8 +5,8 @@ function [shapefun,dhdx]=feshpln (xv,p)
 
 xd=linspace(-1,1,p+1);
 
-shapefun=zeros(length(xv),p+1);
-dhdx    =zeros(length(xv),p+1);
+shapefun = zeros(length(xv),p+1);
+dhdx     = zeros(length(xv),p+1);
 
 % shape function
 for i=1:p+1
@@ -38,7 +38,4 @@ for i=1:p+1
         end
     end
     dhdx(:,i)=sum./den;
-end
-
-return
 end

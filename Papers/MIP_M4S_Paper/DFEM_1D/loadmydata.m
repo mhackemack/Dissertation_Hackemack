@@ -1,6 +1,6 @@
-function [qsa]=loadmydata(dataID,porder)
+function loadmydata(dataID,porder)
 
-global dat npar snq
+global dat npar snq mats
 
 sn=snq.sn;
 mu=snq.mu;
@@ -131,7 +131,18 @@ switch dataID
         inc(1:sn)   = 0;
 %         inc(sn/2+1) = 1;
         inc(sn/2+1)=1/snq.w(sn/2+1);
-
+    case 10
+        % number of elements per zone
+        nel_zone = [ 1000 ];
+        % width of each zone
+        width_zone = [ 10 ];
+        % sigt/sigs per zone
+        sigt=[10];
+        sigs=[9.999];
+        % volumetric source value, per zone
+        qv=[1];
+        % incoming flux values
+        inc(1:sn)   = 0;
     otherwise
         error('case ID unknown');
 
@@ -192,26 +203,6 @@ npar.x=x';
 npar.dx=dx';
 npar.iel2zon=iel2zon;
 
-% % % initialize to zero the tot and scat XS
-% % tot=zeros(nel,1);
-% % sca=tot; % isotropic component of the scattering
-% % for iel=1:nel
-% %     tot(iel) = sigt(iel2zon(iel));
-% %     sca(iel) = sigs(iel2zon(iel));
-% % end
-
-% % % % % FEM representation of the angular source
-% % % % % angular volumetric source
-% % % % ss=1.;if(porder==0),ss=2;end
-% % % % qva=[];
-% % % % n1=1;
-% % % % for i=1:length(nel_zone)
-% % % %     n2=nel_zone(i);
-% % % %     qva=[qva qv(i)*kron( dx(n1:n2)/2, ss*ones(1,(porder+1)) )];
-% % % % end
-% % % % qva= kron( ones(1,sn), qva );
-% % % % qva = qva';
-
 % angular surfacic source
 qsa = zeros(ndof*sn,1);
 % add the mu vales to the surfacic source
@@ -224,3 +215,11 @@ end
 z=kron(abs(mu)',ones(ndof,1));
 qsa=qsa.*z;
 
+% element dofs
+gn=zeros(npar.nel,npar.porder+1);
+gn(1,:)=linspace(1,npar.porder+1,npar.porder+1);
+for iel=2:npar.nel
+    gn(iel,:)=gn(iel-1,:) + npar.porder+1 ;
+end
+npar.gn = gn;
+mats.global.qsa = qsa;
