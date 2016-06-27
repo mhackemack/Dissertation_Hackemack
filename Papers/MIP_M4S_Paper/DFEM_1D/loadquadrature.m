@@ -1,5 +1,5 @@
 function loadquadrature(sn)
-
+if mod(sn,2)~=0, error('sn must be even'); end
 global snq
 
 % get gauss-legendre abscissae and weights

@@ -152,7 +152,9 @@ if length(nel_zone) ~= length(sigs)
 end
 % save data
 dat.sigt = sigt;
+dat.D = 1./(3.*sigt);
 dat.sigs = sigs;
+dat.siga = sigt - sigs;
 dat.qv =qv;
 
 % a simple check

@@ -1,4 +1,4 @@
-function [T, S, qva]=build_matrices()
+function [T, S_psi_psi,S_phi_psi,S_phi_phi, qva]=build_matrices()
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % compute elementary matrices
@@ -6,7 +6,7 @@ function [T, S, qva]=build_matrices()
 % ms = mass matrix for scattering xs
 % g  = gradient matrix
 % e =  edge matrix e{1} for mu>0, e{2} for mu<0
-[mt ,ms ,g ,e,qva] = compute_elem1();
+[mt , ma, ms ,g ,e,qva] = compute_elem1();
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -20,6 +20,6 @@ function [T, S, qva]=build_matrices()
 % note: M.Sigma.D = S
 % C= matrix acting on angular fluxes and producing the current
 
-[T ,S]=compute_T1(mt,ms,g,e);
+[T,S_psi_psi,S_phi_psi,S_phi_phi]=compute_T1(mt,ma,ms,g,e);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

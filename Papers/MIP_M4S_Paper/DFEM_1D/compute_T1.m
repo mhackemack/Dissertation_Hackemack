@@ -1,4 +1,4 @@
-function [L,S]=compute_T1(mt,ms,gg,e)
+function [L,S_psi_psi,S_phi_psi,S_phi_phi]=compute_T1(mt,ma,ms,gg,e)
 
 global snq npar
 
@@ -10,8 +10,8 @@ nel = npar.nel;
 ndof= npar.ndof;
 porder=npar.porder;
 n = npar.ndof * snq.sn;
-L = spalloc(n,n,snq.sn*nel*(porder+1)^2);
-
+L         = spalloc(n,n,snq.sn*nel*(porder+1)^2);
+S_psi_psi = spalloc(n,n,snq.sn*nel*(porder+1)^2);
 % build the action of all transport sweeps on the scattering term
 ndir = snq.sn;
 for idir=1:ndir
@@ -35,16 +35,11 @@ for idir=1:ndir
     % one way is to build the entire SN matrix L
     % and the scattering matrix S
     L(i1:i2,i1:i2) = Ld;
-    S(i1:i2,:) = kron(snq.w/sw , ms) ;
-%     if(length(ms)==2)
-%         S(i1:i2,:) = S(i1:i2,:) + kron(...
-%             snq.mu .* snq.w, snq.mu(idir)*ms{2} ) /sw;
-%     end
-
+    S_psi_psi(i1:i2,:) = kron(snq.w/sw , ms);
+    
 end
 
 
-% W  = kron(sparse(diag(snq.w)),speye(n));            % angular weighting
-% SS = kron( [ ones(snq.sn,1)/sw , snq.mu'], speye(n) ); % spherical harmonics
-% SS=SS/sw;
-
+% Build remaining scattering terms
+S_phi_phi = ms;
+S_phi_psi = kron(ones(length(snq.w),1)/sw, ms);
