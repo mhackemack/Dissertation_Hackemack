@@ -65,23 +65,23 @@ zn1 = npar.iel2zon(1);
 zn2 = npar.iel2zon(2);
 D1  = dat.D(zn1);
 D2  = dat.D(zn2);
-% x0  = npar.x(1);
-% x1  = npar.x(2);
-% x2  = npar.x(3);
-% dx1 = x1-x0;
-% dx2 = x2-x1;
-% kap = get_kappa(4,porder,D,dx1,1);
-% mb  = (D1/2)*mats.elem.egr{1}{1};
+x0  = npar.x(1);
+x1  = npar.x(2);
+x2  = npar.x(3);
+dx1 = x1-x0;
+dx2 = x2-x1;
+kap = get_kappa(4,porder,D1,dx1,1);
+mb  = (D1/2)*mats.elem.egr{1}{1};
 nL  = -1; nR  = 1;
 gL  = (D1/2)*mats.elem.egr{1}{1};
 gR  = (D1/2)*mats.elem.egr{2}{1};
 % original dirichlet
 % A(1,1) = A(1,1) + kap;
-% A(gn1,gn1) = A(gn1,gn1) - n*(mb + mb');
+% A(gn1,gn1) = A(gn1,gn1) - nL*(mb + mb');
 % modified condition
 A(1,1) = A(1,1) + 1/2;
-A(gn1,gn1) = A(gn1,gn1) + nL*gL;
-A(gn1,gn1) = A(gn1,gn1) + nR*gR;
+A(gn1,gn1) = A(gn1,gn1) - nL*gL;
+A(gn1,gn1) = A(gn1,gn1) - nR*gR;
 
 % Right Boundary Condition
 % ------------------------------------------------------------------------------
@@ -90,21 +90,23 @@ zn1 = npar.iel2zon(end-1);
 zn2 = npar.iel2zon(end);
 D1  = dat.D(zn1);
 D2  = dat.D(zn2);
-% x0  = npar.x(end-2);
-% x1  = npar.x(end-1);
-% x2  = npar.x(end);
-% dx1 = x1-x0;
-% dx2 = x2-x1;
-% kap = get_kappa(4,porder,D,dx2,1);
-% mb  = (D/2)*mats.elem.egr{2}{end};
+x0  = npar.x(end-2);
+x1  = npar.x(end-1);
+x2  = npar.x(end);
+dx1 = x1-x0;
+dx2 = x2-x1;
+kap = get_kappa(4,porder,D2,dx2,1);
+mb  = (D2/2)*mats.elem.egr{2}{end};
 nL  = 1; nR  = 1;
 gL  = (D1/2)*mats.elem.egr{1}{end};
 gR  = (D1/2)*mats.elem.egr{2}{end};
 % original dirichlet
 % A(end,end) = A(end,end) + kap;
-% A(gnn,gnn) = A(gnn,gnn) - n*(mb + mb');
+% A(gn2,gn2) = A(gn2,gn2) - nR*(mb + mb');
 % modified condition
 A(end,end) = A(end,end) + 1/2;
+A(gn2,gn2) = A(gn2,gn2) + nL*gL;
+A(gn2,gn2) = A(gn2,gn2) - nR*gR;
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function out = get_kappa(C,p,D,h,eflag)

@@ -131,6 +131,7 @@ switch dataID
         inc(1:sn)   = 0;
 %         inc(sn/2+1) = 1;
         inc(sn/2+1)=1/snq.w(sn/2+1);
+    % fine mesh limit - DSA testing
     case 10
         % number of elements per zone
         nel_zone = [ 1000 ];
@@ -139,6 +140,21 @@ switch dataID
         % sigt/sigs per zone
         sigt=[10];
         sigs=[9.999];
+        % volumetric source value, per zone
+        qv=[1];
+        % incoming flux values
+        inc(1:sn)   = 0;
+    % coarse mesh limit - DSA testing
+    case 11
+        c = 0.9999;
+        % number of elements per zone
+        nel_zone = 20;
+        % width of each zone
+        width_zone = 1;
+        % sigt/sigs per zone
+        mfp = 100;
+        sigt=mfp/(width_zone/nel_zone);
+        sigs=c*sigt;
         % volumetric source value, per zone
         qv=[1];
         % incoming flux values

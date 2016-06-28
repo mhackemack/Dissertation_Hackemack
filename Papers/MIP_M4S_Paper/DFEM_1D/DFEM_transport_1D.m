@@ -8,7 +8,7 @@ sn=8;
 loadquadrature(sn);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % select data problem
-dataID=10;
+dataID=11;
 % FEM order
 porder=1; % select spatial approx order (e.g. 1, 2, etc.)
 % lumping bool
@@ -17,7 +17,7 @@ npar.lump = 0;
 loadmydata(dataID, porder);
 % iterative procedure properties
 npar.maxits = 1e6;
-npar.tol = 1e-8;
+npar.tol = 1e-10;
 % DSA properties
 npar.perform_DSA = 1;
 npar.DSA_type    = 'MIP';
