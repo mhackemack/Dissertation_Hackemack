@@ -299,17 +299,17 @@ In this section, we review the DGFEM $S_N$ transport equation. Given an angular 
 
 \noindent We then lay down an unstructured mesh, $\mathbb{T}_h \in \mathbb{R}^{d}$, over the spatial domain, where $d$ is the dimensionality of the problem (for this work, $d=2$). This mesh consists of non-overlapping spatial elements to form a complete union over the entire spatial domain: $\mathcal{D} = \bigcup_{K \in \mathbb{T}_h} K$. 
 
-We next form the set of DGFEM equations for a polygonal element $K$ with $n$ vertices and $n$ faces. We multiply Eq. (\ref{eq::trans_eq_simple_no_energy_groups}) by an appropriate test function $b_m$, integrate over element $K$, and apply Gauss' Divergence Theorem to the streaming term to obtain the Galerkin weighted-residual for element $K$ for an angular direction $\vec{\Omega}_m$:
+We next form the set of DGFEM equations for a polygonal element $K$ with $n$ vertices and $n$ faces. We multiply Eq. (\ref{eq::trans_eq_simple_no_energy_groups}) by an appropriate test function $b_m$, integrate over element $K$, and apply the Divergence Theorem to the streaming term to obtain the Galerkin weighted-residual for element $K$ for an angular direction $\vec{\Omega}_m$:
 
 \begin{equation}
 \label{eq::DGFEM_trans_eq_cellK}
 \begin{aligned}
- \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \tilde{\psi}_m  \Big>_{\partial K} - \left( \vec{\Omega}_m \cdot  \vec{\nabla} b_m, \psi_{m} \right)_{K}  + \Big(  \sigma_{t} b_m ,   \psi_{m} \Big)_{K} \\
-=  \left( \frac{\sigma_s}{4 \pi} b_m ,   \phi \right)_{K} + \left(  b_m ,   Q_{m} \right)_{K}
+ \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \psi_m  \Big>_{\partial K^+} - \left( \vec{\Omega}_m \cdot  \vec{\nabla} b_m, \psi_{m} \right)_{K}  + \Big(  \sigma_{t} b_m ,   \psi_{m} \Big)_{K} \\
+=  \left( \frac{\sigma_s}{4 \pi} b_m ,   \phi \right)_{K} + \left(  b_m ,   Q_{m} \right)_{K} -  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \psi^{\uparrow}_{m}  \Big>_{\partial K^-}
 \end{aligned} .
 \end{equation}
 
-\noindent In Eq. (\ref{eq::DGFEM_trans_eq_cellK}), the inner products
+\noindent In Eq. (\ref{eq::DGFEM_trans_eq_cellK}), $\partial K^+$ is the inflow boundary, $\partial K^-$ is the outflow boundary, $\psi^{\uparrow}_{m}$ are the angular flux values on an inflow face taken from the upwind neighbor element, and the inner products
 
 \begin{equation}
 \label{eq::spatial_inner_products_cell}
@@ -318,7 +318,7 @@ We next form the set of DGFEM equations for a polygonal element $K$ with $n$ ver
 
 \noindent correspond to integrations over the cell volume and faces, respectively, where $dr \in \mathbb{R}^d$ is within the cell and $ds \in \mathbb{R}^{d-1}$ is along the cell boundary.
 
-The spatial convergence of DGFEM methods for the hyperbolic systems has been extensively studied \cite{lesaint1974finite,houston2000stabilized,houston2002discontinuous,wang2009convergence}. With the discretized flux solution, $\phi_h \in W^h_{\mathcal{D}}$, corresponding to our unstructured, $\mathbb{T}_h$, we can define an error for our DGFEM transport solution with the $L_2$ norm as
+The spatial convergence of DGFEM methods for the hyperbolic systems has been extensively studied \cite{lesaint1974finite,houston2000stabilized,houston2002discontinuous,wang2009convergence}. With the discretized flux solution, $\phi_h \in W^h_{\mathcal{D}}$, corresponding to our unstructured mesh, $\mathbb{T}_h$, we can define an error for our DGFEM transport solution with the $L_2$ norm as
 
 \begin{equation}
 \label{eq::Convergence_L2norm_phi}
@@ -359,7 +359,7 @@ The spatial convergence of DGFEM methods for the hyperbolic systems has been ext
 \subsection{Wachspress Rational Functions}
 %------------------------------------------------------------------------------------------------------------
 
-The first linearly-complete polygonal functions that we will consider are the Wachspress rational functions \cite{wachspress1975rational}. These rational functions were the first derived for 2D polygons and possess all the properties of the barycentric coordinates. However, they are only valid interpolants over strictly-convex polygons. Weakly-convex polygons (contain colinear vertices) lose piecewise linearity on the boundary. Concave polygons have regions within their domain that are undefined and divide-by-zero occurs. The Wachspress coordinates (which we denote as $\lambda^W$) have the following form
+The first linearly-complete polygonal functions that we will consider are the Wachspress rational functions \cite{wachspress1975rational}. These rational functions were the first derived for 2D polygons and possess all the properties of the barycentric coordinates. However, they are only valid interpolants over strictly-convex polygons. Weakly-convex polygons (contain colinear vertices) lose piecewise linearity on the boundary. Concave polygons have regions within their domain that are undefined and divide-by-zero occurs. The Wachspress functions (which we denote as $\lambda^W$) have the following form
 
 \begin{equation}
 \label{eq::wach_BF}

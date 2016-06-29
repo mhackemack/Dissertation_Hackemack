@@ -8,7 +8,7 @@ sn=8;
 loadquadrature(sn);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % select data problem
-dataID=11;
+dataID=10;
 % FEM order
 porder=1; % select spatial approx order (e.g. 1, 2, etc.)
 % lumping bool
@@ -20,7 +20,7 @@ npar.maxits = 1e6;
 npar.tol = 1e-10;
 % DSA properties
 npar.perform_DSA = 1;
-npar.DSA_type    = 'MIP';
+npar.DSA_type    = 'M4S';
 % plotting options
 plot_bool = false;
 % End user input

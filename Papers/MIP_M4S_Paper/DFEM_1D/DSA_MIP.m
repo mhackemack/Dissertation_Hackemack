@@ -79,9 +79,13 @@ gR  = (D1/2)*mats.elem.egr{2}{1};
 % A(1,1) = A(1,1) + kap;
 % A(gn1,gn1) = A(gn1,gn1) - nL*(mb + mb');
 % modified condition
-A(1,1) = A(1,1) + 1/2;
-A(gn1,gn1) = A(gn1,gn1) - nL*gL;
-A(gn1,gn1) = A(gn1,gn1) - nR*gR;
+% A(1,1) = A(1,1) + 1/2;
+% A(gn1,gn1) = A(gn1,gn1) - nL*gL;
+% A(gn1,gn1) = A(gn1,gn1) - nR*gR;
+% based on M4S
+A(1,1) = A(1,1) + 1/4;
+A(gn1,gn1) = A(gn1,gn1) - nL*gL';
+A(gn1,gn1) = A(gn1,gn1) - nR*gR';
 
 % Right Boundary Condition
 % ------------------------------------------------------------------------------
@@ -104,9 +108,14 @@ gR  = (D1/2)*mats.elem.egr{2}{end};
 % A(end,end) = A(end,end) + kap;
 % A(gn2,gn2) = A(gn2,gn2) - nR*(mb + mb');
 % modified condition
-A(end,end) = A(end,end) + 1/2;
-A(gn2,gn2) = A(gn2,gn2) + nL*gL;
-A(gn2,gn2) = A(gn2,gn2) - nR*gR;
+% A(end,end) = A(end,end) + 1/2;
+% A(gn2,gn2) = A(gn2,gn2) + nL*gL;
+% A(gn2,gn2) = A(gn2,gn2) - nR*gR;
+% based on M4S
+A(end,end) = A(end,end) + 1/4;
+A(gn2,gn2) = A(gn2,gn2) - nR*gR';
+A(gn2,gn2) = A(gn2,gn2) + nR*gL';
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 function out = get_kappa(C,p,D,h,eflag)
