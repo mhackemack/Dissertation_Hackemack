@@ -550,6 +550,32 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 \end{enumerate}
 }
 
+
+% HATCHET JOB OF TEXT STARTS HERE!!!!
+% -------------------------------------------------
+
+
+
+We have given complete details on the linearly-complete generalized barycentric coordinates that we will investigate for this work. Now we describe how to convert any generalized barycentric coordinate into the quadratic serendipity space of functions to yield quadratic (not linear) precision based on the work of Rand et al. \cite{rand2014quadratic}. The maximum entropy coordinates were independently converted into the quadratic space \cite{gonzalez2010higher,sukumar2013quadratic}. These 2D serendipity coordinates can exactly interpolate the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions, which can be shown with the first three levels of Pascal's triangle:
+
+\begin{equation}
+\label{eq::BF_quad_pascal}
+\begin{array}{ccccc}
+ & & 1 & & \\
+ & x & & y & \\
+ x^2 &  &xy & & y^2 
+\end{array} \, 
+\end{equation}
+
+\noindent Between the linear and quadratic precision of the generalized barycentric coordinates and the quadratic serendipity extension, a relation can be formed on the functional space of their precision. If we seek a functional space up to order $p$ precision, then for $k=0,...,p$, the interpolatory functions must exactly span the following monomial functions,
+
+\begin{equation}
+\label{eq::BF_quad_monomial}
+f_{\sigma, \tau}^k (x, y) = x^{\sigma} y^{\tau} ,
+\end{equation}
+
+\noindent where $\sigma + \tau = k$. From the first three levels of Pascal's triangle given in Eq. (\ref{eq::BF_quad_pascal}), we see that $k=0$ gives the constant function $\{ 1 \}$, that $k=1$ gives the linear functions $\{ x,y \}$, and that $k=2$ gives the quadratic functions $\{ x^2,xy,y^2 \}$.
+
 % serendipity overview figure
 % ---------
 \begin{figure}[hbt]
@@ -559,6 +585,189 @@ Max Entropy&	1D/2D/3D	&Convex/Concave&	Numerical&	Iterative\\ \hline
 \label{fig::BF_2D_quad_process}
 \end{figure}
 % ---------
+
+Now, we give the full details on converting the linear generalized barycentric coordinates to the quadratic serendipity space of functions. Figure \ref{fig::BF_2D_quad_process} gives a visual depiction of this conversion process. For a polygon with $N_K$ vertices, we can summarize this procedure as the following:
+
+\begin{enumerate}
+\item For a point $\vec{x}$, compute the $N_K$ linear barycentric functions $\{ \lambda_i (\vec{x}) \}$ (Wachspress, PWL, mean value, or maximum entropy);
+\item Take all non-repeating pairwise products of the linear functions to obtain $\frac{N_K(N_K+1)}{2}$ quadratic functions $\{ \mu_{ab} \}$;
+\item Form the linear transformation matrix $\mathbb{A}$ through the use of monomial constraint equations;
+\item Use the $\mathbb{A}$ matrix to reduce the $\{ \mu_{ab} \}$ function set to the $2 N_K$ serendipity basis set $\{ \xi_{ij} \}$.
+\end{enumerate}
+
+We begin by computing the ($i=1,...,N_K$) linear barycentric functions, $\{ \lambda_i (\vec{x}) \}$, and their gradients, $\{ \vec{\nabla} \lambda_i (\vec{x}) \}$, for a point $\vec{x}$. These linearly-complete barycentric functions can be converted immediately to barycentric-like functions with quadratic precision. Taking all non-repeating pairwise products of the linear functions yields a total of $N_Q=\frac{N_K(N_K+1)}{2}$ quadratic functions: $\mu_{ab} = \lambda_a \lambda_b$. Doing this generates functions that either live on the polygon's vertices, mid-face points, or midpoints of the polygon's diagonals between two vertices as seen in Figure \ref{fig::BF_2D_quad_process}. The $N_K$ vertex functions are denoted as $ab \in V$ ($a=b$), the $N_K$ mid-face (mid-edge) functions are denoted as $ab \in E$ ($|a-b|=1$), and the $\frac{N_K(N_K-3)}{2}$ diameter (interior) functions are denoted as $ab \in D$ ($|a-b| > 1$). For the mid-edge and interior functions, only 1 combination of $ab$ is kept since $\mu_{ab}=\mu_{ba}$. We also define the abbreviated notation of $\vec{x}_{ab} = \frac{\vec{x}_a + \vec{x}_b}{2}$, so that $\vec{x}_{aa}$ corresponds to a vertex function at $\vec{x}_a$. Using these various notations, we can write the precision properties of the $\mu_{ab}$ functions for the constant constraint,
+
+\begin{equation}
+\label{eq::BF_quad_interp_req_constant_alt}
+\sum_{aa \in V}  \mu_{aa} (\vec{x}) + \sum_{ab \in E \cup D} 2 \mu_{ab} (\vec{x})  = 1 ,
+\end{equation}
+
+\noindent for the linear constraint,
+
+\begin{equation}
+\label{eq::BF_quad_interp_req_linear_alt}
+\sum_{aa \in V}  \mu_{aa} (\vec{x}) \, \vec{x}_{aa} +  \sum_{ab \in E \cup D} 2  \mu_{ab} (\vec{x}) \, \vec{x}_{ab} = \vec{x} ,
+\end{equation}
+
+\noindent and for the quadratic constraint,
+
+\begin{equation}
+\label{eq::BF_quad_interp_req_quadratic_alt}
+\sum_{aa \in V}  \mu_{aa} (\vec{x}) \, \left( \vec{x}_a \otimes \vec{x}_a \right) +  \sum_{ab \in E \cup D}   \mu_{ab} (\vec{x}) \, \left( \vec{x}_a \otimes \vec{x}_b + \vec{x}_b \otimes \vec{x}_a \right)   =  \vec{x} \otimes \vec{x} .
+\end{equation}
+
+
+\noindent In Eq. (\ref{eq::BF_quad_interp_req_quadratic_alt}), $\otimes$ is the dyadic tensor product. We can immediately see that quadratic precision is ensured. However, the set of these pairwise quadratic functions grows quadratically. This means that as $N_K$ grows large, the number of interpolatory functions grows as order $O(N_K^2)$, but still only maintains precision of the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions. Therefore, the computational work required to utilize these quadratic barycentric functions can become prohibitive for polygons with large vertex counts.
+
+To minimize the number of interpolatory functions but still maintain the precision of the $\{ 1, x, y, x^2, xy, y^2 \}$ span of functions, we seek to convert the quadratic barycentric functions into the quadratic serendipity space of functions $\{ \xi_{ij} \}$. This quadratic serendipity space only contains the vertex and mid-face functions (total of $2 N_K$) and has been extensively studied for tensor-based elements in the past \cite{macneal1992eight,arnold2011serendipity}. This means that we seek to reduce the $\{ \mu_{ab} \}$ set of functions by removing the diagonal functions ($ab \in D$) while still maintaining quadratic precision. If we define $\xi_{ii}$ and $\xi_{i(i+1)}$ as the serendipity functions that live at vertex $i$ and the mid-face point between vertices $i$ and $i+1$, respectively, then we can write the serendipity precision properties for the constant constraint,
+
+\begin{equation}
+\label{eq::BF_ser_interp_req_constant}
+\sum_{ii \in V}  \xi_{ii} (\vec{x}) + \sum_{i(i+1) \in E} 2 \xi_{i(i+1)} (\vec{x})  = 1 ,
+\end{equation}
+
+\noindent for the linear constraint,
+
+\begin{equation}
+\label{eq::BF_ser_interp_req_linear}
+\sum_{ii \in V}  \xi_{ii} (\vec{x}) \, \vec{x}_{ii} +  \sum_{i(i+1) \in E} 2  \xi_{i(i+1)} (\vec{x}) \, \vec{x}_{i(i+1)} = \vec{x} ,
+\end{equation}
+
+\noindent and for the quadratic constraint,
+
+\begin{equation}
+\label{eq::BF_ser_interp_req_quadratic}
+\sum_{ii \in V}  \xi_{ii} (\vec{x}) \, \left( \vec{x}_i \otimes \vec{x}_i \right) +  \sum_{i(i+1) \in E}   \xi_{i(i+1)} (\vec{x}) \, \left( \vec{x}_i \otimes \vec{x}_{i+1} + \vec{x}_{i+1} \otimes \vec{x}_i \right)   =  \vec{x} \otimes \vec{x} .
+\end{equation}
+
+To remove the diagonal functions, we formalize this procedure by recasting it as a linear algebra problem. We seek a matrix $\mathbb{A}$ such that the linear transformation, 
+
+\begin{equation}
+\label{eq::BF_quad_to_ser_mapping}
+\left\{ \xi \right\} = \mathbb{A} \left\{ \mu \right\} ,
+\end{equation}
+
+\noindent will satisfy the precision properties of Eqs. (\ref{eq::BF_ser_interp_req_constant} - \ref{eq::BF_ser_interp_req_quadratic}). It is easy to see that $\mathbb{A}$ has dimension ($2 N_K \times N_Q$). We wish for this matrix to have constant entries for any point within the polygon's interior so that it does not have to be recalculated for each interpolatory point of interest. To ease the notation, we will assign specific basis orderings for the quadratic and quadratic serendipity functions. The serendipity basis is ordered such that all vertex functions ($ii \in V$) in a counter-clockwise ordering are first, followed by a counter-clockwise ordering of the mid-face nodes ($ij \in E$) starting with the node between vertices 1 and 2. This ordering can be succinctly stated by
+
+\begin{equation}
+\label{eq::BF_ser_ordering}
+\left\{ \xi_{ij} \right\} = \Big\{ \left[  \xi_{11}, \xi_{22}, ... , \xi_{N_K N_K} \right] , \left[ \xi_{12}, \xi_{23}, ..., \xi_{(N_K-1)N_K}, \xi_{N_K(N_K+1)} \right] \Big\} ,
+\end{equation}
+
+\noindent where $N_K+1=1$. The quadratic basis begins identically to the serendipity basis by first listing the vertex and mid-face functions. Then the diagonal functions are indexed in lexicographical order. This gives the following ordering for the quadratic functions
+
+\begin{equation}
+\label{eq::BF_quad_ordering}
+\begin{aligned}
+\left\{ \mu_{ab} \right\} = \Big\{ \left[  \mu_{11}, \mu_{22}, ... , \mu_{N_K N_K} \right] , &\left[ \mu_{12}, \mu_{23}, ..., \mu_{(N_K-1)N_K}, \mu_{N_K(N_K+1)} \right] ,\\ 
+&\left[ \mu_{13}, ..., \text{(lexicographical)} ,..., \mu_{(N_K-2)N_K} \right] \Big\} 
+\end{aligned} .
+\end{equation}
+
+\noindent With these basis orderings, we can now denote the entries of $\mathbb{A}$ (given by $c_{ab}^{ij}$) as
+
+\begin{equation}
+\label{eq::BF_quad_to_ser_matrix_constraints}
+\mathbb{A} = 
+\left[
+\begin{array}{ccccc}
+c_{11}^{11} & \ldots & c_{ab}^{11} & \ldots & c_{(n-2)n}^{11} \\
+\ldots&\ddots&\vdots&\ddots&\vdots \\
+c_{11}^{ij} & \ldots & c_{ab}^{ij} & \ldots & c_{(n-2)n}^{ij} \\
+\ldots&\ddots&\vdots&\ddots&\vdots \\
+c_{11}^{n(n+1)} & \ldots & c_{ab}^{n(n+1)} & \ldots & c_{(n-2)n}^{n(n+1)} 
+\end{array}
+\right] ,
+\end{equation}
+
+\noindent where $n=N_K$ is used for clarity.
+
+A sufficient set of constraints for the entries in $\mathbb{A}$ to ensure the precision properties of Eqs. (\ref{eq::BF_ser_interp_req_constant} - \ref{eq::BF_ser_interp_req_quadratic}) can be written for the constant constraint,
+
+\begin{equation}
+\label{eq::BF_Amat_cons_constraints}
+\begin{aligned}
+\sum_{ii \in V} c_{aa}^{ii} + \sum_{i(i+1) \in E} 2 c_{aa}^{i(i+1)} = 1, &\qquad \forall aa \in V \\
+\sum_{ii \in V} c_{ab}^{ii} + \sum_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} = 2, &\qquad \forall ab \in E \cup D
+\end{aligned}
+\end{equation}
+
+\noindent for the linear constraint,
+
+\begin{equation}
+\label{eq::BF_Amat_lin_constraints}
+\begin{aligned}
+\sum_{ii \in V} c_{aa}^{ii} \vec{x}_{ii} + \sum_{i(i+1) \in E} 2 c_{aa}^{i(i+1)} \vec{x}_{i(i+1)} = \vec{x}_{aa}, &\qquad \forall aa \in V \\
+\sum_{ii \in V} c_{ab}^{ii} \vec{x}_{ii} + \sum_{i(i+1) \in E} 2 c_{ab}^{i(i+1)} \vec{x}_{i(i+1)} = 2 \vec{x}_{ab}, &\qquad \forall ab \in E \cup D
+\end{aligned}
+\end{equation}
+
+\noindent for the $a\in V$ vertex quadratic constraints
+
+\begin{equation}
+\label{eq::BF_Amat_quad_vert_constraints}
+\sum_{ii \in V} c_{aa}^{ii} \vec{x}_{ii} \otimes \vec{x}_{ii} + \sum_{i(i+1) \in E}  c_{aa}^{i(i+1)} \left( \vec{x}_i \otimes \vec{x}_{i+1} + \vec{x}_{i+1} \otimes \vec{x}_i \right) = \vec{x}_{aa} \otimes \vec{x}_{aa}, 
+\end{equation}
+
+\noindent and for the $ab \in E \cup D$ mid-face and diagonal quadratic constraints,
+
+\begin{equation}
+\label{eq::BF_Amat_quad_facediag_constraints}
+\sum_{ii \in V} c_{ab}^{ii} \vec{x}_{ii} \otimes \vec{x}_{ii} + \sum_{i(i+1) \in E}  c_{ab}^{i(i+1)} \left( \vec{x}_i \otimes \vec{x}_{i+1} + \vec{x}_{i+1} \otimes \vec{x}_i \right) = \left( \vec{x}_a \otimes \vec{x}_{b} + \vec{x}_{b} \otimes \vec{x}_a \right).
+\end{equation}
+
+\noindent For $N_K > 3$, there are more coefficients than the six constraint equations. This means that there is flexibility in the construction of the solution to the constraint equations. Therefore, we choose a simple structure for $\mathbb{A}$ that consists of the following,
+
+
+\begin{equation}
+\label{eq::BF_quad_Amat_simple}
+\mathbb{A} = \left[ \mathbb{I} \, | \, \mathbb{A}' \right],
+\end{equation}
+
+\noindent where $\mathbb{I}$ is the ($2 N_K \text{x} 2 N_K$) identity matrix, and $\mathbb{A}'$ is a full ($2 N_K \text{x}  \frac{N_K(N_K-3)}{2}$) matrix. This means that the vertex and face midpoint serendipity functions, $\xi_{ij}$, are formed by taking their corresponding quadratic function, $\mu_{ij}$, and adding some linear combination of the interior functions. Therefore, we only need to determine the $\frac{N_K(N_K-3)}{2}$ columns of the $\mathbb{A}'$ matrix to complete this linear transformation. 
+
+In their work, Rand et al. proposed a methodology where only six coefficients are chosen to be non-zero and can be directly calculated through geometric expressions. However, their approach is only valid for strictly-convex polygons. This will not work for our analysis since we wish to also analyze degenerate polygons that will arise in our AMR calculations. Therefore, we will use a least squares method to calculate each of the columns of $\mathbb{A}'$. We note that the coefficients calculated with this least squares method and that of Rand will be identical only for rectangles. If we isolate the column $(ab)$ from $\mathbb{A}'$, then we can form the following system of equations, 
+
+\begin{equation}
+\label{eq::BF_quad_MP_form}
+\mathbb{B} \vec{c}_{ab} = \vec{q}_{ab}, 
+\end{equation}
+
+\noindent where $\mathbb{B}$ is a matrix of dimension $(6 \text{x} 2 N_K)$, $\vec{c}_{ab}$ is vector of length $2 N_K$, and $\vec{q}_{ab}$ is a vector of length 6. The entries of $\mathbb{B}$ correspond to coefficients given in the left-hand-side terms of Eqs. (\ref{eq::BF_Amat_cons_constraints}), (\ref{eq::BF_Amat_lin_constraints}), and (\ref{eq::BF_Amat_quad_facediag_constraints}). The values of $\vec{q}_{ab}$ are given by the right-hand-side constants of these same equations. To invert $\mathbb{B}$, we use the Moore-Penrose pseudoinverse (denoted as $\mathbb{B}^*$) \cite{penrose1955generalized}. For an under-determined system of equations, the pseudoinverse is given by,
+
+\begin{equation}
+\label{eq::BF_quad_MP_inverse}
+\mathbb{B}^* = \mathbb{B}^T (\mathbb{B} \mathbb{B}^T)^{-1}.
+\end{equation}
+
+\noindent We note that we have only tested this methodology on convex and weakly-convex polygons. Once all of the coefficients for the $\mathbb{A}'$ matrix are known, each of the quadratic serendipity functions can be computed by
+
+\begin{equation}
+\label{eq::BF_quad_xi_reduced}
+\begin{aligned}
+\xi_{ij} &=  \mu_{i,j} + \sum_{ab \in D} c_{ab}^{ij} \mu_{ab} \\
+&=  \lambda_i \lambda_j + \sum_{ab \in D} c_{ab}^{ij}\lambda_a \lambda_b
+\end{aligned} ,
+\end{equation}
+
+\noindent where $i=j$ for vertex functions.
+
+The gradients of the serendipity basis are simple to compute with the chain rule of Calculus. If we take the gradient of Eq. (\ref{eq::BF_quad_xi_reduced}) and use appropriate derivative rules, then the gradients of the different serendipity functions can be given by
+
+\begin{equation}
+\label{eq::BF_ser_gradient}
+\vec{\nabla} \xi_{ij} = \lambda_j \vec{\nabla} \lambda_i + \lambda_i \vec{\nabla} \lambda_j + \sum_{ab \in D} c_{ab}^{ij} \left(  \lambda_b \vec{\nabla} \lambda_a + \lambda_a \vec{\nabla} \lambda_b \right) .
+\end{equation}
+
+\noindent This means that all of the serendipity basis function gradients can be computed from the appropriate values and gradients of the linear barycentric basis functions using the linear transformation of the $\mathbb{A}$ matrix.
+
+
+% HATCHET JOB OF TEXT ENDS HERE!!!!
+% ----------------------------------------------
+
+
+
+
 
 % Quadratic contour plots - b4
 % ----------------------------------
