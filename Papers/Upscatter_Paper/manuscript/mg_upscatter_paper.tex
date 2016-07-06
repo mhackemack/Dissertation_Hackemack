@@ -164,11 +164,13 @@ message: silly to converge inners before going to next thermal group. however, a
 
 \tcr{Discuss desire to simultaneously solve transport sweeps. Propose the two Jacobi methods in the same mold as the GS methods (Modified means to not converge the inners).}
 
+\tcr
+{
 per our discussion of the story flow:
 1. MTG-GS: not good for // \\
 2. thus go with MTG-Jacobi. not converging the inners (inspired by MTG-GS) but accounting for them in the spectrally-averaged residual \\. 
 3. gains in // can be expected (to be verified with FA + num results). however, is spectral collapse acceleration (2-grid) doing a good job? can we boost it? because converging the inners with TG-GS was excellent. however, we do not want to sweep. idea. good enough convergence in the form of a DSA per group.
-
+}
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Jacobi Acceleration}
@@ -186,11 +188,15 @@ per our discussion of the story flow:
 \subsection{Modified Jacobi Acceleration}
 %------------------------------------------------------------------------------------------------------------
 
-\tcr{
-describe small difference with the Jacobi Acceleration which is the removal of the middle step (the within-group accelerations)
-}
+\tcr{describe small difference with the Jacobi Acceleration which is the removal of the middle step (the within-group accelerations)}
 
-summarize/uniform naming and put a table with acronyms 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Summary of Upscatter Acceleration Methodologies} \label{sec::summary}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\tcr{summarize/uniform naming and put a table with acronyms}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -208,7 +214,7 @@ TEXT TEXT TEXT. IP DFEM, used as DSA, works well (cite) (at most, bilinear form 
 \section{Numerical Results} \label{sec::results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-sell out stuff: you ground your work in ANALYSIS not trial and error. (note: say it in the intro too!). Shameless plug for PDT.
+\tcr{sell out stuff: you ground your work in ANALYSIS not trial and error. (note: say it in the intro too!). Shameless plug for PDT.}
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Fourier Analysis}
@@ -223,7 +229,7 @@ sell out stuff: you ground your work in ANALYSIS not trial and error. (note: say
 %------------------------------------------------------------------------------------------------------------
 \tcr{I was thinking a simple table with iteration statistics for a homogenous cube problem.}
 
-expectations: these results will match closely the FA results.
+\tcr{expectations: these results will match closely the FA results.}
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Heterogeneous Configurations}
@@ -231,7 +237,7 @@ expectations: these results will match closely the FA results.
 
 \tcr{2D and 3D IM1 results}
 
-make a note on the highly heterogeneous configuration for which it is well known that ``all'' diffusion based accelerator have trouble, see Warsa/Yaqi ``PHI''.
+\tcr{make a note on the highly heterogeneous configuration for which it is well known that ``all'' diffusion based accelerator have trouble, see Warsa/Yaqi ``PHI''.}
  
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
