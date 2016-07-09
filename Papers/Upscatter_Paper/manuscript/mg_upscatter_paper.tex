@@ -139,14 +139,50 @@ transition to previous work on acceleration of GS
 
 \tcr{Give the outline of the TG method. This section would be a little longer since it would need to introduce the factorized error mode, the averaged diffusion equation, and the group-dependent update.}
 
-give once TE fully spelled out (no ang/space disct) but multigroup. quickly introduce operator notations. make a note about Sn in angle DFEM in space (ref).
+\tcr{give once TE fully spelled out (no ang/space disct) but multigroup. quickly introduce operator notations. make a note about Sn in angle DFEM in space (ref).}
 
-talk about that one eigenvalue close to 1 of the iteration process that the 2grid acceleration was killing.
+\tcr{talk about that one eigenvalue close to 1 of the iteration process that the 2grid acceleration was killing.}
+
+The method can be quickly summarized as the following:
+
+\begin{enumerate}
+\item Perform a Gauss-Seidel procedure in energy for all of the thermal groups and converge the inner iterations;
+\item Factorize the multigroup iteration error into a spatial component and a spectral (energy) component;
+\item Perform a spectral collapse of the transport iteration error into a 1-group diffusion equation;
+\item Solve the 1-group diffusion equation for the spatial variation of the transport iteration error;
+\item Interpolate the diffusion multigroup error back onto the transport solution.
+\end{enumerate}
+
+\begin{equation}
+\label{eq::MG_trans_eq}
+  \vec{\Omega} \cdot \vec{\nabla} \Psi_g+ \sigma_{t,g}  \Psi_g =  \sum_{g'=1}^{G}   \int_{4 \pi} \sigma_{s}^{g' \rightarrow g} (\vec{\Omega}' \rightarrow \vec{\Omega} ) \Psi_{g'} (\vec{\Omega}')  \, d\Omega'   + Q_g
+\end{equation}
+
+\begin{equation}
+\label{eq::DSA_TG_GS_trans_it_eq}
+\begin{aligned}
+{\bf L_{gg}} \Psi_g^{(k+1/2)} = {\bf M} \sum_{g'=1}^g {\bf \Sigma}_{g g'} \Phi_{g'}^{(k+1/2)} + {\bf M} \sum_{g'=g+1}^{G_{th}} {\bf \Sigma}_{g g'} \Phi_{g'}^{(k)} + {\bf Q}_g  \\
+g \in [1,G_{th}]
+\end{aligned} ,
+\end{equation}
+
+\noindent where ${\bf L_{gg}}$ is the loss operator for group $g$, ${\bf \Sigma}_{g g'}$ is the scattering operator from group $g'$ to $g$, and ${\bf Q}_g$ is the driving source which includes contributions of downscattering from the fast energy groups. The flux moments, $\Phi$, are computed with the moment-to-discrete operator, ${\bf M}$, by the following:
+
+\begin{equation}
+\label{eq::DSA_TG_GS_op_update_simple}
+\Phi \equiv {\bf M} \Psi. 
+\end{equation}
+
+
+\begin{equation}
+\label{eq::DSA_TG_GS_op_update_simple}
+ {\bf \Phi}^{(k+1)} = \left[ {\bf F}  {\bf M} {\bf S_U} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}} \left(  \ {\bf F}  {\bf M} {\bf S_U}  -  {\bf I} \right) \right] {\bf \Phi}^{(k)} + \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S_{U}}  + {\bf I} \right) {\bf b} ,
+\end{equation}
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Modified Two-Grid Acceleration}
 %------------------------------------------------------------------------------------------------------------
-MTG: Evans used transport for the energy-collapsed equation. here, we present it for one-group diffusion since this is how we apply it. because now we have reliable diffusion accelerator...
+\tcr{MTG: Evans used transport for the energy-collapsed equation. here, we present it for one-group diffusion since this is how we apply it. because now we have reliable diffusion accelerator...}
 \tcr
 {
 state differences with TG (this should be relatively short):
@@ -155,8 +191,15 @@ state differences with TG (this should be relatively short):
 \item spectral shape collapse eigenvalue equation
 \item low-order residual
 \end{enumerate}
-}
-message: silly to converge inners before going to next thermal group. however, account for non-convergence of inners through spectrally collapsed residual in the 1-g acceleration.
+message: silly to converge inners before going to next thermal group. however, account for non-convergence of inners through spectrally collapsed residual in the 1-g acceleration.}
+
+\begin{equation}
+\label{eq::DSA_MTG_GS_op_update_simple}
+\begin{aligned}
+ {\bf \Phi}^{(k+1)} = &\left[ {\bf F}  {\bf M} \left( {\bf S_{D}} + {\bf S_{U}} \right) +  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right) \left(  \ {\bf F}  {\bf M} \left( {\bf S_{D}} + {\bf S_{U}} \right)  -  {\bf I} \right) \right] {\bf \Phi}^{(k)} \\
+&+ \left(  {\bf P} {\bf A}^{-1}  {\bf X} \left( {\bf S_{D}} + {\bf S_{U}} \right)  + {\bf I} \right) {\bf b}
+\end{aligned} ,
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -175,6 +218,17 @@ per our discussion of the story flow:
 }
 
 %------------------------------------------------------------------------------------------------------------
+\subsection{Modified Jacobi Acceleration}
+%------------------------------------------------------------------------------------------------------------
+
+\tcr{describe small difference with the Jacobi Acceleration which is the removal of the middle step (the within-group accelerations)}
+
+\begin{equation}
+\label{eq::DSA_MTG_Jac_op_update_simple}
+ {\bf \Phi}^{(k+1)}= \left[ {\bf F}  {\bf M} {\bf S} +  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S} \left(  \ {\bf F}  {\bf M} {\bf S}  -  {\bf I} \right) \right] {\bf \Phi}^{(k)} + \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf S}  + {\bf I} \right) {\bf b}
+\end{equation}
+
+%------------------------------------------------------------------------------------------------------------
 \subsection{Jacobi Acceleration}
 %------------------------------------------------------------------------------------------------------------
 \tcr
@@ -186,11 +240,24 @@ per our discussion of the story flow:
 \end{enumerate}
 }
 
-%------------------------------------------------------------------------------------------------------------
-\subsection{Modified Jacobi Acceleration}
-%------------------------------------------------------------------------------------------------------------
+\begin{equation}
+\label{eq::DSA_TG_Jac_WIG_phiterm}
+ \Delta {\bf \Phi}^{(k+1/3)} = {\bf P}_{\Delta} {\bf B}^{-1} {\bf X}_{\Delta} {\bf S_D} \left(  {\bf \Phi}^{(k+1/3)} - {\bf \Phi}^{(k)} \right),
+\end{equation}
 
-\tcr{describe small difference with the Jacobi Acceleration which is the removal of the middle step (the within-group accelerations)}
+\begin{equation}
+\label{eq::DSA_TG_Jac_1G_solterm}
+  \delta {\bf \Phi}^{(k+2/3)}  ={\bf P}_{\delta}{\bf A}^{-1}  {\bf X}_{\delta}\left(   {\bf S_L} +  {\bf S_U} \right) \left(  {\bf \Phi}^{(k+2/3)} - {\bf \Phi}^{(k)}  \right),
+\end{equation}
+
+\begin{equation}
+\label{eq::DSA_TG_Jac_update_FULL}
+\begin{aligned}
+{\bf \Phi}^{(k+1)} =& \left[ {\bf I} +\left[ {\bf I}+ {\bf P}_{\delta}{\bf A}^{-1}  {\bf X}_{\delta}\left(   {\bf S_L} +  {\bf S_U} \right) \right]    \left(  {\bf I} + {\bf P}_{\Delta} {\bf B}^{-1} {\bf X}_{\Delta} {\bf S_D} \right) \left(   {\bf F}  {\bf M} {\bf S}  - {\bf I} \right)   \right]{\bf \Phi}^{(k)} \\
+&+  \left[ {\bf I}+ {\bf P}_{\delta}{\bf A}^{-1}  {\bf X}_{\delta}\left(   {\bf S_L} +  {\bf S_U} \right) \right]  \left(  {\bf I} + {\bf P}_{\Delta} {\bf B}^{-1} {\bf X}_{\Delta} {\bf S_D} \right) {\bf b} \\
+\end{aligned}
+\end{equation}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -199,6 +266,51 @@ per our discussion of the story flow:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \tcr{summarize/uniform naming and put a table with acronyms}
+
+We have provided details
+
+\begin{table}
+\centering
+\caption{Eigenproblems to compute the spectral shape of each upscatter acceleration method.}
+\def\arraystretch{1.5}
+\begin{tabular}{|c|c|} \hline
+Method &  Eigenproblem \\ \hline \hline
+TG-GS & $\left(  {\bf T} - {\bf S_{L,0}} - {\bf S_{D,0}} \right)^{-1} {\bf S_{U,0}} \xi = \rho \xi$ \\ \hline
+MTG-GS & $\left(  {\bf T} - {\bf S_{L,0}}  \right)^{-1} \left( {\bf S_{D,0}}+ {\bf S_{U,0}} \right)\xi = \rho \xi $ \\ \hline
+MTG-Jac &${\bf T}^{-1} \left( {\bf S_{L,0}}+{\bf S_{D,0}} +  {\bf S_{U,0}} \right)\xi = \rho \xi$   \\ \hline
+TG-Jac & $\left(  {\bf T} - {\bf S_{D,0}} \right)^{-1} \left( {\bf S_{L,0}} +  {\bf S_{U,0}} \right)\xi = \rho \xi$ \\ \hline
+\end{tabular}
+\label{tab::DSA_MG_Summary_eprobs}
+\end{table}
+
+\begin{equation}
+\label{eq::DSA_MG_Summary_form}
+\begin{aligned}
+{\bf \Phi}^{(k+1)} &= \left[ {\bf F} {\bf M} {\bf \Sigma} + {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma} \left(  {\bf F} {\bf M} {\bf \Sigma} - {\bf I} \right)  \right]   {\bf \Phi}^{(k)} \\
+&+ \left(  {\bf P} {\bf A}^{-1}  {\bf X} {\bf \Sigma}  + {\bf I} \right) {\bf F} {\bf D}{\bf L}^{-1}  {\bf Q}
+\end{aligned} ,
+\end{equation}
+
+\begin{table}
+\centering
+\caption{Iteration terms for the TG-GS, MTG-GS, and MTG-Jac methods.}
+\def\arraystretch{1.5}
+\begin{tabular}{|c||c|c|} \hline
+Method & ${\bf F}$ & ${\bf \Sigma}$ \\ \hline \hline
+TG-GS & $\left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M} \left(  {\bf S_L} + {\bf S_D} \right) \right]^{-1} {\bf D}{\bf L}^{-1}$ & ${\bf S_{U}}$ \\ \hline
+MTG-GS & $\left[ {\bf I} - {\bf D}{\bf L}^{-1} {\bf M}{\bf S_L}\right]^{-1} {\bf D}{\bf L}^{-1}$ & ${\bf S_{D}} + {\bf S_{U}}$ \\ \hline
+MTG-Jac & ${\bf D}{\bf L}^{-1}$ & ${\bf S_{L}} + {\bf S_{D}} + {\bf S_{U}}$ \\ \hline
+\end{tabular}
+\label{tab::DSA_MG_Summary_diffterms}
+\end{table}
+
+\begin{equation}
+\label{eq::DSA_MG_Summary_TG_Jac}
+\begin{aligned}
+{\bf \Phi}^{(k+1)} = & \left[ {\bf I} +\left[ {\bf I}+ {\bf P}_{\delta}{\bf A}^{-1}  {\bf X}_{\delta}\left(   {\bf S_L} +  {\bf S_U} \right) \right]    \left(  {\bf I} + {\bf P}_{\Delta} {\bf B}^{-1} {\bf X}_{\Delta} {\bf S_D} \right) \left(   {\bf F}  {\bf M} {\bf S}  - {\bf I} \right)   \right]{\bf \Phi}^{(k)} \\
+&+  \left[ {\bf I}+ {\bf P}_{\delta}{\bf A}^{-1}  {\bf X}_{\delta}\left(   {\bf S_L} +  {\bf S_U} \right) \right]  \left(  {\bf I} + {\bf P}_{\Delta} {\bf B}^{-1} {\bf X}_{\Delta} {\bf S_D} \right) {\bf b} \\
+\end{aligned} .
+\end{equation}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -224,21 +336,21 @@ TEXT TEXT TEXT. IP DFEM, used as DSA, works well (cite) (at most, bilinear form 
 \tcr{Fourier and flat mode plots for the different methods.}
 
 
-4 spectral shapes for graphite plot
+In this section, 
 
 % Graphite spectral shapes
 % ------------------------------
 \begin{figure}
 \centering
 \includegraphics[width=0.85\textwidth]{figures/SS_GS_graphite.eps}
-\caption{Spectral shapes of the Gauss-Seidel methods for pure graphite and graphite with 50 ppm of boron.}
+\caption{Spectral shapes of the Gauss-Seidel methods for pure graphite and graphite with 50 ppm of boron-10.}
 \label{fig::Flat_FA_TGandMTG}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.85\textwidth]{figures/SS_Jac_graphite.eps}
-\caption{Spectral shapes of the Jacobi methods for pure graphite and graphite with 50 ppm of boron.}
+\caption{Spectral shapes of the Jacobi methods for pure graphite and graphite with 50 ppm of boron-10.}
 \label{fig::Flat_FA_TGandMTG}
 \end{figure}
 % ------------------------------
@@ -247,16 +359,16 @@ TEXT TEXT TEXT. IP DFEM, used as DSA, works well (cite) (at most, bilinear form 
 % ---------------------------
 \begin{figure}
 \centering
-	\begin{subfigure}[b]{0.80\textwidth}
+	\begin{subfigure}[b]{0.85\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{\DSAfigpath{IM1_Graph_FA_TG.eps}}
-		\caption{Two-Grid}
+		\caption{TG-GS Acceleration}
 	\end{subfigure}
 	
-	\begin{subfigure}[b]{0.80\textwidth}
+	\begin{subfigure}[b]{0.85\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{\DSAfigpath{IM1_Graph_FA_MTG.eps}}
-		\caption{Modified Two-Grid}
+		\caption{MTG-GS Acceleration}
 	\end{subfigure}
 \caption{Flat mode eigenvalues for the TG-GS and MTG-GS schemes.}
 \label{fig::Flat_FA_TGandMTG}
@@ -264,16 +376,16 @@ TEXT TEXT TEXT. IP DFEM, used as DSA, works well (cite) (at most, bilinear form 
 
 \begin{figure}
 \centering
-	\begin{subfigure}[b]{0.80\textwidth}
+	\begin{subfigure}[b]{0.85\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{\DSAfigpath{IM1_Graph_FA_MJA.eps}}
-		\caption{Modified Jacobi Acceleration}
+		\caption{MTG-Jac Acceleration}
 	\end{subfigure}
 	
-	\begin{subfigure}[b]{0.80\textwidth}
+	\begin{subfigure}[b]{0.85\textwidth}
 		\centering
 		\includegraphics[width=0.975\textwidth]{\DSAfigpath{IM1_Graph_FA_MJIA.eps}}
-		\caption{Jacobi Acceleration}
+		\caption{TG-Jac Acceleration}
 	\end{subfigure}
 \caption{Flat mode eigenvalues for the TG-Jac and MTG-Jac schemes.}
 \label{fig::Flat_FA_MJAandMJIA}
@@ -287,6 +399,15 @@ TEXT TEXT TEXT. IP DFEM, used as DSA, works well (cite) (at most, bilinear form 
 
 \tcr{expectations: these results will match closely the FA results.}
 
+The numerical spectral radius of each method (unaccelerated and accelerated) was estimated with the following:
+
+\begin{equation}
+\label{eq::MG_NSR_est}
+\rho^{(k+1)} \approx \sqrt{\frac{\sum\limits_{g=1}^{G_{th}} \sum\limits_{K \in \mathcal{T}_h} \sum\limits_{i=1}^{N_K} \left(  \Phi_{g,K,i}^{(k+1)} - \Phi_{g,K,i}^{(k)} \right)^2}{\sum\limits_{g=1}^{G_{th}} \sum\limits_{K \in \mathcal{T}_h} \sum\limits_{i=1}^{N_K} \left(  \Phi_{g,K,i}^{(k)} - \Phi_{g,K,i}^{(k-1)} \right)^2}} ,
+\end{equation}
+
+\noindent where $\Phi_{g,K,i}^{(k)}$ is the $k$-iterate scalar flux for basis function $i$ of cell $K$ of thermal energy group $g$.
+
 %------------------------------------------------------------------------------------------------------------
 \subsection{Heterogeneous Configurations}
 %------------------------------------------------------------------------------------------------------------
@@ -294,7 +415,66 @@ TEXT TEXT TEXT. IP DFEM, used as DSA, works well (cite) (at most, bilinear form 
 \tcr{2D and 3D IM1 results}
 
 \tcr{make a note on the highly heterogeneous configuration for which it is well known that ``all'' diffusion based accelerator have trouble, see Warsa/Yaqi ``PHI''.}
- 
+
+% 2D results go here
+% ---------------------
+
+\begin{figure}
+\centering
+\includegraphics[width=0.65\textwidth]{\DSAfigpath{2D_IM1_Variant_Layout.png}}
+\caption{Configuration of the 2D heterogeneous problem with air, HDPE, graphite, and AmBe source materials.}
+\label{fig::IM1_config_2D}
+\end{figure}
+
+\begin{table}
+\caption{Sweep count and timing data for the 2D IM1 variant problem using Two-Grid Acceleration.}
+\centering
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (min)  \\
+\hline \hline
+{SI} & {361}  &{185,422}  &  {486.50} \\ \hline
+SI+DSA & 55 & 35,699 &  96.48 \\ \hline
+GMRES & 38  & 41,575 &  128.63 \\ \hline
+GMRES+DSA & 14  & 19,053  & 57.92  \\ \hline
+\end{tabular}
+\label{tab::IM1_2D_TG}
+%\end{table}
+\vspace{1.5cm}
+%\begin{table}
+\caption{Sweep count and timing data for the 2D IM1 variant problem using Modified Two-Grid Acceleration.}
+\centering
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (min)  \\
+\hline \hline
+{SI} & {536}  & {77,632} & {275.83}  \\ \hline
+SI+DSA & 73  & 10,846 &  40.60 \\ \hline
+GMRES & 78  & 4,845 &  25.82 \\ \hline
+GMRES+DSA & 26  & 1,881 & 11.09  \\ \hline
+\end{tabular}
+\label{tab::IM1_2D_MTG}
+%\end{table}
+\vspace{1.5cm}
+%\begin{table}
+\caption{Sweep count and timing data for the 2D IM1 variant problem using Multigroup Jacobi Acceleration.}
+\centering
+\def\arraystretch{1.25}
+\begin{tabular}{|c|c|c|c|}
+\hline
+Problem & Outer Iter.  & 1-Group Sweeps & Solve Time (min)  \\
+\hline \hline
+{SI}  & {1,734} & {98,838} &  {111.07} \\ \hline
+SI+DSA  & 157 & 8,949 &  15.49 \\ \hline
+GMRES  & 118 & 6,726 &  8.65 \\ \hline
+{GMRES+DSA} &   {35} & {1,995} &  {4.16} \\ \hline
+\end{tabular}
+\label{tab::IM1_2D_MJA}
+\end{table}
+
+ % ---------------------
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
