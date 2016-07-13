@@ -290,33 +290,44 @@ In this section, we review the DGFEM $S_N$ transport equation. Given an angular 
 \left( \vec{\Omega}_m \cdot \vec{\nabla}  + \sigma_{t} (\vec{r}) \right)  \psi_{m} (\vec{r})=  \frac{\sigma_{s} (\vec{r})}{4 \pi}  \phi (\vec{r}) + Q_{m} (\vec{r}) ,
 \end{equation}
 
-\noindent where $\psi_{m} (\vec{r}) = \psi (\vec{r}, \vec{\Omega}_m)$ is the angular flux at position $\vec{r}$ in direction $\vec{\Omega}_m$, $\sigma_{t}$ and $\sigma_{s}$ are the total and scattering cross sections, and $Q_{m}$ is a distributed source for angle $m$. The scalar flux is defined as
+\noindent where $\psi_{m} (\vec{r}) = \psi (\vec{r}, \vec{\Omega}_m)$ is the angular flux at position $\vec{r}$ and in direction $\vec{\Omega}_m$, $\sigma_{t}$ and $\sigma_{s}$ are the total and scattering cross sections, and $Q_{m}$ is a distributed source for angle $m$. The scalar flux is defined as
 
 \begin{equation}
 \label{eq::scalar_flux_int}
 \phi (\vec{r}) = \int\limits_{4 \pi} d \Omega \, \psi (\vec{r}, \vec{\Omega}) \approx \sum_{m=1}^{M} w_m \psi_{m} (\vec{r}) .
 \end{equation}
 
-\noindent We then lay down an unstructured mesh, $\mathbb{T}_h \in \mathbb{R}^{d}$, over the spatial domain, where $d$ is the dimensionality of the problem (for this work, $d=2$). This mesh consists of non-overlapping spatial elements to form a complete union over the entire spatial domain: $\mathcal{D} = \bigcup_{K \in \mathbb{T}_h} K$. 
-
-We next form the set of DGFEM equations for a polygonal element $K$ with $n$ vertices and $n$ faces. We multiply Eq. (\ref{eq::trans_eq_simple_no_energy_groups}) by an appropriate test function $b_m$, integrate over element $K$, and apply the Divergence Theorem to the streaming term to obtain the Galerkin weighted-residual for element $K$ for an angular direction $\vec{\Omega}_m$:
+\noindent We then lay down an unstructured mesh, $\mathbb{T}_h \in \mathbb{R}^{d}$, over the spatial domain, where $d$ is the spatial dimension of the problem (for this work, $d=2$). This mesh consists of non-overlapping spatial elements to form a complete union over the entire spatial domain: $\mathcal{D} = \bigcup_{K \in \mathbb{T}_h} K$. 
+The 2D domain is meshed with arbitrary polygonal elements. For each element $K$, there are $n_K$ vertices and $n_K$ edges. As is standard in discontinuous Galerkin scheme, the angular flux unknown of \eqt{eq::trans_eq_simple_no_energy_groups} is expanded using discontinuous basis functions. 
+\[
+\psi_{m} (\vec{r}) \approx \sum_K \sum_{j=1}^{j=n_K} \psi_{m,j} b_j(\vec{r})
+\]
+\tcr{to simplify, I decided not to mention that the test function has a subscript $m$\\}
+The basis functions are nonzero over a single element and discontinuous across the element interfaces. 
+The DGFEM weak form for the transport equation is obtained by multiplying \eqt{eq::trans_eq_simple_no_energy_groups} by a test function $b$, integrating over element $K$, applying the divergence Theorem to the streaming, and using the standard upwind technique for the angular flux at the element's boundaries.  A compact notation for the weak form over  element $K$, for an angular direction $\vec{\Omega}_m$, is as follows:
 
 \begin{equation}
 \label{eq::DGFEM_trans_eq_cellK}
 \begin{aligned}
- \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \psi_m  \Big>_{\partial K^+} - \left( \vec{\Omega}_m \cdot  \vec{\nabla} b_m, \psi_{m} \right)_{K}  + \Big(  \sigma_{t} b_m ,   \psi_{m} \Big)_{K} \\
-=  \left( \frac{\sigma_s}{4 \pi} b_m ,   \phi \right)_{K} + \left(  b_m ,   Q_{m} \right)_{K} -  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b_m, \psi^{\uparrow}_{m}  \Big>_{\partial K^-}
+ \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b, \psi_m  \Big>_{\partial K^+} - \left( \vec{\Omega}_m \cdot  \vec{\nabla} b, \psi_{m} \right)_{K}  + \Big(  \sigma_{t} b ,   \psi_{m} \Big)_{K} \\
+=  \left( \frac{\sigma_s}{4 \pi} b ,   \phi \right)_{K} + \left(  b ,   Q_{m} \right)_{K} -  \Big< ( \vec{\Omega}_m \cdot \vec{n} ) \, b, \psi^{\uparrow}_{m}  \Big>_{\partial K^-}
 \end{aligned} .
 \end{equation}
 
-\noindent In Eq. (\ref{eq::DGFEM_trans_eq_cellK}), $\partial K^+$ is the inflow boundary, $\partial K^-$ is the outflow boundary, $\psi^{\uparrow}_{m}$ are the angular flux values on an inflow face taken from the upwind neighbor element, and the inner products
+\noindent In \eqt{eq::DGFEM_trans_eq_cellK}, $\partial K^\pm$ represents the inflow/outflow boundary of element $K$ (with respect to direction $\vec{\Omega}_m$)
+\[ \partial K^\pm = \left\{ \vec{r} \in \partial K \ | \ \vec{\Omega}_m \cdot \vec{n}_K(\vec{r}) \gtrless 0 \right\} \,,
+\]
+with $\vec{n}_K(\vec{r})$ the outward unit normal vector at location $\vec{r}$, $\psi^{\uparrow}_{m}$ are the angular flux values on an inflow face taken from the upwind neighbor element, and the inner products
 
 \begin{equation}
 \label{eq::spatial_inner_products_cell}
  \Big( u, v \Big)_K \equiv \int_K u \, v \, d r \qquad \text{and} \qquad  \Big< u, v \Big>_{\partial K} \equiv \int_{\partial K} u \, v \, d s
 \end{equation} 
 
-\noindent correspond to integrations over the cell volume and faces, respectively, where $dr \in \mathbb{R}^d$ is within the cell and $ds \in \mathbb{R}^{d-1}$ is along the cell boundary.
+\noindent correspond to integrations over the cell volume and faces, respectively, where $dr \in \mathbb{R}^d$ is within the cell and $ds \in \mathbb{R}^{d-1}$ is along the cell boundary. In \eqt{eq::DGFEM_trans_eq_cellK}, $\partial K^\pm$, all angular flux unknowns ``live on'' element $K$, except for the upwinded values which are taken from the upwind neighboring element:
+\[
+\psi^{\uparrow}_{m}(\vec{r}) = \lim_{s \to 0^+} \psi_{m}(\vec{r} + s \vec{n}_K(\vec{r}) ) \,,  \quad \vec{r} \in \partial K^- \,.
+\]
 
 The spatial convergence of DGFEM methods for the hyperbolic systems has been extensively studied \cite{lesaint1974finite,houston2000stabilized,houston2002discontinuous,wang2009convergence}. With the discretized flux solution, $\phi_h \in W^h_{\mathcal{D}}$, corresponding to our unstructured mesh, $\mathbb{T}_h$, we can define an error for our DGFEM transport solution with the $L_2$ norm as
 
