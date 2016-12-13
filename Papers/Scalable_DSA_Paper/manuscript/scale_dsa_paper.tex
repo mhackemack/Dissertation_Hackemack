@@ -80,10 +80,13 @@
 %-------------------------
 \title{Scalable DSA Preconditioner for the DFEM $S_N$ Transport Equation on Massively-Parallel Architectures}
 %-------------------------
-\author{Michael W. Hackemack}
-\author{Jean C. Ragusa}
+\author[kapl]{Michael~W.~Hackemack\corref{cor1}}
+\ead{michael.hackemack@unnpp.gov}
+\author[tamu]{Jean~C.~Ragusa}
 \ead{jean.ragusa@tamu.edu}
-\address{Department of Nuclear Engineering, Texas A\&M University, College Station, TX 77843, USA}
+\address[kapl]{Knolls Atomic Power Laboratory, P.O. Box 1072, Schenectady, NY 12301}
+\address[tamu]{Department of Nuclear Engineering, Texas A\&M University, College Station, TX 77843, USA}
+\cortext[cor1]{Corresponding author}
 %-------------------------
 \begin{abstract}
 %% Text of abstract
@@ -91,7 +94,7 @@
 \end{abstract}
 %-------------------------
 \begin{keyword}
-Radiation Transport \sep Scalable \sep Parallel \sep DSA \sep MIP
+Radiation Transport \sep Scalable \sep Parallel \sep Diffusion Synthetic Acceleration \sep Modified Interior Penalty Method
 \end{keyword}
 %-------------------------
 \end{frontmatter}
@@ -106,11 +109,26 @@ Radiation Transport \sep Scalable \sep Parallel \sep DSA \sep MIP
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+Intro goes here...
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{The First-Order Form of the Transport Equation} \label{sec::trans}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%------------------------------------------------------------------------------------------------------------
+\subsection{The DFEM $S_N$ Transport Equation} \label{sec::trans_DFEMSn}
+%------------------------------------------------------------------------------------------------------------
+
+% 1) start with 
+
+
+%------------------------------------------------------------------------------------------------------------
+\subsection{Solving with a Richardson Iteration Scheme} \label{sec::trans_SI}
+%------------------------------------------------------------------------------------------------------------
+
+% 1) operator notation from previous section to define
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -120,7 +138,8 @@ Radiation Transport \sep Scalable \sep Parallel \sep DSA \sep MIP
 
 % Discuss overview of synthetic acceleration
 % 1) formulation to get to low-order operator
-% 2) segway 
+% 2) mention that we will use DSA
+% 3) mention particular DSA is MIP (with section mention)
 
 %------------------------------------------------------------------------------------------------------------
 \subsection{Diffusion Synthetic Acceleration} \label{sec::accel_DSA}
@@ -149,6 +168,12 @@ Radiation Transport \sep Scalable \sep Parallel \sep DSA \sep MIP
 \section{Fourier Analysis} \label{sec::fourier}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% 1) Present brief overview of Fourier analysis - look at Bruno's and M&C2017 upscatter for ideas on brevity
+% 2) Results
+%     - Homogeneous cube results
+%     - Homogeneous AR results
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
