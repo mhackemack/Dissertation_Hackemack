@@ -262,48 +262,6 @@ The remainder of this paper is outlined as follows.
 % Give details of problem analyzed - 3D weak scaling analysis on modified Zerr problem
 
 
-\begin{figure}
-\centering
-{
-	\begin{subfigure}[b]{\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/A128.eps}
-		\caption{128 angles and 512 cells per processor}
-	\end{subfigure}
-}
-	\vspace{1cm}
-{
-	\begin{subfigure}[b]{\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/A2048.eps}
-		\caption{2048 angles and 4096 cells per processor}
-	\end{subfigure}
-}
-\caption{Timing data for the MIP DSA implementation in PDT using HYPRE on VULCAN.}
-\label{fig::DSA_Scaling_Timing}
-\end{figure}
-
-\begin{figure}
-\centering
-{
-	\begin{subfigure}[b]{\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/C512.eps}
-		\caption{512 cells per processor}
-	\end{subfigure}
-}
-	\vspace{1cm}
-{
-	\begin{subfigure}[b]{\textwidth}
-		\centering
-		\includegraphics[width=\textwidth]{figures/C4096.eps}
-		\caption{4096 cells per processor}
-	\end{subfigure}
-}
-\caption{Fraction of time spent performing DSA based on number of total angles.}
-\label{fig::DSA_Scaling_DSAFrac}
-\end{figure}
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions} \label{sec::conclusions}
