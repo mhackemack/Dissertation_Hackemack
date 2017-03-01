@@ -27,7 +27,8 @@
 %\documentclass[preprint,12pt]{elsarticle}
 
 %% Use the option review to obtain double line spacing
-\documentclass[preprint,review,12pt]{elsarticle}
+%\documentclass[preprint,review,12pt]{elsarticle}
+\documentclass[preprint,review,10pt]{elsarticle}
 
 %% Use the options 1p,twocolumn; 3p; 3p,twocolumn; 5p; or 5p,twocolumn
 %% for a journal layout:
@@ -54,11 +55,8 @@
 \usepackage{amsfonts}
 \usepackage{amstext}
 \usepackage{amsbsy}
-\usepackage{epstopdf}
-\usepackage{float}
-\usepackage{bigints}
-\usepackage{caption}
 \usepackage{subcaption}
+\usepackage{epstopdf}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -77,29 +75,31 @@
 \newcommand{\BFfigpath}[1]{../../../Document/Rev0/figures/sec_BF/{#1}}
 \newcommand{\DSAfigpath}[1]{../../../Document/Rev0/figures/sec_DSA/{#1}}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\journal{SIAM Journal on Scientific Computing}
+\journal{Nuclear Science and Engineering}
 
 \begin{document}
 %-------------------------
 \begin{frontmatter}
 %-------------------------
-\title{Scalable DSA Preconditioner for the DFEM $S_N$ Transport Equation on Massively-Parallel Architectures}
+\title{A Piecewise Quadratic Discretization of the $S_N$ Transport Equation for Diffusive Problems}
 %-------------------------
 \author[kapl]{Michael~W.~Hackemack\corref{cor1}}
 \ead{michael.hackemack@unnpp.gov}
 \author[tamu]{Jean~C.~Ragusa}
 \ead{jean.ragusa@tamu.edu}
-\address[kapl]{Knolls Atomic Power Laboratory, P.O. Box 1072, Schenectady, NY 12301}
+\author[tamu]{Marvin~L.~Adams}
+\ead{mladams@tamu.edu}
+\address[kapl]{Naval Nuclear Laboratory, KAPL, P.O. Box 1072, Schenectady, NY 12301, USA}
 \address[tamu]{Department of Nuclear Engineering, Texas A\&M University, College Station, TX 77843, USA}
 \cortext[cor1]{Corresponding author}
 %-------------------------
 \begin{abstract}
 %% Text of abstract
-
+abstract goes here...
 \end{abstract}
 %-------------------------
 \begin{keyword}
-Radiation Transport \sep Scalable \sep Parallel \sep Diffusion Synthetic Acceleration \sep Modified Interior Penalty Method
+Radiation Transport \sep DFEM \sep Higher-Order \sep Polygonal Grids \sep DSA 
 \end{keyword}
 %-------------------------
 \end{frontmatter}
@@ -114,153 +114,80 @@ Radiation Transport \sep Scalable \sep Parallel \sep Diffusion Synthetic Acceler
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Intro goes here...
 
-% Outline goes here
-%------------------------
-The remainder of this paper is outlined as follows. 
-%------------------------
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{The First-Order Form of the Transport Equation} \label{sec::trans}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%------------------------------------------------------------------------------------------------------------
-\subsection{The DFEM $S_N$ Transport Equation} \label{sec::trans_DFEMSn}
-%------------------------------------------------------------------------------------------------------------
-
-% Look at Bruno's MIP paper here
-% 1) start with continuous equation with isotropic source and scattering
-% 2) 
-% 3) 
-
-
-%------------------------------------------------------------------------------------------------------------
-\subsection{Solving with a Richardson Iteration Scheme} \label{sec::trans_SI}
-%------------------------------------------------------------------------------------------------------------
-
-% 1) operator notation from previous section to define SI
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Inverting the Loss Operator - The $S_N$ Transport Sweep} \label{sec::sweep}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+% Outline here
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Preconditioning by Synthetic Acceleration} \label{sec::accel}
+\section{The DGFEM $S_N$ Discretization of the Transport Equation} \label{sec::trans}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% Discuss overview of synthetic acceleration
-% 1) formulation to get to low-order operator
-% 2) mention that we will use DSA
-% 3) mention particular DSA is MIP (with section mention)
-
-%------------------------------------------------------------------------------------------------------------
-\subsection{Diffusion Synthetic Acceleration} \label{sec::accel_DSA}
-%------------------------------------------------------------------------------------------------------------
-
-%------------------------------------------------------------------------------------------------------------
-\subsection{The Modified Interior Penalty Method} \label{sec::accel_MIP}
-%------------------------------------------------------------------------------------------------------------
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Solving the DFEM Diffusion Systems} \label{sec::solving}
+\section{Solution Techniques} \label{sec::Solve}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %------------------------------------------------------------------------------------------------------------
-\subsection{Preconditioned Conjugate Gradient} \label{sec::solving_PCG}
+\subsection{Fixed Point Solver with Richardson Iterations} \label{sec::Solve_Rich}
+%------------------------------------------------------------------------------------------------------------
+
+
+%------------------------------------------------------------------------------------------------------------
+\subsection{Diffusion Synthetic Acceleration} \label{sec::Solve_DSA}
+%------------------------------------------------------------------------------------------------------------
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The Piecewise Quadratic Functions} \label{sec::PWQ}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%------------------------------------------------------------------------------------------------------------
+\subsection{The Piecewise Linear Functions} \label{sec::PWQ_PWL}
 %------------------------------------------------------------------------------------------------------------
 
 %------------------------------------------------------------------------------------------------------------
-\subsection{Algebraic MultiGrid Preconditioning} \label{sec::solving_AMG}
+\subsection{Converting to the Quadratic Serendipity Space} \label{sec::PWQ_Ser}
 %------------------------------------------------------------------------------------------------------------
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Fourier Analysis} \label{sec::fourier}
+\section{Lumping the PWQ Equations} \label{sec::Lumping}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% 1) Present brief overview of Fourier analysis - look at Bruno's and M&C2017 upscatter for ideas on brevity
-%     - FA analysis is common tool for DSA transport (Adam & Larsen, Larsen TTSP paper, Warse et all paper on FCDSA on tets)
-%     - iteration matrix eigenvalues are analyzed
-%     - Fourier ansatz with wave numbers
-%     - give alterred matrices
-% 2) Results
-%     - Homogeneous cube results
-%     - Homogeneous AR results
-%     - Possibly include the NSR results
+%------------------------------------------------------------------------------------------------------------
+\subsection{Mass Matrix Lumped PWQ} \label{sec::Lumping_mass}
+%------------------------------------------------------------------------------------------------------------
+
+%------------------------------------------------------------------------------------------------------------
+\subsection{Fully-Lumped PWQ} \label{sec::Lumping_full}
+%------------------------------------------------------------------------------------------------------------
 
 
-\begin{figure}
-\centering
-	\begin{subfigure}[b]{0.49\textwidth}
-		\centering
-		\includegraphics[width=0.975\textwidth]{figures/SI_MIP_hex_C=1_PWLD_LS.eps}
-		\caption{$c=1$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.49\textwidth}
-		\centering
-		\includegraphics[width=0.975\textwidth]{figures/SI_MIP_hex_C=4_PWLD_LS.eps}
-		\caption{$c=4$}
-	\end{subfigure}
-\caption{Fourier spectral radius of the 3D MIP form for different orders of the level-symmetric quadrature.}
-\label{fig::DSA_3D1G_Fourier}
-\end{figure}
-
-\begin{figure}
-\centering
-	\begin{subfigure}[b]{0.49\textwidth}
-		\centering
-		\includegraphics[width=0.975\textwidth]{figures/SI_MIP_hex_AR1.eps}
-		\caption{$c=1$}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.49\textwidth}
-		\centering
-		\includegraphics[width=0.975\textwidth]{figures/SI_MIP_hex_AR4.eps}
-		\caption{$c=4$}
-	\end{subfigure}
-\caption{Fourier spectral radii for MIP form with the $S_8$ level-symmetric quadrature on cells with different aspect ratios.}
-\label{fig::DSA_3D1G_Fourier_AR}
-\end{figure}
-
-
-\iffalse
-\begin{figure}
-\centering
-	\begin{subfigure}[b]{0.49\textwidth}
-		\centering
-		\includegraphics[width=0.975\textwidth]{figures/SI_MIP_hex_C=1_PWLD_LS_wNSR.eps}
-	\end{subfigure}
-	\hfill
-	\begin{subfigure}[b]{0.49\textwidth}
-		\centering
-		\includegraphics[width=0.975\textwidth]{figures/SI_MIP_hex_C=4_PWLD_LS_wNSR.eps}
-	\end{subfigure}
-\caption{Comparison between the numerical spectral radii and the theoretical Fourier Analysis spectral radii on the unit cube with $c=1$ (top) and $c=4$ (bottom).}
-\label{fig::DSA_3D1G_Fourier_NSR}
-\end{figure}
-\fi
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Timing Analysis} \label{sec::timing}
+\section{Numerical Results} \label{sec::results}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Give details of problem analyzed - 3D weak scaling analysis on modified Zerr problem
 
+%------------------------------------------------------------------------------------------------------------
+\subsection{Example 1} \label{sec::results_E1}
+%------------------------------------------------------------------------------------------------------------
+
+%------------------------------------------------------------------------------------------------------------
+\subsection{Example 2} \label{sec::results_E2}
+%------------------------------------------------------------------------------------------------------------
+
+%------------------------------------------------------------------------------------------------------------
+\subsection{Example 3} \label{sec::results_E3}
+%------------------------------------------------------------------------------------------------------------
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -268,16 +195,36 @@ The remainder of this paper is outlined as follows.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-We have 
+%A higher-order discontinuous Galerkin finite element discretization using piecewise quadratic functions compatible with arbitrary polygonal meshes has been applied to the $S_N$ transport equation. These functions span $\{ 1,x,y,x^2,xy,y^2 \}$ and can be analytically integrated using a sub-cell triangulation.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\section*{Acknowledgments} 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%This research was performed under appointment to the Rickover Graduate Fellowship Program in Nuclear Engineering sponsored by the Naval Reactors Division of the United States %Department of Energy.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\pagebreak
-
 \bibliographystyle{elsarticle-num}
 \bibliography{references}
+
+% Begin appendices
+\appendix
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{The Modified Interior Penalty Method} \label{app::MIP}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Spatial Adaptive Mesh Refinement for the Transport Equation} \label{app::AMR}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 
 
 \end{document}
